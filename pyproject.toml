@@ -5,12 +5,23 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "risk-normalize"
 version = "0.1.0"
-description = "A reusable multi-source normalization framework that maps heterogeneous token-risk inputs onto one comparable 0-100 basis."
+description = "Agent decision-confidence meta-layer: normalize multi-source risk signals (token instance + multi risk-API mock) onto one 0-100 basis with contradiction detection, confidence, and audit."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.8"
 authors = [{ name = "Path B" }]
-keywords = ["risk", "normalization", "token", "crypto", "scoring", "framework"]
+keywords = [
+    "risk",
+    "normalization",
+    "decision-confidence",
+    "agent",
+    "mcp",
+    "token",
+    "crypto",
+    "scoring",
+    "framework",
+    "audit",
+]
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
