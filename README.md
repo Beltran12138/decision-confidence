@@ -31,8 +31,8 @@ their outputs** (caller-supplied) and adds three things:
 
 Token multi-factor risk scoring is the **native instance** of the same
 methodology (see below). The decision-confidence layer ships as a library
-module and as an **MCP server** (stdio, one tool) so an agent can call it
-directly.
+module, as **three adapters for real, key-free risk APIs**, and as an **MCP
+server** (stdio, two tools) so an agent can call it directly.
 
 ```
   [ Risk API A ] [ Risk API B ] [ Risk API C ]  ...  (caller fetches)
@@ -64,11 +64,17 @@ needs before it acts.
 | --- | --- | --- |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Decision-confidence (meta)** | Shipped | `build_report` / `observe_from_raw` in `src/decision_confidence.py` |
-| **MCP server** | Shipped (reference impl) | `decision_confidence` tool in `src/mcp_server.py` |
-| **Real vendor adapters over HTTP** | Not started | Phase 3 — see `docs/ARCHITECTURE.md` |
+| **Real vendor adapters** | Shipped — 3 vendors, no API keys | `src/adapters/` |
+| **MCP server** | Shipped (reference impl) | 2 tools in `src/mcp_server.py` |
+| **Calibration** | Harness shipped, never run | `tools/calibrate.py` — no labelled data in hand |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
 server needs an extra (`pip install -e ".[mcp]"`).
+
+Not built on purpose: HTTP fetching inside the library, auth, multi-tenancy.
+The library holds no credentials and reaches nothing; those are host concerns,
+and inventing them here would be scope theatre. Reasoning in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ---
 
@@ -213,6 +219,61 @@ confidence → emit audit trail.**
 
 Design detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
+### Three real sources, no API keys
+
+```bash
+python examples/live_multi_source.py 0xdAC17F958D2ee523a2206206994597C13D831ec7
+python examples/live_multi_source.py --offline usdt     # replay stored captures
+```
+
+| Vendor | What it measures | Key needed |
+| --- | --- | --- |
+| [GoPlus Token Security](https://docs.gopluslabs.io/reference/api-overview) | contract authority flags, holder concentration | no |
+| [honeypot.is v2](https://honeypot.is/) | buy/sell simulation — tradability | no |
+| [DexScreener](https://docs.dexscreener.com/api/reference) | pool liquidity depth | no |
+
+`examples/live_multi_source.py` is the **only** file in this repo that touches
+the network. Adapters are pure functions of `(subject, raw)`; the caller
+fetches. Real captures from 2026-07-26 are frozen in `tests/fixtures/`, so the
+tests and the `--offline` walkthrough never depend on three third-party
+services staying up.
+
+### What the real run actually shows
+
+Ethereum USDT, three sources:
+
+```
+source                    risk  status      construct
+goplus                      69  ok          authority_control     mint, pause, blacklist, balance-change
+goplus:concentration        45  ok          holder_concentration  top-1 holder 19.30%
+honeypot_is                  1  ok          tradability           buy and sell both simulate fine
+dexscreener                  -  unavailable liquidity_depth       no pairs on chain 'ethereum'
+
+composite : 38   verdict: moderate   confidence: medium
+  [range/medium]              spread 68 — but one measures tradability and the other
+                              authority_control; the disagreement may be definitional
+  [construct_mismatch/medium] the composite mixes 3 distinct constructs, so the
+                              weighted mean is not a like-for-like average
+```
+
+Three things in that output are the whole argument for the layer:
+
+1. **The sources disagree by 68 points and neither is wrong.** USDT genuinely
+   can be frozen and minted by its issuer, and it genuinely trades fine. A
+   single blended score would have hidden both facts.
+2. **`unavailable` is not `safe`.** DexScreener's token endpoint is keyed by
+   address rather than by (chain, address): querying the Ethereum USDT address
+   returns **PulseChain** pools, the same address on a fork chain. Taking
+   `pairs[0]` — or even `max(liquidity)` — reports six figures of liquidity for
+   the largest stablecoin in existence. The adapter refuses to guess and says
+   so; the report carries the gap instead of papering over it.
+3. **Confidence drops without the verdict moving.** `moderate` still reads
+   `moderate`; what changed is how much an agent should act on it.
+
+None of this says USDT is unsafe. It says three sources answered three
+different questions, and averaging them into one number without saying so is
+the failure this layer exists to prevent.
+
 ### Local mock demo (no network)
 
 Three fictional providers — `MockAlphaRisk`, `MockBetaKYT`, `MockGammaFraud` —
@@ -237,12 +298,20 @@ pip install -e ".[mcp]"
 python src/mcp_server.py          # stdio; or: risk-normalize-mcp
 ```
 
-One tool, `decision_confidence(subject, sources, weights?)`. Each entry in
-`sources` is `{"source_id": ..., "raw": <vendor payload as received>}`.
-Recognised payload shapes: `{"fraud_probability": 0..1}`, `{"tier": "LOW|MEDIUM|HIGH"}`,
+Two tools:
+
+- `list_supported_vendors()` → `{vendor_id: description}` for every registered
+  adapter.
+- `decision_confidence(subject, sources, weights?)` → the full report:
+  observations, composite, verdict, confidence, contradictions, audit.
+
+Each entry in `sources` is
+`{"source_id": ..., "raw": <vendor payload as received>, "vendor": <optional>}`.
+With `vendor`, the payload is parsed by that vendor's real adapter and may
+expand into several observations. Without it, generic shapes are recognised by
+their keys: `{"fraud_probability": 0..1}`, `{"tier": "LOW|MEDIUM|HIGH"}`,
 `{"score": 0..100, "scale": "safety_0_100"}` (flipped), `{"score": 0..100}`
-(already risk). It returns the full report — observations, composite, verdict,
-confidence, contradictions, audit.
+(already risk).
 
 **The host keeps what the host should keep**: API keys, HTTP, rate limits,
 caching, PII policy. The tool is a pure transform of what it is given.
@@ -257,6 +326,12 @@ KYT-style compliance tiers. Those sources disagree in scale and, often, in
 substance. Today an agent either trusts one vendor (silent failure when that
 vendor is wrong or down) or eyeballs raw JSON through an LLM (non-repeatable
 across runs). Neither leaves anything you can audit afterwards.
+
+This is demonstrated rather than asserted: three real key-free APIs, asked
+about the most widely held stablecoin on Ethereum, return a 68-point spread and
+one unscoreable result — and the unscoreable one fails *silently* in any
+implementation that trusts the vendor's default ordering. See the walkthrough
+above.
 
 No risk vendor will close this gap. A vendor's product is *its own* score; it
 has no incentive to ship "our competitor disagrees with us, and here is how
@@ -309,10 +384,18 @@ disagreement problem with none of the headcount.
 - **Caller-supplied only** — missing inputs are marked unknown, never guessed.
   The library performs **no** network I/O.
 - Thresholds and contradiction rules are **rough heuristics**, not calibrated
-  against any labeled dataset.
-- The MCP server is a **reference implementation** over caller-supplied
-  payloads. There are **no live vendor integrations** — no HTTP adapters, no
-  auth, no multi-tenant isolation. The demo vendors are fictional.
+  against any labeled dataset. `tools/calibrate.py` is the instrument for
+  fixing that; it has never been run against real labels, and running it on the
+  bundled synthetic sample proves nothing about accuracy.
+- The three shipped adapters cover **EVM tokens only**. Solana, addresses as
+  subjects, and compliance/KYT vendors go through the generic fallback.
+- GoPlus contributes two of the four default observations, so it carries double
+  weight unless the caller passes `weights`.
+- The MCP server is a **reference implementation**. No auth, no multi-tenant
+  isolation, no HTTP inside the library — deliberately, since the library holds
+  no credentials and reaches nothing.
+- Fixtures are **snapshots**. Vendors change scoring and pair lists churn; a
+  failing fixture test may be a refresh signal rather than a code bug.
 - A general LLM with web access may see *more current* on-chain data than a
   sandboxed caller of this library. This project's edge is **repeatable,
   comparable verdicts and explicit uncertainty** — not data freshness.

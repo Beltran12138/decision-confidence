@@ -1,0 +1,81 @@
+{
+  "token": {
+    "name": "Pepe",
+    "symbol": "PEPE",
+    "decimals": 18,
+    "address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+    "totalHolders": 570187
+  },
+  "withToken": {
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "decimals": 18,
+    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "totalHolders": 3308986
+  },
+  "summary": {
+    "risk": "low",
+    "riskLevel": 1,
+    "flags": []
+  },
+  "simulationSuccess": true,
+  "honeypotResult": {
+    "isHoneypot": false
+  },
+  "simulationResult": {
+    "buyTax": 0,
+    "sellTax": 0,
+    "transferTax": 0,
+    "buyGas": "151216",
+    "sellGas": "105214"
+  },
+  "holderAnalysis": {
+    "holders": "13221",
+    "successful": "13220",
+    "failed": "1",
+    "siphoned": "0",
+    "averageTax": 0,
+    "averageGas": 113377.60816944024,
+    "highestTax": 0,
+    "highTaxWallets": "0",
+    "taxDistribution": [
+      {
+        "tax": 0,
+        "count": 13220
+      }
+    ],
+    "snipersFailed": 0,
+    "snipersSuccess": 0
+  },
+  "flags": [],
+  "contractCode": {
+    "openSource": true,
+    "rootOpenSource": true,
+    "isProxy": false,
+    "hasProxyCalls": false
+  },
+  "chain": {
+    "id": "1",
+    "name": "Ethereum",
+    "shortName": "eth",
+    "currency": "ETH"
+  },
+  "router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+  "pair": {
+    "pair": {
+      "name": "Uniswap V2: PEPE-WETH",
+      "address": "0xA43fe16908251ee70EF74718545e4FE6C5cCEc9f",
+      "token0": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+      "token1": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "type": "UniswapV2"
+    },
+    "chainId": "1",
+    "reserves0": "3671905033140134618150284119789",
+    "reserves1": "5726114702581968742590",
+    "liquidity": 21588025.040204283,
+    "router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "createdAtTimestamp": "1681492871",
+    "creationTxHash": "0x273894b35d8c30d32e1ffa22ee6aa320cc9f55f2adbba0583594ed47c031f6f6"
+  },
+  "pairAddress": "0xA43fe16908251ee70EF74718545e4FE6C5cCEc9f"
+}

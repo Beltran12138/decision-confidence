@@ -40,3 +40,4 @@ risk-normalize-mcp = "mcp_server:main"
 [tool.setuptools]
 package-dir = { "" = "src" }
 py-modules = ["normalize", "decision_confidence", "mcp_server"]
+packages = ["adapters"]

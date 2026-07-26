@@ -27,10 +27,8 @@ from typing import Any, Dict, List, Optional
 # module.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from decision_confidence import (  # noqa: E402
-    build_report,
-    observe_from_raw,
-)
+from adapters import observe_vendor, supported_vendors  # noqa: E402
+from decision_confidence import build_report  # noqa: E402
 
 try:
     from mcp.server.fastmcp import FastMCP
@@ -58,8 +56,13 @@ def decision_confidence(
     Args:
         subject: What is being assessed (token address, symbol, account —
             caller-defined; treated as an opaque label).
-        sources: One entry per source, ``{"source_id": str, "raw": object}``.
-            ``raw`` is the vendor payload as received. Recognised shapes:
+        sources: One entry per source,
+            ``{"source_id": str, "raw": object, "vendor": str?}``. ``raw`` is
+            the vendor payload exactly as received. When ``vendor`` names a
+            registered adapter (call ``list_supported_vendors``) the payload is
+            parsed with that vendor's real field names, and one payload may
+            produce several observations covering different risk constructs.
+            Without ``vendor``, generic shapes are recognised by their keys:
             ``{"fraud_probability": 0.0-1.0}``, ``{"tier": "LOW|MEDIUM|HIGH"}``,
             ``{"score": 0-100, "scale": "safety_0_100"}`` (flipped to risk),
             or ``{"score": 0-100}`` (already risk). Unrecognised or malformed
@@ -77,17 +80,39 @@ def decision_confidence(
         evidence quality rather than probability of correctness, any
         cross-source ``contradictions``, and an ``audit`` trail that makes the
         result reconstructible without re-fetching.
+
+        Each observation carries the ``construct`` it measures when the adapter
+        declares one. A wide spread between sources measuring *different*
+        constructs is reported as ``construct_mismatch`` rather than treated as
+        one of them being wrong.
     """
     observations = []
     for entry in sources:
         if not isinstance(entry, dict):
             continue
         source_id = str(entry.get("source_id") or f"source_{len(observations) + 1}")
+        vendor = entry.get("vendor")
         raw = entry.get("raw")
-        observations.append(observe_from_raw(source_id, subject, raw if isinstance(raw, dict) else {}))
+        observations.extend(observe_vendor(
+            str(vendor) if vendor else None,
+            source_id,
+            subject,
+            raw if isinstance(raw, dict) else {},
+        ))
 
     report = build_report(subject, observations, weights)
     return report.to_dict()
+
+
+@mcp.tool()
+def list_supported_vendors() -> Dict[str, str]:
+    """Vendors with a dedicated adapter, mapped to what each one contributes.
+
+    Call this before ``decision_confidence`` to decide whether to tag a source
+    with ``vendor``. Anything not listed still works — it falls back to generic
+    shape recognition and the observation says so in its note.
+    """
+    return supported_vendors()
 
 
 def main() -> None:

@@ -1,10 +1,19 @@
 # Architecture — Agent Decision Confidence (meta-layer)
 
-Status: **reference implementation**. The meta-layer ships as
-`src/decision_confidence.py` and is exposed over MCP by `src/mcp_server.py`
-(stdio, one tool). Still **not** in this release: live HTTP adapters for real
-vendors, auth, multi-tenancy. The token-domain library in `src/normalize.py`
-remains the shipped, frozen public API (`score_token` / `TokenInputs`).
+Status: **reference implementation with three real vendor adapters**. The
+meta-layer ships as `src/decision_confidence.py`, per-vendor adapters as
+`src/adapters/`, and both are exposed over MCP by `src/mcp_server.py` (stdio,
+two tools). The token-domain library in `src/normalize.py` remains the shipped,
+frozen public API (`score_token` / `TokenInputs`).
+
+Deliberately **not** built, and why:
+
+| Not built | Reason |
+| --- | --- |
+| HTTP fetching inside the library | Breaks the no-network invariant that makes the library sandbox-safe and trivially testable. Fetching lives in `examples/live_multi_source.py`, the one networked file in the repo. |
+| Auth / API-key handling | The library holds no credentials and reaches nothing. Adding auth would invent a concern that belongs to the host. |
+| Multi-tenant isolation | There is no server-side state to isolate. A stdio MCP process is already per-host. |
+| Calibrated thresholds | No labelled data in hand. `tools/calibrate.py` is the instrument; the numbers are still uncalibrated and labelled as such. |
 
 ---
 
@@ -84,25 +93,19 @@ fields (`top10_pct`, `mint_authority`, …) are **not** required here.
 
 ## 3. Input layer
 
-### 3.1 Adapter protocol (sketch)
+### 3.1 Adapter protocol and registry
 
-Shipped shape: `decision_confidence.py` provides scale-specific normalizers
-(`observe_safety_score` / `observe_risk_score` / `observe_kyt_tier` /
-`observe_fraud_probability`) plus `observe_from_raw` for shape dispatch. An
-adapter is then a thin binding of one vendor id to one normalizer — see the
-three in `examples/decision_confidence_demo.py`. The protocol below is the
-interface a registry-based Phase 3 would formalise:
+An adapter is a pure function:
 
 ```python
-from typing import Any, Dict, Optional, Protocol
+def parse(subject: str, raw: Dict[str, Any]) -> List[SourceObservation]: ...
+```
 
-class RiskSourceAdapter(Protocol):
-    """Maps one vendor's raw payload into a SourceObservation."""
+Registered by vendor id in `src/adapters/__init__.py`:
 
-    source_id: str  # stable id, e.g. "mock_alpha_risk"
-
-    def parse(self, subject: str, raw: Dict[str, Any]) -> "SourceObservation":
-        ...
+```python
+DEFAULT_REGISTRY.register("goplus", goplus.parse, "…")
+observations = observe_vendor("goplus", "goplus", subject, raw)
 ```
 
 Adapters own:
@@ -110,11 +113,52 @@ Adapters own:
 - Scale interpretation (is vendor 100 "safe" or "risky"?)
 - Field extraction and light validation
 - Status: `ok` | `missing` | `malformed` | `unavailable`
+- The `construct` each observation measures (§3.4)
 
 They must **not** perform network I/O. The caller (agent runtime, MCP host, or
-demo) fetches and passes `raw`.
+example script) fetches and passes `raw`.
 
-### 3.2 Heterogeneous raw shapes (illustrative)
+**One payload, several observations.** `parse` returns a *list*, not a single
+observation, because real vendors are not single-scalar. GoPlus carries both
+contract-authority findings and holder concentration; compliance vendors
+typically separate ownership risk from counterparty risk. Collapsing that
+before the meta-layer sees it destroys the information the meta-layer exists to
+reason over.
+
+**Unknown vendors still work.** `observe_vendor` falls back to
+`observe_from_raw` shape sniffing and records the fallback in the note. Shape
+sniffing remains a reasonable default for a generic tool surface and a poor
+default for production — two vendors can ship the same key with opposite
+polarity.
+
+### 3.2 Shipped adapters
+
+All three are public and need no API key. Response shapes verified live on
+2026-07-26; captures are frozen in `tests/fixtures/`.
+
+| Vendor | Endpoint | Constructs emitted |
+| --- | --- | --- |
+| GoPlus Token Security | `api.gopluslabs.io/api/v1/token_security/{chain_id}` | `authority_control`, `holder_concentration` |
+| honeypot.is v2 | `api.honeypot.is/v2/IsHoneypot` | `tradability` |
+| DexScreener | `api.dexscreener.com/latest/dex/tokens/{address}` | `liquidity_depth` |
+
+Three field-level traps these adapters exist to absorb, each found by reading
+real responses rather than docs:
+
+1. **GoPlus flags are strings, and absence ≠ false.** `"0"`/`"1"`, and a field
+   that is simply not present means "not applicable / not detected". Scoring
+   absence as safe is the easiest way to under-report with this vendor, so
+   absent flags are counted and surfaced in the note.
+2. **A honeypot simulation that did not run is not a pass.**
+   `simulationSuccess: false` yields `unavailable`, never a low score.
+3. **DexScreener's token endpoint is keyed by address, not by (chain,
+   address).** Querying the Ethereum USDT address returns PulseChain pools —
+   the same address on a fork chain. Taking `pairs[0]`, or even
+   `max(liquidity)`, silently scores the wrong chain. The adapter refuses:
+   either the caller names the chain, or the observation comes back
+   `unavailable` naming the chains it saw.
+
+### 3.3 Heterogeneous raw shapes (generic fallback)
 
 | Source class | Example raw keys | Notes |
 | --- | --- | --- |
@@ -122,7 +166,21 @@ demo) fetches and passes `raw`.
 | Fraud / scam prediction | `{"fraud_probability": 0.91}` or `{"label": "scam"}` | Prob → 0–100 risk |
 | KYT / compliance tier | `{"tier": "HIGH"}` | Ordinal map to 0–100 |
 
-Real vendor field names vary; adapters isolate that churn from the engine.
+### 3.4 Constructs — what a source is actually measuring
+
+`decision_confidence.CONSTRUCTS`: `authority_control`, `tradability`,
+`liquidity_depth`, `holder_concentration`, `compliance_exposure`,
+`fraud_prediction`.
+
+Two vendors can disagree numerically while both being right, because they are
+answering different questions. A structural-authority scanner and a honeypot
+simulator will always diverge on a centralised-but-perfectly-tradable token,
+and treating that as "one of them is wrong" is a category error. Declaring the
+construct lets the engine separate **definitional** disagreement from
+**factual** disagreement (§5.2).
+
+The field is optional. An observation with `construct=None` behaves exactly as
+it did before constructs existed — tagging is strictly opt-in.
 
 ### 3.3 Unified intermediate representation
 
@@ -204,9 +262,21 @@ class Contradiction:
 | `polarity` | One source low-risk, another high-risk | A ≤ 30 and B ≥ 70 |
 | `range` | Spread among ok sources exceeds threshold | max − min ≥ 40 |
 | `hard_flag` | Binary fraud/scam label vs low composite | fraud label while peers score "safe" |
+| `construct_mismatch` | Wide spread across sources measuring different things | authority scanner vs honeypot simulator |
 
 Rules operate only on `status == "ok"` observations. Fewer than two ok sources
 → no pairwise contradiction (confidence still low due to thin evidence).
+
+**Construct-aware severity.** When a `polarity` or `range` clash involves two
+sources with *different* declared constructs, severity is downgraded (high →
+medium) and the detail says why: the disagreement may be definitional rather
+than factual. When constructs match, or either is undeclared, severity is
+unchanged.
+
+`construct_mismatch` is a statement about the **composite**, not about any
+source: if the weighted mean is averaging several distinct constructs and they
+spread widely, the mean is not a like-for-like average and the report says so
+instead of quietly presenting a single number.
 
 ### 5.3 Relationship to token-instance contradiction
 
@@ -271,8 +341,14 @@ Serialization: plain `dict` / JSON, same spirit as `Verdict.to_dict()`.
 
 ## 8. MCP surface (shipped)
 
-Implemented in `src/mcp_server.py` — stdio transport, one tool. Optional
+Implemented in `src/mcp_server.py` — stdio transport, two tools. Optional
 dependency: `pip install -e ".[mcp]"`. The core library stays dependency-free.
+
+### Tool: `list_supported_vendors`
+
+No arguments. Returns `{vendor_id: description}` for every registered adapter,
+so an agent can decide whether to tag a source with `vendor` before calling
+`decision_confidence`.
 
 ### Tool: `decision_confidence`
 
@@ -283,21 +359,27 @@ dependency: `pip install -e ".[mcp]"`. The core library stays dependency-free.
   "subject": "0x… or SYMBOL",
   "sources": [
     {
-      "source_id": "alpha_risk",
-      "raw": { "score": 82, "scale": "safety_0_100" }
+      "source_id": "goplus",
+      "vendor": "goplus",                       // optional; uses the real adapter
+      "raw": { "code": 1, "result": { "0x…": { "is_mintable": "1" } } }
     },
     {
       "source_id": "beta_kyt",
-      "raw": { "tier": "HIGH" }
+      "raw": { "tier": "HIGH" }                 // no vendor → shape sniffing
     },
     {
       "source_id": "gamma_fraud",
       "raw": { "fraud_probability": 0.12 }
     }
   ],
-  "weights": { "alpha_risk": 1.0, "beta_kyt": 1.0, "gamma_fraud": 1.0 }  // optional
+  "weights": { "goplus": 1.0, "beta_kyt": 1.0, "gamma_fraud": 1.0 }  // optional
 }
 ```
+
+Note that a `vendor`-tagged source may expand into **several** observations
+(GoPlus produces two), so `weights` keyed by `source_id` weights the vendor's
+primary observation; derived observations carry their own suffixed id such as
+`goplus:concentration`.
 
 **Output:** `DecisionReport` as JSON (observations, composite, verdict,
 confidence, contradictions, audit).
@@ -325,9 +407,15 @@ confidence, contradictions, audit).
 - Quality ≤ worst-case upstream availability and honesty
 - Correlated vendors (shared data vendors / shared heuristics) understate risk
   of "agreement"
-- Heuristic thresholds are uncalibrated
-- Mock demo vendors are fictional; real adapters need per-vendor tests
-- MCP auth, multi-tenant isolation, and streaming are unspecified here
+- Heuristic thresholds are uncalibrated. `tools/calibrate.py` can measure them
+  against labelled data; no such calibration has been run here
+- Three real adapters ship, each covering EVM tokens only. Nothing here handles
+  Solana, addresses-as-subjects, or compliance vendors — those shapes are
+  described in §3.3 but only exercised through the generic fallback
+- GoPlus contributes two of the observations in the default three-vendor setup,
+  so it carries double weight unless the caller says otherwise (open question 1)
+- MCP auth, multi-tenant isolation, and streaming are out of scope by design,
+  not pending — see the table at the top of this document
 
 ### Open questions
 
@@ -345,12 +433,24 @@ confidence, contradictions, audit).
 | Phase | Deliverable | Status |
 | --- | --- | --- |
 | Phase 1 | README reframe, this doc, `examples/decision_confidence_demo.py` | done |
-| **Phase 2 (this)** | `src/decision_confidence.py` module, `src/mcp_server.py` (stdio, one tool), `tests/` regression suite | done |
-| Phase 3 | Real vendor adapters over HTTP, auth, multi-tenant isolation, calibration against a labelled dataset | not started |
+| Phase 2 | `src/decision_confidence.py` module, `src/mcp_server.py` (stdio), `tests/` regression suite | done |
+| **Phase 3 (this)** | `src/adapters/` registry + three real vendor adapters, construct tagging, `examples/live_multi_source.py`, real-payload fixtures, `tools/calibrate.py` | done |
+| Phase 3 — dropped | HTTP in-library, auth, multi-tenancy | out of scope by design; see the table at the top |
+| Phase 3 — open | Actually running a calibration against labelled data | not started; needs a dataset and per-subject payload capture |
 
 Token instance demos remain: `examples/pepe_caller_supplied.py`.
 
 **Phase 2 non-regression:** the module was extracted from the example without
-behaviour change — `python examples/decision_confidence_demo.py` produces
+behaviour change — `python examples/decision_confidence_demo.py` produced
 byte-identical output before and after (verified by checksum), and
 `src/normalize.py` is untouched.
+
+**Phase 3 non-regression:** all eleven Phase 2 tests are unchanged and still
+pass alongside the twenty-five new ones; `src/normalize.py` is still untouched.
+Diffing `examples/decision_confidence_demo.py` output against `HEAD~1` shows
+**no numeric change at all** — not one composite, verdict, confidence,
+severity, or contradiction moved. The only differences are two new nullable
+fields serialising as `null` (`construct`, `constructs`) and one reworded note
+string, which had claimed "mock only — no network" and was no longer accurate
+once real adapters shipped. Construct tagging is additive and opt-in: an
+observation built the Phase 2 way scores and contradicts exactly as it did.

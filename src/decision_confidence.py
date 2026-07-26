@@ -38,6 +38,7 @@ __all__ = [
     "detect_contradictions",
     "synthesize_confidence",
     "build_report",
+    "CONSTRUCTS",
 ]
 
 
@@ -68,6 +69,22 @@ RANGE_SPREAD = 40
 # "safe", is treated as a hard flag rather than ordinary disagreement.
 HARD_FLAG_FRAUD_RISK = 70
 
+# What a source actually measures. Two vendors can disagree numerically while
+# both being right, because they are scoring different constructs — a
+# structural-authority scanner and a honeypot simulator answer different
+# questions. Declaring the construct lets the layer separate *definitional*
+# disagreement from *factual* disagreement instead of averaging both away.
+#
+# A source may leave this unset; behaviour is then exactly as before.
+CONSTRUCTS = {
+    "authority_control",    # what the deployer / owner can still do
+    "tradability",          # can the position actually be exited (simulation)
+    "liquidity_depth",      # is there enough depth to exit at size
+    "holder_concentration",  # how concentrated is the holder base
+    "compliance_exposure",  # sanctions / KYT style exposure
+    "fraud_prediction",     # scam / fraud classifier output
+}
+
 
 # ---------------------------------------------------------------------------
 # Data shapes
@@ -81,14 +98,16 @@ class SourceObservation:
     normalized_0_100: Optional[int]
     status: str  # ok | missing | malformed | unavailable
     note: str = ""
+    construct: Optional[str] = None  # see CONSTRUCTS; None = undeclared
 
 
 @dataclass
 class Contradiction:
     sources: List[str]
-    kind: str
+    kind: str  # range | polarity | hard_flag | construct_mismatch
     detail: str
     severity: str = "medium"
+    constructs: Optional[List[str]] = None  # constructs involved, when declared
 
 
 @dataclass
@@ -114,7 +133,7 @@ class DecisionReport:
 
 
 REPORT_NOTE = (
-    "Caller-supplied mock only — no network. "
+    "Caller-supplied only — the library performs no network I/O. "
     "Thresholds are rough heuristics, not calibrated. "
     "Not investment advice; not a safety or compliance guarantee. "
     "Meta-layer quality is bounded by upstream source quality."
@@ -293,6 +312,30 @@ def _infer_fraud_sources(observations: Iterable[SourceObservation]) -> Set[str]:
     return inferred
 
 
+def _construct_qualifier(
+    constructs: Dict[str, Optional[str]],
+    a: str,
+    b: str,
+    base_severity: str,
+):
+    """Downgrade a pairwise clash when the two sources measure different things.
+
+    Returns ``(severity, detail_suffix, constructs_involved)``. When either
+    construct is undeclared the pair is treated exactly as before — this keeps
+    construct tagging strictly opt-in.
+    """
+    ca, cb = constructs.get(a), constructs.get(b)
+    if not ca or not cb or ca == cb:
+        pair = [ca or cb] if (ca or cb) else None
+        return base_severity, "", pair
+    severity = "medium" if base_severity == "high" else base_severity
+    suffix = (
+        f" — but {a} measures {ca} and {b} measures {cb}; "
+        "the disagreement may be definitional, not factual"
+    )
+    return severity, suffix, [ca, cb]
+
+
 def detect_contradictions(
     observations: Sequence[SourceObservation],
     fraud_source_ids: Optional[Iterable[str]] = None,
@@ -311,19 +354,23 @@ def detect_contradictions(
         return found
 
     scores = {o.source_id: o.normalized_0_100 for o in ok}
+    constructs = {o.source_id: o.construct for o in ok}
     vals = list(scores.values())
     spread = max(vals) - min(vals)
     if spread >= RANGE_SPREAD:
         lo_id = min(scores, key=scores.get)
         hi_id = max(scores, key=scores.get)
+        sev, qual, pair_constructs = _construct_qualifier(constructs, lo_id, hi_id,
+                                                          "medium" if spread < 60 else "high")
         found.append(Contradiction(
             sources=[lo_id, hi_id],
             kind="range",
             detail=(
                 f"spread {spread} ≥ {RANGE_SPREAD}: "
-                f"{lo_id}={scores[lo_id]} vs {hi_id}={scores[hi_id]}"
+                f"{lo_id}={scores[lo_id]} vs {hi_id}={scores[hi_id]}{qual}"
             ),
-            severity="medium" if spread < 60 else "high",
+            severity=sev,
+            constructs=pair_constructs,
         ))
 
     ids = list(scores.keys())
@@ -334,20 +381,42 @@ def detect_contradictions(
             if (sa <= POLARITY_LOW and sb >= POLARITY_HIGH) or (
                 sb <= POLARITY_LOW and sa >= POLARITY_HIGH
             ):
+                sev, qual, pair_constructs = _construct_qualifier(constructs, a, b, "high")
                 found.append(Contradiction(
                     sources=[a, b],
                     kind="polarity",
                     detail=(
-                        f"polarity clash: {a}={sa} (≤{POLARITY_LOW}) vs "
-                        f"{b}={sb} (≥{POLARITY_HIGH})"
-                        if sa <= POLARITY_LOW
-                        else (
-                            f"polarity clash: {b}={sb} (≤{POLARITY_LOW}) vs "
-                            f"{a}={sa} (≥{POLARITY_HIGH})"
-                        )
+                        (
+                            f"polarity clash: {a}={sa} (≤{POLARITY_LOW}) vs "
+                            f"{b}={sb} (≥{POLARITY_HIGH})"
+                            if sa <= POLARITY_LOW
+                            else (
+                                f"polarity clash: {b}={sb} (≤{POLARITY_LOW}) vs "
+                                f"{a}={sa} (≥{POLARITY_HIGH})"
+                            )
+                        ) + qual
                     ),
-                    severity="high",
+                    severity=sev,
+                    constructs=pair_constructs,
                 ))
+
+    # Composite-level warning: a wide spread across sources that measure
+    # different things means the *composite*, not any source, is the doubtful
+    # artefact. Only fires when constructs were actually declared.
+    declared = sorted({c for c in constructs.values() if c})
+    if len(declared) >= 2 and spread >= RANGE_SPREAD:
+        found.append(Contradiction(
+            sources=sorted(scores.keys()),
+            kind="construct_mismatch",
+            detail=(
+                "composite mixes " + str(len(declared)) + " distinct constructs ("
+                + ", ".join(declared)
+                + f"); spread {spread} may be definitional rather than factual, "
+                "so the weighted mean is not a like-for-like average"
+            ),
+            severity="medium",
+            constructs=declared,
+        ))
 
     # Hard flag: very high fraud-class risk vs another source still "safe"
     fraud_ids = set(fraud_source_ids) if fraud_source_ids is not None else _infer_fraud_sources(ok)
@@ -400,7 +469,10 @@ def build_report(
         audit.append(AuditEntry(
             step="adapt",
             source_id=o.source_id,
-            detail=f"status={o.status} note={o.note!r}",
+            detail=(
+                f"status={o.status} note={o.note!r}"
+                + (f" construct={o.construct}" if o.construct else "")
+            ),
         ))
         if o.status == "ok":
             audit.append(AuditEntry(
