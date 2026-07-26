@@ -1,7 +1,9 @@
 # Architecture — Agent Decision Confidence (meta-layer)
 
-Status: **design + interface sketch**. No production MCP server or live HTTP
-adapters in this release. The token-domain library in `src/normalize.py`
+Status: **reference implementation**. The meta-layer ships as
+`src/decision_confidence.py` and is exposed over MCP by `src/mcp_server.py`
+(stdio, one tool). Still **not** in this release: live HTTP adapters for real
+vendors, auth, multi-tenancy. The token-domain library in `src/normalize.py`
 remains the shipped, frozen public API (`score_token` / `TokenInputs`).
 
 ---
@@ -84,9 +86,14 @@ fields (`top10_pct`, `mint_authority`, …) are **not** required here.
 
 ### 3.1 Adapter protocol (sketch)
 
-```python
-# Sketch only — not shipped as a package module in Phase 1.
+Shipped shape: `decision_confidence.py` provides scale-specific normalizers
+(`observe_safety_score` / `observe_risk_score` / `observe_kyt_tier` /
+`observe_fraud_probability`) plus `observe_from_raw` for shape dispatch. An
+adapter is then a thin binding of one vendor id to one normalizer — see the
+three in `examples/decision_confidence_demo.py`. The protocol below is the
+interface a registry-based Phase 3 would formalise:
 
+```python
 from typing import Any, Dict, Optional, Protocol
 
 class RiskSourceAdapter(Protocol):
@@ -262,9 +269,10 @@ Serialization: plain `dict` / JSON, same spirit as `Verdict.to_dict()`.
 
 ---
 
-## 8. MCP surface (future only)
+## 8. MCP surface (shipped)
 
-Not implemented. Intended shape for a later phase:
+Implemented in `src/mcp_server.py` — stdio transport, one tool. Optional
+dependency: `pip install -e ".[mcp]"`. The core library stays dependency-free.
 
 ### Tool: `decision_confidence`
 
@@ -334,9 +342,15 @@ confidence, contradictions, audit).
 
 ## 11. Phase map
 
-| Phase | Deliverable |
-| --- | --- |
-| **Phase 1 (this)** | README reframe, this doc, `examples/decision_confidence_demo.py` (all logic in example) |
-| Phase 2+ | Optional `src/` module extraction, real adapters, MCP server, tests |
+| Phase | Deliverable | Status |
+| --- | --- | --- |
+| Phase 1 | README reframe, this doc, `examples/decision_confidence_demo.py` | done |
+| **Phase 2 (this)** | `src/decision_confidence.py` module, `src/mcp_server.py` (stdio, one tool), `tests/` regression suite | done |
+| Phase 3 | Real vendor adapters over HTTP, auth, multi-tenant isolation, calibration against a labelled dataset | not started |
 
 Token instance demos remain: `examples/pepe_caller_supplied.py`.
+
+**Phase 2 non-regression:** the module was extracted from the example without
+behaviour change — `python examples/decision_confidence_demo.py` produces
+byte-identical output before and after (verified by checksum), and
+`src/normalize.py` is untouched.

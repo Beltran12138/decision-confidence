@@ -30,9 +30,9 @@ their outputs** (caller-supplied) and adds three things:
 3. **Decision confidence + audit** — how much to trust the composite, and why
 
 Token multi-factor risk scoring is the **native instance** of the same
-methodology (see below). A full MCP server surface is planned; this repo
-already ships the library core and a local mock demo of the decision-confidence
-pipeline.
+methodology (see below). The decision-confidence layer ships as a library
+module and as an **MCP server** (stdio, one tool) so an agent can call it
+directly.
 
 ```
   [ Risk API A ] [ Risk API B ] [ Risk API C ]  ...  (caller fetches)
@@ -63,8 +63,12 @@ needs before it acts.
 | Surface | Status | Entry |
 | --- | --- | --- |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
-| **Decision-confidence (meta)** | Design + local mock | `docs/ARCHITECTURE.md`, `examples/decision_confidence_demo.py` |
-| **MCP server** | Future | Not implemented in this release |
+| **Decision-confidence (meta)** | Shipped | `build_report` / `observe_from_raw` in `src/decision_confidence.py` |
+| **MCP server** | Shipped (reference impl) | `decision_confidence` tool in `src/mcp_server.py` |
+| **Real vendor adapters over HTTP** | Not started | Phase 3 — see `docs/ARCHITECTURE.md` |
+
+Dependencies: the core library is **pure standard library**. Only the MCP
+server needs an extra (`pip install -e ".[mcp]"`).
 
 ---
 
@@ -218,12 +222,79 @@ conflicting sources.
 
 ```bash
 python examples/decision_confidence_demo.py
+python -m unittest discover tests
 ```
 
-Logic lives entirely in the example (stdlib only). A production MCP tool
-surface is **not** shipped yet; see Architecture for the intended tool sketch.
+The second case is the point of the whole layer: the composite alone reads
+`40 / moderate`, but one source calls it fraud while two call it safe — so
+`confidence` collapses to `low` and the disagreement is reported explicitly
+rather than being averaged away.
+
+### MCP server
+
+```bash
+pip install -e ".[mcp]"
+python src/mcp_server.py          # stdio; or: risk-normalize-mcp
+```
+
+One tool, `decision_confidence(subject, sources, weights?)`. Each entry in
+`sources` is `{"source_id": ..., "raw": <vendor payload as received>}`.
+Recognised payload shapes: `{"fraud_probability": 0..1}`, `{"tier": "LOW|MEDIUM|HIGH"}`,
+`{"score": 0..100, "scale": "safety_0_100"}` (flipped), `{"score": 0..100}`
+(already risk). It returns the full report — observations, composite, verdict,
+confidence, contradictions, audit.
+
+**The host keeps what the host should keep**: API keys, HTTP, rate limits,
+caching, PII policy. The tool is a pure transform of what it is given.
 
 ---
+
+## Why this layer should exist
+
+**The gap is structural, not a market-size claim.** Agents increasingly call
+several external risk sources — on-chain risk scores, fraud/scam prediction,
+KYT-style compliance tiers. Those sources disagree in scale and, often, in
+substance. Today an agent either trusts one vendor (silent failure when that
+vendor is wrong or down) or eyeballs raw JSON through an LLM (non-repeatable
+across runs). Neither leaves anything you can audit afterwards.
+
+No risk vendor will close this gap. A vendor's product is *its own* score; it
+has no incentive to ship "our competitor disagrees with us, and here is how
+much to trust the combination." A neutral layer that consumes several vendors
+and reports **disagreement and confidence** is structurally something the
+vendors themselves will not build.
+
+**Where this sits.** Below: the risk APIs — we consume them, we don't compete
+with them. Above: the agent that has to act. Between them sits the thing
+nobody owns — *how much should this agent trust what it just read, and can it
+show why afterwards.*
+
+**Monetization: candidate paths, none validated.**
+
+1. Open-source core plus a hosted audit/attestation service — the audit trail
+   is the part teams cannot casually self-host.
+2. Per-call MCP tool for agent runtimes that need decision provenance.
+3. Compliance-adjacent: decision audit trails as evidence for teams that must
+   justify automated actions.
+
+We are not claiming revenue, users, or validated willingness to pay. At this
+stage this is a **primitive**, and its first job is to be correct and reusable,
+not to bill.
+
+**What would prove this wrong** — stated here rather than left for a reviewer
+to find:
+
+- A major risk vendor ships native cross-vendor confidence and contradiction
+  reporting.
+- Agent frameworks absorb this as a built-in utility, leaving no room for a
+  separate layer.
+- In practice agents call exactly one risk source and never hit the
+  disagreement problem at all.
+
+**Why it fits one-person companies.** A solo builder cannot staff a
+vendor-evaluation desk. The organisations that can — funds, exchanges, large
+protocols — already have internal risk teams. Solo builders get the same
+disagreement problem with none of the headcount.
 
 ## Honest limitations
 
@@ -239,8 +310,9 @@ surface is **not** shipped yet; see Architecture for the intended tool sketch.
   The library performs **no** network I/O.
 - Thresholds and contradiction rules are **rough heuristics**, not calibrated
   against any labeled dataset.
-- The decision-confidence demo is a **local mock**, not a production MCP
-  server and not a live multi-vendor integration.
+- The MCP server is a **reference implementation** over caller-supplied
+  payloads. There are **no live vendor integrations** — no HTTP adapters, no
+  auth, no multi-tenant isolation. The demo vendors are fictional.
 - A general LLM with web access may see *more current* on-chain data than a
   sandboxed caller of this library. This project's edge is **repeatable,
   comparable verdicts and explicit uncertainty** — not data freshness.

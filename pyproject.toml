@@ -30,10 +30,13 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
+# Core stays dependency-free. The MCP server is opt-in.
+mcp = ["mcp>=1.28"]
 dev = ["pytest>=7"]
+
+[project.scripts]
+risk-normalize-mcp = "mcp_server:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-
-[tool.setuptools.packages.find]
-where = ["src"]
+py-modules = ["normalize", "decision_confidence", "mcp_server"]
