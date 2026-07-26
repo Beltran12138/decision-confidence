@@ -78,6 +78,28 @@ and inventing them here would be scope theatre. Reasoning in
 
 ---
 
+## Demo
+
+Two commands reproduce the whole argument in under a minute — no keys, no setup
+beyond Python ≥ 3.8:
+
+```bash
+# three real, key-free risk APIs, live
+python examples/live_multi_source.py 0xdAC17F958D2ee523a2206206994597C13D831ec7
+
+# same run from payloads captured 2026-07-26, if you would rather not hit the network
+python examples/live_multi_source.py --offline usdt
+```
+
+Read the output here: [what the real run actually shows](#what-the-real-run-actually-shows).
+Three sources, a 68-point disagreement where **neither source is wrong**, and one
+result the layer refuses to score rather than guessing at.
+
+> **Video walkthrough:** being recorded. The commands above are the same thing it
+> will show, and they run today.
+
+---
+
 ## Native instance: token risk-normalize
 
 The same methodology was first applied to **heterogeneous token-risk inputs**
