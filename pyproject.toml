@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "risk-normalize"
+name = "decision-confidence"
 version = "0.1.0"
 description = "Agent decision-confidence meta-layer: normalize multi-source risk signals (token instance + multi risk-API mock) onto one 0-100 basis with contradiction detection, confidence, and audit."
 readme = "README.md"
@@ -35,7 +35,7 @@ mcp = ["mcp>=1.28"]
 dev = ["pytest>=7"]
 
 [project.scripts]
-risk-normalize-mcp = "mcp_server:main"
+decision-confidence-mcp = "mcp_server:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

@@ -11,7 +11,7 @@ Run directly::
 
 or, once installed with the optional extra (``pip install -e ".[mcp]"``)::
 
-    risk-normalize-mcp
+    decision-confidence-mcp
 
 Requires the ``mcp`` package; the core library in ``decision_confidence.py``
 and ``normalize.py`` remains dependency-free.
@@ -38,7 +38,7 @@ except ImportError as exc:  # pragma: no cover - dependency guard
     ) from exc
 
 
-mcp = FastMCP("risk-normalize")
+mcp = FastMCP("decision-confidence")
 
 
 @mcp.tool()
@@ -68,23 +68,35 @@ def decision_confidence(
             or ``{"score": 0-100}`` (already risk). Unrecognised or malformed
             payloads are marked as such and lower confidence — they are never
             guessed at.
-        weights: Optional per-source weight keyed by ``source_id``. Sources
-            default to equal weight; a weight of 0 drops a source from the
-            composite.
+        weights: Optional per-source weight keyed by ``source_id``. Weights
+            apply *within* a construct; sources default to equal weight and a
+            weight of 0 drops a source.
 
     Returns:
-        A decision report: every observation with its normalized 0-100 risk
-        value (0 = safe, 100 = maximum risk), the weighted ``composite``, a
-        ``verdict`` band (low/moderate/high/extreme, or ``unknown`` when no
-        source was usable), a ``confidence`` label (high/medium/low) reflecting
-        evidence quality rather than probability of correctness, any
-        cross-source ``contradictions``, and an ``audit`` trail that makes the
-        result reconstructible without re-fetching.
+        A decision report. **Read ``constructs`` first** — it is one entry per
+        thing actually measured, each with the only average that compares like
+        with like, plus the within-construct ``spread`` and how many of its
+        sources were usable.
 
-        Each observation carries the ``construct`` it measures when the adapter
-        declares one. A wide spread between sources measuring *different*
-        constructs is reported as ``construct_mismatch`` rather than treated as
-        one of them being wrong.
+        ``composite`` is a single 0-100 risk value (0 = safe, 100 = maximum
+        risk) **only when every usable source measures the same construct**.
+        When they do not, ``composite`` is ``null`` and ``verdict`` is
+        ``not_comparable``: averaging a honeypot simulation with a contract-
+        authority scan is a category error, not a noisy estimate, and no
+        weighting fixes it. The old blended number is still reachable as
+        ``blended_composite_unsafe`` — the name is the warning.
+
+        Also returned: ``confidence`` (high/medium/low — evidence quality, not
+        probability of correctness; capped at medium when a construct has no
+        usable source at all, because ``unavailable`` is not ``safe``),
+        ``contradictions``, and an ``audit`` trail that makes the result
+        reconstructible without re-fetching.
+
+        ``contradictions`` of kind ``range`` and ``polarity`` are raised only
+        between sources sharing a construct — sources answering different
+        questions cannot contradict each other. The split itself appears once
+        as an ``info``-severity ``construct_mismatch``, which does **not**
+        lower confidence.
     """
     observations = []
     for entry in sources:

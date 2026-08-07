@@ -41,7 +41,7 @@ from adapters import observe_vendor  # noqa: E402
 from decision_confidence import DecisionReport, SourceObservation, build_report  # noqa: E402
 
 TIMEOUT = 20
-UA = "risk-normalize/0.1 (+https://github.com/Beltran12138/risk-normalize)"
+UA = "decision-confidence/0.2 (+https://github.com/Beltran12138/decision-confidence)"
 
 FIXTURES = {
     "pepe": ("0x6982508145454ce325ddbe47a25d4ec3d2311933", "pepe"),
@@ -115,8 +115,29 @@ def render(report: DecisionReport) -> None:
         score = "-" if o.normalized_0_100 is None else str(o.normalized_0_100)
         print(f"{o.source_id:<24}{score:>6}  {o.status:<12}{str(o.construct or '-'):<22}{o.note}")
     print("-" * 78)
-    print(f"composite : {report.composite}   verdict: {report.verdict}   "
-          f"confidence: {report.confidence}")
+
+    print(f"\n{'construct':<24}{'risk':>6}  {'verdict':<14}{'sources':<10}spread")
+    print("-" * 78)
+    for g in report.constructs:
+        score = "-" if g.score is None else str(g.score)
+        cover = f"{g.n_ok}/{g.n_ok + g.n_unusable}"
+        spread = f"{g.spread}" if g.n_ok >= 2 else ""
+        print(f"{g.construct:<24}{score:>6}  {g.verdict:<14}{cover:<10}{spread}")
+        if g.note:
+            print(f"{'':<24}{'':>6}  └─ {g.note}")
+    print("-" * 78)
+
+    if report.composite is None and report.verdict == "not_comparable":
+        # Stating the absence is the point. A reader who scrolls looking for
+        # "the number" should find a sentence explaining why there isn't one,
+        # not a blank field they will fill in with the blended value.
+        print("composite : none — these constructs measure different things.")
+        print(f"            (blended_composite_unsafe={report.blended_composite_unsafe} "
+              "exists only for callers who insist; it is a category error)")
+    else:
+        print(f"composite : {report.composite}   verdict: {report.verdict}")
+    print(f"confidence: {report.confidence}")
+
     if report.contradictions:
         print("\ncontradictions:")
         for c in report.contradictions:

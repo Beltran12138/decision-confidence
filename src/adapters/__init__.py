@@ -32,7 +32,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from decision_confidence import SourceObservation, observe_from_raw
 
-from adapters import dexscreener, goplus, honeypot_is
+from adapters import dexscreener, funding, goplus, honeypot_is
 
 __all__ = [
     "AdapterRegistry",
@@ -103,6 +103,10 @@ DEFAULT_REGISTRY.register(
 DEFAULT_REGISTRY.register(
     "dexscreener", dexscreener.parse,
     "DexScreener — pool liquidity depth",
+)
+DEFAULT_REGISTRY.register(
+    "funding", funding.parse,
+    "Perp funding rates — carry cost, one observation per venue",
 )
 
 

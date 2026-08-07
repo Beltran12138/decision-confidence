@@ -26,6 +26,7 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Set
 
 __all__ = [
     "SourceObservation",
+    "ConstructGroup",
     "Contradiction",
     "AuditEntry",
     "DecisionReport",
@@ -35,6 +36,7 @@ __all__ = [
     "observe_fraud_probability",
     "observe_from_raw",
     "composite_from_observations",
+    "group_by_construct",
     "detect_contradictions",
     "synthesize_confidence",
     "build_report",
@@ -72,10 +74,16 @@ HARD_FLAG_FRAUD_RISK = 70
 # What a source actually measures. Two vendors can disagree numerically while
 # both being right, because they are scoring different constructs — a
 # structural-authority scanner and a honeypot simulator answer different
-# questions. Declaring the construct lets the layer separate *definitional*
-# disagreement from *factual* disagreement instead of averaging both away.
+# questions. Averaging them is not a noisy estimate of one truth; it is a
+# category error, and no amount of extra sources fixes it.
 #
-# A source may leave this unset; behaviour is then exactly as before.
+# The construct is therefore *structural*, not an annotation: sources are
+# grouped by it, averaged only within a group, and a subject whose usable
+# sources span more than one construct has **no single composite** — see
+# :func:`group_by_construct` and :func:`build_report`.
+#
+# A source may leave this unset. All-undeclared input behaves exactly as it did
+# before constructs existed: one group, one composite.
 CONSTRUCTS = {
     "authority_control",    # what the deployer / owner can still do
     "tradability",          # can the position actually be exited (simulation)
@@ -83,7 +91,11 @@ CONSTRUCTS = {
     "holder_concentration",  # how concentrated is the holder base
     "compliance_exposure",  # sanctions / KYT style exposure
     "fraud_prediction",     # scam / fraud classifier output
+    "carry_cost",           # what holding the position costs (perp funding)
 }
+
+# Group label for sources that never declared a construct.
+UNDECLARED = "undeclared"
 
 
 # ---------------------------------------------------------------------------
@@ -102,11 +114,29 @@ class SourceObservation:
 
 
 @dataclass
+class ConstructGroup:
+    """All sources that measure the same thing, and the one average that is legal.
+
+    ``score`` is a weighted mean *within* the construct, so it compares
+    like with like. ``spread`` is disagreement between sources that were asked
+    the same question — the only kind that is genuinely factual.
+    """
+    construct: str
+    source_ids: List[str]
+    score: Optional[int]
+    verdict: str
+    spread: int
+    n_ok: int
+    n_unusable: int
+    note: str = ""
+
+
+@dataclass
 class Contradiction:
     sources: List[str]
     kind: str  # range | polarity | hard_flag | construct_mismatch
     detail: str
-    severity: str = "medium"
+    severity: str = "medium"  # high | medium | low | info
     constructs: Optional[List[str]] = None  # constructs involved, when declared
 
 
@@ -125,6 +155,8 @@ class DecisionReport:
     verdict: str
     confidence: str
     contradictions: List[Contradiction]
+    constructs: List[ConstructGroup] = field(default_factory=list)
+    blended_composite_unsafe: Optional[int] = None
     audit: List[AuditEntry] = field(default_factory=list)
     note: str = ""
 
@@ -278,7 +310,15 @@ def composite_from_observations(
     observations: Sequence[SourceObservation],
     weights: Optional[Dict[str, float]] = None,
 ) -> Optional[int]:
-    """Weighted mean over usable sources. Equal weight unless told otherwise."""
+    """Weighted mean over usable sources. Equal weight unless told otherwise.
+
+    **Construct-blind.** Averaging sources that measure different constructs is
+    a category error; this function will happily do it anyway. It is retained
+    because it is the legal average *within* one construct — which is how
+    :func:`group_by_construct` uses it — and because a caller that genuinely
+    wants the old blended number can still reach it via
+    ``DecisionReport.blended_composite_unsafe``.
+    """
     present = [o for o in observations if o.status == "ok" and o.normalized_0_100 is not None]
     if not present:
         return None
@@ -294,6 +334,54 @@ def composite_from_observations(
     if total_w <= 0:
         return None
     return _clamp(acc / total_w)
+
+
+def group_by_construct(
+    observations: Sequence[SourceObservation],
+    weights: Optional[Dict[str, float]] = None,
+) -> List[ConstructGroup]:
+    """Partition observations by what they actually measure.
+
+    One group per construct, each carrying the only average that compares like
+    with like, plus the within-group spread — disagreement between sources that
+    were asked the *same* question, which is the factual kind.
+
+    Sources with no declared construct fall into a single ``undeclared`` group,
+    so all-undeclared input yields exactly one group and the historic
+    single-composite behaviour is preserved.
+
+    Groups are ordered by descending score (unscoreable groups last) so the
+    sharpest finding reads first.
+    """
+    buckets: Dict[str, List[SourceObservation]] = {}
+    for o in observations:
+        buckets.setdefault(o.construct or UNDECLARED, []).append(o)
+
+    groups: List[ConstructGroup] = []
+    for construct, obs in buckets.items():
+        ok = [o for o in obs if o.status == "ok" and o.normalized_0_100 is not None]
+        score = composite_from_observations(ok, weights)
+        vals = [o.normalized_0_100 for o in ok]
+        spread = (max(vals) - min(vals)) if len(vals) >= 2 else 0
+        unusable = [o for o in obs if o not in ok]
+        note = ""
+        if unusable:
+            # `unavailable` is not `safe` — a group that lost every source is
+            # reported as unscoreable rather than silently dropped.
+            note = "; ".join(f"{o.source_id}: {o.status}" for o in unusable)
+        groups.append(ConstructGroup(
+            construct=construct,
+            source_ids=[o.source_id for o in obs],
+            score=score,
+            verdict=_band(score) if score is not None else "unknown",
+            spread=spread,
+            n_ok=len(ok),
+            n_unusable=len(unusable),
+            note=note,
+        ))
+
+    groups.sort(key=lambda g: (g.score is None, -(g.score or 0), g.construct))
+    return groups
 
 
 def _infer_fraud_sources(observations: Iterable[SourceObservation]) -> Set[str]:
@@ -312,41 +400,24 @@ def _infer_fraud_sources(observations: Iterable[SourceObservation]) -> Set[str]:
     return inferred
 
 
-def _construct_qualifier(
-    constructs: Dict[str, Optional[str]],
-    a: str,
-    b: str,
-    base_severity: str,
-):
-    """Downgrade a pairwise clash when the two sources measure different things.
-
-    Returns ``(severity, detail_suffix, constructs_involved)``. When either
-    construct is undeclared the pair is treated exactly as before — this keeps
-    construct tagging strictly opt-in.
-    """
-    ca, cb = constructs.get(a), constructs.get(b)
-    if not ca or not cb or ca == cb:
-        pair = [ca or cb] if (ca or cb) else None
-        return base_severity, "", pair
-    severity = "medium" if base_severity == "high" else base_severity
-    suffix = (
-        f" — but {a} measures {ca} and {b} measures {cb}; "
-        "the disagreement may be definitional, not factual"
-    )
-    return severity, suffix, [ca, cb]
-
-
 def detect_contradictions(
     observations: Sequence[SourceObservation],
     fraud_source_ids: Optional[Iterable[str]] = None,
 ) -> List[Contradiction]:
     """Cross-source disagreement, as a first-class output rather than a side effect.
 
-    Three families: ``range`` (spread across usable sources), ``polarity``
-    (one source safe while another is high risk), and ``hard_flag`` (a
-    fraud-class source firing while a peer still reads safe). Fewer than two
-    usable sources yields nothing — thin evidence is handled by confidence,
-    not by inventing a contradiction.
+    ``range`` and ``polarity`` are evaluated **within a construct only**. Two
+    sources answering different questions cannot contradict each other, so
+    comparing them produces a finding that is not merely weak but meaningless;
+    the split across constructs is reported by :func:`group_by_construct`
+    instead, and flagged here once as an informational
+    ``construct_mismatch``.
+
+    ``hard_flag`` deliberately crosses constructs: a fraud classifier firing
+    while any peer still reads safe is not excused by measuring something else.
+
+    Fewer than two usable sources *in a group* yields nothing for that group —
+    thin evidence is handled by confidence, not by inventing a contradiction.
     """
     ok = [o for o in observations if o.status == "ok" and o.normalized_0_100 is not None]
     found: List[Contradiction] = []
@@ -355,66 +426,70 @@ def detect_contradictions(
 
     scores = {o.source_id: o.normalized_0_100 for o in ok}
     constructs = {o.source_id: o.construct for o in ok}
-    vals = list(scores.values())
-    spread = max(vals) - min(vals)
-    if spread >= RANGE_SPREAD:
-        lo_id = min(scores, key=scores.get)
-        hi_id = max(scores, key=scores.get)
-        sev, qual, pair_constructs = _construct_qualifier(constructs, lo_id, hi_id,
-                                                          "medium" if spread < 60 else "high")
-        found.append(Contradiction(
-            sources=[lo_id, hi_id],
-            kind="range",
-            detail=(
-                f"spread {spread} ≥ {RANGE_SPREAD}: "
-                f"{lo_id}={scores[lo_id]} vs {hi_id}={scores[hi_id]}{qual}"
-            ),
-            severity=sev,
-            constructs=pair_constructs,
-        ))
 
-    ids = list(scores.keys())
-    for i in range(len(ids)):
-        for j in range(i + 1, len(ids)):
-            a, b = ids[i], ids[j]
-            sa, sb = scores[a], scores[b]
-            if (sa <= POLARITY_LOW and sb >= POLARITY_HIGH) or (
-                sb <= POLARITY_LOW and sa >= POLARITY_HIGH
-            ):
-                sev, qual, pair_constructs = _construct_qualifier(constructs, a, b, "high")
-                found.append(Contradiction(
-                    sources=[a, b],
-                    kind="polarity",
-                    detail=(
-                        (
-                            f"polarity clash: {a}={sa} (≤{POLARITY_LOW}) vs "
-                            f"{b}={sb} (≥{POLARITY_HIGH})"
-                            if sa <= POLARITY_LOW
-                            else (
-                                f"polarity clash: {b}={sb} (≤{POLARITY_LOW}) vs "
-                                f"{a}={sa} (≥{POLARITY_HIGH})"
-                            )
-                        ) + qual
-                    ),
-                    severity=sev,
-                    constructs=pair_constructs,
-                ))
+    by_construct: Dict[str, List[SourceObservation]] = {}
+    for o in ok:
+        by_construct.setdefault(o.construct or UNDECLARED, []).append(o)
 
-    # Composite-level warning: a wide spread across sources that measure
-    # different things means the *composite*, not any source, is the doubtful
-    # artefact. Only fires when constructs were actually declared.
+    for construct, group in by_construct.items():
+        if len(group) < 2:
+            continue
+        gscores = {o.source_id: o.normalized_0_100 for o in group}
+        label = None if construct == UNDECLARED else [construct]
+        gvals = list(gscores.values())
+        gspread = max(gvals) - min(gvals)
+        if gspread >= RANGE_SPREAD:
+            lo_id = min(gscores, key=gscores.get)
+            hi_id = max(gscores, key=gscores.get)
+            found.append(Contradiction(
+                sources=[lo_id, hi_id],
+                kind="range",
+                detail=(
+                    f"spread {gspread} ≥ {RANGE_SPREAD} within {construct}: "
+                    f"{lo_id}={gscores[lo_id]} vs {hi_id}={gscores[hi_id]} — "
+                    "same question, different answers"
+                ),
+                severity="medium" if gspread < 60 else "high",
+                constructs=label,
+            ))
+
+        ids = list(gscores.keys())
+        for i in range(len(ids)):
+            for j in range(i + 1, len(ids)):
+                a, b = ids[i], ids[j]
+                sa, sb = gscores[a], gscores[b]
+                if (sa <= POLARITY_LOW and sb >= POLARITY_HIGH) or (
+                    sb <= POLARITY_LOW and sa >= POLARITY_HIGH
+                ):
+                    lo, hi = (a, b) if sa <= POLARITY_LOW else (b, a)
+                    found.append(Contradiction(
+                        sources=[a, b],
+                        kind="polarity",
+                        detail=(
+                            f"polarity clash within {construct}: "
+                            f"{lo}={gscores[lo]} (≤{POLARITY_LOW}) vs "
+                            f"{hi}={gscores[hi]} (≥{POLARITY_HIGH})"
+                        ),
+                        severity="high",
+                        constructs=label,
+                    ))
+
+    # Structural, not a disagreement: several constructs are in play, so there
+    # is no single number to be confident *about*. Informational severity —
+    # this must not be scored as evidence quality, because sources measuring
+    # different things is the normal case, not a defect.
     declared = sorted({c for c in constructs.values() if c})
-    if len(declared) >= 2 and spread >= RANGE_SPREAD:
+    if len(declared) >= 2:
         found.append(Contradiction(
             sources=sorted(scores.keys()),
             kind="construct_mismatch",
             detail=(
-                "composite mixes " + str(len(declared)) + " distinct constructs ("
+                str(len(declared)) + " distinct constructs in play ("
                 + ", ".join(declared)
-                + f"); spread {spread} may be definitional rather than factual, "
-                "so the weighted mean is not a like-for-like average"
+                + "); these measure different things, so no single composite "
+                "is defined — read the per-construct scores instead"
             ),
-            severity="medium",
+            severity="info",
             constructs=declared,
         ))
 
@@ -445,12 +520,29 @@ def detect_contradictions(
 def synthesize_confidence(
     n_ok: int,
     contradictions: Sequence[Contradiction],
+    groups: Optional[Sequence[ConstructGroup]] = None,
 ) -> str:
-    """Evidence-quality label — NOT a probability that the verdict is correct."""
-    high_sev = any(c.severity == "high" for c in contradictions)
+    """Evidence-quality label — NOT a probability that the verdict is correct.
+
+    ``info``-severity entries are excluded: ``construct_mismatch`` says the
+    sources answered different questions, which is a fact about the subject,
+    not a weakness in the evidence. Four reliable sources covering four
+    constructs are strong evidence *and* have no single composite; conflating
+    those two things is the mistake this layer exists to avoid.
+
+    A construct with **no usable source at all** does cap confidence, because
+    that is not thinner evidence on a question — it is a question that was
+    never answered. ``unavailable`` is not ``safe``, and a report that reads
+    ``high`` while an entire construct is blind would launder the gap.
+    """
+    scored = [c for c in contradictions if c.severity != "info"]
+    high_sev = any(c.severity == "high" for c in scored)
     if high_sev or n_ok < 2:
         return "low"
-    if contradictions:
+    if scored:
+        return "medium"
+    blind = [g for g in (groups or []) if g.n_ok == 0]
+    if blind:
         return "medium"
     if n_ok >= 3:
         return "high"
@@ -481,10 +573,33 @@ def build_report(
                 detail=f"normalized_0_100={o.normalized_0_100}",
             ))
 
-    composite = composite_from_observations(observations, weights)
+    groups = group_by_construct(observations, weights)
+    for g in groups:
+        audit.append(AuditEntry(
+            step="group",
+            source_id=",".join(g.source_ids),
+            detail=(
+                f"construct={g.construct} score={g.score} spread={g.spread} "
+                f"n_ok={g.n_ok} n_unusable={g.n_unusable}"
+            ),
+        ))
+
+    # The blended number is computed either way, but it is only *returned* as
+    # the composite when every usable source shares one construct. Otherwise
+    # the composite is undefined and the caller must read the groups — a number
+    # that averages a honeypot simulation with an authority scan is not a noisy
+    # estimate of anything, and silently emitting one is the failure mode this
+    # layer exists to prevent.
+    blended = composite_from_observations(observations, weights)
+    scoreable = {g.construct for g in groups if g.n_ok > 0}
+    comparable = len(scoreable) <= 1
+    composite = blended if comparable else None
     audit.append(AuditEntry(
         step="composite",
-        detail=f"composite={composite}",
+        detail=(
+            f"composite={composite} comparable={comparable} "
+            f"constructs={sorted(scoreable)} blended_composite_unsafe={blended}"
+        ),
     ))
 
     contradictions = detect_contradictions(observations, fraud_source_ids)
@@ -496,16 +611,22 @@ def build_report(
         ))
 
     n_ok = sum(1 for o in observations if o.status == "ok" and o.normalized_0_100 is not None)
-    confidence = synthesize_confidence(n_ok, contradictions)
+    confidence = synthesize_confidence(n_ok, contradictions, groups)
+    blind = [g.construct for g in groups if g.n_ok == 0]
     audit.append(AuditEntry(
         step="confidence",
-        detail=f"n_ok={n_ok} confidence={confidence} n_contradictions={len(contradictions)}",
+        detail=(
+            f"n_ok={n_ok} confidence={confidence} "
+            f"n_contradictions={len(contradictions)} blind_constructs={blind}"
+        ),
     ))
 
-    if composite is None:
-        verdict = "unknown"
-    else:
+    if composite is not None:
         verdict = _band(composite)
+    elif not comparable:
+        verdict = "not_comparable"
+    else:
+        verdict = "unknown"
 
     return DecisionReport(
         subject=subject,
@@ -514,6 +635,8 @@ def build_report(
         verdict=verdict,
         confidence=confidence,
         contradictions=contradictions,
+        constructs=groups,
+        blended_composite_unsafe=blended,
         audit=audit,
         note=REPORT_NOTE,
     )

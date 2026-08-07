@@ -188,16 +188,45 @@ class TestConstructAwareContradictions(unittest.TestCase):
         self.assertEqual(polarity[0].severity, "high")
         self.assertEqual([c for c in found if c.kind == "construct_mismatch"], [])
 
-    def test_different_constructs_downgrade_and_explain(self) -> None:
+    def test_same_construct_range_clash_is_still_caught(self) -> None:
+        """Guard against the construct split silencing genuine disagreement.
+
+        Two liquidity sources 50 points apart are answering the *same*
+        question and giving different answers. If grouping ever swallows this,
+        the layer has stopped detecting the only disagreement that is real.
+        """
+        found = detect_contradictions([
+            self._obs("a", 20, "liquidity_depth"),
+            self._obs("b", 70, "liquidity_depth"),
+        ])
+        rng = [c for c in found if c.kind == "range"]
+        self.assertTrue(rng)
+        self.assertEqual(rng[0].constructs, ["liquidity_depth"])
+        self.assertEqual([c for c in found if c.kind == "construct_mismatch"], [])
+
+    def test_different_constructs_do_not_contradict(self) -> None:
+        """A tradable token whose issuer retains full authority is USDT.
+
+        ``tradability=5`` and ``authority_control=90`` are both true of it at
+        the same time, so treating the 85-point gap as a clash — at any
+        severity — asserts a conflict that does not exist. The split across
+        constructs is reported structurally instead.
+        """
         found = detect_contradictions([
             self._obs("a", 5, "tradability"),
             self._obs("b", 90, "authority_control"),
         ])
-        polarity = [c for c in found if c.kind == "polarity"]
-        self.assertTrue(polarity)
-        self.assertEqual(polarity[0].severity, "medium")
-        self.assertIn("definitional", polarity[0].detail)
-        self.assertTrue([c for c in found if c.kind == "construct_mismatch"])
+        self.assertEqual([c for c in found if c.kind in ("polarity", "range")], [])
+        mismatch = [c for c in found if c.kind == "construct_mismatch"]
+        self.assertTrue(mismatch)
+        self.assertEqual(mismatch[0].severity, "info")
+        self.assertEqual(mismatch[0].constructs, ["authority_control", "tradability"])
+
+    def test_construct_mismatch_does_not_lower_confidence(self) -> None:
+        """Measuring different things is the normal case, not weak evidence."""
+        from decision_confidence import Contradiction, synthesize_confidence
+        info_only = [Contradiction(["a", "b"], "construct_mismatch", "", "info", None)]
+        self.assertEqual(synthesize_confidence(3, info_only), "high")
 
     def test_undeclared_constructs_behave_exactly_as_before(self) -> None:
         found = detect_contradictions([self._obs("a", 5), self._obs("b", 90)])
@@ -216,20 +245,43 @@ class TestEndToEndOnRealPayloads(unittest.TestCase):
             observations.extend(observe_vendor(vendor, vendor, subject, payload))
         return build_report(subject, observations)
 
-    def test_agreeing_real_token(self) -> None:
+    def test_agreeing_real_token_has_no_composite_but_strong_evidence(self) -> None:
+        """Sources agreeing on 'low' still answered different questions.
+
+        Every construct reads low and nothing conflicts, so the evidence is
+        strong — but four low scores about four different things do not add up
+        to one low score, so there is no composite to report.
+        """
         report = self._report("pepe", PEPE)
-        self.assertEqual(report.verdict, "low")
-        self.assertEqual(report.contradictions, [])
+        self.assertEqual(report.verdict, "not_comparable")
+        self.assertIsNone(report.composite)
+        self.assertTrue(all(g.verdict == "low" for g in report.constructs if g.score is not None))
+        self.assertEqual([c for c in report.contradictions if c.severity != "info"], [])
         self.assertEqual(report.confidence, "high")
 
-    def test_disagreeing_real_token_is_flagged_not_averaged_away(self) -> None:
+    def test_disagreeing_real_token_is_not_averaged_at_all(self) -> None:
+        """The 68-point USDT gap must not survive as a single number.
+
+        goplus reads authority_control high and honeypot_is reads tradability
+        near zero; both are correct about USDT. The old behaviour blended them
+        into 38/moderate and appended a warning. Now the blend is not the
+        answer — it is reachable only under a name that says it is unsafe.
+        """
         report = self._report("usdt", USDT)
+        self.assertEqual(report.verdict, "not_comparable")
+        self.assertIsNone(report.composite)
+        self.assertIsNotNone(report.blended_composite_unsafe)
+
         kinds = {c.kind for c in report.contradictions}
-        self.assertIn("range", kinds)
         self.assertIn("construct_mismatch", kinds)
-        # One source could not be scored at all, and that is visible.
+        self.assertNotIn("range", kinds)
+
+        # `unavailable` is not `safe`: the blind construct is still listed, and
+        # it caps confidence rather than being dropped from the report.
         unavailable = [o for o in report.observations if o.status == "unavailable"]
         self.assertEqual(len(unavailable), 1)
+        blind = [g for g in report.constructs if g.n_ok == 0]
+        self.assertEqual([g.construct for g in blind], ["liquidity_depth"])
         self.assertEqual(report.confidence, "medium")
 
 
