@@ -139,7 +139,7 @@ one composite. Adopting the rule is opt-in per adapter.
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, no API keys | `src/adapters/` |
 | **MCP server** | Shipped (reference impl) | 2 tools in `src/mcp_server.py` |
-| **Calibration** | Harness shipped, **never run** | `tools/calibrate.py` — no labelled data in hand |
+| **Calibration** | Harness shipped **per construct**, never run on real labels | `tools/calibrate.py` — no labelled data in hand |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
 server needs an extra (`pip install -e ".[mcp]"`).
@@ -411,6 +411,16 @@ and its first job is to be correct and reusable, not to bill.
   fixing that; **it has never been run against real labels**, and running it on
   the bundled synthetic sample proves nothing about accuracy. This is the
   largest open weakness in the project.
+- **Most constructs cannot be honestly calibrated against rug-pull labels at
+  all.** Labels are assembled from outcomes that already happened; payloads are
+  captured today. A dead token trivially reads "cannot be sold" and "no
+  liquidity", so `tradability` and `liquidity_depth` will score near-perfectly
+  and the performance is pure label leakage. `authority_control` is the
+  exception — whether the deployer kept mint/pause rights is a property of the
+  contract and does not change when the project dies. `tools/calibrate.py`
+  grades every construct on this axis and refuses to present a leaked number
+  without the caveat attached. This is a judgement about which measurements
+  survive a post-mortem, not a measurement itself; argue with it in an issue.
 - **Caller-supplied only** — missing inputs are marked unknown, never guessed.
   The library performs **no** network I/O.
 - Token **snapshot table** is **dated and qualitative** — fast triage, not live

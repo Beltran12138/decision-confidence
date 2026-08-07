@@ -6,9 +6,17 @@ the README and it remains true. What has been missing is the *means* to fix it:
 a repeatable way to point the pipeline at labelled subjects and read off what
 each cut-off actually buys.
 
-This script is that means. It does **not** ship a calibrated model, and running
-it on the bundled sample proves nothing about real-world accuracy — the sample
-is synthetic and exists only to exercise the harness.
+**Calibration is per construct.** Sweeping a cut-off on the blended composite
+is exactly what this library argues against, and once constructs are declared
+there is usually no composite to sweep — a subject scored by GoPlus,
+honeypot.is and DexScreener spans three constructs and returns ``None``. So
+each construct is calibrated on its own scale, against the same labels, and
+reported separately. What that buys, beyond correctness, is the question a
+blended sweep cannot ask: **which construct actually carries the signal?**
+
+This script does **not** ship a calibrated model, and running it on the bundled
+sample proves nothing about real-world accuracy — the sample is synthetic and
+exists only to exercise the harness.
 
 Input format — one JSON object per line::
 
@@ -36,10 +44,10 @@ differ, and each needs payloads re-captured per subject):
 * **Solana rug-pull benchmark** (arXiv 2603.24625) — 117 manually verified
   tokens (Benchmark-117) and 76,469 pipeline-labelled candidates.
 
-A caveat worth stating before anyone reports numbers from this: those label sets
-are assembled *after* the fact from on-chain outcomes, so they are biased toward
-scams that completed. Calibrating against them tunes for post-mortem
-recognition, which is not the same problem as pre-commitment warning.
+READ ``LEAKAGE`` BELOW BEFORE REPORTING ANY NUMBER FROM THIS SCRIPT. Those
+label sets are assembled *after* the fact from on-chain outcomes, and payloads
+captured today describe a token that has already died. Most constructs are
+contaminated by that; one is not.
 """
 
 from __future__ import annotations
@@ -55,6 +63,40 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 from adapters import observe_vendor  # noqa: E402
 from decision_confidence import build_report  # noqa: E402
+
+# ---------------------------------------------------------------------------
+# Temporal leakage, per construct — the thing that decides which of these
+# numbers may be quoted.
+#
+# Labels come from outcomes that already happened. Payloads are captured now.
+# For a construct whose value *changes when a project dies*, a today-capture of
+# a 2023 rug is not a measurement of what a scanner would have seen before the
+# rug — it is a measurement of the corpse. Such a construct will look almost
+# perfectly predictive, and the performance will be entirely label leakage.
+#
+# `authority_control` is the exception that makes the exercise worth running:
+# whether the deployer retained mint/pause/blacklist rights is a property of
+# the contract, and a dead project's contract still reports what it always
+# reported. Judgement, not measurement — stated so it can be argued with.
+# ---------------------------------------------------------------------------
+
+LEAKAGE = {
+    "authority_control": ("clean",
+                          "contract rights do not change when a project dies"),
+    "holder_concentration": ("partial",
+                             "holder distribution shifts post-mortem, direction varies"),
+    "tradability": ("severe",
+                    "a dead token cannot be sold — every positive label trivially matches"),
+    "liquidity_depth": ("severe",
+                        "pools are drained by the rug itself; measuring the aftermath"),
+    "carry_cost": ("severe",
+                   "a dead token has no perp market to quote"),
+    "fraud_prediction": ("severe",
+                         "vendors backfill known scams into their own classifiers"),
+    "compliance_exposure": ("severe",
+                            "sanctions/KYT lists are updated after incidents"),
+}
+LEAKAGE_MARK = {"clean": "  ", "partial": " ~", "severe": " !"}
 
 
 def load_rows(path: str) -> List[Dict[str, Any]]:
@@ -74,10 +116,18 @@ def load_rows(path: str) -> List[Dict[str, Any]]:
     return rows
 
 
-def score_rows(rows: List[Dict[str, Any]]) -> Tuple[List[Tuple[Optional[int], int]], Dict[str, Dict[str, int]]]:
-    """Returns ``([(composite, label)], per-source status counts)``."""
-    scored: List[Tuple[Optional[int], int]] = []
+def score_rows(rows: List[Dict[str, Any]]):
+    """Returns ``(per_construct, per_subject, status_counts)``.
+
+    ``per_construct`` maps a construct to ``[(score, label)]`` — the pairs that
+    can legitimately be swept, because within a construct the scale means one
+    thing. ``per_subject`` keeps every subject's construct→score map so that
+    combination rules can be measured without re-running the pipeline.
+    """
+    per_construct: Dict[str, List[Tuple[int, int]]] = {}
+    per_subject: List[Tuple[Dict[str, int], int]] = []
     status_counts: Dict[str, Dict[str, int]] = {}
+
     for row in rows:
         observations = []
         for entry in row.get("sources", []):
@@ -87,21 +137,38 @@ def score_rows(rows: List[Dict[str, Any]]) -> Tuple[List[Tuple[Optional[int], in
                 row["subject"], entry.get("raw") or {},
             ))
         report = build_report(row["subject"], observations)
-        scored.append((report.composite, int(row["label"])))
+        label = int(row["label"])
+
+        scores: Dict[str, int] = {}
+        for g in report.constructs:
+            if g.score is None:
+                continue
+            scores[g.construct] = g.score
+            per_construct.setdefault(g.construct, []).append((g.score, label))
+        per_subject.append((scores, label))
+
         for o in report.observations:
             bucket = status_counts.setdefault(o.source_id, {})
             bucket[o.status] = bucket.get(o.status, 0) + 1
-    return scored, status_counts
+
+    return per_construct, per_subject, status_counts
 
 
-def confusion(scored, threshold: int) -> Tuple[int, int, int, int]:
+def _ratio(num: int, den: int) -> float:
+    return num / den if den else 0.0
+
+
+def _prf(tp: int, fp: int, fn: int) -> Tuple[float, float, float]:
+    precision = _ratio(tp, tp + fp)
+    recall = _ratio(tp, tp + fn)
+    f1 = _ratio(2 * precision * recall, precision + recall) if (precision + recall) else 0.0
+    return precision, recall, f1
+
+
+def confusion(pairs: List[Tuple[int, int]], threshold: int) -> Tuple[int, int, int, int]:
     tp = fp = tn = fn = 0
-    for composite, label in scored:
-        if composite is None:
-            # Unscoreable is not a prediction. Counted separately, never
-            # silently folded into "predicted safe".
-            continue
-        predicted_bad = composite >= threshold
+    for score, label in pairs:
+        predicted_bad = score >= threshold
         if predicted_bad and label == 1:
             tp += 1
         elif predicted_bad and label == 0:
@@ -113,51 +180,100 @@ def confusion(scored, threshold: int) -> Tuple[int, int, int, int]:
     return tp, fp, tn, fn
 
 
-def _ratio(num: int, den: int) -> float:
-    return num / den if den else 0.0
-
-
-def sweep(scored, step: int) -> None:
-    unscoreable = sum(1 for c, _ in scored if c is None)
-    usable = len(scored) - unscoreable
-    print(f"subjects: {len(scored)}  scoreable: {usable}  unscoreable: {unscoreable}")
-    if not usable:
-        print("nothing to sweep — every subject was unscoreable")
-        return
+def sweep_construct(construct: str, pairs: List[Tuple[int, int]], step: int,
+                    n_subjects: int) -> Optional[Tuple[float, int]]:
+    grade, why = LEAKAGE.get(construct, ("unknown", "no leakage assessment for this construct"))
+    n_bad = sum(1 for _, lab in pairs if lab == 1)
     print()
-    print(f"{'cut':>4} {'TP':>4} {'FP':>4} {'TN':>4} {'FN':>4} "
+    print(f"### {construct}   [leakage: {grade}] — {why}")
+    print(f"    coverage {len(pairs)}/{n_subjects} subjects "
+          f"({_ratio(len(pairs), n_subjects):.0%})   positives {n_bad}")
+    if len(pairs) < 2 or n_bad == 0 or n_bad == len(pairs):
+        print("    not sweepable — needs both labels present in the covered subset")
+        return None
+
+    print(f"    {'cut':>4} {'TP':>4} {'FP':>4} {'TN':>4} {'FN':>4} "
           f"{'precision':>10} {'recall':>8} {'F1':>7}")
-    print("-" * 56)
-    best = (0.0, None)
+    best = (0.0, 0)
     for threshold in range(0, 101, step):
-        tp, fp, tn, fn = confusion(scored, threshold)
-        precision = _ratio(tp, tp + fp)
-        recall = _ratio(tp, tp + fn)
-        f1 = _ratio(2 * precision * recall, precision + recall) if (precision + recall) else 0.0
-        print(f"{threshold:>4} {tp:>4} {fp:>4} {tn:>4} {fn:>4} "
+        tp, fp, tn, fn = confusion(pairs, threshold)
+        precision, recall, f1 = _prf(tp, fp, fn)
+        print(f"    {threshold:>4} {tp:>4} {fp:>4} {tn:>4} {fn:>4} "
               f"{precision:>10.3f} {recall:>8.3f} {f1:>7.3f}")
         if f1 > best[0]:
             best = (f1, threshold)
-    print("-" * 56)
-    if best[1] is not None:
-        print(f"best F1 {best[0]:.3f} at composite >= {best[1]}")
+    print(f"    best F1 {best[0]:.3f} at {construct} >= {best[1]}")
+    return best
+
+
+def sweep_any_construct(per_subject, step: int) -> None:
+    """The combination rule the construct split implies: OR, not average.
+
+    'These are not comparable' does not mean 'no decision is possible'. It
+    means the decision is a logical combination of per-construct cut-offs
+    rather than a mean. This measures the simplest such rule — flag a subject
+    when *any* construct clears its cut-off — as a baseline for whatever
+    replaces it.
+    """
     print()
-    print("Read this as a diagnostic, not a verdict. A single cut-off on the "
-          "composite\nignores confidence and contradictions, which is exactly "
-          "what the layer argues\nagainst — it is here because it is the "
-          "conventional first thing to measure.")
+    print("### combination rule: flag when ANY construct >= cut")
+    print("    (the split forbids averaging; it does not forbid deciding)")
+    print(f"    {'cut':>4} {'TP':>4} {'FP':>4} {'TN':>4} {'FN':>4} "
+          f"{'precision':>10} {'recall':>8} {'F1':>7}")
+    best = (0.0, 0)
+    for threshold in range(0, 101, step):
+        tp = fp = tn = fn = 0
+        for scores, label in per_subject:
+            if not scores:
+                continue
+            predicted_bad = any(v >= threshold for v in scores.values())
+            if predicted_bad and label == 1:
+                tp += 1
+            elif predicted_bad and label == 0:
+                fp += 1
+            elif not predicted_bad and label == 1:
+                fn += 1
+            else:
+                tn += 1
+        precision, recall, f1 = _prf(tp, fp, fn)
+        print(f"    {threshold:>4} {tp:>4} {fp:>4} {tn:>4} {fn:>4} "
+              f"{precision:>10.3f} {recall:>8.3f} {f1:>7.3f}")
+        if f1 > best[0]:
+            best = (f1, threshold)
+    print(f"    best F1 {best[0]:.3f} at any-construct >= {best[1]}")
+
+
+def rank(results: Dict[str, Optional[Tuple[float, int]]]) -> None:
+    scored = {k: v for k, v in results.items() if v}
+    if not scored:
+        return
+    print()
+    print("### which construct carries the signal")
+    print("    (a question a blended sweep cannot ask)")
+    print(f"    {'construct':<24}{'best F1':>9}{'at cut':>8}  leakage")
+    for construct, (f1, cut) in sorted(scored.items(), key=lambda kv: -kv[1][0]):
+        grade = LEAKAGE.get(construct, ("unknown", ""))[0]
+        print(f"    {construct:<24}{f1:>9.3f}{cut:>8}{LEAKAGE_MARK.get(grade, '  ')} {grade}")
+    clean = [c for c in scored if LEAKAGE.get(c, ("unknown",))[0] == "clean"]
+    print()
+    if clean:
+        print(f"    Only {', '.join(clean)} is quotable without a leakage caveat.")
+    else:
+        print("    No leakage-clean construct in this run — nothing here is quotable")
+        print("    as predictive performance.")
+    print("    ! severe  ~ partial   — see LEAKAGE in this file for the reasoning.")
 
 
 def report_coverage(status_counts: Dict[str, Dict[str, int]]) -> None:
     if not status_counts:
         return
-    print("\nper-source status counts (how often each source was usable at all):")
+    print("\n### per-source status counts (how often each source was usable at all)")
     for source_id in sorted(status_counts):
         counts = status_counts[source_id]
         total = sum(counts.values())
         parts = ", ".join(f"{k}={v}" for k, v in sorted(counts.items()))
         ok_rate = _ratio(counts.get("ok", 0), total)
-        print(f"  {source_id:<26} ok-rate {ok_rate:>6.1%}   {parts}")
+        print(f"    {source_id:<26} ok-rate {ok_rate:>6.1%}   {parts}")
 
 
 def main(argv: List[str]) -> int:
@@ -167,9 +283,25 @@ def main(argv: List[str]) -> int:
     args = ap.parse_args(argv)
 
     rows = load_rows(args.dataset)
-    scored, status_counts = score_rows(rows)
-    sweep(scored, max(1, args.step))
+    per_construct, per_subject, status_counts = score_rows(rows)
+    step = max(1, args.step)
+
+    n_bad = sum(1 for _, lab in per_subject if lab == 1)
+    print(f"subjects: {len(per_subject)}  positives: {n_bad}  "
+          f"constructs observed: {len(per_construct)}")
+
+    results = {
+        construct: sweep_construct(construct, pairs, step, len(per_subject))
+        for construct, pairs in sorted(per_construct.items())
+    }
+    sweep_any_construct(per_subject, step)
+    rank(results)
     report_coverage(status_counts)
+
+    print()
+    print("Read this as a diagnostic, not a verdict. Thresholds tuned here are "
+          "tuned for\npost-mortem recognition, which is not the same problem as "
+          "pre-commitment warning.")
     return 0
 
 
