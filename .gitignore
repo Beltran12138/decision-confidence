@@ -32,3 +32,8 @@ Thumbs.db
 .env.*
 *.key
 *.pem
+
+# Calibration working data — third-party datasets and captured vendor payloads.
+# Licences differ per dataset and captures are large and perishable; the repo
+# ships the harness, not the corpus.
+.data/

@@ -216,8 +216,9 @@ No API keys for any of them. Adapters are pure functions of `(subject, raw)` —
 | [DexScreener](https://docs.dexscreener.com/api/reference) | `liquidity_depth` | no |
 | Perp funding (any source) | `carry_cost` — **one observation per venue** | no |
 
-`examples/live_multi_source.py` is the **only** file in this repo that touches
-the network. Real captures from 2026-07-26 are frozen in `tests/fixtures/`, so
+`examples/live_multi_source.py` is the only file in the library or its examples
+that touches the network (`tools/capture_payloads.py` also does, but it is
+calibration tooling, not part of the package). Real captures from 2026-07-26 are frozen in `tests/fixtures/`, so
 the tests and the `--offline` walkthrough never depend on third-party services
 staying up.
 
