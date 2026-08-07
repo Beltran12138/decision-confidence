@@ -36,16 +36,16 @@ def fx(name: str):
 
 
 class TestGoPlusAdapter(unittest.TestCase):
-    def test_one_payload_yields_two_constructs(self) -> None:
+    def test_one_payload_yields_three_constructs(self) -> None:
         obs = goplus.parse(PEPE, fx("goplus_pepe"))
-        self.assertEqual(len(obs), 2)
+        self.assertEqual(len(obs), 3)
         self.assertEqual(
             [o.construct for o in obs],
-            ["authority_control", "holder_concentration"],
+            ["authority_control", "holder_concentration", "tradability"],
         )
 
     def test_renounced_owner_is_discounted_not_ignored(self) -> None:
-        authority, _ = goplus.parse(PEPE, fx("goplus_pepe"))
+        authority, _, _ = goplus.parse(PEPE, fx("goplus_pepe"))
         self.assertEqual(authority.status, "ok")
         self.assertIn("owner_renounced", authority.note)
         self.assertLess(authority.normalized_0_100, 30)
@@ -54,22 +54,46 @@ class TestGoPlusAdapter(unittest.TestCase):
         # USDT can mint, pause, blacklist and change balances. That is high
         # authority risk — but it is not a honeypot, and the score must keep
         # those two apart. Additive penalties would have saturated at 100.
-        authority, _ = goplus.parse(USDT, fx("goplus_usdt"))
+        authority, _, _ = goplus.parse(USDT, fx("goplus_usdt"))
         self.assertGreaterEqual(authority.normalized_0_100, 55)
         self.assertLessEqual(authority.normalized_0_100, goplus.AUTHORITY_SOFT_CEILING)
         self.assertLess(authority.normalized_0_100, 100)
         for flag in ("is_mintable", "transfer_pausable", "is_blacklisted"):
             self.assertIn(flag, authority.note)
 
-    def test_honeypot_flag_is_a_hard_fail(self) -> None:
+    def test_honeypot_flag_is_a_tradability_verdict_not_an_authority_one(self) -> None:
+        """A honeypot verdict comes from simulating a sell, not from reading rights.
+
+        It must not raise `authority_control`: an open-source contract whose
+        owner renounced can still be a honeypot, and conflating the two makes
+        the one construct that survives a post-mortem uninterpretable.
+        """
         payload = {"code": "1", "result": {PEPE: {"is_honeypot": "1", "is_open_source": "1"}}}
-        authority, _ = goplus.parse(PEPE, payload)
-        self.assertEqual(authority.normalized_0_100, 100)
-        self.assertIn("hard fail", authority.note)
+        authority, _, trade = goplus.parse(PEPE, payload)
+        self.assertEqual(trade.construct, "tradability")
+        self.assertEqual(trade.normalized_0_100, 100)
+        self.assertIn("hard fail", trade.note)
+        self.assertLess(authority.normalized_0_100, 100)
+        self.assertNotIn("honeypot", authority.note)
+
+    def test_goplus_and_honeypot_is_land_in_one_comparable_group(self) -> None:
+        """Two vendors, same question — so a gap between them is factual.
+
+        Before the split GoPlus's simulation was filed under authority_control,
+        which meant the engine could never compare it with honeypot.is at all.
+        """
+        obs = goplus.parse(PEPE, fx("goplus_pepe")) + honeypot_is.parse(PEPE, fx("honeypot_is_pepe"))
+        report = build_report(PEPE, obs)
+        trade = [g for g in report.constructs if g.construct == "tradability"]
+        self.assertEqual(len(trade), 1)
+        self.assertEqual(trade[0].n_ok, 2)
+        self.assertEqual(
+            sorted(trade[0].source_ids), ["goplus:tradability", "honeypot_is"],
+        )
 
     def test_absent_flags_are_unknown_not_safe(self) -> None:
         payload = {"code": "1", "result": {PEPE: {"is_mintable": "1"}}}
-        authority, _ = goplus.parse(PEPE, payload)
+        authority, _, _ = goplus.parse(PEPE, payload)
         self.assertIn("absent from payload", authority.note)
         self.assertIn("not safe", authority.note)
 
@@ -85,7 +109,7 @@ class TestGoPlusAdapter(unittest.TestCase):
         self.assertEqual(obs[0].status, "unavailable")
 
     def test_concentration_reads_top_holder(self) -> None:
-        _, conc = goplus.parse(USDT, fx("goplus_usdt"))
+        _, conc, _ = goplus.parse(USDT, fx("goplus_usdt"))
         self.assertEqual(conc.status, "ok")
         self.assertIn("top-1 holder 19.30%", conc.note)
 
@@ -156,7 +180,7 @@ class TestDexScreenerAdapter(unittest.TestCase):
 class TestRegistry(unittest.TestCase):
     def test_known_vendor_dispatches_to_its_adapter(self) -> None:
         obs = observe_vendor("goplus", "goplus", PEPE, fx("goplus_pepe"))
-        self.assertEqual(len(obs), 2)
+        self.assertEqual(len(obs), 3)
 
     def test_unknown_vendor_falls_back_to_shape_sniffing_and_says_so(self) -> None:
         obs, = observe_vendor("some_vendor", "sv", "SUBJ", {"score": 40})

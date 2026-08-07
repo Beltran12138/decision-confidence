@@ -94,7 +94,7 @@ class AdapterRegistry:
 DEFAULT_REGISTRY = AdapterRegistry()
 DEFAULT_REGISTRY.register(
     "goplus", goplus.parse,
-    "GoPlus Token Security — contract authority flags + holder concentration",
+    "GoPlus Token Security — authority flags, holder concentration, buy/sell simulation",
 )
 DEFAULT_REGISTRY.register(
     "honeypot_is", honeypot_is.parse,

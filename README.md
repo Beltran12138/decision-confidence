@@ -28,9 +28,9 @@ real vendor payloads, captured 2026-07-26
 construct               risk  verdict       sources  spread
 authority_control         69  high          1/1
 holder_concentration      45  moderate      1/1
-tradability                1  low           1/1
+tradability                8  low           2/2      14
 liquidity_depth            -  unknown       0/1
-composite : none  (blended_composite_unsafe=38 — a category error, exposed under a name that says so)
+composite : none  (blended_composite_unsafe=32 — a category error, exposed under a name that says so)
 confidence: medium
 
 CASE B — factual disagreement (one construct, many venues)
@@ -91,7 +91,7 @@ number between 0 and 100 and still be answering six different questions.
 When they are, **averaging them is not a noisy estimate of one truth — it is a
 category error**, and no amount of extra sources or cleverer weighting fixes
 it. Ethereum USDT is the clean case: its issuer genuinely can mint, pause and
-blacklist, and it genuinely trades fine. `69` and `1` are both correct. `38` is
+blacklist, and it genuinely trades fine. `69` and `1` are both correct. `32` is
 not a compromise between them; it is a number about nothing.
 
 So the rule:
@@ -159,21 +159,23 @@ Ethereum USDT, three real key-free vendors, replayed from captures:
 source                    risk  status      construct
 goplus                      69  ok          authority_control     mint, pause, blacklist, balance-change
 goplus:concentration        45  ok          holder_concentration  top-1 holder 19.30%
-honeypot_is                  1  ok          tradability           buy and sell both simulate fine
+goplus:tradability          15  ok          tradability           clean on is_honeypot, cannot_buy;
+                                                                  cannot_sell_all absent — unknown, not safe
+honeypot_is                  1  ok          tradability           summary.riskLevel=1
 dexscreener                  -  unavailable liquidity_depth       no pairs on chain 'ethereum'
 
 construct               risk  verdict       sources  spread
 authority_control         69  high          1/1
 holder_concentration      45  moderate      1/1
-tradability                1  low           1/1
+tradability                8  low           2/2      14
 liquidity_depth            -  unknown       0/1   └─ dexscreener: unavailable
 
 composite : none — these constructs measure different things.
-            (blended_composite_unsafe=38 exists only for callers who insist)
+            (blended_composite_unsafe=32 exists only for callers who insist)
 confidence: medium
 ```
 
-Three things in that output are the whole argument:
+Four things in that output are the whole argument:
 
 1. **The sources differ by 68 points and neither is wrong.** USDT genuinely can
    be frozen and minted by its issuer, and it genuinely trades fine. A blended
@@ -185,15 +187,20 @@ Three things in that output are the whole argument:
    `pairs[0]` — or even `max(liquidity)` — reports six figures of liquidity for
    the largest stablecoin in existence. The adapter refuses to guess, the blind
    construct stays in the table, and it caps confidence.
-3. **Confidence is about evidence, not about the verdict.** Four reliable
-   sources covering four constructs are *strong* evidence and *still* have no
-   single composite. Conflating those two things is the mistake this layer
-   exists to avoid, so `construct_mismatch` is `info` severity and does not
-   lower confidence — only the blind construct does.
+3. **Two vendors landed in the same group, and that is the point.** GoPlus and
+   honeypot.is both simulate a buy and a sell, so they are comparable and the
+   engine compares them: one group, `2/2` sources, spread 14. Here they agree.
+   When they do not, that gap is a `range` contradiction — a real one, unlike
+   the 68-point gap above.
+4. **Confidence is about evidence, not about the verdict.** Reliable sources
+   covering four constructs are *strong* evidence and *still* have no single
+   composite. Conflating those two things is the mistake this layer exists to
+   avoid, so `construct_mismatch` is `info` severity and does not lower
+   confidence — only the blind construct does.
 
-None of this says USDT is unsafe. It says three sources answered three
-different questions, and averaging them into one number is the failure this
-layer exists to prevent.
+None of this says USDT is unsafe. It says the sources answered four different
+questions, and averaging them into one number is the failure this layer exists
+to prevent.
 
 ---
 
@@ -204,7 +211,7 @@ No API keys for any of them. Adapters are pure functions of `(subject, raw)` —
 
 | Vendor | Construct(s) | Key needed |
 | --- | --- | --- |
-| [GoPlus Token Security](https://docs.gopluslabs.io/reference/api-overview) | `authority_control`, `holder_concentration` | no |
+| [GoPlus Token Security](https://docs.gopluslabs.io/reference/api-overview) | `authority_control`, `holder_concentration`, `tradability` | no |
 | [honeypot.is v2](https://honeypot.is/) | `tradability` | no |
 | [DexScreener](https://docs.dexscreener.com/api/reference) | `liquidity_depth` | no |
 | Perp funding (any source) | `carry_cost` — **one observation per venue** | no |
@@ -428,8 +435,10 @@ and its first job is to be correct and reusable, not to bill.
 - The shipped EVM adapters cover **EVM tokens only**. Solana, addresses as
   subjects, and compliance/KYT vendors go through the generic fallback and
   therefore carry no construct.
-- GoPlus contributes two of the four default observations, so it carries double
-  weight *within* its constructs unless the caller passes `weights`.
+- GoPlus contributes three of the five default observations, so it carries
+  extra weight *within* its constructs unless the caller passes `weights`. It is
+  also the only source in two of them, so `authority_control` and
+  `holder_concentration` currently have no second opinion at all.
 - The MCP server is a **reference implementation**. No auth, no multi-tenant
   isolation, no HTTP inside the library — deliberately.
 - Fixtures are **snapshots**. Vendors change scoring and pair lists churn; a

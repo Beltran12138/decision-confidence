@@ -78,6 +78,14 @@ from decision_confidence import build_report  # noqa: E402
 # whether the deployer retained mint/pause/blacklist rights is a property of
 # the contract, and a dead project's contract still reports what it always
 # reported. Judgement, not measurement — stated so it can be argued with.
+#
+# That exception only became true on 2026-08-07. Until then the GoPlus adapter
+# emitted `is_honeypot` / `cannot_sell_all` / `cannot_buy` — three simulation
+# verdicts, scored 100/95/90 — under `authority_control`. Those are exactly the
+# fields a vendor backfills once a token is known dead, so the one construct
+# that survives a post-mortem was being contaminated by the three that do not,
+# at top-of-scale weight. They now form a separate `tradability` observation.
+# Applying the construct rule to this library's own adapter is what found it.
 # ---------------------------------------------------------------------------
 
 LEAKAGE = {

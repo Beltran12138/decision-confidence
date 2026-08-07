@@ -48,12 +48,31 @@ FLAG_PENALTIES: Dict[str, int] = {
     "external_call": 10,
 }
 
-# Flags that end the discussion on their own.
+# Simulation verdicts. These end the discussion — but about *tradability*, not
+# about authority. GoPlus reaches them by simulating a buy and a sell, which is
+# the same question honeypot.is answers, so they belong in the same construct
+# and must be comparable with it. They were emitted under `authority_control`
+# until 2026-08-07; that mislabelled a tradability measurement as a structural
+# one, and it mattered twice:
+#
+#   * calibration — these are the fields a vendor backfills once a token is
+#     known dead, so leaving them in `authority_control` contaminated the one
+#     construct whose value does not change post-mortem;
+#   * detection — two vendors answering the same question were filed under
+#     different constructs and could therefore never be compared, which is
+#     precisely the failure this library exists to catch.
 HARD_FAIL: Dict[str, Tuple[int, str]] = {
     "is_honeypot": (100, "honeypot detected"),
     "cannot_sell_all": (95, "cannot sell entire balance"),
     "cannot_buy": (90, "cannot buy"),
 }
+
+# A clean simulation is evidence of tradability, not proof of it — a token can
+# pass today and be pausable tomorrow, which is what `authority_control` is
+# for. The partial value carries the uncertainty of a payload that answered
+# only some of the three checks.
+TRADABILITY_CLEAN = 5
+TRADABILITY_PARTIAL = 15
 
 NOT_OPEN_SOURCE_PENALTY = 30
 RENOUNCED_OWNER_DISCOUNT = 20
@@ -117,15 +136,47 @@ def _unwrap(subject: str, raw: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]]
     return None, "address not present in multi-address result"
 
 
-def _authority(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> SourceObservation:
+def _tradability(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> SourceObservation:
+    """GoPlus's buy/sell simulation, filed under the construct it measures.
+
+    Lands in the same group as honeypot.is, so when the two disagree the engine
+    reports a `range` contradiction between two vendors that were asked the
+    same question — a factual disagreement, not a definitional one.
+    """
+    source_id = SOURCE_ID + ":tradability"
+    states = {key: _flag(token, key) for key in HARD_FAIL}
     for key, (score, why) in HARD_FAIL.items():
-        if _flag(token, key) is True:
+        if states[key] is True:
             return SourceObservation(
-                SOURCE_ID, subject, raw, score, "ok",
-                f"hard fail: {why} ({key}=1)",
-                construct="authority_control",
+                source_id, subject, raw, score, "ok",
+                f"simulation hard fail: {why} ({key}=1)",
+                construct="tradability",
             )
 
+    known = [k for k, v in states.items() if v is not None]
+    if not known:
+        return SourceObservation(
+            source_id, subject, raw, None, "unavailable",
+            "payload carries none of " + ", ".join(HARD_FAIL),
+            construct="tradability",
+        )
+    if len(known) == len(HARD_FAIL):
+        return SourceObservation(
+            source_id, subject, raw, TRADABILITY_CLEAN, "ok",
+            "buy/sell simulation clean on all three checks",
+            construct="tradability",
+        )
+    missing = [k for k in HARD_FAIL if states[k] is None]
+    return SourceObservation(
+        source_id, subject, raw, TRADABILITY_PARTIAL, "ok",
+        f"clean on {', '.join(known)}; {', '.join(missing)} absent — "
+        "scored as unknown, not safe",
+        construct="tradability",
+    )
+
+
+def _authority(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> SourceObservation:
+    """Structural rights only. Simulation verdicts go to :func:`_tradability`."""
     contributions: List[int] = []
     fired: List[str] = []
     unknown: List[str] = []
@@ -210,11 +261,21 @@ def _concentration(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> 
 
 
 def parse(subject: str, raw: Dict[str, Any]) -> List[SourceObservation]:
-    """GoPlus payload → [authority_control observation, holder_concentration observation]."""
+    """GoPlus payload → three observations, one per construct it actually measures.
+
+    ``authority_control`` (structural rights), ``holder_concentration``
+    (distribution) and ``tradability`` (buy/sell simulation). One vendor, three
+    questions — collapsing them into one number before the meta-layer sees it
+    would destroy exactly the information the meta-layer exists to reason about.
+    """
     token, reason = _unwrap(subject, raw)
     if token is None:
         return [SourceObservation(
             SOURCE_ID, subject, raw if isinstance(raw, dict) else {}, None,
             "unavailable", reason, construct="authority_control",
         )]
-    return [_authority(subject, raw, token), _concentration(subject, raw, token)]
+    return [
+        _authority(subject, raw, token),
+        _concentration(subject, raw, token),
+        _tradability(subject, raw, token),
+    ]
