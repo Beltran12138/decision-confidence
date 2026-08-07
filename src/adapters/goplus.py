@@ -246,7 +246,28 @@ def _concentration(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> 
         )
     # Vendor reports fractions (0.19 = 19%). Values > 1 are already percentages.
     scale = 1.0 if max(percents) > 1.0 else 100.0
-    top1 = percents[0] * scale
+    scaled = [p * scale for p in percents]
+
+    # A share of supply outside 0-100% is not a very concentrated token, it is a
+    # broken measurement. Observed on real payloads: GoPlus returned top-1
+    # percents of 5e3, 1e9 and 4.6e30 — the arithmetic of balance/totalSupply
+    # when the supply has been burned to zero or near it.
+    #
+    # Scoring it anyway would land every one of them in the top risk band and
+    # look like a triumph: in a 400-subject rug-pull sample all 29 such payloads
+    # carried the scam label. That correlation is real and worthless — it
+    # measures a supply destroyed *by* the rug, and the concentration that
+    # actually preceded it is unknown. Unknown is what we report.
+    if not (0.0 <= max(scaled) <= 100.0) or min(scaled) < 0.0:
+        return SourceObservation(
+            source_id, subject, raw, None, "malformed",
+            f"vendor reported a holder share of {max(scaled):.3g}% of supply — "
+            "outside 0-100%, so the balance/supply ratio is not meaningful "
+            "(typically a burned or near-zero total supply)",
+            construct="holder_concentration",
+        )
+
+    top1 = scaled[0]
     locked = sum(
         1 for h in holders
         if isinstance(h, dict) and str(h.get("is_locked", "0")) == "1"

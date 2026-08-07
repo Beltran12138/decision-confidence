@@ -88,21 +88,42 @@ from decision_confidence import build_report  # noqa: E402
 # Applying the construct rule to this library's own adapter is what found it.
 # ---------------------------------------------------------------------------
 
+# MEASURED 2026-08-07 against 406 TM-RugPull subjects (203/203). The grades
+# below were written first as predictions; the run corrected the mechanism.
+#
+# The leak is not in the scores. It is in **availability** — whether a construct
+# has any usable data at all moves with the label, and a threshold sweep cannot
+# see it. `liquidity_depth` had data for 4.9% of scams and 61.6% of legitimate
+# tokens (-56.7pp): a dead token has no pool. Any pipeline that drops
+# unavailable sources silently inherits that skew, which is the practical case
+# for reporting `unavailable` as an outcome rather than as absence.
+# `report_availability_skew` now measures this directly.
+#
+# `tradability` was predicted severe on the reasoning that a dead token cannot
+# be sold. **That prediction was wrong**: availability skew +0.0pp, best F1
+# 0.684 at cut 0 — a degenerate "flag everything". GoPlus returns
+# `is_honeypot=0` for these tokens rather than 1. Whether that means "simulated
+# fine" or "could not simulate, defaulted to 0" is not established here and
+# should not be assumed; the grade stays severe on the original reasoning, now
+# flagged as unconfirmed rather than supported.
 LEAKAGE = {
     "authority_control": ("clean",
-                          "contract rights do not change when a project dies"),
+                          "contract rights do not change when a project dies; "
+                          "availability skew +7.4pp, measured"),
     "holder_concentration": ("partial",
-                             "holder distribution shifts post-mortem, direction varies"),
+                             "availability skew -16.0pp, measured — supply burned to zero "
+                             "makes the vendor's share arithmetic meaningless"),
     "tradability": ("severe",
-                    "a dead token cannot be sold — every positive label trivially matches"),
+                    "reasoning only — predicted leak NOT observed (skew +0.0pp); "
+                    "vendor returns is_honeypot=0 for dead tokens, unexplained"),
     "liquidity_depth": ("severe",
-                        "pools are drained by the rug itself; measuring the aftermath"),
+                        "availability skew -56.7pp, measured — a dead token has no pool"),
     "carry_cost": ("severe",
-                   "a dead token has no perp market to quote"),
+                   "a dead token has no perp market to quote — untested"),
     "fraud_prediction": ("severe",
-                         "vendors backfill known scams into their own classifiers"),
+                         "vendors backfill known scams into their own classifiers — untested"),
     "compliance_exposure": ("severe",
-                            "sanctions/KYT lists are updated after incidents"),
+                            "sanctions/KYT lists are updated after incidents — untested"),
 }
 LEAKAGE_MARK = {"clean": "  ", "partial": " ~", "severe": " !"}
 
@@ -135,6 +156,7 @@ def score_rows(rows: List[Dict[str, Any]]):
     per_construct: Dict[str, List[Tuple[int, int]]] = {}
     per_subject: List[Tuple[Dict[str, int], int]] = []
     status_counts: Dict[str, Dict[str, int]] = {}
+    availability: Dict[str, Dict[Tuple[int, bool], int]] = {}
 
     for row in rows:
         observations = []
@@ -149,6 +171,9 @@ def score_rows(rows: List[Dict[str, Any]]):
 
         scores: Dict[str, int] = {}
         for g in report.constructs:
+            bucket = availability.setdefault(g.construct, {})
+            key = (label, g.n_ok > 0)
+            bucket[key] = bucket.get(key, 0) + 1
             if g.score is None:
                 continue
             scores[g.construct] = g.score
@@ -159,7 +184,45 @@ def score_rows(rows: List[Dict[str, Any]]):
             bucket = status_counts.setdefault(o.source_id, {})
             bucket[o.status] = bucket.get(o.status, 0) + 1
 
-    return per_construct, per_subject, status_counts
+    return per_construct, per_subject, status_counts, availability
+
+
+def report_availability_skew(availability, step_label: str = "") -> None:
+    """Whether a construct *has data at all* correlates with the label.
+
+    This turned out to be where leakage actually lives, and it is invisible to
+    a threshold sweep. On a 400-subject rug-pull sample `liquidity_depth` had
+    usable data for 4.9% of scams and 61.6% of legitimate tokens: a dead token
+    has no pool. Nothing about the *scores* is contaminated — the contamination
+    is in which subjects have a score.
+
+    Any pipeline that drops unavailable sources silently inherits that skew and
+    will never see it, which is the practical argument for reporting
+    `unavailable` as a first-class outcome rather than as absence.
+    """
+    if not availability:
+        return
+    print()
+    print("### availability skew — does having data at all predict the label?")
+    print("    (a leak a threshold sweep cannot see)")
+    print(f"    {'construct':<24}{'bad w/ data':>14}{'good w/ data':>15}{'skew':>10}")
+    worst = []
+    for construct in sorted(availability):
+        c = availability[construct]
+        b_ok, b_no = c.get((1, True), 0), c.get((1, False), 0)
+        g_ok, g_no = c.get((0, True), 0), c.get((0, False), 0)
+        pb = _ratio(b_ok, b_ok + b_no)
+        pg = _ratio(g_ok, g_ok + g_no)
+        skew = pb - pg
+        mark = " !" if abs(skew) >= 0.20 else ("  ~" if abs(skew) >= 0.10 else "")
+        print(f"    {construct:<24}{pb:>13.1%}{pg:>15.1%}{skew:>+9.1%}{mark}")
+        if abs(skew) >= 0.20:
+            worst.append((construct, skew))
+    if worst:
+        print()
+        for construct, skew in sorted(worst, key=lambda kv: -abs(kv[1])):
+            print(f"    {construct}: presence of data alone moves {abs(skew):.0%} with the label.")
+        print("    Treat any performance on those constructs as unearned.")
 
 
 def _ratio(num: int, den: int) -> float:
@@ -291,7 +354,7 @@ def main(argv: List[str]) -> int:
     args = ap.parse_args(argv)
 
     rows = load_rows(args.dataset)
-    per_construct, per_subject, status_counts = score_rows(rows)
+    per_construct, per_subject, status_counts, availability = score_rows(rows)
     step = max(1, args.step)
 
     n_bad = sum(1 for _, lab in per_subject if lab == 1)
@@ -304,6 +367,7 @@ def main(argv: List[str]) -> int:
     }
     sweep_any_construct(per_subject, step)
     rank(results)
+    report_availability_skew(availability)
     report_coverage(status_counts)
 
     print()

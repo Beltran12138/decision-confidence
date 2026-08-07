@@ -139,7 +139,7 @@ one composite. Adopting the rule is opt-in per adapter.
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, no API keys | `src/adapters/` |
 | **MCP server** | Shipped (reference impl) | 2 tools in `src/mcp_server.py` |
-| **Calibration** | Harness shipped **per construct**, never run on real labels | `tools/calibrate.py` — no labelled data in hand |
+| **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
 server needs an extra (`pip install -e ".[mcp]"`).
@@ -402,6 +402,78 @@ and its first job is to be correct and reusable, not to bill.
 
 ---
 
+## What calibration actually found
+
+`tools/calibrate.py` was run against **406 subjects from TM-RugPull**
+(arXiv 2602.21529), balanced 203 scam / 203 legitimate, with GoPlus and
+DexScreener payloads captured per subject. It produced **no usable threshold**,
+and the reason is more useful than a number would have been.
+
+**Nothing beat "flag everything."** With a 203/203 split, calling every subject
+bad scores F1 0.684. The best any construct managed:
+
+| construct | best F1 | at cut | leakage |
+| --- | --- | --- | --- |
+| holder_concentration | 0.700 | 70 | partial |
+| tradability | 0.684 | **0** | severe |
+| authority_control | 0.684 | **0** | clean |
+| liquidity_depth | 0.213 | 90 | severe |
+
+A best cut of `0` is the degenerate solution. The one construct that beats the
+baseline does so by 0.016.
+
+**And yet `authority_control` is measuring accurately.** At cut ≥ 70 it scores
+**precision 1.000 with zero false positives** — no legitimate token in the
+sample has authority risk that high. It just catches **3 of 200 scams**. The
+instrument is sharp; it is pointed at something else.
+
+Look at what the labels contain. HyperVerse, Fintoch, Safuu — Ponzi schemes
+with open-source contracts, no honeypot flags, and over 100,000 holders each.
+**The contract never misbehaved. The people did.** Meanwhile the legitimate
+side is WBTC, ENS, Ampleforth — centralised by design, holding exactly the
+admin rights the scanner is built to flag. On this sample `owner_change_balance`
+and `is_proxy` are *more* common among the legitimate tokens.
+
+So the finding is a construct mismatch, one level up:
+
+> This library measures **what powers a contract grants its deployer**.
+> TM-RugPull labels **whether a project eventually absconded** (its README says
+> forensic evidence and *longevity criteria*). Those are two different
+> constructs, and putting them in one precision/recall table is exactly the
+> category error the library exists to catch — committed this time by the person
+> doing the calibrating.
+
+**The leak was not where it was predicted.** The `LEAKAGE` grades in
+`calibrate.py` were written as predictions, and the run corrected the mechanism:
+contamination is not in the scores, it is in **availability**.
+
+```
+construct                  bad w/ data   good w/ data      skew
+liquidity_depth                  4.9%          61.6%      -56.7pp  !
+holder_concentration            83.5%          99.5%      -16.0pp  ~
+authority_control               98.5%          91.1%       +7.4pp
+tradability                     99.5%          99.5%       +0.0pp
+```
+
+A dead token has no pool, so *whether a construct has data at all* carries the
+label — and a threshold sweep cannot see it. Any pipeline that drops
+unavailable sources silently inherits that 57-point skew. This is the
+measurable form of "`unavailable` is not `safe`", and `calibrate.py` now
+reports it directly.
+
+Note the last row: `tradability` was predicted to leak severely and **did not**
+(+0.0pp). GoPlus returns `is_honeypot=0` for these dead tokens rather than 1.
+Whether that means "simulated fine" or "could not simulate, defaulted to 0" is
+unresolved and is not assumed either way.
+
+**What would make calibration work:** labels of *contract authority actually
+abused* — mint attacks, pause-and-run, blacklist seizures — rather than
+"project died". RPHunter (arXiv 2506.18398), which labels 645 incidents along
+code *and* transaction dimensions, is the more likely fit. That is the next
+attempt, and it may also fail.
+
+---
+
 ## Honest limitations
 
 - **Read-only analysis, not investment advice, not a safety guarantee, not a
@@ -414,21 +486,9 @@ and its first job is to be correct and reusable, not to bill.
   drawn from what four adapters happen to measure. Where two vendors sit on the
   boundary of one construct, whoever tags the adapter decides — and that
   decision changes whether a composite exists at all.
-- **Thresholds and contradiction rules are rough heuristics**, not calibrated
-  against any labeled dataset. `tools/calibrate.py` is the instrument for
-  fixing that; **it has never been run against real labels**, and running it on
-  the bundled synthetic sample proves nothing about accuracy. This is the
-  largest open weakness in the project.
-- **Most constructs cannot be honestly calibrated against rug-pull labels at
-  all.** Labels are assembled from outcomes that already happened; payloads are
-  captured today. A dead token trivially reads "cannot be sold" and "no
-  liquidity", so `tradability` and `liquidity_depth` will score near-perfectly
-  and the performance is pure label leakage. `authority_control` is the
-  exception — whether the deployer kept mint/pause rights is a property of the
-  contract and does not change when the project dies. `tools/calibrate.py`
-  grades every construct on this axis and refuses to present a leaked number
-  without the caveat attached. This is a judgement about which measurements
-  survive a post-mortem, not a measurement itself; argue with it in an issue.
+- **Thresholds and contradiction rules are rough heuristics, and the first
+  attempt to calibrate them failed to produce any.** See below — the failure is
+  informative, and it is not the kind that a bigger sample fixes.
 - **Caller-supplied only** — missing inputs are marked unknown, never guessed.
   The library performs **no** network I/O.
 - Token **snapshot table** is **dated and qualitative** — fast triage, not live

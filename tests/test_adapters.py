@@ -108,6 +108,30 @@ class TestGoPlusAdapter(unittest.TestCase):
         obs = goplus.parse(PEPE, {"code": 1, "message": "OK", "result": {}})
         self.assertEqual(obs[0].status, "unavailable")
 
+    def test_impossible_holder_share_is_malformed_not_maximal_risk(self) -> None:
+        """A 4.6e30% holder is a broken ratio, not a concentrated token.
+
+        Seen on real GoPlus payloads for tokens whose supply was burned to
+        zero. Every such payload in a 400-subject rug-pull sample carried the
+        scam label, so scoring it would look like excellent detection while
+        actually measuring the aftermath of the rug. The concentration that
+        preceded it is unknown, and unknown is what must be reported.
+        """
+        payload = {"code": "1", "result": {PEPE: {"holders": [
+            {"percent": "4.646902676464046e+30"}, {"percent": "400.0044"},
+        ]}}}
+        _, conc, _ = goplus.parse(PEPE, payload)
+        self.assertEqual(conc.status, "malformed")
+        self.assertIsNone(conc.normalized_0_100)
+        self.assertIn("outside 0-100%", conc.note)
+
+    def test_full_ownership_still_scores(self) -> None:
+        """100% is at the boundary and must stay scoreable — it is possible."""
+        payload = {"code": "1", "result": {PEPE: {"holders": [{"percent": "1.0"}]}}}
+        _, conc, _ = goplus.parse(PEPE, payload)
+        self.assertEqual(conc.status, "ok")
+        self.assertEqual(conc.normalized_0_100, 95)
+
     def test_concentration_reads_top_holder(self) -> None:
         _, conc, _ = goplus.parse(USDT, fx("goplus_usdt"))
         self.assertEqual(conc.status, "ok")
