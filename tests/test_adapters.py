@@ -140,7 +140,7 @@ class TestGoPlusAdapter(unittest.TestCase):
 
 class TestHoneypotIsAdapter(unittest.TestCase):
     def test_successful_simulation_scores_tradability(self) -> None:
-        obs, = honeypot_is.parse(PEPE, fx("honeypot_is_pepe"))
+        obs, *_extra = honeypot_is.parse(PEPE, fx("honeypot_is_pepe"))
         self.assertEqual(obs.status, "ok")
         self.assertEqual(obs.construct, "tradability")
         self.assertLessEqual(obs.normalized_0_100, 10)
@@ -150,19 +150,19 @@ class TestHoneypotIsAdapter(unittest.TestCase):
         # nothing, therefore safe".
         payload = {"simulationSuccess": False, "simulationError": "no liquidity",
                    "summary": {"risk": "low", "riskLevel": 0}}
-        obs, = honeypot_is.parse(PEPE, payload)
+        obs, *_extra = honeypot_is.parse(PEPE, payload)
         self.assertEqual(obs.status, "unavailable")
         self.assertIsNone(obs.normalized_0_100)
         self.assertIn("cannot conclude", obs.note)
 
     def test_honeypot_is_maximal(self) -> None:
-        obs, = honeypot_is.parse(PEPE, {"honeypotResult": {"isHoneypot": True}})
+        obs, *_extra = honeypot_is.parse(PEPE, {"honeypotResult": {"isHoneypot": True}})
         self.assertEqual(obs.normalized_0_100, 100)
 
     def test_severe_sell_tax_raises_a_low_score(self) -> None:
         payload = {"simulationSuccess": True, "summary": {"risk": "low", "riskLevel": 2},
                    "simulationResult": {"sellTax": 75}}
-        obs, = honeypot_is.parse(PEPE, payload)
+        obs, *_extra = honeypot_is.parse(PEPE, payload)
         self.assertGreaterEqual(obs.normalized_0_100, 90)
         self.assertIn("sellTax", obs.note)
 
@@ -322,15 +322,37 @@ class TestEndToEndOnRealPayloads(unittest.TestCase):
 
         kinds = {c.kind for c in report.contradictions}
         self.assertIn("construct_mismatch", kinds)
-        self.assertNotIn("range", kinds)
 
-        # `unavailable` is not `safe`: the blind construct is still listed, and
-        # it caps confidence rather than being dropped from the report.
+        # No `range` either. honeypot.is contributes an authority_control
+        # observation, but it cannot see mint/pause/freeze rights, so on a
+        # clean structural check it reports `unavailable` rather than 0.
+        # Scoring it 0 would raise a 69-point contradiction against GoPlus
+        # between two sources that never disagreed — one was not asked.
+        self.assertNotIn("range", kinds)
+        structure = [o for o in report.observations if o.source_id == "honeypot_is:structure"]
+        self.assertEqual(len(structure), 1)
+        self.assertEqual(structure[0].status, "unavailable")
+        self.assertEqual(structure[0].construct, "authority_control")
+
+        # `unavailable` is not `safe`: both partial sources stay in the report.
         unavailable = [o for o in report.observations if o.status == "unavailable"]
-        self.assertEqual(len(unavailable), 1)
-        blind = [g for g in report.constructs if g.n_ok == 0]
-        self.assertEqual([g.construct for g in blind], ["liquidity_depth"])
-        self.assertEqual(report.confidence, "medium")
+        self.assertEqual(len(unavailable), 2)
+
+        # The case for multiple sources, from real payloads. DexScreener is
+        # keyed by address alone and answers the Ethereum USDT query with
+        # PulseChain pools, so it returns nothing usable. honeypot.is reports
+        # the pair its simulation actually routed through — Uniswap V3
+        # WETH-USDT, $85.5M — and the construct that would otherwise have been
+        # blind is answered correctly.
+        liq = [g for g in report.constructs if g.construct == "liquidity_depth"][0]
+        self.assertEqual(liq.n_ok, 1)
+        self.assertEqual(liq.n_unusable, 1)
+        self.assertEqual(liq.verdict, "low")
+        self.assertEqual([g for g in report.constructs if g.n_ok == 0], [])
+
+        # No construct is blind now, nothing contradicts, five observations
+        # scored — the evidence genuinely improved, so the label does too.
+        self.assertEqual(report.confidence, "high")
 
 
 if __name__ == "__main__":

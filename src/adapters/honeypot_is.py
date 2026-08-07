@@ -44,6 +44,21 @@ RISK_WORD_TO_SCORE = {
 SELL_TAX_SEVERE = 50.0
 SELL_TAX_HEAVY = 10.0
 
+# contractCode penalties, combined noisy-OR like the GoPlus authority score so
+# the two land on a comparable shape. Rough, uncalibrated, and built on three
+# signals rather than thirteen — the ceiling is lower on purpose, because this
+# source cannot see enough to justify a high score.
+NOT_OPEN_SOURCE = 45
+ROOT_CLOSED = 30
+PROXY = 20
+PROXY_CALLS = 15
+STRUCTURE_CEILING = 70
+
+# Single-pair depth, USD. Mirrors the DexScreener bands so the two are on one
+# scale; a thin routed pair is thin regardless of who measured it.
+LIQUIDITY_BANDS = [(1_000, 90), (10_000, 70), (100_000, 45), (1_000_000, 25),
+                   (float("inf"), 10)]
+
 
 def _num(value: Any) -> Optional[float]:
     try:
@@ -52,13 +67,107 @@ def _num(value: Any) -> Optional[float]:
         return None
 
 
+def _structure(subject: str, raw: Dict[str, Any]) -> Optional[SourceObservation]:
+    """``contractCode`` → a second opinion on ``authority_control``.
+
+    **A falsifier, not a confirmer.** GoPlus reads thirteen authority flags;
+    honeypot.is reports three structural facts and cannot see mint, pause,
+    freeze or blacklist at all. So a *finding* here is informative and a clean
+    result is not: "the three things I can check are fine" does not mean "this
+    deployer holds no power over you", and scoring it 0 would say exactly that.
+
+    The concrete failure that forced this. Ethereum USDT: GoPlus reads 69 —
+    mintable, pausable, blacklisting, balance-changing. This source sees an
+    open-source non-proxy contract and, scored symmetrically, reads 0. The
+    engine would then raise a 69-point `range` contradiction between two
+    sources that do not actually disagree — one of them simply was not asked
+    the question. That is a coverage gap wearing the costume of a factual
+    disagreement, and it is precisely the confusion this library exists to
+    prevent, so it must not manufacture one.
+
+    Clean therefore returns ``unavailable`` with the reason stated. The
+    asymmetry is the honest shape of a partial probe.
+    """
+    code = raw.get("contractCode")
+    if not isinstance(code, dict) or not code:
+        return None
+
+    fired: List[str] = []
+    contributions: List[int] = []
+    if code.get("openSource") is False:
+        contributions.append(NOT_OPEN_SOURCE)
+        fired.append("closed_source")
+    if code.get("rootOpenSource") is False and code.get("openSource") is not False:
+        contributions.append(ROOT_CLOSED)
+        fired.append("root_closed_source")
+    if code.get("isProxy") is True:
+        contributions.append(PROXY)
+        fired.append("is_proxy")
+    if code.get("hasProxyCalls") is True:
+        contributions.append(PROXY_CALLS)
+        fired.append("has_proxy_calls")
+
+    if not fired:
+        return SourceObservation(
+            SOURCE_ID + ":structure", subject, raw, None, "unavailable",
+            "open-source, non-proxy — but this source cannot see mint, pause, "
+            "freeze or blacklist rights, so a clean structural check is not "
+            "evidence of low authority risk",
+            construct="authority_control",
+        )
+
+    survival = 1.0
+    for penalty in contributions:
+        survival *= 1.0 - (penalty / 100.0)
+    risk = int(round((1.0 - survival) * STRUCTURE_CEILING))
+    return SourceObservation(
+        SOURCE_ID + ":structure", subject, raw, risk, "ok",
+        "structural flags: " + ", ".join(fired)
+        + " — 3 signals only; a finding here is real, a clean result would not "
+          "have been",
+        construct="authority_control",
+    )
+
+
+def _liquidity(subject: str, raw: Dict[str, Any]) -> Optional[SourceObservation]:
+    """``pair.liquidity`` → a second opinion on ``liquidity_depth``.
+
+    Single-pair depth in USD, for the pair the simulation actually routed
+    through. Narrower than DexScreener's view across every pool, and reported
+    as such.
+    """
+    pair = raw.get("pair")
+    if not isinstance(pair, dict):
+        return None
+    usd = _num(pair.get("liquidity"))
+    if usd is None:
+        return None
+    risk = next(risk for ceiling, risk in LIQUIDITY_BANDS if usd < ceiling)
+    name = ((pair.get("pair") or {}).get("name") if isinstance(pair.get("pair"), dict) else None)
+    return SourceObservation(
+        SOURCE_ID + ":liquidity", subject, raw, risk, "ok",
+        f"routed pair {name or '?'} holds ${usd:,.0f} — one pair, not the whole book",
+        construct="liquidity_depth",
+    )
+
+
 def parse(subject: str, raw: Dict[str, Any]) -> List[SourceObservation]:
-    """honeypot.is payload → one ``tradability`` observation."""
+    """honeypot.is payload → tradability, plus structure and liquidity when present.
+
+    One vendor, three constructs. Emitting only the tradability verdict — which
+    this adapter did until 2026-08-07 — threw away the two fields that give
+    `authority_control` and `liquidity_depth` a second opinion, and a construct
+    with one source is a construct the contradiction rules never touch.
+    """
     def obs(score: Optional[int], status: str, note: str) -> List[SourceObservation]:
-        return [SourceObservation(
+        primary = SourceObservation(
             SOURCE_ID, subject, raw if isinstance(raw, dict) else {},
             score, status, note, construct="tradability",
-        )]
+        )
+        if not isinstance(raw, dict):
+            return [primary]
+        extra = [o for o in (_structure(subject, raw), _liquidity(subject, raw)) if o]
+        return [primary] + extra
 
     if not isinstance(raw, dict):
         return obs(None, "malformed", "raw is not an object")
