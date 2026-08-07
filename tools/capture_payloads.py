@@ -192,6 +192,62 @@ def already_done(path: str) -> set:
     return done
 
 
+def backfill(args, vendors: List[str]) -> int:
+    """Add a vendor to subjects already captured, rewriting the file in place.
+
+    Needed because a construct is only checkable when it has two independent
+    sources: `tradability` measured by GoPlus alone is a number, measured by
+    GoPlus *and* honeypot.is it is a number with a second opinion. Recapturing
+    every subject from scratch to add one vendor would be a waste of both time
+    and the vendors' rate limits.
+
+    Writes to a temporary file and replaces on success, so an interrupted
+    backfill cannot leave a half-written corpus behind.
+    """
+    rows = []
+    with open(args.out, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if line:
+                rows.append(json.loads(line))
+    todo = [r for r in rows
+            if not {s.get("vendor") for s in r.get("sources", [])} >= set(vendors)]
+    if args.limit:
+        todo = todo[:args.limit]
+    print(f"{len(rows)} subjects in {args.out}, {len(todo)} missing {','.join(vendors)}",
+          file=sys.stderr)
+    if not todo:
+        return 0
+
+    def flush() -> None:
+        tmp = args.out + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:
+            for r in rows:
+                fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+        os.replace(tmp, args.out)
+
+    # Checkpoint every CHECKPOINT subjects. A rewrite-at-the-end lost 20
+    # subjects' worth of requests the first time this ran, which is the same
+    # mistake the streaming write in main() already fixes — a long run is
+    # interrupted, not completed, and the code has to assume that.
+    CHECKPOINT = 20
+    for i, r in enumerate(todo, 1):
+        row = {"address": r["subject"], "chain": r.get("chain") or "ETH"}
+        have = {s.get("vendor") for s in r["sources"]}
+        for vendor in vendors:
+            if vendor in have:
+                continue
+            got = CAPTURERS[vendor]([row], args.pause)
+            r["sources"].append({"vendor": vendor,
+                                 "raw": got.get(r["subject"], {"error": "not captured"})})
+        if i % CHECKPOINT == 0 or i == len(todo):
+            flush()
+            print(f"  {i}/{len(todo)} backfilled (checkpointed)", file=sys.stderr)
+
+    print(f"rewrote {args.out} with {len(todo)} subjects backfilled", file=sys.stderr)
+    return 0
+
+
 def main(argv: List[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("addresses", help="JSON array of {address, chain, class, title}")
@@ -205,12 +261,19 @@ def main(argv: List[str]) -> int:
                          "sorted by class, so a plain --limit captures one label only and "
                          "precision is undefined on the result")
     ap.add_argument("--pause", type=float, default=1.5, help="seconds between requests")
+    ap.add_argument("--add-vendor", action="store_true",
+                    help="backfill --vendors onto the subjects already in --out, instead of "
+                         "capturing new subjects. Rewrites the file in place. Use when a "
+                         "construct needs a second independent source it was not captured with")
     args = ap.parse_args(argv)
 
     vendors = [v.strip() for v in args.vendors.split(",") if v.strip()]
     unknown = [v for v in vendors if v not in CAPTURERS]
     if unknown:
         raise SystemExit(f"unknown vendor(s): {', '.join(unknown)}")
+
+    if args.add_vendor:
+        return backfill(args, vendors)
 
     with open(args.addresses, encoding="utf-8") as fh:
         rows = json.load(fh)
