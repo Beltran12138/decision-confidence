@@ -127,7 +127,6 @@ def capture_goplus(rows: List[Dict[str, Any]], pause: float) -> Dict[str, Dict[s
                     out[a] = ({"code": payload.get("code", 1), "result": {a.lower(): entry}}
                               if entry is not None
                               else {"code": payload.get("code", 1), "result": {}})
-            print(f"  goplus chain {chain_id}: +{len(batch)} ({len(out)} done)", file=sys.stderr)
             time.sleep(pause)
     return out
 
@@ -150,7 +149,6 @@ def capture_dexscreener(rows: List[Dict[str, Any]], pause: float) -> Dict[str, D
                 # `_chain` is the hint the adapter needs to refuse fork-chain
                 # pools; without it a wrong-chain match reads as real liquidity.
                 out[a] = {"pairs": mine, "_chain": slug[a]}
-        print(f"  dexscreener: +{len(batch)} ({len(out)} done)", file=sys.stderr)
         time.sleep(pause)
     return out
 
@@ -202,6 +200,10 @@ def main(argv: List[str]) -> int:
                     help="comma-separated subset of " + ", ".join(CAPTURERS))
     ap.add_argument("--bad-class", default="scam", help="class value that maps to label 1")
     ap.add_argument("--limit", type=int, default=0, help="stop after N new subjects (0 = all)")
+    ap.add_argument("--balanced", action="store_true",
+                    help="interleave labels before truncating. The published datasets ship "
+                         "sorted by class, so a plain --limit captures one label only and "
+                         "precision is undefined on the result")
     ap.add_argument("--pause", type=float, default=1.5, help="seconds between requests")
     args = ap.parse_args(argv)
 
@@ -214,6 +216,11 @@ def main(argv: List[str]) -> int:
         rows = json.load(fh)
     done = already_done(args.out)
     todo = [r for r in rows if r["address"].lower() not in done]
+    if args.balanced:
+        bad = [r for r in todo if str(r.get("class", "")).lower() == args.bad_class]
+        good = [r for r in todo if str(r.get("class", "")).lower() != args.bad_class]
+        todo = ([r for pair in zip(bad, good) for r in pair]
+                + bad[len(good):] + good[len(bad):])
     if args.limit:
         todo = todo[:args.limit]
     print(f"{len(rows)} subjects, {len(done)} already captured, {len(todo)} to fetch",
@@ -221,22 +228,31 @@ def main(argv: List[str]) -> int:
     if not todo:
         return 0
 
-    captured = {}
-    for vendor in vendors:
-        print(f"[{vendor}]", file=sys.stderr)
-        captured[vendor] = CAPTURERS[vendor](todo, args.pause)
-
+    # Flush per subject, not per run. Writing everything at the end turns any
+    # interruption into a total loss, and at ~2s per request these runs are long
+    # enough that interruption is the expected case rather than the exceptional
+    # one. Combined with the resume-from-output check above, a killed run costs
+    # one subject.
+    written = 0
     with open(args.out, "a", encoding="utf-8") as fh:
-        for r in todo:
+        for i, r in enumerate(todo, 1):
+            sources = []
+            for vendor in vendors:
+                got = CAPTURERS[vendor]([r], args.pause)
+                sources.append({"vendor": vendor,
+                                "raw": got.get(r["address"], {"error": "not captured"})})
             fh.write(json.dumps({
                 "subject": r["address"],
                 "label": 1 if str(r.get("class", "")).lower() == args.bad_class else 0,
                 "title": r.get("title"),
                 "chain": r.get("chain"),
-                "sources": [{"vendor": v, "raw": captured[v].get(r["address"], {"error": "not captured"})}
-                            for v in vendors],
+                "sources": sources,
             }, ensure_ascii=False) + "\n")
-    print(f"wrote {len(todo)} rows to {args.out}", file=sys.stderr)
+            fh.flush()
+            written += 1
+            if i % 10 == 0 or i == len(todo):
+                print(f"  {i}/{len(todo)} captured", file=sys.stderr)
+    print(f"wrote {written} rows to {args.out}", file=sys.stderr)
     return 0
 
 
