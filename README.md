@@ -100,7 +100,7 @@ So the rule:
 | --- | --- |
 | All usable sources share one construct | Weighted mean → `composite`, `verdict` band |
 | Usable sources span several constructs | **No composite.** `verdict = "not_comparable"`, read `constructs[]` |
-| Spread ≥ 40 *within* one construct | `range` contradiction — this disagreement is real |
+| Spread ≥ 40 *within* one construct | `range` contradiction — see the caveat on method below |
 | Spread across *different* constructs | Nothing. They cannot contradict; the split is reported structurally |
 | A fraud classifier fires while a peer reads safe | `hard_flag` — this one **does** cross constructs |
 | A construct has zero usable sources | Confidence capped at `medium` — `unavailable` is not `safe` |
@@ -523,6 +523,60 @@ abused* — mint attacks, pause-and-run, blacklist seizures — rather than
 "project died". RPHunter (arXiv 2506.18398), which labels 645 incidents along
 code *and* transaction dimensions, is the more likely fit. That is the next
 attempt, and it may also fail.
+
+---
+
+## The one threshold that calibration did settle
+
+`RANGE_SPREAD = 40` decides when two sources measuring one construct are
+reported as contradicting each other. It needs no labels to calibrate: the
+question is not "was this a scam" but "how far apart do two vendors asked the
+same question normally land". `tools/agreement.py` measures that, and it was
+run over **553 pairs across three constructs** from the same corpus.
+
+| construct | pairs | 40 fires on | bad mean | good mean | difference |
+| --- | --- | --- | --- | --- | --- |
+| tradability | 320 | 21.9% | 29.8 | 12.5 | **17.2** |
+| liquidity_depth | 128 | 4.7% | 21.1 | 19.5 | 1.6 |
+| authority_control | 105 | 1.9% | 19.9 | 19.3 | 0.6 |
+
+**40 holds up, for three different reasons.** `tradability`'s distribution is
+bimodal — 62.6% of pairs sit at 0–4, the 20–39 band is nearly empty, and 21.9%
+sit above 40. The cut lands in the trough, and moving it anywhere from 20 to 40
+changes the firing rate by three points. On the other two the pairs cluster
+around a *systematic offset* (median 22 and 15) and 40 sits above it, firing
+only on genuine outliers. Different shapes, same defensible cut. That number
+started as a guess; it now has 553 observations behind it.
+
+**But the run also weakened a claim this README was making.** "A spread inside
+one construct is a factual disagreement about the subject" — measured, that is
+true of **one construct out of three**.
+
+Compare bad and good subjects. On `tradability` the spread means differ by
+17.2: scams really do make the two simulators disagree more. On
+`liquidity_depth` and `authority_control` they differ by 1.6 and 0.6 — the
+distributions are the same for scams and for blue chips, so the spread is not
+telling you about the token at all. It is telling you that GoPlus reads
+thirteen authority flags while honeypot.is reads four, and that DexScreener
+looks across every pool while honeypot.is looks at the one its simulation
+routed through.
+
+So there is a second question underneath the first:
+
+> **Are these sources answering the same question?** — the construct rule.
+> **Are they answering it the same way?** — the method question, which
+> construct equality does not settle.
+
+A persistent, subject-independent offset between two sources on one construct
+is a method difference wearing the clothes of a disagreement. The test is
+cheap and needs no labels: **if the spread distribution is the same for known-
+good and known-bad subjects, the spread is about the vendors.**
+
+This is not patched over in code, because there is no honest way to hardcode
+it — the offset belongs to a *pair* of vendors, not to a construct, and it
+changes the moment someone swaps a source. `tools/agreement.py` is the
+instrument; run it whenever you add a vendor, and read the last block of its
+output before trusting a `range` contradiction on a new construct.
 
 ---
 
