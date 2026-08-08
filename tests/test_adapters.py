@@ -36,16 +36,16 @@ def fx(name: str):
 
 
 class TestGoPlusAdapter(unittest.TestCase):
-    def test_one_payload_yields_three_constructs(self) -> None:
+    def test_one_payload_yields_four_constructs(self) -> None:
         obs = goplus.parse(PEPE, fx("goplus_pepe"))
-        self.assertEqual(len(obs), 3)
+        self.assertEqual(len(obs), 4)
         self.assertEqual(
             [o.construct for o in obs],
-            ["authority_control", "holder_concentration", "tradability"],
+            ["authority_control", "holder_concentration", "tradability", "holder_base"],
         )
 
     def test_renounced_owner_is_discounted_not_ignored(self) -> None:
-        authority, _, _ = goplus.parse(PEPE, fx("goplus_pepe"))
+        authority, _, _, _ = goplus.parse(PEPE, fx("goplus_pepe"))
         self.assertEqual(authority.status, "ok")
         self.assertIn("owner_renounced", authority.note)
         self.assertLess(authority.normalized_0_100, 30)
@@ -54,7 +54,7 @@ class TestGoPlusAdapter(unittest.TestCase):
         # USDT can mint, pause, blacklist and change balances. That is high
         # authority risk — but it is not a honeypot, and the score must keep
         # those two apart. Additive penalties would have saturated at 100.
-        authority, _, _ = goplus.parse(USDT, fx("goplus_usdt"))
+        authority, _, _, _ = goplus.parse(USDT, fx("goplus_usdt"))
         self.assertGreaterEqual(authority.normalized_0_100, 55)
         self.assertLessEqual(authority.normalized_0_100, goplus.AUTHORITY_SOFT_CEILING)
         self.assertLess(authority.normalized_0_100, 100)
@@ -69,7 +69,7 @@ class TestGoPlusAdapter(unittest.TestCase):
         the one construct that survives a post-mortem uninterpretable.
         """
         payload = {"code": "1", "result": {PEPE: {"is_honeypot": "1", "is_open_source": "1"}}}
-        authority, _, trade = goplus.parse(PEPE, payload)
+        authority, _, trade, _ = goplus.parse(PEPE, payload)
         self.assertEqual(trade.construct, "tradability")
         self.assertEqual(trade.normalized_0_100, 100)
         self.assertIn("hard fail", trade.note)
@@ -93,7 +93,7 @@ class TestGoPlusAdapter(unittest.TestCase):
 
     def test_absent_flags_are_unknown_not_safe(self) -> None:
         payload = {"code": "1", "result": {PEPE: {"is_mintable": "1"}}}
-        authority, _, _ = goplus.parse(PEPE, payload)
+        authority, _, _, _ = goplus.parse(PEPE, payload)
         self.assertIn("absent from payload", authority.note)
         self.assertIn("not safe", authority.note)
 
@@ -120,7 +120,7 @@ class TestGoPlusAdapter(unittest.TestCase):
         payload = {"code": "1", "result": {PEPE: {"holders": [
             {"percent": "4.646902676464046e+30"}, {"percent": "400.0044"},
         ]}}}
-        _, conc, _ = goplus.parse(PEPE, payload)
+        _, conc, _, _ = goplus.parse(PEPE, payload)
         self.assertEqual(conc.status, "malformed")
         self.assertIsNone(conc.normalized_0_100)
         self.assertIn("outside 0-100%", conc.note)
@@ -128,12 +128,12 @@ class TestGoPlusAdapter(unittest.TestCase):
     def test_full_ownership_still_scores(self) -> None:
         """100% is at the boundary and must stay scoreable — it is possible."""
         payload = {"code": "1", "result": {PEPE: {"holders": [{"percent": "1.0"}]}}}
-        _, conc, _ = goplus.parse(PEPE, payload)
+        _, conc, _, _ = goplus.parse(PEPE, payload)
         self.assertEqual(conc.status, "ok")
         self.assertEqual(conc.normalized_0_100, 95)
 
     def test_concentration_reads_top_holder(self) -> None:
-        _, conc, _ = goplus.parse(USDT, fx("goplus_usdt"))
+        _, conc, _, _ = goplus.parse(USDT, fx("goplus_usdt"))
         self.assertEqual(conc.status, "ok")
         self.assertIn("top-1 holder 19.30%", conc.note)
 
@@ -227,7 +227,7 @@ class TestDexScreenerAdapter(unittest.TestCase):
 class TestRegistry(unittest.TestCase):
     def test_known_vendor_dispatches_to_its_adapter(self) -> None:
         obs = observe_vendor("goplus", "goplus", PEPE, fx("goplus_pepe"))
-        self.assertEqual(len(obs), 3)
+        self.assertEqual(len(obs), 4)
 
     def test_unknown_vendor_falls_back_to_shape_sniffing_and_says_so(self) -> None:
         obs, = observe_vendor("some_vendor", "sv", "SUBJ", {"score": 40})

@@ -113,6 +113,10 @@ LEAKAGE = {
     "holder_concentration": ("partial",
                              "availability skew -16.0pp, measured — supply burned to zero "
                              "makes the vendor's share arithmetic meaningless"),
+    "holder_base": ("partial",
+                    "holders exit after a rug, so the count is post-mortem; also GoPlus "
+                    "returns 0 for some dead tokens where honeypot.is returns thousands, "
+                    "and every such case was labelled scam"),
     "tradability": ("severe",
                     "reasoning only — predicted leak NOT observed (skew +0.0pp); "
                     "vendor returns is_honeypot=0 for dead tokens, unexplained"),

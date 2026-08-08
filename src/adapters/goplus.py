@@ -91,6 +91,10 @@ BURN_ADDRESSES = {
 # Holder concentration → risk. Mirrors the token instance's thinking.
 CONCENTRATION_BANDS = [(5, 10), (10, 25), (20, 45), (35, 65), (50, 80), (101, 95)]
 
+# Holder-base bands, thresholds taken from normalize.score_holders so the
+# package does not carry two different opinions about the same number.
+HOLDER_BASE_BANDS = [(1_000, 90), (10_000, 70), (100_000, 45), (float("inf"), 20)]
+
 
 def _flag(token: Dict[str, Any], key: str) -> Optional[bool]:
     """``"1"`` → True, ``"0"`` → False, absent/unparseable → None (unknown)."""
@@ -281,13 +285,52 @@ def _concentration(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> 
     )
 
 
+def _holder_base(subject: str, raw: Dict[str, Any], token: Dict[str, Any]) -> SourceObservation:
+    """``holder_count`` → ``holder_base``, a construct distinct from concentration.
+
+    How many holders exist and how unevenly supply is split are different
+    questions. A token can have 100,000 holders while one address holds 60% of
+    supply, and another can have 50 holders splitting it evenly. Those are
+    different risks, and the package was previously treating "holders" as one
+    idea — ``normalize.score_holders`` has existed since the first version and
+    no adapter ever called it.
+
+    ``holder_count == 0`` is rejected. A deployed token has at least one holder,
+    so a zero is a missing value dressed as data. Observed on real payloads:
+    GoPlus returned 0 while honeypot.is returned 17,543 for the same token, and
+    every instance of it carried the scam label — scoring 0 as "almost no
+    holders, therefore maximum risk" would have been right by accident and
+    wrong by method.
+    """
+    source_id = SOURCE_ID + ":holders"
+    count = _num(token.get("holder_count"))
+    if count is None:
+        return SourceObservation(
+            source_id, subject, raw, None, "unavailable",
+            "vendor returned no holder_count", construct="holder_base",
+        )
+    if count < 1:
+        return SourceObservation(
+            source_id, subject, raw, None, "unavailable",
+            f"vendor reported holder_count={int(count)}; a deployed token has at "
+            "least one holder, so this is a missing value, not a low count",
+            construct="holder_base",
+        )
+    risk = next(risk for ceiling, risk in HOLDER_BASE_BANDS if count <= ceiling)
+    return SourceObservation(
+        source_id, subject, raw, risk, "ok",
+        f"{int(count):,} holders → risk {risk}", construct="holder_base",
+    )
+
+
 def parse(subject: str, raw: Dict[str, Any]) -> List[SourceObservation]:
     """GoPlus payload → three observations, one per construct it actually measures.
 
-    ``authority_control`` (structural rights), ``holder_concentration``
-    (distribution) and ``tradability`` (buy/sell simulation). One vendor, three
-    questions — collapsing them into one number before the meta-layer sees it
-    would destroy exactly the information the meta-layer exists to reason about.
+    ``authority_control`` (structural rights), ``holder_concentration`` (how
+    unevenly supply is split), ``tradability`` (buy/sell simulation) and
+    ``holder_base`` (how many holders exist at all). One vendor, four questions
+    — collapsing them into one number before the meta-layer sees it would
+    destroy exactly the information the meta-layer exists to reason about.
     """
     token, reason = _unwrap(subject, raw)
     if token is None:
@@ -299,4 +342,5 @@ def parse(subject: str, raw: Dict[str, Any]) -> List[SourceObservation]:
         _authority(subject, raw, token),
         _concentration(subject, raw, token),
         _tradability(subject, raw, token),
+        _holder_base(subject, raw, token),
     ]

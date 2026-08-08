@@ -88,7 +88,8 @@ CONSTRUCTS = {
     "authority_control",    # what the deployer / owner can still do
     "tradability",          # can the position actually be exited (simulation)
     "liquidity_depth",      # is there enough depth to exit at size
-    "holder_concentration",  # how concentrated is the holder base
+    "holder_concentration",  # how unevenly is supply distributed
+    "holder_base",          # how many holders there are at all
     "compliance_exposure",  # sanctions / KYT style exposure
     "fraud_prediction",     # scam / fraud classifier output
     "carry_cost",           # what holding the position costs (perp funding)

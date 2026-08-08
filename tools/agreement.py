@@ -128,12 +128,27 @@ def report_construct(construct: str, entries, cut: int) -> None:
         print(f"      good n={len(good):<5} median {_pct(good,.5):>3}  p90 {_pct(good,.9):>3}  "
               f"mean {sum(good)/len(good):.1f}")
         gap = abs(sum(bad)/len(bad) - sum(good)/len(good))
-        if gap < 3:
-            print(f"      means differ by {gap:.1f} — the spread is about the vendors,")
-            print("      not about the subject. 'Within-construct disagreement is factual'")
-            print("      is weaker than the README claims on this corpus.")
+        median = _pct(spreads, .5)
+        print(f"      means differ by {gap:.1f}")
+        print()
+        # Two numbers, read together, say what a spread on this construct is.
+        # The median measures how far apart the *methods* sit; the label gap
+        # measures whether the remaining variation tracks the subject. Reading
+        # only the label gap conflates "no disagreement to explain" with
+        # "disagreement that explains nothing".
+        if median <= 2 and gap < 3:
+            print(f"      median spread {median} — these two sources are reading the same")
+            print("      number, not offering independent opinions. Useful as a baseline for")
+            print("      what zero method difference looks like; not a real cross-check.")
+        elif gap < 3:
+            print(f"      median spread {median} with a {gap:.1f} label gap — a systematic")
+            print("      offset that does not track the subject. This is a method difference")
+            print("      between the two sources, and reporting it as a factual contradiction")
+            print("      about the token would be wrong.")
         else:
-            print(f"      means differ by {gap:.1f}")
+            print(f"      median spread {median} with a {gap:.1f} label gap — the spread moves")
+            print("      with the subject, so disagreement here is informative. This is the")
+            print("      case the README's claim actually describes.")
 
     worst = sorted(entries, key=lambda e: -e[0])[:5]
     print()

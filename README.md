@@ -23,14 +23,15 @@ python examples/live_multi_source.py --offline usdt   # three real vendors, repl
 The first prints these two blocks from the same engine:
 
 ```
-CASE A — definitional disagreement (four constructs)
+CASE A — definitional disagreement (five constructs)
 real vendor payloads, captured 2026-07-26
 construct               risk  verdict       sources  spread
 authority_control         69  high          1/2
 holder_concentration      45  moderate      1/1
+holder_base               20  low           2/2      0
 liquidity_depth           10  low           1/2
 tradability                8  low           2/2      14
-composite : none  (blended_composite_unsafe=28 — a category error, exposed under a name that says so)
+composite : none  (blended_composite_unsafe=26 — a category error, exposed under a name that says so)
 confidence: high
 
 CASE B — factual disagreement (one construct, many venues)
@@ -137,7 +138,7 @@ one composite. Adopting the rule is opt-in per adapter.
 | --- | --- | --- |
 | **Decision-confidence (meta)** | Shipped | `build_report` / `group_by_construct` in `src/decision_confidence.py` |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
-| **Real vendor adapters** | Shipped — 4 registered, no API keys | `src/adapters/` |
+| **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
 | **MCP server** | Shipped (reference impl) | 2 tools in `src/mcp_server.py` |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
@@ -161,25 +162,28 @@ goplus                      69  ok          authority_control     mint, pause, b
 goplus:concentration        45  ok          holder_concentration  top-1 holder 19.30%
 goplus:tradability          15  ok          tradability           clean on is_honeypot, cannot_buy;
                                                                   cannot_sell_all absent — unknown, not safe
+goplus:holders              20  ok          holder_base           15,584,564 holders
 honeypot_is                  1  ok          tradability           summary.riskLevel=1
 honeypot_is:structure        -  unavailable authority_control     open-source, non-proxy — but cannot see
                                                                   mint/pause/freeze/blacklist rights
 honeypot_is:liquidity       10  ok          liquidity_depth       routed pair Uniswap V3: WETH-USDT
                                                                   holds $85,542,448 — one pair, not the book
+honeypot_is:holders         20  ok          holder_base           15,264,570 holders
 dexscreener                  -  unavailable liquidity_depth       no pairs on chain 'ethereum'
 
 construct               risk  verdict       sources  spread
 authority_control         69  high          1/2   └─ honeypot_is:structure: unavailable
 holder_concentration      45  moderate      1/1
+holder_base               20  low           2/2      0
 liquidity_depth           10  low           1/2   └─ dexscreener: unavailable
 tradability                8  low           2/2      14
 
 composite : none — these constructs measure different things.
-            (blended_composite_unsafe=28 exists only for callers who insist)
+            (blended_composite_unsafe=26 exists only for callers who insist)
 confidence: high
 ```
 
-Four things in that output are the whole argument:
+Five things in that output are the whole argument:
 
 1. **The sources differ by 68 points and neither is wrong.** USDT genuinely can
    be frozen and minted by its issuer, and it genuinely trades fine. A blended
@@ -200,8 +204,12 @@ Four things in that output are the whole argument:
    routed through. **A second source did not confirm the first — it replaced a
    blank.** That is why confidence reads `high` here and `medium` before the
    source was added.
-4. **Confidence is about evidence, not about the verdict.** Reliable sources
-   covering four constructs are *strong* evidence and *still* have no single
+4. **`holder_base` reads `2/2` with a spread of 0.** Both vendors read the same
+   on-chain holder count — 15.58M and 15.26M, the same band. That is the shape
+   of two sources that are not independent, and it is the baseline the other
+   spreads are measured against.
+5. **Confidence is about evidence, not about the verdict.** Reliable sources
+   covering five constructs are *strong* evidence and *still* have no single
    composite. Conflating those two things is the mistake this layer exists to
    avoid, so `construct_mismatch` is `info` severity and does not lower
    confidence — only the blind construct does.
@@ -263,10 +271,14 @@ No API keys for any of them. Adapters are pure functions of `(subject, raw)` —
 
 | Vendor | Construct(s) | Key needed |
 | --- | --- | --- |
-| [GoPlus Token Security](https://docs.gopluslabs.io/reference/api-overview) | `authority_control`, `holder_concentration`, `tradability` | no |
-| [honeypot.is v2](https://honeypot.is/) | `tradability` | no |
+| [GoPlus Token Security](https://docs.gopluslabs.io/reference/api-overview) | `authority_control`, `holder_concentration`, `tradability`, `holder_base` | no |
+| [honeypot.is v2](https://honeypot.is/) | `tradability`, `authority_control`*, `liquidity_depth`, `holder_base` | no |
 | [DexScreener](https://docs.dexscreener.com/api/reference) | `liquidity_depth` | no |
 | Perp funding (any source) | `carry_cost` — **one observation per venue** | no |
+
+\* honeypot.is reports `authority_control` **only as a falsifier**: a structural
+finding is scored, a clean structural check returns `unavailable`, because three
+clean signals are not evidence about mint, pause or freeze rights it cannot see.
 
 `examples/live_multi_source.py` is the only file in the library or its examples
 that touches the network (`tools/capture_payloads.py` also does, but it is
@@ -464,15 +476,18 @@ and the reason is more useful than a number would have been.
 **Nothing beat "flag everything."** With a 203/203 split, calling every subject
 bad scores F1 0.684. The best any construct managed:
 
-| construct | best F1 | at cut | leakage |
-| --- | --- | --- | --- |
-| holder_concentration | 0.700 | 70 | partial |
-| tradability | 0.684 | **0** | severe |
-| authority_control | 0.684 | **0** | clean |
-| liquidity_depth | 0.213 | 90 | severe |
+| construct | best F1 | at cut | leakage | availability skew |
+| --- | --- | --- | --- | --- |
+| liquidity_depth | 0.764 | 75 | severe | +7.4pp |
+| holder_base | 0.764 | 50 | partial | +0.0pp |
+| holder_concentration | 0.700 | 75 | partial | −16.0pp |
+| tradability | 0.684 | **0** | severe | +7.4pp |
+| authority_control | 0.684 | **0** | **clean** | +7.4pp |
 
-A best cut of `0` is the degenerate solution. The one construct that beats the
-baseline does so by 0.016.
+A best cut of `0` is the degenerate solution. The two constructs that clear the
+baseline by a real margin are both leaky — a dead token's pool *is* shallow, and
+its holders *did* leave — so neither number is quotable. **The only
+leakage-clean construct is still stuck at the degenerate solution.**
 
 **And yet `authority_control` is measuring accurately.** At cut ≥ 70 it scores
 **precision 1.000 with zero false positives** — no legitimate token in the
@@ -513,6 +528,16 @@ unavailable sources silently inherits that 57-point skew. This is the
 measurable form of "`unavailable` is not `safe`", and `calibrate.py` now
 reports it directly.
 
+**And it is fixable by adding a source.** Those numbers are from a run with one
+source per construct. After honeypot.is began contributing `liquidity_depth`
+from the pair its simulation routed through, the same measurement reads
+**+7.4pp instead of −56.7pp**: DexScreener finds no pool for a dead token,
+honeypot.is still reports the pair it traded against, and the construct stops
+being blind precisely on the subjects where blindness correlated with the
+label. So a second source does three separate jobs — cross-check the first,
+answer what the first could not, and *drain the availability skew* — and only
+the first of those is what "multiple sources" usually means.
+
 Note the last row: `tradability` was predicted to leak severely and **did not**
 (+0.0pp). GoPlus returns `is_honeypot=0` for these dead tokens rather than 1.
 Whether that means "simulated fine" or "could not simulate, defaulted to 0" is
@@ -534,13 +559,22 @@ question is not "was this a scam" but "how far apart do two vendors asked the
 same question normally land". `tools/agreement.py` measures that, and it was
 run over **553 pairs across three constructs** from the same corpus.
 
-| construct | pairs | 40 fires on | bad mean | good mean | difference |
-| --- | --- | --- | --- | --- | --- |
-| tradability | 320 | 21.9% | 29.8 | 12.5 | **17.2** |
-| liquidity_depth | 128 | 4.7% | 21.1 | 19.5 | 1.6 |
-| authority_control | 105 | 1.9% | 19.9 | 19.3 | 0.6 |
+| construct | pairs | median | p90 | 40 fires on | label gap | what a spread means here |
+| --- | --- | --- | --- | --- | --- | --- |
+| holder_base | 359 | **0** | 0 | 0.0% | 0.1 | the same number, twice — a baseline |
+| tradability | 320 | 4 | **85** | 21.9% | **17.2** | same method, occasional inversion |
+| liquidity_depth | 128 | 15 | 35 | 4.7% | 1.6 | related but different measurements |
+| authority_control | 105 | 22 | 31 | 1.9% | 0.6 | same construct, unequal coverage |
 
-**40 holds up, for three different reasons.** `tradability`'s distribution is
+Two numbers, read together, say what a spread on a construct *is*. The median
+measures how far apart the **methods** sit; the label gap measures whether the
+leftover variation tracks the **subject**. `holder_base` exists in this table to
+anchor the first: both vendors read the same on-chain holder count, 87% of pairs
+agree within 1%, and the median spread is 0. That is what zero method difference
+looks like — so a median of 22 on `authority_control` is not noise, it is the
+distance between reading thirteen authority flags and reading four.
+
+**40 holds up, for four different reasons.** `tradability`'s distribution is
 bimodal — 62.6% of pairs sit at 0–4, the 20–39 band is nearly empty, and 21.9%
 sit above 40. The cut lands in the trough, and moving it anywhere from 20 to 40
 changes the firing rate by three points. On the other two the pairs cluster
@@ -588,7 +622,7 @@ output before trusting a `range` contradiction on a new construct.
   availability, honesty, coverage, and latency. Correlated sources (same
   underlying data) degrade both confidence and contradiction signals — this
   library does not invent missing upstream truth.
-- **The construct taxonomy is a judgment call, not a standard.** Seven labels
+- **The construct taxonomy is a judgment call, not a standard.** Eight labels
   drawn from what four adapters happen to measure. Where two vendors sit on the
   boundary of one construct, whoever tags the adapter decides — and that
   decision changes whether a composite exists at all.
