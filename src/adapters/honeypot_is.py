@@ -176,7 +176,33 @@ def parse(subject: str, raw: Dict[str, Any]) -> List[SourceObservation]:
 
     hp = raw.get("honeypotResult") or {}
     if hp.get("isHoneypot") is True:
-        return obs(100, "ok", "simulation says honeypot: sell blocked")
+        # The score stays 100 — reporting what the vendor said is this layer's
+        # job, and second-guessing it here would hide the disagreement instead
+        # of surfacing it. What the note must carry is *why*, because the
+        # vendor's own reasoning is sometimes much weaker than its verdict.
+        #
+        # Binance-Peg Tezos (BSC, 0x16939ef7…): honeypotResult says HONEYPOT
+        # DETECTED at riskLevel 100, on the strength of one `low_fail_rate`
+        # flag of severity "medium" (index 12), simulated through the
+        # PancakeSwap V3 XTZ-ETH pair. GoPlus reads the same token as entirely
+        # clean. A thin routed pool is a property of the route, not of the
+        # token — and an auditor who sees only "100" cannot tell that.
+        reason = hp.get("honeypotReason") or "no reason given"
+        summary = raw.get("summary") or {}
+        flags = raw.get("flags") or summary.get("flags") or []
+        detail = []
+        for f in flags[:3]:
+            if isinstance(f, dict):
+                detail.append(f"{f.get('flag')}({f.get('severity')})")
+            else:
+                detail.append(str(f))
+        pair_name = ((raw.get("pair") or {}).get("pair") or {}).get("name")
+        note = f"vendor verdict: {reason}"
+        if detail:
+            note += "; basis: " + ", ".join(detail)
+        if pair_name:
+            note += f"; simulated through {pair_name}"
+        return obs(100, "ok", note)
 
     if raw.get("simulationSuccess") is not True:
         reason = raw.get("simulationError") or "simulation did not succeed"

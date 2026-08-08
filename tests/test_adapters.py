@@ -159,6 +159,29 @@ class TestHoneypotIsAdapter(unittest.TestCase):
         obs, *_extra = honeypot_is.parse(PEPE, {"honeypotResult": {"isHoneypot": True}})
         self.assertEqual(obs.normalized_0_100, 100)
 
+    def test_honeypot_verdict_carries_its_own_basis(self) -> None:
+        """A 100 with no stated reason is unauditable, and sometimes wrong.
+
+        Real capture, Binance-Peg Tezos on BSC: this vendor returns HONEYPOT
+        DETECTED at riskLevel 100 on the strength of one medium-severity
+        `low_fail_rate` flag, simulated through a thin PancakeSwap V3 pair,
+        while GoPlus reads the same token as entirely clean. The score is
+        reported as given — but the reason, the flag severity and the routed
+        pair have to travel with it, or the contradiction is unreadable.
+        """
+        payload = {
+            "honeypotResult": {"isHoneypot": True, "honeypotReason": "HONEYPOT DETECTED"},
+            "summary": {"risk": "honeypot", "riskLevel": 100, "flags": [
+                {"flag": "low_fail_rate", "severity": "medium", "severityIndex": 12},
+            ]},
+            "pair": {"pair": {"name": "PancakeSwap V3: XTZ-ETH"}},
+        }
+        obs, *_extra = honeypot_is.parse(PEPE, payload)
+        self.assertEqual(obs.normalized_0_100, 100)
+        self.assertIn("HONEYPOT DETECTED", obs.note)
+        self.assertIn("low_fail_rate(medium)", obs.note)
+        self.assertIn("PancakeSwap V3: XTZ-ETH", obs.note)
+
     def test_severe_sell_tax_raises_a_low_score(self) -> None:
         payload = {"simulationSuccess": True, "summary": {"risk": "low", "riskLevel": 2},
                    "simulationResult": {"sellTax": 75}}

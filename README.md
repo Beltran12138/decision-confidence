@@ -26,12 +26,12 @@ The first prints these two blocks from the same engine:
 CASE A — definitional disagreement (four constructs)
 real vendor payloads, captured 2026-07-26
 construct               risk  verdict       sources  spread
-authority_control         69  high          1/1
+authority_control         69  high          1/2
 holder_concentration      45  moderate      1/1
+liquidity_depth           10  low           1/2
 tradability                8  low           2/2      14
-liquidity_depth            -  unknown       0/1
-composite : none  (blended_composite_unsafe=32 — a category error, exposed under a name that says so)
-confidence: medium
+composite : none  (blended_composite_unsafe=28 — a category error, exposed under a name that says so)
+confidence: high
 
 CASE B — factual disagreement (one construct, many venues)
 ILLUSTRATIVE funding rates — not live, not a market claim
@@ -162,17 +162,21 @@ goplus:concentration        45  ok          holder_concentration  top-1 holder 1
 goplus:tradability          15  ok          tradability           clean on is_honeypot, cannot_buy;
                                                                   cannot_sell_all absent — unknown, not safe
 honeypot_is                  1  ok          tradability           summary.riskLevel=1
+honeypot_is:structure        -  unavailable authority_control     open-source, non-proxy — but cannot see
+                                                                  mint/pause/freeze/blacklist rights
+honeypot_is:liquidity       10  ok          liquidity_depth       routed pair Uniswap V3: WETH-USDT
+                                                                  holds $85,542,448 — one pair, not the book
 dexscreener                  -  unavailable liquidity_depth       no pairs on chain 'ethereum'
 
 construct               risk  verdict       sources  spread
-authority_control         69  high          1/1
+authority_control         69  high          1/2   └─ honeypot_is:structure: unavailable
 holder_concentration      45  moderate      1/1
+liquidity_depth           10  low           1/2   └─ dexscreener: unavailable
 tradability                8  low           2/2      14
-liquidity_depth            -  unknown       0/1   └─ dexscreener: unavailable
 
 composite : none — these constructs measure different things.
-            (blended_composite_unsafe=32 exists only for callers who insist)
-confidence: medium
+            (blended_composite_unsafe=28 exists only for callers who insist)
+confidence: high
 ```
 
 Four things in that output are the whole argument:
@@ -190,8 +194,12 @@ Four things in that output are the whole argument:
 3. **Two vendors landed in the same group, and that is the point.** GoPlus and
    honeypot.is both simulate a buy and a sell, so they are comparable and the
    engine compares them: one group, `2/2` sources, spread 14. Here they agree.
-   When they do not, that gap is a `range` contradiction — a real one, unlike
-   the 68-point gap above.
+   The next section is a case where they do not.
+   Note also `liquidity_depth`: DexScreener returned nothing usable, and
+   honeypot.is answered the construct anyway from the pair its simulation
+   routed through. **A second source did not confirm the first — it replaced a
+   blank.** That is why confidence reads `high` here and `medium` before the
+   source was added.
 4. **Confidence is about evidence, not about the verdict.** Reliable sources
    covering four constructs are *strong* evidence and *still* have no single
    composite. Conflating those two things is the mistake this layer exists to
@@ -201,6 +209,50 @@ Four things in that output are the whole argument:
 None of this says USDT is unsafe. It says the sources answered four different
 questions, and averaging them into one number is the failure this layer exists
 to prevent.
+
+---
+
+## And the case where one vendor is simply wrong
+
+The USDT example shows two sources that are both right. This one shows what
+only a comparison can catch.
+
+`0x16939ef7…` on BSC is **Binance-Peg Tezos (XTZ)** — an official Binance
+bridge token, labelled legitimate in the corpus.
+
+```
+goplus:tradability     5   ok   is_honeypot=0  cannot_buy=0  cannot_sell_all=0  tax 0/0
+honeypot_is          100   ok   vendor verdict: HONEYPOT DETECTED;
+                                basis: low_fail_rate(medium);
+                                simulated through PancakeSwap V3: XTZ-ETH
+```
+
+One vendor says the token is clean. The other says **HONEYPOT DETECTED** at
+`riskLevel 100`. They are answering the same question — both simulate a buy and
+a sell — so this is a genuine contradiction, and the engine raises it as one.
+
+Read the basis and the verdict comes apart. The entire case is a single
+`low_fail_rate` flag whose own severity is **`medium`, index 12 out of 100**,
+observed while routing through the **PancakeSwap V3 XTZ-ETH** pair — a thin
+pool. Sells fail there because the pool is thin. That is a property of the
+route, not of the token, and Binance is not running a honeypot.
+
+Two things follow, and both changed the code:
+
+- **The score is still reported as 100.** Second-guessing a vendor here would
+  hide the disagreement rather than surface it; this layer reports what it was
+  told. What it must also report is *why* — so the verdict, the flag with its
+  severity, and the routed pair now travel in the note. A bare `100` is
+  unauditable, and this is what unauditable costs.
+- **Same construct does not mean same method.** Both vendors simulate, but
+  through different pools, and that alone is enough to invert the conclusion.
+  Construct equality makes two sources *comparable*; it does not make them
+  interchangeable, and the spread between them is where the difference shows up.
+
+This pattern — one vendor clean, the other at 100 — appears in **13% of the
+subjects that have two tradability sources**. An agent trusting either vendor
+alone gets a confident answer 13% of the time when the two available sources
+flatly contradict each other.
 
 ---
 
