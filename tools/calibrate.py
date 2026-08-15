@@ -88,40 +88,52 @@ from decision_confidence import build_report  # noqa: E402
 # Applying the construct rule to this library's own adapter is what found it.
 # ---------------------------------------------------------------------------
 
-# MEASURED 2026-08-07 against 406 TM-RugPull subjects (203/203). The grades
-# below were written first as predictions; the run corrected the mechanism.
-#
-# The leak is not in the scores. It is in **availability** — whether a construct
-# has any usable data at all moves with the label, and a threshold sweep cannot
-# see it. `liquidity_depth` had data for 4.9% of scams and 61.6% of legitimate
-# tokens (-56.7pp): a dead token has no pool. Any pipeline that drops
+# The grades below were written first as predictions; running the harness
+# corrected the mechanism. The leak is not in the scores. It is in
+# **availability** — whether a construct has any usable data at all moves with
+# the label, and a threshold sweep cannot see it. Any pipeline that drops
 # unavailable sources silently inherits that skew, which is the practical case
 # for reporting `unavailable` as an outcome rather than as absence.
-# `report_availability_skew` now measures this directly.
 #
-# `tradability` was predicted severe on the reasoning that a dead token cannot
-# be sold. **That prediction was wrong**: availability skew +0.0pp, best F1
-# 0.684 at cut 0 — a degenerate "flag everything". GoPlus returns
-# `is_honeypot=0` for these tokens rather than 1. Whether that means "simulated
-# fine" or "could not simulate, defaulted to 0" is not established here and
-# should not be assumed; the grade stays severe on the original reasoning, now
-# flagged as unconfirmed rather than supported.
+# NO MEASURED NUMBER APPEARS IN THIS DICT. It holds a grade and the reasoning
+# behind it — the parts that are judgement and do not change when the corpus
+# does. Every figure printed next to a construct is computed by
+# `compute_skew()` on the run in front of you.
+#
+# That rule exists because this file broke it. The entries once carried figures
+# with the word "measured" attached. A second source was later wired into
+# `liquidity_depth`, availability moved, and the static text kept reporting the
+# pre-fix number to anyone reading the output — in the same run whose own skew
+# table disagreed with it. Two entries were still correct, which is worse than
+# all of them being wrong: a reader who spot-checks one believes the rest.
+#
+# It is the exact failure this library exists to catch — a stale value wearing
+# the costume of a fresh measurement — committed by the tool that catches it.
+# Hence: a number lives in exactly one place, and everywhere else reads it.
 LEAKAGE = {
     "authority_control": ("clean",
-                          "contract rights do not change when a project dies; "
-                          "availability skew +7.4pp, measured"),
+                          "contract rights do not change when a project dies"),
     "holder_concentration": ("partial",
-                             "availability skew -16.0pp, measured — supply burned to zero "
-                             "makes the vendor's share arithmetic meaningless"),
+                             "supply burned to zero makes the vendor's share arithmetic "
+                             "meaningless"),
     "holder_base": ("partial",
                     "holders exit after a rug, so the count is post-mortem; also GoPlus "
                     "returns 0 for some dead tokens where honeypot.is returns thousands, "
                     "and every such case was labelled scam"),
     "tradability": ("severe",
-                    "reasoning only — predicted leak NOT observed (skew +0.0pp); "
-                    "vendor returns is_honeypot=0 for dead tokens, unexplained"),
+                    "predicted severe on the reasoning that a dead token cannot be sold. "
+                    "The measured skew runs the other way, so the prediction is "
+                    "unconfirmed rather than supported — GoPlus returns is_honeypot=0 "
+                    "for these tokens rather than 1, and whether that means 'simulated "
+                    "fine' or 'could not simulate, defaulted to 0' is not established "
+                    "here and should not be assumed"),
     "liquidity_depth": ("severe",
-                        "availability skew -56.7pp, measured — a dead token has no pool"),
+                        "a dead token has no pool. A second source later closed the "
+                        "availability gap without removing the leak: on the subjects only "
+                        "that source covers, the median scam pool is under a dollar. The "
+                        "skew moved out of availability and into the values, where a "
+                        "sweep can see it — the grade stays severe for that reason, not "
+                        "for the original one"),
     "carry_cost": ("severe",
                    "a dead token has no perp market to quote — untested"),
     "fraud_prediction": ("severe",
@@ -191,33 +203,49 @@ def score_rows(rows: List[Dict[str, Any]]):
     return per_construct, per_subject, status_counts, availability
 
 
-def report_availability_skew(availability, step_label: str = "") -> None:
-    """Whether a construct *has data at all* correlates with the label.
+def compute_skew(availability) -> Dict[str, Tuple[float, float, float]]:
+    """The single source of truth for availability skew: ``{construct: (pb, pg, skew)}``.
 
-    This turned out to be where leakage actually lives, and it is invisible to
-    a threshold sweep. On a 400-subject rug-pull sample `liquidity_depth` had
-    usable data for 4.9% of scams and 61.6% of legitimate tokens: a dead token
-    has no pool. Nothing about the *scores* is contaminated — the contamination
-    is in which subjects have a score.
+    Whether a construct *has data at all* correlates with the label. That is
+    where leakage actually lives, and it is invisible to a threshold sweep —
+    nothing about the *scores* is contaminated, the contamination is in which
+    subjects have a score at all.
 
-    Any pipeline that drops unavailable sources silently inherits that skew and
-    will never see it, which is the practical argument for reporting
-    `unavailable` as a first-class outcome rather than as absence.
+    Everything that prints a skew figure calls this. Nothing writes one down.
     """
-    if not availability:
+    out: Dict[str, Tuple[float, float, float]] = {}
+    for construct, c in (availability or {}).items():
+        b_ok, b_no = c.get((1, True), 0), c.get((1, False), 0)
+        g_ok, g_no = c.get((0, True), 0), c.get((0, False), 0)
+        pb = _ratio(b_ok, b_ok + b_no)
+        pg = _ratio(g_ok, g_ok + g_no)
+        out[construct] = (pb, pg, pb - pg)
+    return out
+
+
+def report_availability_skew(skews: Dict[str, Tuple[float, float, float]]) -> None:
+    """Print the skew table computed by :func:`compute_skew`.
+
+    Historical note, because the original finding is what motivated the check:
+    when DexScreener was the only source for ``liquidity_depth``, that construct
+    had usable data for 4.9% of scams and 61.6% of legitimate tokens on a
+    400-subject rug-pull sample — a dead token has no pool. Those two figures
+    describe a configuration this repo no longer runs and are deliberately not
+    reprinted as if they were current; the table below is this run.
+
+    Any pipeline that drops unavailable sources silently inherits whatever skew
+    is in the table and will never see it, which is the practical argument for
+    reporting ``unavailable`` as a first-class outcome rather than as absence.
+    """
+    if not skews:
         return
     print()
     print("### availability skew — does having data at all predict the label?")
     print("    (a leak a threshold sweep cannot see)")
     print(f"    {'construct':<24}{'bad w/ data':>14}{'good w/ data':>15}{'skew':>10}")
     worst = []
-    for construct in sorted(availability):
-        c = availability[construct]
-        b_ok, b_no = c.get((1, True), 0), c.get((1, False), 0)
-        g_ok, g_no = c.get((0, True), 0), c.get((0, False), 0)
-        pb = _ratio(b_ok, b_ok + b_no)
-        pg = _ratio(g_ok, g_ok + g_no)
-        skew = pb - pg
+    for construct in sorted(skews):
+        pb, pg, skew = skews[construct]
         mark = " !" if abs(skew) >= 0.20 else ("  ~" if abs(skew) >= 0.10 else "")
         print(f"    {construct:<24}{pb:>13.1%}{pg:>15.1%}{skew:>+9.1%}{mark}")
         if abs(skew) >= 0.20:
@@ -256,11 +284,18 @@ def confusion(pairs: List[Tuple[int, int]], threshold: int) -> Tuple[int, int, i
 
 
 def sweep_construct(construct: str, pairs: List[Tuple[int, int]], step: int,
-                    n_subjects: int) -> Optional[Tuple[float, int]]:
+                    n_subjects: int,
+                    skews: Optional[Dict[str, Tuple[float, float, float]]] = None,
+                    ) -> Optional[Tuple[float, int]]:
     grade, why = LEAKAGE.get(construct, ("unknown", "no leakage assessment for this construct"))
     n_bad = sum(1 for _, lab in pairs if lab == 1)
     print()
     print(f"### {construct}   [leakage: {grade}] — {why}")
+    # The figure comes from this run, never from the dict above.
+    measured = (skews or {}).get(construct)
+    if measured:
+        print(f"    availability skew {measured[2]:+.1%} — measured on this corpus, "
+              f"not carried over")
     print(f"    coverage {len(pairs)}/{n_subjects} subjects "
           f"({_ratio(len(pairs), n_subjects):.0%})   positives {n_bad}")
     if len(pairs) < 2 or n_bad == 0 or n_bad == len(pairs):
@@ -365,13 +400,14 @@ def main(argv: List[str]) -> int:
     print(f"subjects: {len(per_subject)}  positives: {n_bad}  "
           f"constructs observed: {len(per_construct)}")
 
+    skews = compute_skew(availability)
     results = {
-        construct: sweep_construct(construct, pairs, step, len(per_subject))
+        construct: sweep_construct(construct, pairs, step, len(per_subject), skews)
         for construct, pairs in sorted(per_construct.items())
     }
     sweep_any_construct(per_subject, step)
     rank(results)
-    report_availability_skew(availability)
+    report_availability_skew(skews)
     report_coverage(status_counts)
 
     print()
