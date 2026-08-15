@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>共享前提排查 · NVDA · 同一批数据，两种判决</title>
+<style>
+:root{--bg:#0B0D10;--panel:#101319;--ink:#E9E5DC;--dim:#767C85;--rule:#22262C;
+      --gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A;--blue:#6E90AF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Microsoft YaHei','PingFang SC',Inter,sans-serif;
+     -webkit-font-smoothing:antialiased;padding:34px 44px 70px}
+.mono{font-family:Consolas,'JetBrains Mono',monospace}
+h1{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:36px;font-weight:600}
+.kicker{font-family:Consolas,monospace;font-size:13px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:12px}
+.sub{color:var(--dim);font-size:16px;margin-top:10px;line-height:1.75}
+.hr{height:1px;background:var(--rule);margin:36px 0}
+.sec{margin-top:46px}
+.pill{display:inline-block;font-family:Consolas,monospace;font-size:12px;letter-spacing:.15em;
+      color:var(--gold);border:1px solid var(--gold);padding:5px 12px;margin-bottom:14px}
+.pill.r{color:var(--red);border-color:var(--red)}
+
+.switchbar{display:flex;align-items:center;gap:24px;background:var(--panel);border:1px solid var(--rule);
+           padding:20px 28px;margin:22px 0 26px}
+.sw{position:relative;width:88px;height:42px;border-radius:42px;background:#2A2F37;cursor:pointer;
+    flex-shrink:0;transition:background .22s;border:1px solid var(--rule)}
+.sw.on{background:var(--gold)}
+.sw i{position:absolute;top:4px;left:4px;width:32px;height:32px;border-radius:50%;background:#0B0D10;transition:left .22s}
+.sw.on i{left:50px}
+.swlabel{font-size:20px;font-weight:700}
+.swhint{font-size:14.5px;color:var(--dim);margin-top:4px}
+
+.cols{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--rule);padding:24px 28px}
+.tag{font-family:Consolas,monospace;font-size:12px;letter-spacing:.18em;color:var(--dim);margin-bottom:14px}
+
+table{width:100%;border-collapse:collapse;font-size:16px}
+th{font-family:Consolas,monospace;font-size:12px;letter-spacing:.1em;color:var(--dim);text-align:left;
+   font-weight:400;padding:0 0 11px;border-bottom:1px solid var(--rule)}
+td{padding:12px 0;border-bottom:1px solid #191D23;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{font-family:Consolas,monospace;text-align:right;width:110px;font-size:18px;padding-right:28px}
+th.num{text-align:right;padding-right:28px}
+td.ct,th.ct{width:120px;font-size:14.5px;color:var(--dim);padding-left:6px}
+td.ct span,th.ct span{opacity:0;transition:opacity .3s}
+body.grouped td.ct span{opacity:1;color:var(--gold)}
+body.grouped th.ct span{opacity:1}
+tr.missing td{color:#5A6068}
+tr.missing td.num{color:var(--red);font-size:15px}
+.src{display:block;font-size:12.5px;color:#565C64;margin-top:3px}
+
+.big{font-family:Consolas,monospace;font-size:88px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.big.refuse{font-size:46px;color:var(--red);line-height:1.25}
+.vline{font-size:18px;margin-top:14px}
+.warn{border-left:3px solid var(--red);padding:13px 17px;margin-top:16px;background:#15100F;
+      font-size:15px;line-height:1.65;color:#D8D2C8}
+.warn.info{border-left-color:var(--gold);background:#14120C}
+.calm{border-left:3px solid var(--rule);padding:13px 17px;margin-top:16px;background:#0E1116;
+      font-size:15px;color:var(--dim);line-height:1.65}
+.grp{display:none;margin-top:18px}
+body.grouped .grp{display:block}
+.grow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #191D23;font-size:15.5px}
+.grow:last-child{border-bottom:none}
+.grow b{font-family:Consolas,monospace;font-size:17px}
+.gmiss{color:var(--red)}
+
+table.act td{padding:16px 16px 16px 0;font-size:15.5px;line-height:1.62}
+table.act th{padding-bottom:12px;padding-right:16px}
+.dec{color:var(--blue);font-weight:700}
+.fal{color:var(--gold);font-family:Consolas,monospace;font-size:13.5px;line-height:1.6}
+tr.blind td{background:#15100F}
+tr.blind .dec{color:var(--red)}
+
+.bars{display:flex;align-items:flex-end;gap:60px;height:120px;margin:34px 0 6px;max-width:400px}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px}
+.bar .b{width:100%;border-top:2px solid var(--gold);background:#2E3A45}
+.bar .v{font-family:Consolas,monospace;font-size:18px}
+.bar .n{font-size:13px;color:var(--dim);text-align:center;line-height:1.4}
+.foot{margin-top:44px;color:var(--dim);font-size:13.5px;line-height:1.85;border-top:1px solid var(--rule);padding-top:20px}
+.foot b{color:#9AA0A8}
+.punch{font-size:25px;line-height:1.7;margin-top:24px}
+.punch b{color:var(--gold)}
+</style>
+</head>
+<body>
+
+<div class="kicker">DECISION-CONFIDENCE · 现场演示 · 真实标的</div>
+<h1>NVDA：同一批公开数据，两种判决</h1>
+<div class="sub">
+  全部为 <b style="color:var(--ink)">2026 年 8 月公开可查数据</b>，逐项标注来源与日期（见页脚）。
+  <b style="color:var(--ink)">本演示不构成投资建议</b>——它的输出恰恰是「拒绝给出结论」。<br>
+  下面 6 项数据一个字都不会变。改变的只有一件事：<b style="color:var(--ink)">系统知不知道每一项在测什么。</b>
+</div>
+
+<div class="switchbar">
+  <div class="sw" id="sw" onclick="toggle()"><i></i></div>
+  <div>
+    <div class="swlabel" id="swlabel">当前：直接合成一个综合分（今天绝大多数打分系统的做法）</div>
+    <div class="swhint" id="swhint">点一下开关 →  先问「它在测什么」，再决定能不能合并</div>
+  </div>
+</div>
+
+<div class="cols">
+  <div class="panel">
+    <div class="tag">输入 · 6 项公开数据</div>
+    <table>
+      <tr><th>指标</th><th class="num">值</th><th class="ct"><span>它在测什么</span></th></tr>
+      <tr><td>Forward P/E<span class="src">stockanalysis.com · 2026-08-14</span></td>
+          <td class="num">22.6</td><td class="ct"><span>估值水位</span></td></tr>
+      <tr><td>PEG<span class="src">GuruFocus · 2026-08-10</span></td>
+          <td class="num">0.51</td><td class="ct"><span>估值水位</span></td></tr>
+      <tr><td>数据中心营收 YoY<span class="src">Q1 FY2027 · $75.2B · 8-K</span></td>
+          <td class="num">+92%</td><td class="ct"><span>增长动能</span></td></tr>
+      <tr><td>卖方共识 FY27 EPS 增速<span class="src">consensus · 2026-08</span></td>
+          <td class="num">+74%</td><td class="ct"><span>增长动能</span></td></tr>
+      <tr><td>第三方质量标记<span class="src">GuruFocus："Possible Value Trap"</span></td>
+          <td class="num" style="font-size:15px">警示</td><td class="ct"><span>质量存疑</span></td></tr>
+      <tr class="missing"><td>CoWoS 先进封装分客户产能<span class="src">台积电不按客户披露 —— 真的拿不到</span></td>
+          <td class="num">无源</td><td class="ct"><span>供给约束</span></td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="tag">输出 · 判决</div>
+
+    <div id="naive">
+      <div class="big">46</div>
+      <div class="vline">判定：<b>中性偏乐观</b>　·　置信度：<b>高</b></div>
+      <div class="calm">
+        提示：（无）<br><br>
+        没有报错，没有警告，6 项数据全部参与了计算。<br>
+        <b style="color:var(--ink)">你可以直接把它写进周报，不会有人质疑你。</b>
+      </div>
+    </div>
+
+    <div id="grouped" style="display:none">
+      <div class="big refuse">拒绝出分<br><span style="font-size:20px;color:var(--dim)">composite = none</span></div>
+      <div class="grp">
+        <div class="grow"><span>估值水位</span><b style="color:var(--grn)">便宜</b></div>
+        <div class="grow"><span>增长动能</span><b style="color:var(--grn)">极强</b></div>
+        <div class="grow"><span>质量存疑</span><b style="color:var(--red)">警示</b></div>
+        <div class="grow gmiss"><span>供给约束</span><b>无可用源</b></div>
+      </div>
+      <div class="warn info">
+        <b>[构念不匹配]</b> 场上有 3 个构念 + 1 个盲区，它们测的不是一回事——综合分未定义。
+      </div>
+      <div class="warn">
+        <b>[盲区]</b> 供给约束一个可用源都没有。<br>
+        而它恰恰决定<b>那个 +92% 还能不能继续</b>。「没测」和「测出来没风险」，在那个 46 分里长得一模一样。
+      </div>
+      <div class="calm" style="border-left-color:#3A3020">
+        那个 46 分没被删掉，被改名存着：<span class="mono" style="color:var(--gold)">blended_composite_unsafe = 46</span><br>
+        <b style="color:var(--ink)">名字本身就是警告。</b>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 那我该怎么办 ══════════ -->
+<div class="sec">
+  <div class="hr"></div>
+  <span class="pill">这才是重点</span>
+  <h1>「不可比」不是答案，它把一个问题拆回了四个</h1>
+  <div class="sub" style="margin-bottom:24px">
+    你想要一个综合分，是因为你把「买不买」当成<b style="color:var(--ink)">一个</b>决策。它其实是几个。<br>
+    构念不匹配就是在告诉你这件事——拆开之后，每一项都指向一个<b style="color:var(--ink)">具体动作</b>，和一个<b style="color:var(--ink)">当期可触发的证伪条件</b>。
+  </div>
+
+  <div class="panel">
+    <table class="act">
+      <tr><th style="width:135px">构念</th><th style="width:145px">它回答哪个决策</th>
+          <th>它给出的动作</th><th style="width:260px">证伪条件（8/26 财报当期可验）</th></tr>
+      <tr>
+        <td><b>增长动能</b><span class="src">+92% / +74%</span></td>
+        <td class="dec">这个 thesis<br>成不成立</td>
+        <td>成立 → 进入候选池。<br>但它<b>不</b>回答「现在买」。</td>
+        <td class="fal">数据中心 YoY 跌回 &lt; 75%<br>= 加速叙事当场断</td>
+      </tr>
+      <tr>
+        <td><b>估值水位</b><span class="src">Fwd PE 22.6 · PEG 0.51</span></td>
+        <td class="dec">现在这个价位<br>值不值</td>
+        <td>不是「买 / 不买」，是<b>仓位与节奏</b>：<br>低于自身历史均值 → 允许分批建，不必死等回调</td>
+        <td class="fal">下季指引低于 $91B<br>= 便宜是因为马上要变贵</td>
+      </tr>
+      <tr>
+        <td><b>质量存疑</b><span class="src">Value Trap 标记</span></td>
+        <td class="dec">便宜是不是<br>有原因</td>
+        <td>这条与「估值水位」<b>不能相加</b>——<br>它是前者的<b>前置条件检查</b>，不是反方票</td>
+        <td class="fal">毛利率环比下滑<br>= 便宜确实有原因</td>
+      </tr>
+      <tr class="blind">
+        <td><b>供给约束</b><span class="src">CoWoS 分客户产能</span></td>
+        <td class="dec">这个 thesis<br>会怎么死</td>
+        <td><b>①</b> 仓位上限按「少测一个维度」打折<br>
+            <b>②</b> 这是你<b>必须去补</b>的那个数（渠道 / 供应链访谈）<br>
+            <b>③</b> 补不到，就在纪要里显式写「此维度裸奔」</td>
+        <td class="fal">管理层被问产能时拒答<br>或改口径 = 盲区加深</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="punch">
+    46 分告诉你「中性偏乐观」，你拿它<b>什么也做不了</b>。<br>
+    拆开之后，四条各自对应一个动作、一个日期、一个能把它打死的条件。<br>
+    <b>综合分不是信息更多，是把四条可执行的判断压成了一个不可执行的数字。信息在合成那一步就丢了。</b>
+  </div>
+</div>
+
+<!-- ══════════ 真分歧 ══════════ -->
+<div class="sec">
+  <div class="hr"></div>
+  <span class="pill r">那什么才算真分歧</span>
+  <h1>先量一把尺子，再判断谁在吵架</h1>
+  <div class="sub">同一个构念内部，两组真实存在的分歧——一组是噪音，一组必须解释。</div>
+
+  <div class="cols" style="margin-top:26px">
+    <div class="panel">
+      <div class="tag">基准线 · 同问题、同方法</div>
+      <div style="font-size:15.5px;line-height:1.8;color:var(--dim)">两家数据商，同一个 Forward P/E：</div>
+      <div class="bars">
+        <div class="bar"><div class="v">22.60</div><div class="b" style="height:78px"></div><div class="n">stockanalysis<br>08-14</div></div>
+        <div class="bar"><div class="v">24.28</div><div class="b" style="height:84px"></div><div class="n">GuruFocus<br>08-10</div></div>
+      </div>
+      <div class="calm">
+        差 <b style="color:var(--ink)">7%</b>。它们真的在回答同一个问题，方法也几乎一样（EPS 口径与取数日期略有差别）。<br>
+        <b style="color:var(--gold)">这个 7% 就是你的尺子</b> —— 「两个源答同一个问题」长这样。
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="tag">要解释的 · 同一家 vendor 自己打架</div>
+      <div style="font-size:15.5px;line-height:1.8;color:var(--dim)">GuruFocus 同时给出两个信号：</div>
+      <div style="padding:12px 0 4px">
+        <div class="grow"><span>"Possible Value Trap"</span><b style="color:var(--red)">警示</b></div>
+        <div class="grow"><span>GF Value $383.29 vs 市价 $217.09</span><b style="color:var(--grn)">低估 43%</b></div>
+      </div>
+      <div class="warn info" style="margin-top:14px">
+        <b>43% ≫ 7%。</b> 远超基准线，所以这条必须解释。<br>
+        而解释是：<b style="color:var(--ink)">这两条不是矛盾，是两个构念。</b>
+        一个测「便宜不便宜」，一个测「便宜是不是有原因」。<br>
+        <span style="color:var(--dim)">同一家 vendor 同时发出这两条，不是它出错了 —— 是我们习惯把它们读成一条。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="punch" style="font-size:23px">
+    没有那把 7% 的尺子，你没法知道 43% 算不算大。<br>
+    <b>先找一个你确定两个源在读同一个数的指标，量出它的正常差值 —— 那是你判断其他一切分歧的起点。</b>
+  </div>
+</div>
+
+<div class="foot">
+  <b>数据来源</b>（均为 2026 年 8 月公开可查）：Forward P/E 22.60 = stockanalysis.com 08-14；Forward P/E 24.28、PEG 0.51、"Possible Value Trap"、GF Value $383.29 vs 市价 $217.09 = GuruFocus 08-10；
+  数据中心营收 $75.2B / +92% YoY、下季指引约 $91B = NVIDIA Q1 FY2027 8-K（SEC EDGAR）；trailing P/E 34.34（08-13）对三年均值 46.34；下次财报 2026-08-26 盘后。<br>
+  <b>声明</b>：本演示用于说明方法，<b>不构成投资建议</b>。系统输出为「拒绝给出综合结论」，不是买卖意见。构念如何划分由本人所定，可被质疑 —— 这恰恰是应该被质疑的地方。<br>
+  <b>引擎</b>：decision-confidence（MIT）· <span class="mono">github.com/Beltran12138/decision-confidence</span>
+</div>
+
+<script>
+function toggle(){
+  const on=document.body.classList.toggle('grouped');
+  document.getElementById('sw').classList.toggle('on',on);
+  document.getElementById('naive').style.display=on?'none':'block';
+  document.getElementById('grouped').style.display=on?'block':'none';
+  document.getElementById('swlabel').textContent=on
+    ?'当前：先问「它在测什么」，只在同一个构念内部合并'
+    :'当前：直接合成一个综合分（今天绝大多数打分系统的做法）';
+  document.getElementById('swhint').textContent=on
+    ?'← 点回去   对比一下：一个字的数据都没变，判决完全相反'
+    :'点一下开关 →  先问「它在测什么」，再决定能不能合并';
+}
+document.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle();}});
+</script>
+</body>
+</html>
