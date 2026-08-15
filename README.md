@@ -25,7 +25,8 @@ the **third-party-vendor** instance.
 | [assay](https://github.com/Beltran12138/assay) | LLM-as-judge | does this metric measure what its name claims? |
 | [prophetmap](https://github.com/Beltran12138/prophetmap) | self-built equity scoring | does my own score survive my own rule? |
 
-Cross-domain evidence → [`docs/failure-families.md`](./docs/failure-families.md)
+The argument → [`docs/same-question.md`](./docs/same-question.md) ·
+evidence table → [`docs/failure-families.md`](./docs/failure-families.md)
 
 ---
 
