@@ -157,8 +157,61 @@ def load_rows(path: str) -> List[Dict[str, Any]]:
                 raise SystemExit(f"{path}:{lineno}: {exc}") from exc
             if "label" not in row or "subject" not in row:
                 raise SystemExit(f"{path}:{lineno}: row needs 'subject' and 'label'")
+            row.setdefault("_lineno", lineno)
             rows.append(row)
     return rows
+
+
+def report_corpus_integrity(rows: List[Dict[str, Any]]) -> None:
+    """Duplicate subjects and contradictory labels, reported rather than fixed.
+
+    A corpus is an instrument too, and this one was described as "203 scam /
+    203 legitimate, perfectly balanced" for as long as nobody counted distinct
+    addresses rather than lines.
+
+    **Nothing is de-duplicated here, deliberately.** Silently collapsing rows
+    would move every figure this harness has ever printed — the same silent
+    re-rating the library argues against everywhere else. A duplicate is
+    reported so a human can decide whether it is a capture artefact or two
+    genuine observations of one subject; the counts below say exactly what the
+    denominators contain.
+
+    A subject carrying both labels is worse than a duplicate: it enters the
+    confusion matrix as a true positive and a false positive for the same
+    threshold, so every precision figure in the run is internally inconsistent
+    by that much.
+    """
+    by_subject: Dict[str, List[Dict[str, Any]]] = {}
+    for row in rows:
+        by_subject.setdefault(row["subject"], []).append(row)
+
+    dupes = {s: rs for s, rs in by_subject.items() if len(rs) > 1}
+    conflicts = {s: rs for s, rs in by_subject.items()
+                 if len({int(r["label"]) for r in rs}) > 1}
+    if not dupes and not conflicts:
+        return
+
+    print()
+    print("### corpus integrity — the labels are an instrument too")
+    n_rows, n_subj = len(rows), len(by_subject)
+    lab_rows = [int(r["label"]) for r in rows]
+    uniq_first = [int(rs[0]["label"]) for rs in by_subject.values()]
+    print(f"    rows {n_rows}  distinct subjects {n_subj}  duplicated {len(dupes)}")
+    print(f"    by row      positives {sum(lab_rows)}  negatives {len(lab_rows) - sum(lab_rows)}")
+    print(f"    by subject  positives {sum(uniq_first)}  negatives {len(uniq_first) - sum(uniq_first)}"
+          f"   <- the balance an unqualified 'n=' implies")
+    print("    Every figure in this run is computed by row, duplicates included.")
+
+    if conflicts:
+        print()
+        for subject, rs in sorted(conflicts.items()):
+            labels = sorted({int(r["label"]) for r in rs})
+            lines = ", ".join(str(r.get("_lineno", "?")) for r in rs)
+            title = next((r.get("title") for r in rs if r.get("title")), "")
+            print(f"    ! {subject} carries labels {labels} on lines {lines}"
+                  + (f"  — {title}" if title else ""))
+        print("    A subject cannot be both. Precision in this run is inconsistent")
+        print("    by that many subjects until the label is resolved upstream.")
 
 
 def score_rows(rows: List[Dict[str, Any]]):
@@ -173,6 +226,9 @@ def score_rows(rows: List[Dict[str, Any]]):
     per_subject: List[Tuple[Dict[str, int], int]] = []
     status_counts: Dict[str, Dict[str, int]] = {}
     availability: Dict[str, Dict[Tuple[int, bool], int]] = {}
+    # Which subjects lack usable data, per construct. Kept so that two skew
+    # rows can be checked for whether they are two findings or one.
+    missing: Dict[str, set] = {}
 
     for row in rows:
         observations = []
@@ -190,6 +246,8 @@ def score_rows(rows: List[Dict[str, Any]]):
             bucket = availability.setdefault(g.construct, {})
             key = (label, g.n_ok > 0)
             bucket[key] = bucket.get(key, 0) + 1
+            if g.n_ok == 0:
+                missing.setdefault(g.construct, set()).add(row["subject"])
             if g.score is None:
                 continue
             scores[g.construct] = g.score
@@ -200,7 +258,7 @@ def score_rows(rows: List[Dict[str, Any]]):
             bucket = status_counts.setdefault(o.source_id, {})
             bucket[o.status] = bucket.get(o.status, 0) + 1
 
-    return per_construct, per_subject, status_counts, availability
+    return per_construct, per_subject, status_counts, availability, missing
 
 
 def compute_skew(availability) -> Dict[str, Tuple[float, float, float]]:
@@ -255,6 +313,52 @@ def report_availability_skew(skews: Dict[str, Tuple[float, float, float]]) -> No
         for construct, skew in sorted(worst, key=lambda kv: -abs(kv[1])):
             print(f"    {construct}: presence of data alone moves {abs(skew):.0%} with the label.")
         print("    Treat any performance on those constructs as unearned.")
+
+
+JACCARD_DEPENDENT = 0.80  # judgement, not a measurement — see below
+
+
+def report_skew_dependence(missing: Dict[str, set],
+                           skews: Dict[str, Tuple[float, float, float]]) -> None:
+    """Are two skew rows two findings, or one finding printed twice?
+
+    Availability skew is driven entirely by *which subjects lack data*. If two
+    constructs lack data on the same subjects, their skews are not independent
+    evidence that leakage is widespread — they are one gap, counted twice. The
+    table above cannot show this, because each row is computed alone.
+
+    On the corpus this was written for, three constructs printed an identical
+    skew and two of them missed the same 18 of 19 subjects.
+
+    ``JACCARD_DEPENDENT = 0.80`` is a judgement, in the same class as every
+    other threshold here: it marks a pair as *worth not double-counting*, not
+    as proven redundant. The overlap figure is printed for every pair above
+    0.50 so the cut-off can be argued with rather than trusted.
+    """
+    pairs = []
+    names = sorted(c for c in skews if missing.get(c))
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            sa, sb = missing[a], missing[b]
+            union = sa | sb
+            if not union:
+                continue
+            j = len(sa & sb) / len(union)
+            if j >= 0.50:
+                pairs.append((j, a, b, len(sa & sb), len(union)))
+    if not pairs:
+        return
+
+    print()
+    print("### are these skews independent? (overlap of the missing-data sets)")
+    print("    two constructs blind on the same subjects produce one finding, not two")
+    for j, a, b, inter, union in sorted(pairs, reverse=True):
+        mark = " <- treat as one" if j >= JACCARD_DEPENDENT else ""
+        print(f"    {a:<22} ∩ {b:<22} {inter:>4}/{union:<4} overlap {j:>5.2f}{mark}")
+    if any(j >= JACCARD_DEPENDENT for j, *_ in pairs):
+        print(f"    Rows overlapping at or above {JACCARD_DEPENDENT:.2f} share a cause.")
+        print("    Counting them as separate evidence overstates how many places")
+        print("    the leak was found.")
 
 
 def _ratio(num: int, den: int) -> float:
@@ -393,7 +497,7 @@ def main(argv: List[str]) -> int:
     args = ap.parse_args(argv)
 
     rows = load_rows(args.dataset)
-    per_construct, per_subject, status_counts, availability = score_rows(rows)
+    per_construct, per_subject, status_counts, availability, missing = score_rows(rows)
     step = max(1, args.step)
 
     n_bad = sum(1 for _, lab in per_subject if lab == 1)
@@ -408,7 +512,9 @@ def main(argv: List[str]) -> int:
     sweep_any_construct(per_subject, step)
     rank(results)
     report_availability_skew(skews)
+    report_skew_dependence(missing, skews)
     report_coverage(status_counts)
+    report_corpus_integrity(rows)
 
     print()
     print("Read this as a diagnostic, not a verdict. Thresholds tuned here are "
