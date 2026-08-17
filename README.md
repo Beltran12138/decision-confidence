@@ -16,14 +16,15 @@ definitional**, and returns a **confidence** label with an **audit trail**.
 Most tooling asks whether independent sources *agree*. This one asks whether they are
 measuring the same thing at all — two sources can differ by 68 points and both be right.
 
-The same five failure families keep surfacing in three unrelated domains. This repo is
-the **third-party-vendor** instance.
+The same five failure families keep surfacing in four unrelated domains — and a sixth
+has appeared in one of them. This repo is the **third-party-vendor** instance.
 
 | repo | domain | the question it asks |
 |---|---|---|
 | **decision-confidence** ← you are here | third-party risk vendors | do these vendors answer the same question? |
 | [assay](https://github.com/Beltran12138/assay) | LLM-as-judge | does this metric measure what its name claims? |
 | [prophetmap](https://github.com/Beltran12138/prophetmap) | self-built equity scoring | does my own score survive my own rule? |
+| `ai-game-bench` *(local, not published)* | multi-agent game testbed | can this metric detect a failure I injected on purpose? |
 
 The argument → [`docs/same-question.md`](./docs/same-question.md) ·
 evidence table → [`docs/failure-families.md`](./docs/failure-families.md)
