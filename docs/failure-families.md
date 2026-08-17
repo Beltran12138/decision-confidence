@@ -24,6 +24,12 @@ here because it is the only one of the four that can **manufacture** a failure w
 a known label — the other three can only find failures in data someone else
 produced. Its results are quoted, not offered for reuse.
 
+Every figure in that column was **recomputed from the raw game logs on 2026-08-16**,
+not transcribed from the notes written at the time. That check was not ceremonial:
+it corrected two of them. One had been rounded from "1 in 240" to "0%", and one
+described the seed spread in a way the per-seed values do not support. A table whose
+subject is unverified numbers is a poor place to quote unverified numbers.
+
 ---
 
 ## The table
@@ -38,7 +44,7 @@ the difference is invisible: `0` and `unknown` have the same shape.
 | vendors | `is_honeypot=0` — unclear whether the simulation ran and passed, or never ran. `holder_count=0` while a second vendor reports 17,543. A top-1 holder share of `4.6e30 %`, the arithmetic result of `balance / totalSupply` after supply was burned to zero. All three were re-classified as `unavailable`. |
 | judge | A judge returned `" 0 </think> 0.7"`. `parseFloat` read it as **0**. The default value in the parser *is* the fabrication mechanism: it converts "measurement failed" into "measurement succeeded and the answer is zero." Left unfixed, it would have produced a clean, large, literature-consistent — and entirely false — headline number. |
 | equity | `forward P/E < 0 ⇒ pricing score 5` structurally locks every loss-making name outside the gate. A vendor-precomputed `pegRatio` stayed byte-identical across a week in which **22 of 49** names moved more than 5% — a stale value wearing the costume of a fresh measurement. |
-| game | A four-way defection classifier reported `plan_failure = 0%` across 120 games, which read as "these agents do what they said they would." The environment had no wait action and a 6-turn horizon: the category was **structurally unreachable**. The metric was not measuring zero, it was measuring nothing. |
+| game | A four-way defection classifier found **1 execution failure in 240 agent-games** — effectively zero, and read at the time as "these agents do what they said they would." The environment had no wait action and a 6-turn horizon: the category was **structurally unreachable**. The metric was not measuring zero, it was measuring nothing. |
 
 **Rule of thumb:** any pipeline that silently drops unavailable sources inherits
 whatever bias the availability itself carries (see family 4).
@@ -70,7 +76,7 @@ not of the subject.
 | vendors | On a bridged, officially-issued token, one vendor reports risk **5** and another **100**. The 100 rests on a single medium-severity flag raised while routing through a thin third-party pool — a property of the route, not of the token. This pattern accounts for **13%** of two-source samples in that construct. Related: one vendor inspects 13 permission flags, another inspects 4; the systematic offset that produces is not evidence about the token. |
 | judge | Three judges scoring one answer gave **0.00 / 0.95 / 1.00**. Adding a single sentence to the rubric — stating whether an example consistent with the context counts as grounded — moved full-agreement from **53% → 83%** and collapsed that item to unanimous 1.00. **Majority voting fails here**: the minority judge was not wrong, it was answering a different question. |
 | equity | A 6-month momentum field compares endpoints only, so "declined all year" and "rose 180% then gave it back" both print ≈ −20%. A thesis was briefly revised on the strength of that number before the price path was actually read. |
-| game | Reserve values were drawn from a deterministic sequence, so small runs always used the same prefix of it. A headline effect — information visibility reduces breakdowns — survived two rounds of replication before randomised draws across 5 seeds put it at **0 ± 5.5 points**, with only 1 of 5 seeds agreeing in sign. The effect was a property of the draw order, not of the condition. Four separate conclusions from this testbed died the same way. |
+| game | Reserve values were drawn from a deterministic sequence, so small runs always used the same prefix of it. A headline effect — information visibility reduces breakdowns — survived two rounds of replication before randomised draws across 5 seeds put it at **0.0 ± 5.5 points** (per-seed: `0, +10, 0, +10, −20`). The effect was a property of the draw order, not of the condition. Four separate conclusions from this testbed died the same way. |
 
 **Cheap diagnostic, no labels required:** if the spread distribution is the same on
 known-good and known-bad samples, the spread is about the vendors, not the subject.
@@ -110,7 +116,7 @@ the decision.
 
 | domain | instance |
 |---|---|
-| game | Agents were asked to state a private intended floor before negotiating — a probe, meant to be passive, so that intent could be compared against action. Running the same conditions with and without that field: under pressure, breakdowns were **67% with the plan field and 100% without it**, and concessions were roughly twice as large with it (10.1 vs 4.8). Writing down what you privately intend makes an agent more willing to concede. Every result measured through that field was therefore measured in a perturbed behaviour regime. |
+| game | Agents were asked to state a private intended floor before negotiating — a probe, meant to be passive, so that intent could be compared against action. Running the same conditions with and without that field (48 games, 12 per cell): under pressure, breakdowns were **66.7% with the plan field and 100% without it**, and concessions were roughly twice as large with it (10.08 vs 4.83). Without pressure the two arms are **identical** on breakdowns (16.7% both) — the probe only perturbs behaviour in the condition the experiment was about. Every result measured through that field was therefore measured in a perturbed regime. |
 | vendors | Not applicable in the same form — the pipeline reads payloads and cannot change the contract it is reading. The nearest analogue is untested: one vendor's verdict comes from *simulating a trade*, which does touch the system it measures. |
 | judge | Not observed. Answers are frozen to disk before grading, so the judge cannot influence the generator. This is a design property, not a finding — and the freezing was done for reproducibility, not for this reason. |
 | equity | Not observed. |
