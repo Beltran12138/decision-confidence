@@ -174,6 +174,15 @@ def main() -> int:
     print(f"  全部 {n} 个        n_eff = {total:.2f} / {n}      效率 {total / n * 100:.0f}%")
     print()
 
+    # The one line that has to survive a projector. Rules rather than a box:
+    # CJK cell width varies by terminal, and a box that comes apart is worse
+    # than no box.
+    rule = "─" * 56
+    print(rule)
+    print(f"  ▶  买了 {n} 个源，实际拿到 {total:.2f} 个")
+    print(rule)
+    print()
+
     print("按最优顺序逐个买入")
     order = greedy_order(names, rho)
     prev = 0.0

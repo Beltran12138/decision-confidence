@@ -32,7 +32,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from decision_confidence import SourceObservation, observe_from_raw
 
-from adapters import dexscreener, funding, goplus, honeypot_is, okx
+from adapters import dexscreener, funding, goplus, honeypot_is, okx, scores
 
 __all__ = [
     "AdapterRegistry",
@@ -112,6 +112,11 @@ DEFAULT_REGISTRY.register(
     "okx", okx.parse,
     "OKX spot ticker — spread, book depth, turnover, range and 24h move "
     "off a single payload",
+)
+DEFAULT_REGISTRY.register(
+    "scores", scores.parse,
+    "Caller-supplied score table — one column per dimension, construct names "
+    "taken verbatim from the caller",
 )
 
 
