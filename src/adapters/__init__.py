@@ -32,7 +32,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from decision_confidence import SourceObservation, observe_from_raw
 
-from adapters import dexscreener, funding, goplus, honeypot_is
+from adapters import dexscreener, funding, goplus, honeypot_is, okx
 
 __all__ = [
     "AdapterRegistry",
@@ -107,6 +107,11 @@ DEFAULT_REGISTRY.register(
 DEFAULT_REGISTRY.register(
     "funding", funding.parse,
     "Perp funding rates — carry cost, one observation per venue",
+)
+DEFAULT_REGISTRY.register(
+    "okx", okx.parse,
+    "OKX spot ticker — spread, book depth, turnover, range and 24h move "
+    "off a single payload",
 )
 
 

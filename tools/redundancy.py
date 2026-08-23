@@ -128,6 +128,15 @@ MECHANISM_PRIOR: Dict[str, str] = {
     "compliance_exposure": "sanctions_lists",
     "fraud_prediction": "vendor_classifier",
     "carry_cost": "perp_funding_rates",
+    # From src/adapters/okx.py. Note the limit this table has: it is keyed by
+    # construct alone, so ``liquidity_depth`` keeps the DEX mechanism above even
+    # when OKX measures it off the order book instead of a pool. The prior is
+    # therefore wrong for venue data by construction, and is printed anyway —
+    # a prior that quietly re-keys itself to match the data is not a prior.
+    "execution_cost": "orderbook_top",
+    "trading_activity": "trade_tape",
+    "price_volatility": "price_series",
+    "price_momentum": "price_series",
 }
 
 

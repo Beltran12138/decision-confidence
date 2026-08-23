@@ -93,6 +93,10 @@ CONSTRUCTS = {
     "compliance_exposure",  # sanctions / KYT style exposure
     "fraud_prediction",     # scam / fraud classifier output
     "carry_cost",           # what holding the position costs (perp funding)
+    "execution_cost",       # what crossing the spread costs right now
+    "trading_activity",     # how much is actually changing hands
+    "price_volatility",     # how wide the recent range is
+    "price_momentum",       # which way it has moved and how hard
 }
 
 # Group label for sources that never declared a construct.
