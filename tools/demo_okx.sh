@@ -4,6 +4,10 @@
 # thing that touches the network, and the second one is the product.
 #
 #   sh tools/demo_okx.sh
+#
+# PowerShell and cmd have no ``sh``. Use ``python tools/demo_okx.py`` there —
+# same two steps, no shell dependency. A demo that depends on which terminal
+# happens to be focused is a demo that fails in the room.
 set -e
 cd "$(dirname "$0")/.."
 export PYTHONPATH=src
