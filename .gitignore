@@ -46,3 +46,7 @@ corpus/
 # function of the corpus and the seed, so tracking it would only ever produce
 # diffs that say the timestamp changed.
 out/
+
+# Hand-kept backups of earlier demo pages. The tracked file supersedes them
+# and git already holds its history, so these stay local.
+*.bak
