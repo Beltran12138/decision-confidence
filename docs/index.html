@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>有效源数 · 你这几列，实际上值几票？</title>
+<style>
+:root{--bg:#0B0D10;--panel:#101319;--panel2:#0E1116;--ink:#E9E5DC;--dim:#767C85;--dim2:#565C64;
+      --rule:#22262C;--rule2:#191D23;--gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A;--blue:#6E90AF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Microsoft YaHei','PingFang SC',Inter,sans-serif;
+     -webkit-font-smoothing:antialiased;padding:34px 40px 80px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto}
+.mono{font-family:Consolas,'JetBrains Mono',monospace}
+h1{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:34px;font-weight:600;line-height:1.35}
+h2{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:22px;font-weight:600;margin-bottom:14px}
+.kicker{font-family:Consolas,monospace;font-size:12.5px;letter-spacing:.2em;color:var(--dim);
+        text-transform:uppercase;margin-bottom:12px}
+.sub{color:var(--dim);font-size:15.5px;margin-top:12px;line-height:1.8;max-width:760px}
+.sub b{color:var(--ink)}
+.hr{height:1px;background:var(--rule);margin:32px 0}
+.sec{margin-top:40px}
+.pill{display:inline-block;font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.15em;
+      color:var(--gold);border:1px solid var(--gold);padding:4px 11px;margin-bottom:14px}
+.pill.r{color:var(--red);border-color:var(--red)}
+.pill.g{color:var(--grn);border-color:var(--grn)}
+.panel{background:var(--panel);border:1px solid var(--rule);padding:22px 26px}
+.panel+.panel{margin-top:16px}
+.tag{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.18em;color:var(--dim);margin-bottom:13px}
+
+textarea{width:100%;height:190px;background:#080A0D;color:var(--ink);border:1px solid var(--rule);
+         padding:14px 16px;font-family:Consolas,monospace;font-size:13.5px;line-height:1.65;resize:vertical}
+textarea:focus{outline:none;border-color:var(--gold)}
+.btn{font-family:Consolas,monospace;font-size:13.5px;letter-spacing:.05em;background:transparent;
+     color:var(--gold);border:1px solid var(--gold);padding:9px 20px;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--gold);color:#0B0D10}
+.btn.ghost{color:var(--dim);border-color:var(--rule)}
+.btn.ghost:hover{background:var(--rule);color:var(--ink)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.hint{font-size:13px;color:var(--dim2);line-height:1.7}
+
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.1em;color:var(--dim);text-align:left;
+   font-weight:400;padding:0 10px 10px 0;border-bottom:1px solid var(--rule)}
+td{padding:11px 10px 11px 0;border-bottom:1px solid var(--rule2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num,th.num{font-family:Consolas,monospace;text-align:right;padding-right:18px}
+td.num{font-size:16px}
+
+.big{font-family:Consolas,monospace;font-size:82px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.big small{font-size:30px;color:var(--dim);font-weight:400;letter-spacing:0}
+.ci{font-family:Consolas,monospace;font-size:15px;color:var(--dim);margin-top:12px;line-height:1.6}
+.eff{font-size:17px;margin-top:14px}
+.grid2{display:grid;grid-template-columns:1fr 1.25fr;gap:22px;align-items:start}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+
+.warn{border-left:3px solid var(--red);padding:13px 17px;margin-top:14px;background:#15100F;
+      font-size:14.5px;line-height:1.7;color:#D8D2C8}
+.warn.info{border-left-color:var(--gold);background:#14120C}
+.warn.ok{border-left-color:var(--grn);background:#0D1310}
+.calm{border-left:3px solid var(--rule);padding:13px 17px;margin-top:14px;background:var(--panel2);
+      font-size:14px;color:var(--dim);line-height:1.7}
+.bar{height:7px;background:#20252C;position:relative;margin-top:6px;max-width:260px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold)}
+.bar.hi i{background:var(--red)}
+.bar.lo i{background:var(--grn)}
+.foot{margin-top:52px;color:var(--dim);font-size:13px;line-height:1.9;border-top:1px solid var(--rule);padding-top:22px}
+.foot b{color:#9AA0A8}
+.foot a{color:var(--blue)}
+#out{display:none}
+.err{color:var(--red);font-size:14.5px;line-height:1.7;margin-top:14px}
+code{font-family:Consolas,monospace;background:#191D23;padding:1px 6px;font-size:13px;color:var(--gold)}
+ol,ul{margin:10px 0 0 20px}
+li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="kicker">DECISION-CONFIDENCE &middot; 有效源数</div>
+<h1>你这几列，实际上值几票？</h1>
+<div class="sub">
+  把一张评分表贴进来&mdash;&mdash;每行一个标的，每列一个已经打好的分。这个页面回答三个问题：
+  <b>这几列实际提供了几份独立证据、哪两列在重复、砍掉哪一列不损失什么。</b>
+  <br><br>
+  它<b>不预测涨跌，不替你选股，不产生任何新的分数</b>。它只量你手上已有的东西。
+  <br><br>
+  <b style="color:var(--grn)">全部计算在你的浏览器里完成，数据不发送到任何地方。</b>
+  这个页面没有后端，断网也能跑&mdash;&mdash;你可以现在就断网试。
+</div>
+
+<div class="hr"></div>
+
+<div class="sec">
+  <div class="pill">第一步 &middot; 贴表</div>
+  <h2>从 Excel、Numbers、Google Sheets 直接复制粘贴即可</h2>
+  <div class="hint" style="margin-bottom:14px">
+    第一行是列名。第一列如果是标的名称（非数字），会被自动识别为名称列，不参与计算。<br>
+    支持制表符、逗号分隔。空格分隔的也认，但列名里就不能有空格。
+  </div>
+  <textarea id="inp" spellcheck="false" placeholder="标的	增长	估值	质量	情绪
+NVDA	4	2	5	4
+AMD	3	3	3	3
+..."></textarea>
+  <div class="row">
+    <button class="btn" id="go">算一下</button>
+    <button class="btn ghost" id="demo1">载入示例：4 个投研维度</button>
+    <button class="btn ghost" id="demo2">载入示例：5 个交易台指标</button>
+    <button class="btn ghost" id="clr">清空</button>
+  </div>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="out">
+
+<div class="hr"></div>
+
+<div class="sec">
+  <div class="pill">第二步 &middot; 读数</div>
+  <div id="deadcols"></div>
+  <div class="grid2">
+    <div class="panel">
+      <div class="tag">有效源数 &middot; N_EFF</div>
+      <div class="big" id="neff">&mdash;<small id="ncols"></small></div>
+      <div class="ci" id="ci"></div>
+      <div class="eff" id="eff"></div>
+      <div id="verdict"></div>
+    </div>
+    <div class="panel">
+      <div class="tag">这几列两两之间有多重合</div>
+      <table id="pairs"><tbody></tbody></table>
+      <div class="calm" id="pairnote"></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="pill">第三步 &middot; 该砍哪一列</div>
+  <h2>去掉这一列，剩下的还剩几票</h2>
+  <div class="hint" style="margin-bottom:16px">
+    逐列移除，看有效源数怎么变。<b style="color:var(--ink)">掉得少的那一列，就是账面上占位置、实际不提供独立信息的那一列。</b>
+    如果移除某列之后反而<b style="color:var(--ink)">上升</b>，说明那一列不但没有贡献，还在拉低整体的独立性。
+  </div>
+  <div class="panel">
+    <table id="drop">
+      <thead><tr><th>移除这一列</th><th class="num">剩下的有效源数</th><th class="num">变化</th><th style="width:280px">读法</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="pill g">第四步 &middot; 那我该怎么办</div>
+  <h2>拿到这个数之后的动作</h2>
+  <div class="panel" id="actions"></div>
+</div>
+
+<div class="sec">
+  <div class="pill">口径</div>
+  <div class="panel">
+    <table id="meta"><tbody></tbody></table>
+  </div>
+</div>
+
+</div><!-- /out -->
+
+<div class="foot">
+  <b>方法</b>：列内取秩 &rarr; 两两皮尔逊相关（即斯皮尔曼秩相关）&rarr;
+  <code>n_eff = n&sup2; / (n + 2&Sigma;|&rho;|)</code>。
+  区间由对<b>标的</b>（不是对单元格）有放回重抽 1000 次得到，取 2.5% / 97.5% 分位。
+  种子固定，同一张表每次跑出同一个数。
+  <br><br>
+  <b>为什么对相关系数取绝对值</b>：Kish 有效样本量的原式不取绝对值，因为它来自方差推导&mdash;&mdash;
+  两个负相关的估计量平均起来噪音互相抵消，平均值反而更准，所以「等效独立样本数」可以超过列数。
+  那在估计精度的语境下是对的。但这里问的不是精度，是<b>这几列在不在回答同一个问题</b>。
+  两列相关 &minus;0.9，不是两个独立的问题，是同一个问题的正反两面&mdash;&mdash;知道一列就知道另一列。
+  作为证据它该算一票多一点，不是两票。所以这里正负同等计入重合。
+  代价是这个数不再等于方差意义上的有效样本量；好处是它不会给出「4 列值 6 票」这种读不通的结果。
+  <br><br>
+  <b>零方差列</b>：一整列的值全都一样时，它跟任何列的相关都无法定义。把它记作 0（＝完全独立）
+  会让一条毫无区分度的列伪装成满分独立票&mdash;&mdash;这是最坏的失败方向。所以这类列在进入计算之前
+  就被剔除，并单独列出。<b>一列分不出任何东西，不等于它提供了独立信息。</b>
+  <br>
+  <b>缺失值</b>：整行删除（listwise）。任何一列缺分，该行不参与计算，删了多少行会在「口径」里报出来。
+  <br><br>
+  <b>它不是什么</b>：不是因子研究。因子研究问的是「这个信号能不能预测收益」；这里问的是
+  「这几列是不是在回答同一个问题」。两者正交&mdash;&mdash;一个因子可以毫无预测力却仍是独立构念，
+  两个因子可以都很赚钱却其实是同一个东西。
+  <br>
+  <b>也不是风险模型</b>：风险模型问你承担了几种<b>金融风险</b>，这里问你有几份<b>证据</b>支持结论。
+  <br><br>
+  <b>一个必须说清的边界</b>：这里用的是原始秩相关，没有条件化在任何结局变量上。
+  如果你的表里有可测的结局（涨跌、是否兑现），控制住它之后再算，数字通常会更低。
+  所以<b>这个数是相关性的上界读法</b>，不是「控制标签后」的读法&mdash;&mdash;真实的独立性只会比它更差，不会更好。
+  <br>
+  <b>还有一件它看不出来的事</b>：有效源数只能量现有的列有多重合，
+  <b style="color:var(--gold)">它看不出你漏掉了什么</b>。四列算得再干净，要是该测的第五件事根本没有数据源，
+  这个总分依然不成立。那一步得靠你自己列。
+  <br><br>
+  <b>这个数不必采信，可以自行核验</b>：方法全部公开，纯前端，右键查看源代码即可读完。
+  MIT &middot; 无依赖 &middot; 无网络请求
+</div>
+
+</div>
+
+<script>
+'use strict';
+
+/* ================= 数学 ================= */
+
+function ranks(xs){
+  const order = xs.map(function(v,i){return i;}).sort(function(a,b){return xs[a]-xs[b];});
+  const r = new Array(xs.length);
+  let i = 0;
+  while(i < order.length){
+    let j = i;
+    while(j+1 < order.length && xs[order[j+1]] === xs[order[i]]) j++;
+    const avg = (i+j)/2 + 1;              // 并列取平均秩
+    for(let k=i;k<=j;k++) r[order[k]] = avg;
+    i = j+1;
+  }
+  return r;
+}
+
+function pearson(a,b){
+  const n = a.length;
+  let ma = 0, mb = 0;
+  for(let i=0;i<n;i++){ ma += a[i]; mb += b[i]; }
+  ma /= n; mb /= n;
+  let num=0, da=0, db=0;
+  for(let i=0;i<n;i++){
+    const x=a[i]-ma, y=b[i]-mb;
+    num += x*y; da += x*x; db += y*y;
+  }
+  const den = Math.sqrt(da*db);
+  // 零方差列的相关无法定义。返回 0 会把一条常数列伪装成完全独立的一票，
+  // 那是最坏的失败方向。返回 NaN，由上游在进入计算前剔除这类列。
+  return den ? num/den : NaN;
+}
+
+function key(a,b){ return JSON.stringify([a,b].sort()); }
+
+// n_eff = n^2 / (n + 2*sum|rho|)。取绝对值的理由见页脚说明。
+function neff(fields, rho){
+  const n = fields.length;
+  if(n === 0) return 0;
+  let s = n;                              // 对角线 n 个 1
+  for(let i=0;i<n;i++)
+    for(let j=i+1;j<n;j++) s += 2*Math.abs(rho[key(fields[i],fields[j])]);
+  return s > 0 ? (n*n)/s : NaN;
+}
+
+function mulberry32(seed){
+  let a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(a ^ (a>>>15), 1|a);
+    t = (t + Math.imul(t ^ (t>>>7), 61|t)) ^ t;
+    return ((t ^ (t>>>14)) >>> 0) / 4294967296;
+  };
+}
+
+function neffOf(rows, fields){
+  const c = {};
+  fields.forEach(function(f){ c[f] = ranks(rows.map(function(r){return r[f];})); });
+  const r = {};
+  for(let i=0;i<fields.length;i++)
+    for(let j=i+1;j<fields.length;j++){
+      const v = pearson(c[fields[i]], c[fields[j]]);
+      // 重抽样本里可能整列同值，此时该次重抽不可用
+      if(!Number.isFinite(v)) return NaN;
+      r[key(fields[i],fields[j])] = v;
+    }
+  return neff(fields, r);
+}
+
+// 对标的重抽，不是对单元格。重抽单元格会切断同一标的内部各列的联系，
+// 得到的区间会偏窄 —— 那正好是让结论显得更可信的方向。
+function bootstrapCI(rows, fields, draws, seed){
+  const rnd = mulberry32(seed);
+  const out = [];
+  let bad = 0;
+  for(let d=0; d<draws; d++){
+    const s = new Array(rows.length);
+    for(let i=0;i<rows.length;i++) s[i] = rows[Math.floor(rnd()*rows.length)];
+    const v = neffOf(s, fields);
+    if(Number.isFinite(v)) out.push(v); else bad++;
+  }
+  if(out.length < draws*0.5) return null;   // 过半重抽退化，区间不可信
+  out.sort(function(a,b){return a-b;});
+  function at(p){ return out[Math.min(out.length-1, Math.max(0, Math.round(p*(out.length-1))))]; }
+  return {lo:at(0.025), hi:at(0.975), n:out.length, bad:bad};
+}
+
+/* ================= 解析 ================= */
+
+function splitLine(line, delim){
+  if(delim === '\t') return line.split('\t');
+  if(delim === ',')  return line.split(',');
+  return line.trim().split(/\s+/);
+}
+
+function detectDelim(lines){
+  if(lines[0].indexOf('\t') >= 0) return '\t';
+  if(lines[0].indexOf(',')  >= 0) return ',';
+  return ' ';
+}
+
+function parse(text){
+  const lines = text.split(/\r?\n/)
+    .map(function(s){ return s.replace(/\s+$/,''); })
+    .filter(function(s){ return s.trim().length; });
+  if(lines.length < 2) throw new Error('至少需要一行列名加一行数据。');
+
+  const delim = detectDelim(lines);
+  const head = splitLine(lines[0], delim).map(function(s){ return s.trim(); });
+  if(head.length < 2)
+    throw new Error('只认出 1 列。检查一下分隔符 —— 从表格软件直接复制通常是制表符分隔的。');
+
+  const raw = [];
+  for(let i=1;i<lines.length;i++){
+    const cells = splitLine(lines[i], delim).map(function(s){ return s.trim(); });
+    if(cells.length === 1 && cells[0] === '') continue;
+    raw.push(cells);
+  }
+  if(!raw.length) throw new Error('没有读到数据行。');
+
+  const BLANK = {'':1,'-':1,'NA':1,'N/A':1,'na':1,'null':1,'None':1};
+
+  // 数值列判定：能解析成数字的比例 > 60%
+  const isNum = head.map(function(_, c){
+    let ok=0, tot=0;
+    raw.forEach(function(r){
+      const v = (r[c] === undefined ? '' : r[c]).trim();
+      if(BLANK[v]) return;
+      tot++;
+      if(isFinite(Number(v)) && v !== '') ok++;
+    });
+    return tot > 0 && ok/tot > 0.6;
+  });
+
+  const numCols = head.map(function(h,i){return {h:h,i:i};}).filter(function(x){return isNum[x.i];});
+  const txtCols = head.map(function(h,i){return {h:h,i:i};}).filter(function(x){return !isNum[x.i];});
+  if(numCols.length < 2)
+    throw new Error('需要至少 2 个数值列，当前只认出 ' + numCols.length +
+                    ' 个。检查一下：分数里有没有混进 %、逗号千分位或者中文字？');
+
+  const nameIdx = txtCols.length ? txtCols[0].i : -1;
+
+  // 列名去重，否则同名列会互相覆盖
+  const seen = {};
+  const fieldsU = numCols.map(function(x){
+    const f = x.h;
+    if(seen[f] === undefined){ seen[f] = 1; return f; }
+    seen[f]++; return f + '#' + seen[f];
+  });
+
+  const rows = [];
+  let dropped = 0;
+  raw.forEach(function(r){
+    const o = {};
+    let ok = true;
+    numCols.forEach(function(c,k){
+      const v = (r[c.i] === undefined ? '' : r[c.i]).trim();
+      const n = BLANK[v] ? NaN : Number(v);
+      if(!isFinite(n)) ok = false;
+      o[fieldsU[k]] = n;
+    });
+    if(!ok){ dropped++; return; }          // listwise：整行删
+    o.__name = nameIdx >= 0 ? (r[nameIdx] === undefined ? '' : r[nameIdx]) : '';
+    rows.push(o);
+  });
+
+  if(rows.length < 3)
+    throw new Error('可用数据行只有 ' + rows.length + ' 行（原始 ' + raw.length +
+                    ' 行，因缺分删掉 ' + dropped + ' 行）。至少要 3 行才能算相关。');
+
+  // 零方差列：整列同值，无区分度。剔除，单独报出。
+  const dead = [], live = [];
+  fieldsU.forEach(function(f){
+    const vals = {};
+    let k = 0;
+    for(let i=0;i<rows.length;i++){
+      const v = rows[i][f];
+      if(vals[v] === undefined){ vals[v] = 1; k++; }
+      if(k > 1) break;
+    }
+    (k > 1 ? live : dead).push(f);
+  });
+
+  if(live.length < 2)
+    throw new Error('去掉无区分度的列之后只剩 ' + live.length + ' 个可用列' +
+      (dead.length ? '（' + dead.join('、') + ' 整列同值）' : '') + '。至少需要 2 列。');
+
+  return {fields: live, dead: dead, rows: rows, dropped: dropped, rawRows: raw.length,
+          ignored: txtCols.map(function(x){return x.h;}), delim: delim};
+}
+
+/* ================= 呈现 ================= */
+
+function $(id){ return document.getElementById(id); }
+function f2(v){ return (Math.round(v*100)/100).toFixed(2); }
+function esc(s){
+  return String(s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
+
+function run(){
+  $('err').textContent = '';
+  let d;
+  try{ d = parse($('inp').value); }
+  catch(e){ $('err').textContent = '✗ ' + e.message; $('out').style.display='none'; return; }
+
+  const fields = d.fields, rows = d.rows;
+  const N = fields.length;
+
+  const col = {};
+  fields.forEach(function(f){ col[f] = ranks(rows.map(function(r){return r[f];})); });
+  const rho = {}, pairs = [];
+  for(let i=0;i<N;i++)
+    for(let j=i+1;j<N;j++){
+      const v = pearson(col[fields[i]], col[fields[j]]);
+      rho[key(fields[i],fields[j])] = v;
+      pairs.push({a:fields[i], b:fields[j], v:v});
+    }
+
+  const n = neff(fields, rho);
+  const ci = bootstrapCI(rows, fields, 1000, 20260825);
+
+  // 无区分度的列
+  $('deadcols').innerHTML = d.dead.length
+    ? '<div class="warn"><b>有 ' + d.dead.length + ' 列整列同值，已从计算中剔除：' +
+      d.dead.map(esc).join('、') + '</b><br>' +
+      '这些列在这批标的上分辨不出任何东西。它们在面板上各占一列位置，对结论的贡献是零。<br>' +
+      '<span style="color:var(--dim)">注意：这不代表该指标本身没用，只代表在<b style="color:#D8D2C8">这一批标的</b>上它没有区分度。' +
+      '换一批标的可能就有了。</span></div>'
+    : '';
+
+  $('neff').innerHTML = f2(n) + '<small> / ' + N + '</small>';
+  $('ci').innerHTML = ci
+    ? '95% 区间 [' + f2(ci.lo) + ', ' + f2(ci.hi) + ']　（对标的重抽 ' + ci.n + ' 次）'
+    : '<span style="color:var(--red)">样本退化，未能给出区间</span>';
+  const effPct = Math.round(n/N*100);
+  $('eff').innerHTML = '效率 <b class="mono" style="font-size:22px">' + effPct + '%</b>' +
+    '<div class="bar ' + (effPct<60?'hi':effPct>85?'lo':'') +
+    '"><i style="width:' + Math.min(100,effPct) + '%"></i></div>';
+
+  const lost = N - n;
+  let v = '';
+  if(effPct >= 90){
+    v = '<div class="warn ok"><b>这几列基本上各说各的。</b>' + N + ' 列提供了约 ' + f2(n) +
+        ' 份独立证据，重合很少。这种情况不常见 —— 值得回头检查一下行数（当前 ' +
+        rows.length + ' 行）：样本少的时候相关性估计本身就不稳，看起来独立可能只是没测出来。</div>';
+  }else if(effPct >= 70){
+    v = '<div class="warn info"><b>有一些重合，但不严重。</b>账面 ' + N + ' 列，实际约 ' + f2(n) +
+        ' 份独立证据，相当于白算了 ' + f2(lost) + ' 列。</div>';
+  }else{
+    v = '<div class="warn"><b>账面上是 ' + N + ' 重检查，实际只有 ' + f2(n) + ' 重。</b>' +
+        '这 ' + N + ' 列里有 ' + f2(lost) + ' 列的信息，已经被别的列说过一遍了。' +
+        '如果你在把这几列加权成一个总分，那个总分的确定性比它看起来低。</div>';
+  }
+  if(ci && ci.hi < N*0.75)
+    v += '<div class="calm">区间上界 ' + f2(ci.hi) + ' 仍然明显低于 ' + N +
+         ' —— 这不是抽样噪音造成的假象。</div>';
+  $('verdict').innerHTML = v;
+
+  // 两两相关
+  pairs.sort(function(x,y){ return Math.abs(y.v)-Math.abs(x.v); });
+  $('pairs').querySelector('tbody').innerHTML = pairs.map(function(p){
+    const a = Math.abs(p.v);
+    const cls = a>=0.7 ? ' style="color:var(--red)"' : a>=0.4 ? ' style="color:var(--gold)"' : '';
+    return '<tr><td>' + esc(p.a) + ' <span style="color:var(--dim2)">~</span> ' + esc(p.b) +
+           '<div class="bar ' + (a>=0.7?'hi':a<0.25?'lo':'') +
+           '" style="max-width:200px"><i style="width:' + Math.round(a*100) + '%"></i></div></td>' +
+           '<td class="num"' + cls + '>' + (p.v>=0?'+':'−') + f2(Math.abs(p.v)) + '</td></tr>';
+  }).join('');
+
+  const worst = pairs[0];
+  $('pairnote').innerHTML = Math.abs(worst.v) >= 0.7
+    ? '最重合的一对是 <b style="color:var(--ink)">' + esc(worst.a) + '</b> 和 <b style="color:var(--ink)">' +
+      esc(worst.b) + '</b>（' + (worst.v>=0?'+':'−') + f2(Math.abs(worst.v)) +
+      '）。这两列几乎在说同一件事 —— 先想清楚它们是不是本来就来自同一份底稿。'
+    : '秩相关。+1 表示两列排序完全一致，0 表示互不相干，−1 表示完全相反。' +
+      '<b style="color:var(--ink)">负相关不是独立</b>：知道一列就能反推另一列，' +
+      '所以正负同等计入重合。';
+
+  // 逐列移除
+  const drops = fields.map(function(f){
+    const rest = fields.filter(function(x){ return x!==f; });
+    const nr = rest.length >= 2 ? neff(rest, rho) : 1;
+    return {f:f, nr:nr, delta: n - nr};
+  }).sort(function(a,b){ return a.delta-b.delta; });
+
+  $('drop').querySelector('tbody').innerHTML = drops.map(function(x){
+    const cheap = x.delta < 0.15;
+    const read = x.delta < 0
+      ? '<span style="color:var(--red)">砍掉它，剩下的反而更独立。</span>它在拉低整体独立性。'
+      : cheap
+        ? '<span style="color:var(--red)">砍掉它，你几乎什么都没损失。</span>它占了一列位置，贡献接近零。'
+        : x.delta > 0.6
+          ? '<span style="color:var(--grn)">这一列扛着不少独立信息</span>，砍了会真的变瞎。'
+          : '有一定独立贡献，但不是不可替代。';
+    const sign = x.delta >= 0 ? '−' : '+';
+    return '<tr><td><b>' + esc(x.f) + '</b></td>' +
+           '<td class="num">' + f2(x.nr) + '</td>' +
+           '<td class="num" style="color:' + (cheap?'var(--red)':'var(--ink)') + '">' +
+           sign + f2(Math.abs(x.delta)) + '</td>' +
+           '<td style="font-size:14px;color:var(--dim);line-height:1.65">' + read + '</td></tr>';
+  }).join('');
+
+  // 那我该怎么办
+  const cheapest = drops[0];
+  const acts = [];
+  if(d.dead.length){
+    acts.push('<b>先处理那 ' + d.dead.length + ' 列整列同值的：' + d.dead.map(esc).join('、') +
+      '。</b>它们在这批标的上一个字都没说。要么换一个能拉开差距的口径（比如把「涨跌」' +
+      '换成「相对基准的超额」），要么就从面板上撤掉 —— 留着只会让人误以为多了几重确认。');
+  }
+  if(cheapest.delta < 0.15){
+    acts.push('<b>砍掉「' + esc(cheapest.f) + '」。</b>移除它之后有效源数从 ' + f2(n) + ' 变成 ' +
+      f2(cheapest.nr) + (cheapest.delta < 0 ? '（不降反升）' : '，损失只有 ' + f2(cheapest.delta)) +
+      '。它在面板上占一列，对结论的贡献接近于零。少看一列，省下的注意力放到别处。');
+  }
+  if(Math.abs(worst.v) >= 0.6){
+    acts.push('<b>查「' + esc(worst.a) + '」和「' + esc(worst.b) + '」是不是同一份底稿。</b>' +
+      '相关 ' + (worst.v>=0?'+':'−') + f2(Math.abs(worst.v)) +
+      ' 通常有具体原因 —— 同一个数据商、同一个分母、同一个模型打的分。' +
+      '如果是，那它们本来就是一列，不该当两票用。如果确实来自两个独立来源却还这么像，' +
+      '那才是真正值得记下来的事实。');
+  }
+  acts.push('<b>把加权总分的口径改掉。</b>你现在若是把这 ' + N + ' 列加权成一个综合分，' +
+    '那个分在心理上被当作 ' + N + ' 重印证，实际只有 ' + f2(n) +
+    ' 重。要么补一个真正正交的维度把它顶上去，要么在报告里把「' + N + ' 项指标综合」改成' +
+    '「' + N + ' 项指标（实际独立性约 ' + f2(n) + '）」。<b>后者零成本，今天就能改。</b>');
+  acts.push('<b>如果这几列里缺了一整个问题，先别出分。</b>有效源数只能告诉你现有的列有多重合，' +
+    '<span style="color:var(--gold)">它看不出你漏掉了什么</span>。' + N + ' 个维度算得再干净，' +
+    '要是该测的那件事根本没有数据源，这个总分依然不成立。' +
+    '这一步得靠你自己列一遍：我的决策依赖哪几个问题，它们各自有没有对应的列。');
+
+  $('actions').innerHTML = '<ol><li>' + acts.join('</li><li>') + '</li></ol>';
+
+  // 口径
+  const m = [
+    ['数据行', d.rawRows + ' 行' + (d.dropped
+        ? '，因缺分整行删除 ' + d.dropped + ' 行，实际参与 ' + rows.length + ' 行'
+        : '，全部可用')],
+    ['参与计算的列', N + ' 列：' + fields.map(esc).join('、')],
+    ['剔除：无区分度', d.dead.length ? d.dead.map(esc).join('、') + '（整列同值）' : '无'],
+    ['剔除：非数值', d.ignored.length ? d.ignored.map(esc).join('、') + '（识别为名称/备注列）' : '无'],
+    ['分隔符', d.delim === '\t' ? '制表符' : d.delim === ',' ? '逗号' : '空白'],
+    ['相关系数', '斯皮尔曼秩相关（列内取秩后求皮尔逊），取绝对值计入重合'],
+    ['区间', ci
+        ? '对标的有放回重抽 ' + ci.n + ' 次，取 2.5%/97.5% 分位，种子 20260825' +
+          (ci.bad ? '（另有 ' + ci.bad + ' 次重抽退化，已排除）' : '')
+        : '样本退化过多，未估计'],
+    ['条件化', '无。未控制任何结局变量，属相关性的上界读法']
+  ];
+  if(rows.length < 10)
+    m.push(['⚠ 样本量', rows.length + ' 行偏少。区间会很宽，点估计不稳，别拿它下硬结论']);
+  $('meta').querySelector('tbody').innerHTML = m.map(function(kv){
+    return '<tr><td style="width:160px;color:var(--dim);font-size:14px">' + kv[0] +
+           '</td><td style="font-size:14px">' + kv[1] + '</td></tr>';
+  }).join('');
+
+  $('out').style.display = 'block';
+  $('out').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ================= 示例 ================= */
+
+// 四个投研维度。物理约束与护城河高度重合 —— 能卡别人脖子的公司往往就是能收租的公司。
+const DEMO1 = '标的\t物理约束\t护城河\tAI收入占比\t估值分位\n' +
+'NVDA\t5\t5\t5\t2\nTSM\t5\t5\t3\t3\nASML\t5\t5\t3\t2\nAVGO\t4\t4\t4\t2\n' +
+'AMD\t3\t3\t4\t3\nMU\t4\t2\t4\t4\nAMAT\t4\t4\t2\t3\nLRCX\t4\t4\t2\t3\n' +
+'INTC\t2\t2\t2\t5\nQCOM\t3\t4\t2\t4\nARM\t4\t5\t3\t1\nMRVL\t3\t3\t4\t2\n' +
+'CRDO\t3\t2\t4\t1\nVRT\t3\t3\t4\t2\nCEG\t4\t3\t3\t3\nGEV\t3\t3\t2\t3\n' +
+'ANET\t3\t4\t4\t2\nSMCI\t1\t1\t4\t4\nDELL\t1\t1\t3\t4\nWDC\t3\t2\t3\t4';
+
+// 五个交易台指标。价差与成交额其实是同一件事的两种说法 —— 热度高的品种价差自然窄。
+// 最后一列「24h涨跌」整列同值：这一天所有品种同向，它分辨不出任何东西。
+const DEMO2 = '品种\t价差\t盘口薄侧\t成交额\t日内振幅\t24h涨跌\n' +
+'BTC\t5\t45\t5\t30\t30\nETH\t5\t88\t5\t55\t30\nBNB\t20\t97\t45\t30\t30\n' +
+'SOL\t20\t88\t20\t55\t30\nXRP\t20\t97\t45\t30\t30\nTRX\t5\t97\t45\t10\t30\n' +
+'DOGE\t45\t97\t45\t55\t30\nADA\t45\t97\t55\t30\t30\nLINK\t45\t88\t55\t55\t30\n' +
+'AVAX\t45\t97\t55\t55\t30\nDOT\t55\t97\t70\t55\t30\nLTC\t20\t88\t45\t30\t30\n' +
+'HYPE\t20\t97\t20\t55\t30\nXAUT\t5\t88\t45\t10\t30\nUNI\t45\t97\t55\t70\t30\n' +
+'AAVE\t45\t88\t55\t55\t30';
+
+$('go').onclick = run;
+$('demo1').onclick = function(){ $('inp').value = DEMO1; run(); };
+$('demo2').onclick = function(){ $('inp').value = DEMO2; run(); };
+$('clr').onclick = function(){
+  $('inp').value=''; $('out').style.display='none'; $('err').textContent=''; $('inp').focus();
+};
+$('inp').addEventListener('keydown', function(e){
+  if((e.metaKey || e.ctrlKey) && e.key === 'Enter') run();
+});
+</script>
+</body>
+</html>
