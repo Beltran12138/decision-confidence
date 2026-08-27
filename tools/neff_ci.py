@@ -25,21 +25,23 @@ import argparse
 import os
 import random
 import sys
-from itertools import combinations
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from redundancy import collect, load_rows  # noqa: E402
-from neff import key, neff, within_label_rho  # noqa: E402
+from neff import build_rho, neff  # noqa: E402
 
 
 def neff_of(per_subject, names):
-    """Point n_eff for one (possibly resampled) set of subjects."""
-    rho = {}
-    for a, b in combinations(names, 2):
-        r, _n = within_label_rho(per_subject, a, b)
-        rho[key(a, b)] = 0.0 if r is None else r
+    """Point n_eff for one (possibly resampled) set of subjects.
+
+    Unmeasurable pairs are decided in ``neff.build_rho``, not here. Inside a
+    bootstrap draw the label is dropped on purpose — a resample missing a
+    stratum is sampling noise, and it is the point estimate on the real data
+    that has to be disclosed. ``main`` does that below.
+    """
+    rho, _pair_n, _unmeasured = build_rho(per_subject, names)
     return neff(names, rho)
 
 
@@ -62,7 +64,8 @@ def main() -> int:
         print("need at least two constructs", file=sys.stderr)
         return 1
 
-    point = neff_of(per_subject, names)
+    rho, _pair_n, unmeasured = build_rho(per_subject, names)
+    point = neff(names, rho)
 
     rng = random.Random(args.seed)
     n = len(per_subject)
@@ -83,6 +86,11 @@ def main() -> int:
     med = pct(0.50)
 
     print()
+    if unmeasured:
+        print("! 以下配对没有足够大的层可测，按 0 计入——这会高估下面每一个数字：")
+        for a, b in unmeasured:
+            print(f"    {a} ~ {b}")
+        print()
     print(f"语料 {args.corpus}  ·  {n} 个标的  ·  {len(names)} 个构念")
     print(f"重抽样 {len(draws)} 次（对标的重抽，不对格子重抽） · seed {args.seed}")
     print()

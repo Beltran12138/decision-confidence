@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from redundancy import collect, load_rows  # noqa: E402
-from neff import greedy_order, key, neff, within_label_rho  # noqa: E402
+from neff import build_rho, greedy_order, neff  # noqa: E402
 from neff_ci import neff_of  # noqa: E402
 
 CSS = """
@@ -99,11 +99,7 @@ def build(corpus, title, draws, seed, stamp):
     labels = sorted({lab for _s, _v, lab in per_subject})
     n_sub = len(per_subject)
 
-    rho, pair_n = {}, {}
-    for a, b in combinations(names, 2):
-        r, n = within_label_rho(per_subject, a, b)
-        rho[key(a, b)] = 0.0 if r is None else r
-        pair_n[key(a, b)] = n
+    rho, pair_n, unmeasured = build_rho(per_subject, names)
 
     point = neff(names, rho)
 
@@ -178,7 +174,9 @@ def build(corpus, title, draws, seed, stamp):
     A("</table>")
     A('<p class="note">相关是在每个标签分层<b>内部</b>算完再合并的（Fisher-z 加权）。'
       '两个指标只是因为都答对了而长得像，不该算重复；控制住结局才分得开这两件事。'
-      '负相关会把有效源数抬到维度数之上——算术上正确，但也是小样本波动伤害最大的地方。</p>')
+      '负相关按 <b>|ρ|</b> 计入重合：方向相反，重合程度不变。'
+      '沿用 Kish 原式（带符号）会让有效源数超过维度数，那在方差语境下成立，'
+      '在「这几列是不是在回答同一个问题」这个语境下不成立。</p>')
 
     A("<h2>逐个买入，第几个开始不划算</h2>")
     A("<table><tr><th>顺序</th><th>加入的维度</th>"
@@ -214,6 +212,11 @@ def build(corpus, title, draws, seed, stamp):
               f'而两份账单上都会写着「3 个数据源」。</p>')
 
     A("<h2>这份报告的边界</h2><ul class='limits'>")
+    if unmeasured:
+        pairs = "、".join(f"{esc(a)} ~ {esc(b)}" for a, b in unmeasured)
+        A(f"<li><b>有 {len(unmeasured)} 对维度没能测出相关：</b>{pairs}。"
+          "没有足够大的分层可算，它们被<b>按 0 计入</b>——而 0 在这里的意思是"
+          "「完全独立」，真相是「不知道」。<b>这会高估上面每一个有效源数。</b></li>")
     if len(labels) <= 1:
         A("<li><b>未控制结局。</b>该语料只有一个标签分层，所以上面的相关是"
           "<b>未条件化</b>的原始秩相关——这是相关性的<b>上界读法</b>，"

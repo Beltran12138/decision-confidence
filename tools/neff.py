@@ -77,12 +77,24 @@ def within_label_rho(
 
 
 def neff(names: Sequence[str], rho: Dict[Tuple[str, str], float]) -> float:
+    """Kish n_eff, taking |rho| rather than signed rho.
+
+    Kish's original runs on variance, where a negative correlation is a real
+    gain: two estimators erring in opposite directions average out. This tool
+    asks a different question — are these columns answering the same question?
+    — and there +0.8 and -0.8 both mean heavily overlapping, only mirrored.
+
+    Signed rho lets n_eff exceed n. That is how the web build first reported
+    "6.00 / 4, efficiency 150%" on four columns. Departing from Kish here is
+    the deliberate part; docs/index.html states the same trade-off in its
+    footer, and this is the same rule so both entry points agree.
+    """
     n = len(names)
     if n == 0:
         return 0.0
     total = float(n)                       # diagonal: rho(i, i) = 1
     for a, b in combinations(names, 2):
-        total += 2.0 * rho[key(a, b)]
+        total += 2.0 * abs(rho[key(a, b)])
     if total <= 0:
         return float("inf")
     return (n * n) / total
@@ -90,6 +102,37 @@ def neff(names: Sequence[str], rho: Dict[Tuple[str, str], float]) -> float:
 
 def key(a: str, b: str) -> Tuple[str, str]:
     return (a, b) if a <= b else (b, a)
+
+
+def build_rho(
+    per_subject: Sequence[Tuple[Dict[str, int], Dict[str, str], int]],
+    names: Sequence[str],
+) -> Tuple[Dict[Tuple[str, str], float],
+           Dict[Tuple[str, str], int],
+           List[Tuple[str, str]]]:
+    """Build the pairwise rho table, and name the pairs that could not be measured.
+
+    One decision lives here: what an unmeasurable pair means. It used to live
+    in three places and got three answers — this module recorded it, while
+    neff_ci.py and report.py kept it to themselves. A caller cannot take the
+    table without also taking ``unmeasured``, so the silent branch is gone.
+    """
+    rho: Dict[Tuple[str, str], float] = {}
+    pair_n: Dict[Tuple[str, str], int] = {}
+    unmeasured: List[Tuple[str, str]] = []
+    for a, b in combinations(names, 2):
+        r, n = within_label_rho(per_subject, a, b)
+        pair_n[key(a, b)] = n
+        if r is None:
+            # No stratum large enough. Treating it as 0 would silently claim
+            # independence, which is the error this whole repo exists to catch.
+            # It is still 0 — but it leaves here labelled, and every caller
+            # reports it rather than deciding on its own.
+            unmeasured.append((a, b))
+            rho[key(a, b)] = 0.0
+        else:
+            rho[key(a, b)] = r
+    return rho, pair_n, unmeasured
 
 
 def greedy_order(names: Sequence[str], rho: Dict[Tuple[str, str], float]) -> List[str]:
@@ -127,19 +170,7 @@ def main() -> int:
         print("need at least two constructs with scores", file=sys.stderr)
         return 1
 
-    rho: Dict[Tuple[str, str], float] = {}
-    pair_n: Dict[Tuple[str, str], int] = {}
-    unmeasured: List[Tuple[str, str]] = []
-    for a, b in combinations(names, 2):
-        r, n = within_label_rho(per_subject, a, b)
-        pair_n[key(a, b)] = n
-        if r is None:
-            # No stratum large enough. Treating it as 0 would silently claim
-            # independence, which is the error this whole repo exists to catch.
-            unmeasured.append((a, b))
-            rho[key(a, b)] = 0.0
-        else:
-            rho[key(a, b)] = r
+    rho, pair_n, unmeasured = build_rho(per_subject, names)
 
     # Coarse scales, same test redundancy.py applies.
     thin = [c for c in names
@@ -160,7 +191,7 @@ def main() -> int:
         if (a, b) in unmeasured:
             mark = "   ! 无足够大的层，按 0 计入"
         elif r < 0:
-            mark = "   ! 负相关，会把 n_eff 抬到源数之上"
+            mark = "   ! 负相关，按 |ρ| 计入重合（方向相反，重合程度不变）"
         shared = (MECHANISM_PRIOR.get(a) and
                   MECHANISM_PRIOR.get(a) == MECHANISM_PRIOR.get(b))
         if shared:
@@ -212,7 +243,9 @@ def main() -> int:
         print("    " + ", ".join(thin))
         print()
     if unmeasured:
-        print("! 以下配对没有足够大的层可测，按 0 计入——这会高估 n_eff：")
+        print("! 以下配对没有足够大的层可测，按 0 计入——这会高估 n_eff："
+              "\n  （0 在这里的意思是「完全独立」，而真相是「不知道」。"
+              "同一份披露现在也出现在 neff_ci.py 与 report.py。）")
         for a, b in unmeasured:
             print(f"    {a} ~ {b}")
         print()
