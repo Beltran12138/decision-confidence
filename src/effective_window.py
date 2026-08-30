@@ -22,37 +22,56 @@ different responses:
   The correct reading is neither "it works" nor "it does not"; it is that this
   backtest has no power to tell you.
 
-Both limits below are printed with the result rather than left in this
-docstring, for the same reason ``neff.py`` prints its two:
+There is a second way the clean remainder gets spent, and it is not visible on
+a calendar. If several strategy variants were screened and the best one kept,
+the survivor's t-statistic is the maximum of many draws, not one draw. The bar
+it has to clear is higher, and the sample needed to clear that bar is larger —
+quadratically. :func:`selection_penalty` turns "how many did you try" from a
+sentence in a footnote into a number that moves the requirement.
+
+The count of trials is discounted the same way sources and months are. Fifty
+variants of one strategy are not fifty independent tests, any more than five
+vendors reading one on-chain field are five independent reads. ``neff.py`` is
+the instrument for that discount; this module accepts its output and will not
+invent one.
+
+Limits are printed with the result rather than left in this docstring, for the
+same reason ``neff.py`` prints its two:
 
 * The length threshold uses t ≈ SR·√T (Lo 2002), which assumes i.i.d. returns.
   Monthly returns are typically positively autocorrelated, which inflates the
   naive t. **The requirement returned here is therefore a floor**: the real
   sample needed is longer, never shorter.
-* It assumes the strategy was specified before anyone looked. If variants were
-  screened on the open-book portion, choosing this one already used the
-  contaminated data, and t = 2.0 is too low a bar (Harvey & Liu argue for ~3.0
-  under multiple testing). Raise ``t_threshold`` yourself; this module will not
-  guess how many variants you tried.
+* Bonferroni controls the family-wise error rate and assumes the trials are
+  independent. Correlated variants make it conservative; that is what
+  ``effective_trials`` is for, and it must be *measured*, not asserted.
+* **Declaring no trials is not a neutral default — it is a claim** that the
+  strategy was specified before anyone looked. Self-reported counts also run
+  low: nobody counts the variant they glanced at and abandoned.
 
 Stdlib only. No network. Nothing here reads a price series — it reads three
-dates, which is the point: the disqualifying fact is available before any
-performance number is computed.
+dates and a count, which is the point: the disqualifying fact is available
+before any performance number is computed.
 """
 
 from __future__ import annotations
 
 import math
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
+from statistics import NormalDist
 from typing import Any, Dict, Optional
 
 __all__ = [
     "EvidenceWindow",
+    "SelectionPenalty",
     "effective_window",
     "months_for_power",
+    "selection_penalty",
     "T_THRESHOLD",
     "TARGET_SHARPE",
 ]
+
+_Z = NormalDist()
 
 
 # Conventional two-sigma bar. Deliberately the *permissive* choice: see the
@@ -110,6 +129,108 @@ def months_for_power(
 
 
 @dataclass
+class SelectionPenalty:
+    """What screening variants costs, expressed in months of clean sample.
+
+    ``effective_trials`` is the count after discounting for how alike the
+    variants were. It defaults to ``trials`` — the conservative end — because
+    the alternative is to assume independence, which is the error this whole
+    repo exists to catch.
+    """
+    trials: int
+    effective_trials: float
+    alpha_base: float
+    alpha_adjusted: float
+    t_base: float
+    t_adjusted: float
+    months_base: int
+    months_adjusted: int
+    note: str = ""
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+def selection_penalty(
+    trials: int,
+    *,
+    effective_trials: Optional[float] = None,
+    t_base: float = T_THRESHOLD,
+    target_sharpe: float = TARGET_SHARPE,
+) -> SelectionPenalty:
+    """Raise the t bar for having picked a winner out of several attempts.
+
+    The surviving variant's t-statistic is the maximum of ``n`` draws, not one
+    draw, so the bar it must clear is higher. Bonferroni sets it by dividing
+    the error rate the caller already accepted:
+
+        α_base = 1 − Φ(t_base)          the one-sided rate implied by t_base
+        α_adj  = α_base / n_eff
+        t_adj  = Φ⁻¹(1 − α_adj)
+
+    Deriving α from ``t_base`` rather than fixing it at 0.05 is what keeps
+    ``trials=1`` an exact identity — the caller's own bar comes back unchanged,
+    and the months requirement does not move.
+
+    ``effective_trials`` is the number of *independent* attempts among the
+    ``trials``. Fifty parameter settings of one strategy are not fifty
+    independent tests. Pass a measured value (``tools/neff.py`` computes the
+    same Kish quantity on the variants' return series); omit it and the full
+    count is used, which over-penalises. That asymmetry is deliberate: the
+    common failure is not declaring trials at all, not declaring too many.
+    """
+    if trials < 1:
+        raise ValueError("trials must be >= 1")
+    if t_base <= 0:
+        raise ValueError("t_base must be > 0")
+    n_eff = float(trials) if effective_trials is None else float(effective_trials)
+    if n_eff < 1:
+        raise ValueError("effective_trials must be >= 1")
+    if n_eff > trials:
+        raise ValueError(
+            f"effective_trials {n_eff} exceeds trials {trials} — "
+            "attempts cannot be more independent than they are numerous"
+        )
+
+    alpha_base = 1.0 - _Z.cdf(t_base)
+    alpha_adjusted = alpha_base / n_eff
+    # n_eff == 1 must be an exact identity. Going through cdf and back returns
+    # t_base to within ~1e-9, and ceil() turns that dust into a whole extra
+    # month: (2.0 + 1e-9)^2 * 12 rounds up to 49 rather than 48.
+    t_adjusted = t_base if n_eff <= 1.0 else _Z.inv_cdf(1.0 - alpha_adjusted)
+
+    months_base = months_for_power(target_sharpe, t_base)
+    months_adjusted = months_for_power(target_sharpe, t_adjusted)
+
+    if trials == 1:
+        note = (
+            "申报只试过一个变体。这是一个**主张**，不是中性默认——"
+            "它断言策略在看数据之前就定好了。"
+        )
+    else:
+        shrunk = "" if effective_trials is None else (
+            f"（{trials} 个变体按 {n_eff:g} 次独立试验计，折扣需为实测所得，不能自行声明）"
+        )
+        note = (
+            f"筛选了 {trials} 个变体{shrunk}，胜出者的 t 值是多次抽样的最大值。"
+            f"门槛由 t≥{t_base:g} 抬到 t≥{t_adjusted:.2f}，"
+            f"所需干净区间从 {months_base} 个月增至 {months_adjusted} 个月"
+            f"（×{months_adjusted / months_base:.1f}）。"
+        )
+    return SelectionPenalty(
+        trials=trials,
+        effective_trials=n_eff,
+        alpha_base=alpha_base,
+        alpha_adjusted=alpha_adjusted,
+        t_base=t_base,
+        t_adjusted=t_adjusted,
+        months_base=months_base,
+        months_adjusted=months_adjusted,
+        note=note,
+    )
+
+
+@dataclass
 class EvidenceWindow:
     """How much of a backtest is out of sample, and whether that much can carry an inference.
 
@@ -129,17 +250,24 @@ class EvidenceWindow:
     verdict: str          # no_holdout | underpowered | sufficient
     power_ratio: float    # effective_months / months_required
     note: str = ""
+    # Present only when the caller declared how many variants were screened.
+    # ``None`` means undeclared, which is treated as one attempt *and said so*
+    # in ``note`` — silence here would be the same as claiming a single try.
+    selection: Optional[SelectionPenalty] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
     def summary(self) -> str:
         """One line that survives a projector."""
+        bar = (f"t≥{self.selection.t_adjusted:.2f}（{self.selection.trials} 个变体校正后）"
+               if self.selection is not None and self.selection.trials > 1
+               else f"t≥{self.t_threshold:g}")
         return (
             f"{self.total_months} 个月的回测，"
             f"{self.open_book_months} 个月在模型的知识范围内（{self.open_book_share:.1%}），"
             f"剩下 {self.effective_months} 个月；"
-            f"Sharpe {self.target_sharpe:g} 要在 t≥{self.t_threshold:g} 上成立需要 "
+            f"Sharpe {self.target_sharpe:g} 要在 {bar} 上成立需要 "
             f"{self.months_required} 个月 → {self.verdict}"
         )
 
@@ -160,12 +288,20 @@ VERDICT_NOTE = {
 }
 
 # Printed with every result, not buried in the docstring. Same discipline as
-# neff.py: the two things that would make this number flattering travel with it.
+# neff.py: the things that would make this number flattering travel with it.
 LIMITS = (
     "阈值用 t ≈ SR·√T（Lo 2002），假设收益 i.i.d.；月度收益通常正自相关，"
     "会抬高朴素 t 值 —— 所以这里给出的所需长度是下限，真实需求只多不少。"
-    " 且它假设策略是在看数据之前就定好的：若曾在开卷区间里筛选过变体，"
-    "t=2.0 门槛偏低（多重检验下 Harvey & Liu 主张约 3.0），请自行调高 t_threshold。"
+    " 变体筛选用 Bonferroni 校正，它控制族错误率且假设各次试验独立；"
+    "变体彼此相关时偏保守，折扣须由 effective_trials 给出且应为实测值。"
+)
+
+# Said when the caller declared nothing. Silence about screening is not a
+# neutral default; it is the strongest claim available.
+UNDECLARED_SELECTION = (
+    "⚠ 未申报变体筛选次数，按「一次成型」处理。这不是中性默认，"
+    "而是断言策略在看数据之前就定好了。自报次数还系统性偏低——"
+    "看一眼就放弃的那个变体，通常不会被算进去。"
 )
 
 
@@ -176,12 +312,20 @@ def effective_window(
     *,
     target_sharpe: float = TARGET_SHARPE,
     t_threshold: float = T_THRESHOLD,
+    trials: Optional[int] = None,
+    effective_trials: Optional[float] = None,
 ) -> EvidenceWindow:
     """Split a backtest at a model's knowledge cutoff and test the remainder for power.
 
     ``cutoff`` is the model's knowledge cutoff, ``start``/``end`` the backtest
     range, all as ``YYYY-MM``. The range is inclusive of both endpoints, which
     is how backtest ranges are quoted.
+
+    ``trials`` is how many strategy variants were screened before this one was
+    kept. Declaring it raises the t bar (see :func:`selection_penalty`) and so
+    raises ``months_required``. Leaving it out changes no arithmetic but is
+    recorded in ``note`` as the claim it is — the requirement shown is then
+    valid only for a strategy nobody went looking for.
 
     Raises ``ValueError`` on unparseable dates or an inverted range. These are
     caller mistakes, not missing data — the library's usual "record it and lower
@@ -191,13 +335,26 @@ def effective_window(
     c, s, e = _ym(cutoff, "cutoff"), _ym(start, "start"), _ym(end, "end")
     if e < s:
         raise ValueError(f"end {end!r} precedes start {start!r}")
+    if trials is None and effective_trials is not None:
+        raise ValueError("effective_trials given without trials — nothing to discount")
 
     total = e - s + 1
     # The cutoff month itself counts as seen; clamp to the range on both sides
     # so a cutoff outside the backtest degenerates cleanly to 0 or total.
     open_book = max(0, min(c, e) - s + 1)
     effective = total - open_book
-    required = months_for_power(target_sharpe, t_threshold)
+
+    penalty = None
+    if trials is None:
+        required = months_for_power(target_sharpe, t_threshold)
+    else:
+        penalty = selection_penalty(
+            trials,
+            effective_trials=effective_trials,
+            t_base=t_threshold,
+            target_sharpe=target_sharpe,
+        )
+        required = penalty.months_adjusted
 
     if effective <= 0:
         verdict = "no_holdout"
@@ -219,5 +376,10 @@ def effective_window(
         t_threshold=t_threshold,
         verdict=verdict,
         power_ratio=effective / required,
-        note=VERDICT_NOTE[verdict] + " " + LIMITS,
+        note=" ".join([
+            VERDICT_NOTE[verdict],
+            penalty.note if penalty is not None else UNDECLARED_SELECTION,
+            LIMITS,
+        ]),
+        selection=penalty,
     )
