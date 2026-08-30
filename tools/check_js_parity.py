@@ -25,6 +25,12 @@ smallest. Observed worst case across this grid is ~1.5e-5, which is invisible
 at the two decimals the page prints — but it *could* flip a ceil() at a
 boundary, so the months comparison is the one that is strict.
 
+**The message table is compared first, entry by entry.** The page carries a
+generated copy of ``src/messages.py``; generated is not the same as synchronised,
+because nothing re-runs the generator when the Python changes. Diffing the two
+tables catches a stale copy at the source, before it has a chance to show up as
+a wrong sentence in one language only.
+
 **Remedies are compared verbatim.** They are where the drift actually happened:
 the page's advice was written from the CLI's *pre-fix* version and carried four
 wrong lines for a while — an inverted date range, a remedy that could not work,
@@ -51,6 +57,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 from effective_window import (  # noqa: E402
     effective_window, remedies, selection_penalty,
 )
+from messages import LANGS, MESSAGES  # noqa: E402
 
 T_TOL = 1e-4
 
@@ -84,29 +91,22 @@ def extract_js() -> str:
         raise SystemExit("no <script> block in docs/index.html")
     js = script.group(1)
     try:
-        return js[js.index("function ymIdx"):js.index("function runWindow")]
+        return js[js.index("const I18N_LANGS"):js.index("function runWindow")]
     except ValueError:
         raise SystemExit(
-            "docs/index.html no longer contains ymIdx..runWindow — "
+            "docs/index.html no longer contains I18N_LANGS..runWindow — "
             "this extractor is pinned to that layout and needs updating"
         )
 
 
-def run_node(core: str):
-    cases = json.dumps([[n, k, t] for n, k in GRID for t in BARS])
-    harness = core + """
-const out = [];
-for (const [n, k, tb] of %s) {
-  const p = selectionPenalty(n, k, tb, 1.0);
-  out.push({n: n, k: k, tb: tb, t: p.tAdj, months: p.monthsAdj});
-}
-console.log(JSON.stringify(out));
-""" % cases
+def _node(script: str):
+    """Run a snippet under Node and parse its single JSON line."""
     fd, path = tempfile.mkstemp(suffix=".js")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            fh.write(harness)
-        res = subprocess.run(["node", path], capture_output=True, text=True)
+            fh.write(script)
+        res = subprocess.run(["node", path], capture_output=True,
+                             text=True, encoding="utf-8")
     finally:
         os.unlink(path)
     if res.returncode != 0:
@@ -114,31 +114,45 @@ console.log(JSON.stringify(out));
     return json.loads(res.stdout)
 
 
+def run_node(core: str):
+    cases = json.dumps([[n, k, t] for n, k in GRID for t in BARS])
+    return _node(core + """
+const out = [];
+for (const [n, k, tb] of %s) {
+  const p = selectionPenalty(n, k, tb, 1.0);
+  out.push({n: n, k: k, tb: tb, t: p.tAdj, months: p.monthsAdj});
+}
+console.log(JSON.stringify(out));
+""" % cases)
+
+
+def run_node_table(core: str):
+    """The page's generated copy of the message table, as data."""
+    return _node(core + "\nconsole.log(JSON.stringify(I18N));\n")
+
+
 def run_node_remedies(core: str):
-    """Same extraction, exercising the advice rather than the arithmetic."""
-    cases = json.dumps([[c, s, e, t] for (c, s, e) in RANGES for t in REMEDY_TRIALS])
+    """Same extraction, exercising the advice rather than the arithmetic.
+
+    Every case runs in every language: a dispatch bug shows up in both, but a
+    stale translation shows up in exactly one.
+    """
+    cases = json.dumps([[c, s, e, t, lang]
+                        for (c, s, e) in RANGES
+                        for t in REMEDY_TRIALS
+                        for lang in LANGS])
     harness = core + """
 const out = [];
-for (const [c, s, e, t] of %s) {
-  const w = evaluateWindow(c, s, e, 1.0, 2.0, t, null);
-  if (w.error) { out.push({cutoff: c, start: s, end: e, trials: t,
+for (const [c, s, e, t, lang] of %s) {
+  const w = evaluateWindow(c, s, e, 1.0, 2.0, t, null, lang);
+  if (w.error) { out.push({cutoff: c, start: s, end: e, trials: t, lang: lang,
                            verdict: "ERROR:" + w.error, remedies: []}); continue; }
-  out.push({cutoff: c, start: s, end: e, trials: t,
-            verdict: w.verdict, remedies: remediesFor(w)});
+  out.push({cutoff: c, start: s, end: e, trials: t, lang: lang,
+            verdict: w.verdict, remedies: remediesFor(w, lang)});
 }
 console.log(JSON.stringify(out));
 """ % cases
-    fd, path = tempfile.mkstemp(suffix=".js")
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            fh.write(harness)
-        res = subprocess.run(["node", path], capture_output=True,
-                             text=True, encoding="utf-8")
-    finally:
-        os.unlink(path)
-    if res.returncode != 0:
-        raise SystemExit("node failed (remedies):\n" + res.stderr[:2000])
-    return json.loads(res.stdout)
+    return _node(harness)
 
 
 def main() -> int:
@@ -173,10 +187,26 @@ def main() -> int:
                   f'{r["months"]:>5}{p.months_adjusted:>5}'
                   f'{"" if same else "   <<<"}')
 
+    # The table first: a stale generated copy explains every downstream diff.
+    js_table = run_node_table(core)
+    table_bad = []
+    for key in sorted(set(MESSAGES) | set(js_table)):
+        if key not in js_table:
+            table_bad.append((key, "-", "missing from the page's table", ""))
+            continue
+        if key not in MESSAGES:
+            table_bad.append((key, "-", "", "only in the page's table"))
+            continue
+        for lang in LANGS:
+            py, js = MESSAGES[key][lang], js_table[key].get(lang)
+            if py != js:
+                table_bad.append((key, lang, py, js))
+
     rem_rows = run_node_remedies(core)
     rem_bad = []
     for r in rem_rows:
-        w = effective_window(r["cutoff"], r["start"], r["end"], trials=r["trials"])
+        w = effective_window(r["cutoff"], r["start"], r["end"],
+                             trials=r["trials"], lang=r["lang"])
         want = remedies(w)
         if w.verdict != r["verdict"] or want != r["remedies"]:
             rem_bad.append((r, w.verdict, want))
@@ -184,12 +214,24 @@ def main() -> int:
     print()
     print(f"{len(rows)} 组数值组合  ·  月数不一致 {len(mismatches)}  ·  "
           f"t 最大偏差 {worst_t:.2e}（容差 {T_TOL:.0e}）")
-    print(f"{len(rem_rows)} 组处方组合  ·  逐字不一致 {len(rem_bad)}")
+    print(f"{len(MESSAGES)} 条文案 × {len(LANGS)} 语言  ·  与页面不一致 {len(table_bad)}")
+    print(f"{len(rem_rows)} 组处方组合（含双语）  ·  逐字不一致 {len(rem_bad)}")
+    if table_bad:
+        print()
+        print("文案表已漂移——页面的副本需要重新从 src/messages.py 生成：")
+        for key, lang, py, js in table_bad[:12]:
+            print(f"  {key} [{lang}]")
+            print(f"    PY: {py[:120]}")
+            print(f"    JS: {js[:120]}")
+        if len(table_bad) > 12:
+            print(f"  ... 另有 {len(table_bad) - 12} 处")
+        return 1
     if rem_bad:
         print()
         print("处方文本已漂移：")
         for r, verdict, want in rem_bad:
-            print(f'  cutoff={r["cutoff"]} {r["start"]}..{r["end"]} trials={r["trials"]}')
+            print(f'  cutoff={r["cutoff"]} {r["start"]}..{r["end"]} '
+                  f'trials={r["trials"]} lang={r["lang"]}')
             if verdict != r["verdict"]:
                 print(f'    verdict  PY {verdict}  vs  JS {r["verdict"]}')
             for a, b in zip(want + [""] * 9, r["remedies"] + [""] * 9):

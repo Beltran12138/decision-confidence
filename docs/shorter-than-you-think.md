@@ -197,22 +197,15 @@ anyone looked. Silence is an assertion, so every run that omits it says so.
 This is what the tool actually prints when you leave it out:
 
 ```
-变体筛选校正
-  ⚠ 未申报变体筛选次数，按「一次成型」处理。
-  这不是中性默认，而是断言策略在看数据之前就定好了。
-  自报次数还系统性偏低——看一眼就放弃的那个变体，
-  通常不会被算进去。
-  按一次成型计，所需长度维持 48 个月。申报请加 --trials N。
+Screening correction
+  No screening count was declared; treated as a single attempt. This
+  is not a neutral default — it asserts the strategy was specified
+  before anyone looked at the data. Self-reported counts also run
+  low: the variant you glanced at and abandoned does not usually get
+  counted.
+  Charged as one attempt, the requirement stays at 48 months. Declare
+  with --trials N.
 ```
-
-> *No screening count declared; treated as a single attempt. This is not a
-> neutral default — it asserts the strategy was specified before anyone looked
-> at the data. Self-reported counts also run low: the variant you glanced at and
-> abandoned usually does not get counted. Charged as one attempt, the
-> requirement stays at 48 months; declare with `--trials N`.*
-
-(The tooling's user-facing strings are currently Chinese while the code and docs
-are English — a real rough edge, noted here rather than papered over.)
 
 Worse: self-reported counts run low, and nothing here can detect that. **Nobody
 counts the variant they glanced at and abandoned.** This correction turns an
@@ -255,7 +248,8 @@ page: **[the knowledge-window calculator](https://beltran12138.github.io/decisio
 (second half of the page; the first half is the source-side version of the same
 discount).
 
-**Command line:**
+**Command line** (`--lang zh` for Chinese output; the numbers are identical
+either way):
 
 ```bash
 python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06 --trials 20

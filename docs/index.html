@@ -728,6 +728,97 @@ const DEMO2 = '品种\t价差\t盘口薄侧\t成交额\t日内振幅\t24h涨跌\
    与 src/effective_window.py 同一套算法。Python 是权威源；这里是它的前端副本，
    两处漂移的唯一防线是页脚那组可核对的默认值（58 / 8 / 48 / underpowered）。 */
 
+/* ============ 文案表：由 src/messages.py 生成，勿手改 ============
+   生成命令见 tools/check_js_parity.py 的 docstring；该脚本会把这张表
+   与 Python 侧逐条比对，两种语言各比一遍。手抄 57 条文案必然出错，
+   所以它是生成的；而生成物同样会漂移，所以它同样被比对。          */
+const I18N_LANGS = ["en", "zh"];
+const I18N_DEFAULT = "en";
+const I18N = {
+  "verdict.no_holdout": {en: "The backtest lies entirely before the knowledge cutoff. This range does not test whether the strategy makes money; it tests whether the model remembers. Nothing concluded from it can be relied on.", zh: "回测区间完全落在知识截止日之前。这段区间检验的不是策略能否盈利，而是模型记不记得。任何由它得出的结论都不可采信。"},
+  "verdict.underpowered": {en: "There is a clean segment, but it is shorter than an inference needs. The correct reading is neither \"it works\" nor \"it does not\" — it is that this backtest has no power to tell you. It rejects nothing.", zh: "有干净区间，但短于可做统计推断的长度。正确结论既不是「有效」也不是「无效」，而是「这个回测没有分辨能力」——它不能拒绝任何假设。"},
+  "verdict.sufficient": {en: "The clean segment reaches the length this Sharpe requires. That removes the length constraint and nothing else; it is not evidence the strategy works.", zh: "干净区间达到该 Sharpe 所需的长度。这只解除了「长度」这一条限制，不构成策略有效的证据。"},
+  "limits": {en: "The bar uses t ~ SR*sqrt(T) (Lo 2002), which assumes i.i.d. returns; monthly returns are typically positively autocorrelated, inflating the naive t — so the length required here is a floor, never generous. Screening is corrected with Bonferroni, which controls the family-wise error rate and assumes the trials are independent; correlated variants make it conservative, and that discount must come from effective_trials as a measured value.", zh: "阈值用 t ≈ SR·√T（Lo 2002），假设收益 i.i.d.；月度收益通常正自相关，会抬高朴素 t 值 —— 所以这里给出的所需长度是下限，真实需求只多不少。 变体筛选用 Bonferroni 校正，它控制族错误率且假设各次试验独立；变体彼此相关时偏保守，折扣须由 effective_trials 给出且应为实测值。"},
+  "undeclared_selection": {en: "No screening count was declared; treated as a single attempt. This is not a neutral default — it asserts the strategy was specified before anyone looked at the data. Self-reported counts also run low: the variant you glanced at and abandoned does not usually get counted.", zh: "⚠ 未申报变体筛选次数，按「一次成型」处理。这不是中性默认，而是断言策略在看数据之前就定好了。自报次数还系统性偏低——看一眼就放弃的那个变体，通常不会被算进去。"},
+  "penalty.single": {en: "One attempt declared. That is a **claim**, not a neutral default: it asserts the strategy was specified before anyone looked at the data.", zh: "申报只试过一个变体。这是一个**主张**，不是中性默认——它断言策略在看数据之前就定好了。"},
+  "penalty.screened": {en: "{trials} variants were screened{shrunk}, so the survivor's t-statistic is the maximum of several draws. The bar rises from t>={t_base:g} to t>={t_adjusted:.2f}, and the clean sample required goes from {months_base} to {months_adjusted} months (x{ratio:.1f}).", zh: "筛选了 {trials} 个变体{shrunk}，胜出者的 t 值是多次抽样的最大值。门槛由 t≥{t_base:g} 抬到 t≥{t_adjusted:.2f}，所需干净区间从 {months_base} 个月增至 {months_adjusted} 个月（×{ratio:.1f}）。"},
+  "penalty.shrunk": {en: " (counted as {n_eff:g} independent trials; the discount must be measured, not asserted)", zh: "（按 {n_eff:g} 次独立试验计，折扣需为实测所得，不能自行声明）"},
+  "summary": {en: "{total_months} months of backtest, {open_book_months} of them inside the model's knowledge ({open_book_share:.1%}), leaving {effective_months}; a Sharpe of {target_sharpe:g} needs {months_required} months at {bar} -> {verdict}", zh: "{total_months} 个月的回测，{open_book_months} 个月在模型的知识范围内（{open_book_share:.1%}），剩下 {effective_months} 个月；Sharpe {target_sharpe:g} 要在 {bar}上成立需要 {months_required} 个月 → {verdict}"},
+  "summary.bar_plain": {en: "t>={t_threshold:g}", zh: "t≥{t_threshold:g} "},
+  "summary.bar_adjusted": {en: "t>={t_adjusted:.2f} (corrected for {trials} variants)", zh: "t≥{t_adjusted:.2f}（{trials} 个变体校正后）"},
+  "remedy.sufficient": {en: "The clean segment has reached {months_required} months, so length is no longer the constraint. That is not evidence the strategy works; it means the result is now eligible to be examined.", zh: "干净区间已达 {months_required} 个月，长度不再是限制。但这不是策略有效的证据，只是它现在有资格被检验。"},
+  "remedy.mark_open_book": {en: "Report the open-book span ({start} .. {open_end}) separately and keep it out of the conclusion.", zh: "把开卷区间（{start} .. {open_end}）的表现单独标出，不要混进结论。"},
+  "remedy.declare_after_pass": {en: "Declare how many variants were screened: this verdict currently rests on the assumption that you got it right first time, and that is a claim, not a neutral default.", zh: "申报变体筛选次数：这个判决目前建立在「一次成型」的假设上，而那是一个主张，不是中性默认。"},
+  "remedy.clean_only": {en: "Report only the clean segment: mark {start} .. {open_end} as open book and exclude it from the conclusion.", zh: "只报干净段，把 {start} .. {open_end} 标为开卷，不计入结论。"},
+  "remedy.extend": {en: "{need} months short: with the same model, the backtest would have to run to {ready} to be long enough.", zh: "还差 {need} 个月：同一个模型下，回测终点要推到 {ready} 才够。"},
+  "remedy.earlier_model": {en: "Or use a model with an earlier knowledge cutoff: {latest} or earlier would be enough on this range.", zh: "或换知识截止更早的模型：截止 {latest} 及更早即够。"},
+  "remedy.earlier_model_insufficient": {en: "An earlier model will not close the gap — the whole range is only {total_months} months, against {months_required} required.", zh: "换更早的模型不够——整段只有 {total_months} 个月，达不到 {months_required} 个月。"},
+  "remedy.measure_overlap": {en: "Measure how much those {trials} variants overlap: treat their return series as columns and compute Kish's effective sample size (the top half of docs/index.html takes a pasted table), then report it as effective_trials. Charged at the full {trials}, the penalty here is an upper bound. The discount has to be measured, not asserted.", zh: "量一下那 {trials} 个变体有多重合：把它们的收益序列当成列，算 Kish 有效源数（docs/index.html 上半部分可直接贴表），用 effective_trials 报实测值。现在按全额 {trials} 次计，惩罚是上界。折扣必须是量出来的，不是声明出来的。"},
+  "remedy.already_discounted": {en: "Screening is already discounted to {n_eff:g} independent trials; going lower requires actually trying fewer things, not editing this number.", zh: "筛选已按 {n_eff:g} 次独立试验折算；再降只能靠真的少试，不能靠改这个数。"},
+  "remedy.declare_trials": {en: "Declare how many variants were screened: everything above assumes you got it right first time. If you screened, the requirement only grows.", zh: "申报变体筛选次数：以上都假设你一次成型。若筛选过，所需长度只会更长。"},
+  "remedy.claim_higher_sharpe": {en: "Or change the claim — {effective_months} months is only enough to demonstrate a Sharpe of {sharpe:.2f}. But that is a claim to commit to in advance, not a tier to pick after seeing the result.", zh: "或改声明——{effective_months} 个月只够证明 SR {sharpe:.2f} 的策略。但那是要先兑现的主张，不是事后挑的档位。"},
+  "cli.header_dates": {en: "Knowledge cutoff  {cutoff}        Backtest  {start} .. {end}", zh: "模型知识截止  {cutoff}        回测区间  {start} .. {end}"},
+  "cli.header_target": {en: "Target Sharpe     {target_sharpe:g}        Bar  t >= {t_threshold:g}", zh: "目标 Sharpe   {target_sharpe:g}           要求 t ≥ {t_threshold:g}"},
+  "cli.section_split": {en: "How the backtest range splits", zh: "回测区间构成"},
+  "cli.row_total": {en: "total", zh: "总长"},
+  "cli.row_open": {en: "open book (model has read)", zh: "开卷（模型已见）"},
+  "cli.row_clean": {en: "clean (usable for testing)", zh: "干净（可用于检验）"},
+  "cli.unit_months": {en: "months", zh: "个月"},
+  "cli.section_power": {en: "Is that long enough to support an inference", zh: "干净区间够不够支撑一个推断"},
+  "cli.row_required": {en: "required", zh: "所需长度"},
+  "cli.row_have": {en: "available", zh: "实有"},
+  "cli.formula": {en: "(t ~ SR*sqrt(T); at SR={target_sharpe:g}, T=({t_eff:.2f}/{target_sharpe:g})^2 years)", zh: "（t ≈ SR·√T，SR={target_sharpe:g} 时 T=({t_eff:.2f}/{target_sharpe:g})² 年）"},
+  "cli.of_requirement": {en: "of requirement", zh: "of requirement"},
+  "cli.section_selection": {en: "Screening correction", zh: "变体筛选校正"},
+  "cli.sel_declared": {en: "variants declared", zh: "申报变体数"},
+  "cli.sel_counted": {en: "counted as independent", zh: "计入独立试验"},
+  "cli.sel_discounted": {en: "measured discount", zh: "实测折扣"},
+  "cli.sel_full": {en: "undiscounted (upper bound)", zh: "未折扣，按全额计（惩罚是上界）"},
+  "cli.sel_bar": {en: "t bar", zh: "t 门槛"},
+  "cli.sel_bonferroni": {en: "(Bonferroni: alpha {alpha_base:.2e} -> {alpha_adjusted:.2e})", zh: "（Bonferroni：α {alpha_base:.2e} → {alpha_adjusted:.2e}）"},
+  "cli.sel_undeclared_tail": {en: "Charged as one attempt, the requirement stays at {months_required} months. Declare with --trials N.", zh: "按一次成型计，所需长度维持 {months_required} 个月。申报请加 --trials N。"},
+  "cli.headline": {en: "  >  {total_months} months of backtest, {effective_months} usable for testing, and you need {months_required}", zh: "  ▶  {total_months} 个月的回测，能用来检验的是 {effective_months} 个月，而你需要 {months_required} 个月"},
+  "cli.headline_no_holdout": {en: "  >  {total_months} months of backtest, not one of them unseen by the model", zh: "  ▶  {total_months} 个月的回测，没有一个月是模型没见过的"},
+  "cli.section_verdict": {en: "Verdict", zh: "判决"},
+  "cli.section_remedies": {en: "What to do about it", zh: "那要怎么办"},
+  "cli.section_sweep": {en: "Same range, different target Sharpe", zh: "同一段区间，只换目标 Sharpe"},
+  "cli.sweep_corrected": {en: " (bar corrected for screening: t >= {t_eff:.2f})", zh: "（门槛用筛选校正后的 t≥{t_eff:.2f}）"},
+  "cli.sweep_row": {en: "  SR {sr:<5g} needs {need:>4} months   have {have:>3}   {verdict}", zh: "  SR {sr:<5g} 需要 {need:>4} 个月   实有 {have:>3} 个月   {verdict}"},
+  "cli.sweep_note": {en: "  (Required length grows with the inverse square of Sharpe: halve the target, quadruple the sample.)", zh: "  （所需长度随 Sharpe 平方反比增长：目标减半，样本要四倍。）"},
+  "cli.bad_input": {en: "Invalid input: {err}", zh: "输入无效：{err}"},
+  "cli.arrow": {en: "->", zh: "→"},
+  "web.err_trials": {en: "Variants screened must be a whole number >= 1, or blank for undeclared.", zh: "变体数要是 ≥1 的整数，或留空表示未申报。"},
+  "web.err_eff_without_trials": {en: "\"Independent trials\" given without \"variants screened\" — there is nothing to discount.", zh: "填了「独立几次」却没填「筛选过几个变体」——没有可折扣的对象。"},
+  "web.err_eff_range": {en: "\"Independent trials\" must fall between 1 and the number of variants: attempts cannot be more independent than they are numerous.", zh: "「独立几次」要在 1 和变体数之间：试验不可能比它的次数更独立。"},
+  "web.err_dates": {en: "Dates must be written YYYY-MM, with the month between 01 and 12.", zh: "日期要写成 YYYY-MM，月份 01–12。"},
+  "web.err_range_inverted": {en: "The backtest end precedes its start.", zh: "回测止早于回测起。"},
+};
+
+/* Python str.format 的最小子集。页面只用到 :g 和 :.Nf/.N%，
+   但未知格式符必须显式失败——静默返回原值会让页面显示 "{sharpe:.2f}"。 */
+function fmtPy(v, spec){
+  if (spec === undefined || spec === '') return String(v);
+  if (spec === 'g') return String(Number(v));
+  const m = /^\.(\d+)([f%])$/.exec(spec);
+  if (m) {
+    const d = Number(m[1]);
+    return m[2] === 'f' ? Number(v).toFixed(d)
+                        : (Number(v) * 100).toFixed(d) + '%';
+  }
+  throw new Error('unsupported format spec: ' + spec);
+}
+
+function txLang(lang){ return I18N_LANGS.indexOf(lang) >= 0 ? lang : I18N_DEFAULT; }
+
+function tx(key, lang, vars){
+  const entry = I18N[key];
+  if (!entry) throw new Error('unknown message key: ' + key);
+  const t = entry[txLang(lang)];
+  if (!vars) return t;
+  return t.replace(/\{(\w+)(?::([^}]*))?\}/g,
+                   function(_, name, spec){ return fmtPy(vars[name], spec); });
+}
+
 function ymIdx(s){
   const m = /^(\d{4})-(\d{1,2})$/.exec(String(s).trim());
   if(!m) return null;
@@ -796,17 +887,18 @@ function selectionPenalty(trials, effTrials, tBase, sr){
    于是两边永远比不了，而这一节恰好是照抄 CLI 时把四个 bug 一起抄过来的地方。
    可核验优先于加粗。                                                   */
 
-function evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr){
-  if(trials !== null && (!Number.isInteger(trials) || trials < 1))
-    return {error: '变体数要是 ≥1 的整数，或留空表示未申报。'};
-  if(effTr !== null && trials === null)
-    return {error: '填了「独立几次」却没填「筛选过几个变体」——没有可折扣的对象。'};
-  if(effTr !== null && (!(effTr >= 1) || effTr > trials))
-    return {error: '「独立几次」要在 1 和变体数之间：试验不可能比它的次数更独立。'};
+function evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr, lang){
+  lang = txLang(lang || I18N_DEFAULT);
+  if (trials !== null && (!Number.isInteger(trials) || trials < 1))
+    return {error: tx('web.err_trials', lang)};
+  if (effTr !== null && trials === null)
+    return {error: tx('web.err_eff_without_trials', lang)};
+  if (effTr !== null && (!(effTr >= 1) || effTr > trials))
+    return {error: tx('web.err_eff_range', lang)};
   const c = ymIdx(cutS), s = ymIdx(stS), e = ymIdx(enS);
-  if(c === null || s === null || e === null)
-    return {error: '日期要写成 YYYY-MM，月份 01–12。'};
-  if(e < s) return {error: '回测止早于回测起。'};
+  if (c === null || s === null || e === null)
+    return {error: tx('web.err_dates', lang)};
+  if (e < s) return {error: tx('web.err_range_inverted', lang)};
 
   const total = e - s + 1;
   const open  = Math.max(0, Math.min(c, e) - s + 1);   // 截止日当月算已读
@@ -820,59 +912,50 @@ function evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr){
     monthsRequired: req, tBase: tb, tEff: tEff, targetSharpe: sr,
     openBookShare: open / total, powerRatio: eff / req,
     verdict: eff <= 0 ? 'no_holdout' : (eff < req ? 'underpowered' : 'sufficient'),
-    selection: sel
+    selection: sel, lang: lang
   };
 }
 
 /* 处方按「为什么不够」分派，而不是固定四条。开卷污染和筛选惩罚是两个不同的
    原因，动作也不同；照单全列会产出四种荒谬输出——倒过来的日期区间、没有干净
    段却让你「只报干净段」、换任何模型都补不上的月份、以及 0 个月能证明的 SR。 */
-function remediesFor(w){
+function remediesFor(w, lang){
+  lang = txLang(lang || w.lang || I18N_DEFAULT);
   const sel = w.selection;
   const openEnd = w.c <= w.e ? w.cutoff : w.end;
   const out = [];
+  const say = function(key, vars){ out.push(tx(key, lang, vars)); };
 
-  if(w.verdict === 'sufficient'){
-    out.push('干净区间已达 ' + w.monthsRequired + ' 个月，长度不再是限制。' +
-             '但这不是策略有效的证据，只是它现在有资格被检验。');
-    if(w.openBookMonths > 0)
-      out.push('把开卷区间（' + w.start + ' .. ' + openEnd + '）的表现单独标出，不要混进结论。');
-    if(sel === null)
-      out.push('申报变体筛选次数：这个判决目前建立在「一次成型」的假设上，' +
-               '而那是一个主张，不是中性默认。');
+  if (w.verdict === 'sufficient') {
+    say('remedy.sufficient', {months_required: w.monthsRequired});
+    if (w.openBookMonths > 0)
+      say('remedy.mark_open_book', {start: w.start, open_end: openEnd});
+    if (sel === null) say('remedy.declare_after_pass');
     return out;
   }
 
   const need = w.monthsRequired - w.effectiveMonths;
-  if(w.openBookMonths > 0 && w.effectiveMonths > 0)
-    out.push('只报干净段，把 ' + w.start + ' .. ' + openEnd + ' 标为开卷，不计入结论。');
-  out.push('还差 ' + need + ' 个月：同一个模型下，回测终点要推到 ' +
-           ymStr(w.e + need) + ' 才够。');
-  if(w.openBookMonths > 0){
-    if(w.totalMonths >= w.monthsRequired)
+  if (w.openBookMonths > 0 && w.effectiveMonths > 0)
+    say('remedy.clean_only', {start: w.start, open_end: openEnd});
+  say('remedy.extend', {need: need, ready: ymStr(w.e + need)});
+  if (w.openBookMonths > 0) {
+    if (w.totalMonths >= w.monthsRequired)
       // eff >= req  <=>  cutoff <= start + total - req - 1
-      out.push('或换知识截止更早的模型：截止 ' +
-               ymStr(w.s + w.totalMonths - w.monthsRequired - 1) + ' 及更早即够。');
+      say('remedy.earlier_model',
+          {latest: ymStr(w.s + w.totalMonths - w.monthsRequired - 1)});
     else
-      out.push('换更早的模型不够——整段只有 ' + w.totalMonths + ' 个月，' +
-               '达不到 ' + w.monthsRequired + ' 个月。');
+      say('remedy.earlier_model_insufficient',
+          {total_months: w.totalMonths, months_required: w.monthsRequired});
   }
-  if(sel !== null && sel.monthsAdj > sel.monthsBase){
-    if(sel.nEff === sel.trials)
-      out.push('量一下那 ' + sel.trials + ' 个变体有多重合：把它们的收益序列当成列，' +
-               '算 Kish 有效源数（docs/index.html 上半部分可直接贴表），' +
-               '用 effective_trials 报实测值。现在按全额 ' + sel.trials + ' 次计，惩罚是上界。' +
-               '折扣必须是量出来的，不是声明出来的。');
-    else
-      out.push('筛选已按 ' + (+sel.nEff.toFixed(4)) + ' 次独立试验折算；' +
-               '再降只能靠真的少试，不能靠改这个数。');
+  if (sel !== null && sel.monthsAdj > sel.monthsBase) {
+    if (sel.nEff === sel.trials) say('remedy.measure_overlap', {trials: sel.trials});
+    else say('remedy.already_discounted', {n_eff: sel.nEff});
   }
-  if(sel === null)
-    out.push('申报变体筛选次数：以上都假设你一次成型。若筛选过，所需长度只会更长。');
-  if(w.effectiveMonths > 0)
-    out.push('或改声明——' + w.effectiveMonths + ' 个月只够证明 SR ' +
-             (w.tEff / Math.sqrt(w.effectiveMonths / 12)).toFixed(2) + ' 的策略。' +
-             '但那是要先兑现的主张，不是事后挑的档位。');
+  if (sel === null) say('remedy.declare_trials');
+  if (w.effectiveMonths > 0)
+    say('remedy.claim_higher_sharpe',
+        {effective_months: w.effectiveMonths,
+         sharpe: w.tEff / Math.sqrt(w.effectiveMonths / 12)});
   return out;
 }
 
@@ -884,7 +967,10 @@ function runWindow(){
   const trials = trRaw === '' ? null : Number(trRaw);
   const effTr  = etRaw === '' ? null : Number(etRaw);
 
-  const w = evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr);
+  // Pinned to Chinese for now: the surrounding prose on this page is still
+  // Chinese, and half-translated reads worse than either language alone. The
+  // switch lands with the page's own copy.
+  const w = evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr, 'zh');
   if(w.error){
     $('werr').textContent = w.error;
     $('wout').style.display = 'none'; return;

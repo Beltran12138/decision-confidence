@@ -10,10 +10,17 @@ computed, and not an estimate.
 Reads three dates and writes nothing. No network, no price series.
 
     python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
-    python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06 --sharpe 0.5
+    python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06 --trials 20
+    python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06 --lang zh
 
 The dates are required rather than defaulted. A default here would be a
 fabricated parameter that later gets quoted as if someone had supplied it.
+
+Output is English by default; ``--lang zh`` switches it. Strings live in
+``src/messages.py`` so this file holds layout and the library holds argument.
+Column widths are computed from the rendered labels rather than hardcoded,
+because an English label is longer than its Chinese counterpart and a table
+padded for one language comes apart in the other.
 
 Two honest limits, printed with the result rather than buried here — the same
 discipline ``neff.py`` applies to its two:
@@ -22,8 +29,9 @@ discipline ``neff.py`` applies to its two:
   returns. Positive autocorrelation, normal in monthly returns, inflates the
   naive t — so the requirement shown is a floor, never generous.
 * It assumes the strategy was specified before anyone looked. Variants screened
-  on the open-book portion make t = 2.0 too low a bar; raise ``--t`` yourself.
-  This tool will not guess how many variants you tried.
+  on the open-book portion raise the bar; declare them with ``--trials``. This
+  tool will not guess how many variants you tried, and omitting the flag is a
+  claim rather than a neutral default.
 """
 
 from __future__ import annotations
@@ -36,9 +44,9 @@ import unicodedata
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 
 from effective_window import (  # noqa: E402  (path set above)
-    LIMITS, UNDECLARED_SELECTION, VERDICT_NOTE,
     effective_window, months_for_power, remedies,
 )
+from messages import LANGS, resolve_lang, text  # noqa: E402
 
 # Alternative targets shown alongside the caller's own, because the quadratic
 # is the part nobody has internalised: halving the Sharpe you claim to be
@@ -47,8 +55,6 @@ COMPARISON_SHARPES = (2.0, 1.0, 0.5)
 
 # Characters that must not start a line.
 CLOSERS = "」』）〉》”’。，；、！？%"
-
-
 
 
 def main() -> int:
@@ -71,60 +77,89 @@ def main() -> int:
                          "was kept. Omitting it is a claim, not a neutral default")
     ap.add_argument("--effective-trials", type=float, default=None, metavar="K",
                     dest="effective_trials",
-                    help="how many of those were independent — a measured number "
-                         "(tools/neff.py computes it on the variants' return series). "
+                    help="how many of those were independent — a measured number. "
                          "Omit to charge the full count")
+    ap.add_argument("--lang", default=None, choices=list(LANGS),
+                    help="output language (default en)")
     args = ap.parse_args()
+    lang = resolve_lang(args.lang)
 
     try:
         w = effective_window(
             args.cutoff, args.start, args.end,
             target_sharpe=args.sharpe, t_threshold=args.t_threshold,
             trials=args.trials, effective_trials=args.effective_trials,
+            lang=lang,
         )
     except ValueError as exc:
-        print(f"输入无效：{exc}", file=sys.stderr)
+        print(text("cli.bad_input", lang, err=exc), file=sys.stderr)
         return 1
 
-    print()
-    print(f"模型知识截止  {w.cutoff}        回测区间  {w.start} .. {w.end}")
-    print(f"目标 Sharpe   {w.target_sharpe:g}           要求 t ≥ {w.t_threshold:g}")
     sel = w.selection
     t_eff = sel.t_adjusted if sel is not None else w.t_threshold
+    months = text("cli.unit_months", lang)
+    # English glyphs are one cell where Chinese are two, so the same column
+    # budget holds noticeably fewer ideas in English. Widths follow the script.
+    W = 76 if lang == "en" else 66
+    arrow = text("cli.arrow", lang)
+
+    def table(rows):
+        """Pad the label column to the widest rendered label, not to a constant."""
+        pad = max(_cols(r[0]) for r in rows)
+        for label, value, note in rows:
+            gap = " " * (pad - _cols(label))
+            line = f"  {label}{gap}   {value:>13}"
+            print(f"{line}   {note}" if note else line)
 
     print()
-
-    print("回测区间构成")
-    print(f"  总长                 {w.total_months:>4} 个月")
-    print(f"  开卷（模型已见）     {w.open_book_months:>4} 个月    {w.open_book_share:>6.1%}")
-    print(f"  干净（可用于检验）   {w.effective_months:>4} 个月    {1 - w.open_book_share:>6.1%}")
+    print(text("cli.header_dates", lang, cutoff=w.cutoff, start=w.start, end=w.end))
+    print(text("cli.header_target", lang,
+               target_sharpe=w.target_sharpe, t_threshold=w.t_threshold))
     print()
 
-    print("干净区间够不够支撑一个推断")
-    print(f"  所需长度             {w.months_required:>4} 个月"
-          f"    （t ≈ SR·√T，SR={w.target_sharpe:g} 时 T=({t_eff:.2f}/{w.target_sharpe:g})² 年）")
-    print(f"  实有                 {w.effective_months:>4} 个月"
-          f"    {w.power_ratio:>6.0%} of requirement")
+    print(text("cli.section_split", lang))
+    table([
+        (text("cli.row_total", lang), f"{w.total_months} {months}", ""),
+        (text("cli.row_open", lang), f"{w.open_book_months} {months}",
+         f"{w.open_book_share:>6.1%}"),
+        (text("cli.row_clean", lang), f"{w.effective_months} {months}",
+         f"{1 - w.open_book_share:>6.1%}"),
+    ])
     print()
 
-    # The second way the clean remainder gets spent. Printed whether or not the
-    # caller declared anything: silence about screening is itself a claim, and
-    # showing nothing here would let it pass as an absence rather than a choice.
-    print("变体筛选校正")
+    print(text("cli.section_power", lang))
+    table([
+        (text("cli.row_required", lang), f"{w.months_required} {months}",
+         text("cli.formula", lang, target_sharpe=w.target_sharpe, t_eff=t_eff)),
+        (text("cli.row_have", lang), f"{w.effective_months} {months}",
+         f"{w.power_ratio:>4.0%} " + text("cli.of_requirement", lang)),
+    ])
+    print()
+
+    # Printed whether or not the caller declared anything: silence about
+    # screening is itself a claim, and showing nothing here would let it pass
+    # as an absence rather than a choice.
+    print(text("cli.section_selection", lang))
     if sel is None:
-        for line in _wrap(UNDECLARED_SELECTION, 68):
+        for line in _wrap(text("undeclared_selection", lang), W):
             print(f"  {line}")
-        print(f"  按一次成型计，所需长度维持 {w.months_required} 个月。申报请加 --trials N。")
+        for line in _wrap(text("cli.sel_undeclared_tail", lang,
+                               months_required=w.months_required), W):
+            print(f"  {line}")
     else:
-        shown = (f"{sel.effective_trials:g} 次（实测折扣）"
-                 if sel.effective_trials != sel.trials
-                 else f"{sel.effective_trials:g} 次（未折扣，按全额计）")
-        print(f"  申报变体数           {sel.trials:>4} 个")
-        print(f"  计入独立试验         {shown}")
-        print(f"  t 门槛               {sel.t_base:.2f}  →  {sel.t_adjusted:.2f}"
-              f"    （Bonferroni：α {sel.alpha_base:.2e} → {sel.alpha_adjusted:.2e}）")
-        print(f"  所需长度             {sel.months_base}  →  {sel.months_adjusted} 个月"
-              f"    ×{sel.months_adjusted / sel.months_base:.1f}")
+        counted_note = text("cli.sel_discounted" if sel.effective_trials != sel.trials
+                            else "cli.sel_full", lang)
+        table([
+            (text("cli.sel_declared", lang), str(sel.trials), ""),
+            (text("cli.sel_counted", lang), f"{sel.effective_trials:g}", counted_note),
+            (text("cli.sel_bar", lang),
+             f"{sel.t_base:.2f} {arrow} {sel.t_adjusted:.2f}",
+             text("cli.sel_bonferroni", lang, alpha_base=sel.alpha_base,
+                  alpha_adjusted=sel.alpha_adjusted)),
+            (text("cli.row_required", lang),
+             f"{sel.months_base} {arrow} {sel.months_adjusted}",
+             f"x{sel.months_adjusted / sel.months_base:.1f}"),
+        ])
     print()
 
     # The one line that has to survive a projector. Rules rather than a box:
@@ -132,53 +167,50 @@ def main() -> int:
     # than no box. Same choice as neff.py.
     rule = "─" * 56
     print(rule)
-    if w.verdict == "no_holdout":
-        print(f"  ▶  {w.total_months} 个月的回测，没有一个月是模型没见过的")
-    else:
-        print(f"  ▶  {w.total_months} 个月的回测，能用来检验的是 {w.effective_months} 个月，"
-              f"而你需要 {w.months_required} 个月")
+    # Deliberately not wrapped: this is the line that has to read as one line.
+    key = "cli.headline_no_holdout" if w.verdict == "no_holdout" else "cli.headline"
+    print(text(key, lang, total_months=w.total_months,
+               effective_months=w.effective_months,
+               months_required=w.months_required))
     print(rule)
     print()
 
-    print(f"判决  {w.verdict}")
-    for line in _wrap(VERDICT_NOTE[w.verdict], 64):
+    print(f"{text('cli.section_verdict', lang)}  {w.verdict}")
+    for line in _wrap(text("verdict." + w.verdict, lang), W - 6):
         print(f"      {line}")
     print()
 
-    # "Not comparable" without "so what do I do" is refusal dressed as
-    # judgement — the failure this repo already caught in itself once. The
-    # remedy is arithmetic too, so it costs nothing to state.
     # Dispatch lives in the library: three surfaces need it, and the browser
     # copy already drifted once by being written from the pre-fix version.
-    print("那要怎么办")
+    print(text("cli.section_remedies", lang))
     marks = "①②③④⑤⑥⑦⑧"
-    for i, line in enumerate(remedies(w)):
+    for i, line in enumerate(remedies(w, lang)):
         mark = marks[i] if i < len(marks) else "·"
-        wrapped = _wrap(line, 74)
+        wrapped = _wrap(line, W - 2)
         print(f"  {mark} {wrapped[0]}")
         for cont in wrapped[1:]:
             print(f"     {cont}")
     print()
 
-    bar_note = (f"（门槛用筛选校正后的 t≥{t_eff:.2f}）" if sel is not None
-                and sel.t_adjusted != sel.t_base else "")
-    print("同一段区间，只换目标 Sharpe" + bar_note)
+    corrected = (text("cli.sweep_corrected", lang, t_eff=t_eff)
+                 if sel is not None and sel.t_adjusted != sel.t_base else "")
+    print(text("cli.section_sweep", lang) + corrected)
     for sr in COMPARISON_SHARPES:
         need = months_for_power(sr, t_eff)
-        mark = "sufficient" if w.effective_months >= need else "underpowered"
-        if w.effective_months == 0:
-            mark = "no_holdout"
-        print(f"  SR {sr:<5g} 需要 {need:>4} 个月   实有 {w.effective_months:>3} 个月   {mark}")
-    print("  （所需长度随 Sharpe 平方反比增长：目标减半，样本要四倍。）")
+        mark = ("no_holdout" if w.effective_months == 0
+                else "sufficient" if w.effective_months >= need else "underpowered")
+        print(text("cli.sweep_row", lang, sr=sr, need=need,
+                   have=w.effective_months, verdict=mark))
+    for line in _wrap(text("cli.sweep_note", lang), W):
+        print(line if line.startswith(" ") else "  " + line)
     print()
 
-    print("! " + "\n  ".join(_wrap(LIMITS, 72)))
+    print("! " + "\n  ".join(_wrap(text("limits", lang), W - 2)))
     print()
     return 0
 
 
-
-def _cols(text: str) -> int:
+def _cols(text_: str) -> int:
     """Display columns, not characters.
 
     A CJK character occupies two cells, so wrapping on ``len()`` produced lines
@@ -187,27 +219,24 @@ def _cols(text: str) -> int:
     conservative side, since over-charging wraps early and under-charging
     overflows.
     """
-    return sum(2 if unicodedata.east_asian_width(c) in "WFA" else 1 for c in text)
+    return sum(2 if unicodedata.east_asian_width(c) in "WFA" else 1 for c in text_)
 
 
-def _wrap(text: str, width: int):
+def _wrap(text_: str, width: int):
     """Wrap on display columns, since CJK has no spaces to break on.
 
-    Breaks at the first punctuation past 70% of the width, and hard-breaks at
-    the width itself. Punctuation-only breaking is what the first version did,
-    and a sentence whose only full stop is at the end came out as one line
-    longer than the rule above it.
+    Two thresholds, because a space and a full stop are not equally good places
+    to break. Chinese punctuation breaks early and reads fine. A space is
+    usually hugging a number ("run to 2034-02 to be") and breaking there strands
+    two characters — but it is also the only thing standing between a hard break
+    and a bisected `effective_trials`, so it stays, just later. English has no
+    CJK punctuation, so it falls through to the space rule, which is correct for
+    it.
     """
     out, line = [], ""
-    # Two thresholds, because a space and a full stop are not equally good
-    # places to break. Chinese punctuation breaks early and reads fine. A space
-    # in this text is usually hugging a number ("推到 2034-02 才够") and
-    # breaking there strands two characters — but it is also the only thing
-    # standing between a hard break and a bisected `effective_trials`, so it
-    # stays, just later.
     soft_punct = max(1, int(width * 0.62))
     soft_space = max(1, int(width * 0.85))
-    chars = list(text)
+    chars = list(text_)
     for i, ch in enumerate(chars):
         line += ch
         cols = _cols(line)

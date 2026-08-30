@@ -36,6 +36,7 @@ except ImportError:
     HAVE_MCP = False
 
 from effective_window import effective_window, remedies  # noqa: E402
+from messages import text  # noqa: E402
 
 
 @unittest.skipUnless(HAVE_MCP, "optional 'mcp' extra not installed")
@@ -115,8 +116,15 @@ class ToolBehaviour(unittest.TestCase):
     def test_an_undeclared_trial_count_comes_back_visible(self):
         got = mcp_server.knowledge_window("2024-10", "2020-01", "2025-06")
         self.assertIsNone(got["selection"])
-        self.assertIn("未申报", got["note"])
-        self.assertTrue(any("申报变体筛选次数" in r for r in got["remedies"]))
+        self.assertIn(text("undeclared_selection", "en"), got["note"])
+        self.assertIn(text("remedy.declare_trials", "en"), got["remedies"])
+
+    def test_the_tool_answers_in_english_by_default(self):
+        """An agent surface with Chinese output would strand every English host."""
+        got = mcp_server.knowledge_window("2024-10", "2020-01", "2025-06", trials=20)
+        blob = got["note"] + " " + " ".join(got["remedies"]) + " " + got["summary"]
+        self.assertFalse([c for c in blob if "一" <= c <= "鿿"],
+                         "Chinese characters in the default MCP response")
 
     def test_caller_errors_raise_rather_than_return_a_plausible_number(self):
         with self.assertRaises(ValueError):

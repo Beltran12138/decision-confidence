@@ -61,6 +61,8 @@ from dataclasses import asdict, dataclass, field
 from statistics import NormalDist
 from typing import Any, Dict, List, Optional
 
+from messages import DEFAULT_LANG, resolve_lang, text
+
 __all__ = [
     "EvidenceWindow",
     "SelectionPenalty",
@@ -69,6 +71,7 @@ __all__ = [
     "months_for_power",
     "remedies",
     "selection_penalty",
+    "DEFAULT_LANG",
     "T_THRESHOLD",
     "TARGET_SHARPE",
 ]
@@ -158,6 +161,7 @@ class SelectionPenalty:
     months_base: int
     months_adjusted: int
     note: str = ""
+    lang: str = DEFAULT_LANG
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -169,6 +173,7 @@ def selection_penalty(
     effective_trials: Optional[float] = None,
     t_base: float = T_THRESHOLD,
     target_sharpe: float = TARGET_SHARPE,
+    lang: str = None,
 ) -> SelectionPenalty:
     """Raise the t bar for having picked a winner out of several attempts.
 
@@ -214,21 +219,16 @@ def selection_penalty(
     months_base = months_for_power(target_sharpe, t_base)
     months_adjusted = months_for_power(target_sharpe, t_adjusted)
 
+    lang = resolve_lang(lang)
     if trials == 1:
-        note = (
-            "申报只试过一个变体。这是一个**主张**，不是中性默认——"
-            "它断言策略在看数据之前就定好了。"
-        )
+        note = text("penalty.single", lang)
     else:
-        shrunk = "" if effective_trials is None else (
-            f"（{trials} 个变体按 {n_eff:g} 次独立试验计，折扣需为实测所得，不能自行声明）"
-        )
-        note = (
-            f"筛选了 {trials} 个变体{shrunk}，胜出者的 t 值是多次抽样的最大值。"
-            f"门槛由 t≥{t_base:g} 抬到 t≥{t_adjusted:.2f}，"
-            f"所需干净区间从 {months_base} 个月增至 {months_adjusted} 个月"
-            f"（×{months_adjusted / months_base:.1f}）。"
-        )
+        shrunk = "" if effective_trials is None else text(
+            "penalty.shrunk", lang, n_eff=n_eff)
+        note = text("penalty.screened", lang, trials=trials, shrunk=shrunk,
+                    t_base=t_base, t_adjusted=t_adjusted,
+                    months_base=months_base, months_adjusted=months_adjusted,
+                    ratio=months_adjusted / months_base)
     return SelectionPenalty(
         trials=trials,
         effective_trials=n_eff,
@@ -239,6 +239,7 @@ def selection_penalty(
         months_base=months_base,
         months_adjusted=months_adjusted,
         note=note,
+        lang=lang,
     )
 
 
@@ -262,6 +263,7 @@ class EvidenceWindow:
     verdict: str          # no_holdout | underpowered | sufficient
     power_ratio: float    # effective_months / months_required
     note: str = ""
+    lang: str = DEFAULT_LANG
     # Present only when the caller declared how many variants were screened.
     # ``None`` means undeclared, which is treated as one attempt *and said so*
     # in ``note`` — silence here would be the same as claiming a single try.
@@ -270,51 +272,24 @@ class EvidenceWindow:
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
-    def summary(self) -> str:
+    def summary(self, lang: str = None) -> str:
         """One line that survives a projector."""
-        bar = (f"t≥{self.selection.t_adjusted:.2f}（{self.selection.trials} 个变体校正后）"
-               if self.selection is not None and self.selection.trials > 1
-               else f"t≥{self.t_threshold:g}")
-        return (
-            f"{self.total_months} 个月的回测，"
-            f"{self.open_book_months} 个月在模型的知识范围内（{self.open_book_share:.1%}），"
-            f"剩下 {self.effective_months} 个月；"
-            f"Sharpe {self.target_sharpe:g} 要在 {bar} 上成立需要 "
-            f"{self.months_required} 个月 → {self.verdict}"
-        )
+        lang = resolve_lang(lang or self.lang)
+        if self.selection is not None and self.selection.trials > 1:
+            bar = text("summary.bar_adjusted", lang,
+                       t_adjusted=self.selection.t_adjusted,
+                       trials=self.selection.trials)
+        else:
+            bar = text("summary.bar_plain", lang, t_threshold=self.t_threshold)
+        return text("summary", lang, bar=bar, verdict=self.verdict,
+                    total_months=self.total_months,
+                    open_book_months=self.open_book_months,
+                    open_book_share=self.open_book_share,
+                    effective_months=self.effective_months,
+                    target_sharpe=self.target_sharpe,
+                    months_required=self.months_required)
 
 
-VERDICT_NOTE = {
-    "no_holdout": (
-        "回测区间完全落在知识截止日之前。这段区间检验的不是策略能否盈利，"
-        "而是模型记不记得。任何由它得出的结论都不可采信。"
-    ),
-    "underpowered": (
-        "有干净区间，但短于可做统计推断的长度。正确结论既不是「有效」也不是「无效」，"
-        "而是「这个回测没有分辨能力」——它不能拒绝任何假设。"
-    ),
-    "sufficient": (
-        "干净区间达到该 Sharpe 所需的长度。这只解除了「长度」这一条限制，"
-        "不构成策略有效的证据。"
-    ),
-}
-
-# Printed with every result, not buried in the docstring. Same discipline as
-# neff.py: the things that would make this number flattering travel with it.
-LIMITS = (
-    "阈值用 t ≈ SR·√T（Lo 2002），假设收益 i.i.d.；月度收益通常正自相关，"
-    "会抬高朴素 t 值 —— 所以这里给出的所需长度是下限，真实需求只多不少。"
-    " 变体筛选用 Bonferroni 校正，它控制族错误率且假设各次试验独立；"
-    "变体彼此相关时偏保守，折扣须由 effective_trials 给出且应为实测值。"
-)
-
-# Said when the caller declared nothing. Silence about screening is not a
-# neutral default; it is the strongest claim available.
-UNDECLARED_SELECTION = (
-    "⚠ 未申报变体筛选次数，按「一次成型」处理。这不是中性默认，"
-    "而是断言策略在看数据之前就定好了。自报次数还系统性偏低——"
-    "看一眼就放弃的那个变体，通常不会被算进去。"
-)
 
 
 def effective_window(
@@ -326,6 +301,7 @@ def effective_window(
     t_threshold: float = T_THRESHOLD,
     trials: Optional[int] = None,
     effective_trials: Optional[float] = None,
+    lang: str = None,
 ) -> EvidenceWindow:
     """Split a backtest at a model's knowledge cutoff and test the remainder for power.
 
@@ -344,6 +320,7 @@ def effective_window(
     confidence" path is for sources that failed to answer, and a malformed date
     is not a source.
     """
+    lang = resolve_lang(lang)
     c, s, e = _ym(cutoff, "cutoff"), _ym(start, "start"), _ym(end, "end")
     if e < s:
         raise ValueError(f"end {end!r} precedes start {start!r}")
@@ -365,6 +342,7 @@ def effective_window(
             effective_trials=effective_trials,
             t_base=t_threshold,
             target_sharpe=target_sharpe,
+            lang=lang,
         )
         required = penalty.months_adjusted
 
@@ -389,11 +367,12 @@ def effective_window(
         verdict=verdict,
         power_ratio=effective / required,
         note=" ".join([
-            VERDICT_NOTE[verdict],
-            penalty.note if penalty is not None else UNDECLARED_SELECTION,
-            LIMITS,
+            text("verdict." + verdict, lang),
+            penalty.note if penalty is not None else text("undeclared_selection", lang),
+            text("limits", lang),
         ]),
         selection=penalty,
+        lang=lang,
     )
 
 
@@ -402,7 +381,7 @@ def _demonstrable_sharpe(months: int, t_threshold: float) -> float:
     return t_threshold / ((months / 12.0) ** 0.5)
 
 
-def remedies(window: EvidenceWindow) -> List[str]:
+def remedies(window: EvidenceWindow, lang: str = None) -> List[str]:
     """What to do about a verdict, dispatched on *why* it came out that way.
 
     A verdict with nothing after it is refusal dressed as judgement — the
@@ -421,66 +400,49 @@ def remedies(window: EvidenceWindow) -> List[str]:
     written from the pre-fix version.
 
     Returns plain sentences, ordered. Numbering and line breaking belong to
-    whatever is rendering them.
+    whatever is rendering them. ``lang`` defaults to the window's own language,
+    so a window built in Chinese explains itself in Chinese without the caller
+    having to say so twice.
     """
     w = window
+    lang = resolve_lang(lang or w.lang)
     sel = w.selection
     t_eff = sel.t_adjusted if sel is not None else w.t_threshold
     # The open-book span ends at the backtest's end when the cutoff is later.
     open_end = w.cutoff if _ym(w.cutoff, "cutoff") <= _ym(w.end, "end") else w.end
     out: List[str] = []
 
+    def say(key, **kw):
+        out.append(text(key, lang, **kw))
+
     if w.verdict == "sufficient":
-        out.append(
-            f"干净区间已达 {w.months_required} 个月，长度不再是限制。"
-            "但这不是策略有效的证据，只是它现在有资格被检验。"
-        )
+        say("remedy.sufficient", months_required=w.months_required)
         if w.open_book_months > 0:
-            out.append(f"把开卷区间（{w.start} .. {open_end}）的表现单独标出，不要混进结论。")
+            say("remedy.mark_open_book", start=w.start, open_end=open_end)
         if sel is None:
-            out.append(
-                "申报变体筛选次数：这个判决目前建立在「一次成型」的假设上，"
-                "而那是一个主张，不是中性默认。"
-            )
+            say("remedy.declare_after_pass")
         return out
 
     need = w.months_required - w.effective_months
     if w.open_book_months > 0 and w.effective_months > 0:
-        out.append(f"只报干净段，把 {w.start} .. {open_end} 标为开卷，不计入结论。")
-    out.append(f"还差 {need} 个月：同一个模型下，回测终点要推到 {month_shift(w.end, need)} 才够。")
+        say("remedy.clean_only", start=w.start, open_end=open_end)
+    say("remedy.extend", need=need, ready=month_shift(w.end, need))
     if w.open_book_months > 0:
         if w.total_months >= w.months_required:
-            # effective >= required  ⇔  cutoff <= start + total - required - 1
-            out.append(
-                "或换知识截止更早的模型：截止 "
-                f"{month_shift(w.start, w.total_months - w.months_required - 1)} 及更早即够。"
-            )
+            # effective >= required  <=>  cutoff <= start + total - required - 1
+            say("remedy.earlier_model",
+                latest=month_shift(w.start, w.total_months - w.months_required - 1))
         else:
-            out.append(
-                f"换更早的模型不够——整段只有 {w.total_months} 个月，"
-                f"达不到 {w.months_required} 个月。"
-            )
+            say("remedy.earlier_model_insufficient",
+                total_months=w.total_months, months_required=w.months_required)
     if sel is not None and sel.months_adjusted > sel.months_base:
         if sel.effective_trials == sel.trials:
-            out.append(
-                f"量一下那 {sel.trials} 个变体有多重合：把它们的收益序列当成列，"
-                "算 Kish 有效源数（docs/index.html 上半部分可直接贴表），"
-                f"用 effective_trials 报实测值。现在按全额 {sel.trials} 次计，惩罚是上界。"
-                "折扣必须是量出来的，不是声明出来的。"
-            )
+            say("remedy.measure_overlap", trials=sel.trials)
         else:
-            out.append(
-                f"筛选已按 {sel.effective_trials:g} 次独立试验折算；"
-                "再降只能靠真的少试，不能靠改这个数。"
-            )
+            say("remedy.already_discounted", n_eff=sel.effective_trials)
     if sel is None:
-        out.append(
-            "申报变体筛选次数：以上都假设你一次成型。若筛选过，所需长度只会更长。"
-        )
+        say("remedy.declare_trials")
     if w.effective_months > 0:
-        out.append(
-            f"或改声明——{w.effective_months} 个月只够证明 SR "
-            f"{_demonstrable_sharpe(w.effective_months, t_eff):.2f} 的策略。"
-            "但那是要先兑现的主张，不是事后挑的档位。"
-        )
+        say("remedy.claim_higher_sharpe", effective_months=w.effective_months,
+            sharpe=_demonstrable_sharpe(w.effective_months, t_eff))
     return out

@@ -31,6 +31,7 @@ from effective_window import (  # noqa: E402
     months_for_power,
     selection_penalty,
 )
+from messages import LANGS, text  # noqa: E402
 
 
 def obs(source_id, score, construct=None):
@@ -260,21 +261,44 @@ class SelectionEffect(unittest.TestCase):
         self.assertEqual(w.verdict, "sufficient")
 
     def test_undeclared_screening_is_named_rather_than_assumed_away(self):
-        undeclared = effective_window(*self.RANGE)
-        self.assertIsNone(undeclared.selection)
-        self.assertIn("未申报", undeclared.note)
-        declared = effective_window(*self.RANGE, trials=10)
-        self.assertNotIn("未申报", declared.note)
-        self.assertIn("10", declared.note)
+        """Asserted in every language, because a translation is a second place
+        for the warning to go missing."""
+        for lang in LANGS:
+            undeclared = effective_window(*self.RANGE, lang=lang)
+            self.assertIsNone(undeclared.selection)
+            self.assertIn(text("undeclared_selection", lang), undeclared.note, lang)
+            declared = effective_window(*self.RANGE, trials=10, lang=lang)
+            self.assertNotIn(text("undeclared_selection", lang), declared.note, lang)
+            self.assertIn("10", declared.note, lang)
 
     def test_declaring_one_trial_is_recorded_as_a_claim_not_a_default(self):
-        note = effective_window(*self.RANGE, trials=1).note
-        self.assertIn("主张", note)
+        for lang in LANGS:
+            note = effective_window(*self.RANGE, trials=1, lang=lang).note
+            self.assertIn(text("penalty.single", lang), note, lang)
 
     def test_the_summary_line_names_the_corrected_bar(self):
-        s = effective_window(*self.RANGE, trials=10).summary()
-        self.assertIn("2.84", s)
-        self.assertIn("10 个变体", s)
+        """The numbers must survive translation; the wording need not."""
+        for lang in LANGS:
+            s = effective_window(*self.RANGE, trials=10, lang=lang).summary()
+            self.assertIn("2.84", s, lang)      # corrected bar
+            self.assertIn("10", s, lang)        # the trial count it was corrected for
+            self.assertIn("97", s, lang)        # the requirement it produced
+
+    def test_language_changes_the_words_and_not_the_numbers(self):
+        """The independent check on the whole translation layer."""
+        en = effective_window(*self.RANGE, trials=10, lang="en")
+        zh = effective_window(*self.RANGE, trials=10, lang="zh")
+        self.assertNotEqual(en.note, zh.note)
+        self.assertNotEqual(en.summary(), zh.summary())
+        for field in ("total_months", "open_book_months", "effective_months",
+                      "months_required", "verdict"):
+            self.assertEqual(getattr(en, field), getattr(zh, field), field)
+        self.assertEqual(en.selection.t_adjusted, zh.selection.t_adjusted)
+
+    def test_an_unknown_language_answers_in_english_rather_than_failing(self):
+        w = effective_window(*self.RANGE, lang="tlh")
+        self.assertEqual(w.lang, "en")
+        self.assertEqual(w.summary(), effective_window(*self.RANGE, lang="en").summary())
 
     def test_impossible_trial_counts_are_refused(self):
         with self.assertRaises(ValueError):          # cannot try zero times

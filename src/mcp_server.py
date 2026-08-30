@@ -133,6 +133,7 @@ def knowledge_window(
     t_threshold: float = 2.0,
     trials: Optional[int] = None,
     effective_trials: Optional[float] = None,
+    lang: str = "en",
 ) -> Dict[str, Any]:
     """Check whether a backtest could have told anyone anything, before trusting it.
 
@@ -180,6 +181,11 @@ def knowledge_window(
             and do not let a user assert it without a measurement: a freely
             chosen discount is an escape hatch, not a correction. Omitted, the
             full count is charged, which over-penalises on purpose.
+        lang: Language for the prose fields (``note``, ``remedies``,
+            ``summary``). ``en`` by default; ``zh`` for Chinese. The numbers
+            and ``verdict`` are identical either way. An unrecognised tag falls
+            back to English rather than failing — answering in the wrong
+            language beats not answering.
 
     Returns:
         ``verdict`` is the headline and has three values:
@@ -219,6 +225,7 @@ def knowledge_window(
         t_threshold=t_threshold,
         trials=trials,
         effective_trials=effective_trials,
+        lang=lang,
     )
     result = window.to_dict()
     result["remedies"] = remedies(window)
