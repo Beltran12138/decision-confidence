@@ -52,8 +52,8 @@ class Completeness(unittest.TestCase):
         """A copy-pasted English string in the zh slot would pass every other
         check here, so it gets its own."""
         for key, entry in MESSAGES.items():
-            if key in ("cli.arrow", "cli.of_requirement"):
-                continue          # deliberately identical or near-identical
+            if key == "cli.arrow":
+                continue          # a glyph, not a sentence
             self.assertNotEqual(entry["en"], entry["zh"], key)
 
 
@@ -83,7 +83,8 @@ class Templates(unittest.TestCase):
                   "open_end": "2024-10", "need": 40, "ready": "2028-10",
                   "latest": "2021-06", "sharpe": 2.45, "cutoff": "2024-10",
                   "end": "2025-06", "t_eff": 3.05, "alpha_base": 0.02275,
-                  "alpha_adjusted": 0.00114, "sr": 1.0, "have": 8, "err": "boom"}
+                  "alpha_adjusted": 0.00114, "sr": 1.0, "have": 8, "err": "boom",
+                  "m2": 28, "m1": 112, "m05": 448}
         for key, entry in MESSAGES.items():
             need = fields(entry["en"])
             args = {k: sample[k] for k in need if k in sample}

@@ -44,7 +44,8 @@ th{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.1em;color:var
    font-weight:400;padding:0 10px 10px 0;border-bottom:1px solid var(--rule)}
 td{padding:11px 10px 11px 0;border-bottom:1px solid var(--rule2);vertical-align:top}
 tr:last-child td{border-bottom:none}
-td.num,th.num{font-family:Consolas,monospace;text-align:right;padding-right:18px}
+td.num,th.num{font-family:Consolas,monospace;text-align:right;padding-right:18px;
+              white-space:nowrap}  /* "112 months" is wider than "112 个月" */
 td.num{font-size:16px}
 
 .big{font-family:Consolas,monospace;font-size:82px;line-height:1;font-weight:700;letter-spacing:-.02em}
@@ -68,6 +69,15 @@ td.num{font-size:16px}
 .foot b{color:#9AA0A8}
 .foot a{color:var(--blue)}
 #out{display:none}
+/* 双语：散文两份，交互元素只有一份（id 不能重复）。默认隐藏非当前语言，
+   而不是「只显示当前语言」——后者会把 flex/grid 布局压成 block。 */
+body[data-ui="en"] [data-lang="zh"]{display:none}
+body[data-ui="zh"] [data-lang="en"]{display:none}
+.langbar{display:flex;justify-content:flex-end;gap:0;margin-bottom:18px}
+.lang{font-family:Consolas,monospace;font-size:12px;letter-spacing:.1em;background:transparent;
+      color:var(--dim);border:1px solid var(--rule);padding:5px 13px;cursor:pointer}
+.lang+.lang{border-left:none}
+.lang[aria-current="true"]{color:var(--gold);border-color:var(--gold)}
 .dt{background:#080A0D;color:var(--ink);border:1px solid var(--rule);padding:8px 11px;margin-top:6px;
     font-family:Consolas,monospace;font-size:14px;width:132px;display:block}
 .dt:focus{outline:none;border-color:var(--gold)}
@@ -80,12 +90,17 @@ ol,ul{margin:10px 0 0 20px}
 li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
 </style>
 </head>
-<body>
+<body data-ui="en">
 <div class="wrap">
 
-<div class="kicker">DECISION-CONFIDENCE &middot; 有效源数</div>
-<h1>你这几列，实际上值几票？</h1>
-<div class="sub">
+<div class="langbar">
+  <button class="lang" data-set="en">EN</button><button class="lang" data-set="zh">中文</button>
+</div>
+
+<div class="kicker">DECISION-CONFIDENCE &middot; <span data-lang="zh">有效源数</span><span data-lang="en">EFFECTIVE SOURCES</span></div>
+<h1 data-lang="zh">你这几列，实际上值几票？</h1>
+<h1 data-lang="en">How many votes are your columns actually worth?</h1>
+<div class="sub" data-lang="zh">
   把一张评分表贴进来&mdash;&mdash;每行一个标的，每列一个已经打好的分。这个页面回答三个问题：
   <b>这几列实际提供了几份独立证据、哪两列在重复、砍掉哪一列不损失什么。</b>
   <br><br>
@@ -94,25 +109,40 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
   <b style="color:var(--grn)">全部计算在你的浏览器里完成，数据不发送到任何地方。</b>
   这个页面没有后端，断网也能跑&mdash;&mdash;你可以现在就断网试。
 </div>
+<div class="sub" data-lang="en">
+  Paste in a table of scores &mdash; one row per subject, one column per rating you
+  already have. This page answers three questions:
+  <b>how many independent pieces of evidence those columns actually supply, which
+  two of them are duplicates, and which one you could drop for free.</b>
+  <br><br>
+  It <b>predicts nothing, picks nothing, and produces no new score</b>. It only
+  measures what you already brought.
+  <br><br>
+  <b style="color:var(--grn)">Everything runs in your browser; no data is sent anywhere.</b>
+  There is no backend &mdash; pull your network cable and it still works. Try it now.
+</div>
 
 <div class="hr"></div>
 
 <div class="sec">
-  <div class="pill">第一步 &middot; 贴表</div>
-  <h2>从 Excel、Numbers、Google Sheets 直接复制粘贴即可</h2>
-  <div class="hint" style="margin-bottom:14px">
+  <div class="pill"><span data-lang="zh">第一步 &middot; 贴表</span><span data-lang="en">STEP 1 &middot; PASTE</span></div>
+  <h2 data-lang="zh">从 Excel、Numbers、Google Sheets 直接复制粘贴即可</h2>
+  <h2 data-lang="en">Copy straight out of Excel, Numbers or Google Sheets</h2>
+  <div class="hint" style="margin-bottom:14px" data-lang="zh">
     第一行是列名。第一列如果是标的名称（非数字），会被自动识别为名称列，不参与计算。<br>
     支持制表符、逗号分隔。空格分隔的也认，但列名里就不能有空格。
   </div>
-  <textarea id="inp" spellcheck="false" placeholder="标的	增长	估值	质量	情绪
-NVDA	4	2	5	4
-AMD	3	3	3	3
-..."></textarea>
+  <div class="hint" style="margin-bottom:14px" data-lang="en">
+    First row is the header. If the first column is non-numeric it is treated as a
+    label column and left out of the maths.<br>
+    Tabs and commas both work. Spaces work too, but then column names cannot contain spaces.
+  </div>
+  <textarea id="inp" spellcheck="false"></textarea>
   <div class="row">
-    <button class="btn" id="go">算一下</button>
-    <button class="btn ghost" id="demo1">载入示例：4 个投研维度</button>
-    <button class="btn ghost" id="demo2">载入示例：5 个交易台指标</button>
-    <button class="btn ghost" id="clr">清空</button>
+    <button class="btn" id="go"><span data-lang="zh">算一下</span><span data-lang="en">Compute</span></button>
+    <button class="btn ghost" id="demo1"><span data-lang="zh">载入示例：4 个投研维度</span><span data-lang="en">Example: 4 research dimensions</span></button>
+    <button class="btn ghost" id="demo2"><span data-lang="zh">载入示例：5 个交易台指标</span><span data-lang="en">Example: 5 trading-desk metrics</span></button>
+    <button class="btn ghost" id="clr"><span data-lang="zh">清空</span><span data-lang="en">Clear</span></button>
   </div>
   <div class="err" id="err"></div>
 </div>
@@ -122,18 +152,18 @@ AMD	3	3	3	3
 <div class="hr"></div>
 
 <div class="sec">
-  <div class="pill">第二步 &middot; 读数</div>
+  <div class="pill"><span data-lang="zh">第二步 &middot; 读数</span><span data-lang="en">STEP 2 &middot; READ IT</span></div>
   <div id="deadcols"></div>
   <div class="grid2">
     <div class="panel">
-      <div class="tag">有效源数 &middot; N_EFF</div>
+      <div class="tag"><span data-lang="zh">有效源数</span><span data-lang="en">EFFECTIVE SOURCES</span> &middot; N_EFF</div>
       <div class="big" id="neff">&mdash;<small id="ncols"></small></div>
       <div class="ci" id="ci"></div>
       <div class="eff" id="eff"></div>
       <div id="verdict"></div>
     </div>
     <div class="panel">
-      <div class="tag">这几列两两之间有多重合</div>
+      <div class="tag"><span data-lang="zh">这几列两两之间有多重合</span><span data-lang="en">HOW MUCH EACH PAIR OVERLAPS</span></div>
       <table id="pairs"><tbody></tbody></table>
       <div class="calm" id="pairnote"></div>
     </div>
@@ -141,28 +171,41 @@ AMD	3	3	3	3
 </div>
 
 <div class="sec">
-  <div class="pill">第三步 &middot; 该砍哪一列</div>
-  <h2>去掉这一列，剩下的还剩几票</h2>
-  <div class="hint" style="margin-bottom:16px">
+  <div class="pill"><span data-lang="zh">第三步 &middot; 该砍哪一列</span><span data-lang="en">STEP 3 &middot; WHICH TO DROP</span></div>
+  <h2 data-lang="zh">去掉这一列，剩下的还剩几票</h2>
+  <h2 data-lang="en">Drop this column &mdash; how many votes are left</h2>
+  <div class="hint" style="margin-bottom:16px" data-lang="zh">
     逐列移除，看有效源数怎么变。<b style="color:var(--ink)">掉得少的那一列，就是账面上占位置、实际不提供独立信息的那一列。</b>
     如果移除某列之后反而<b style="color:var(--ink)">上升</b>，说明那一列不但没有贡献，还在拉低整体的独立性。
   </div>
+  <div class="hint" style="margin-bottom:16px" data-lang="en">
+    Remove each column in turn and watch the effective count move.
+    <b style="color:var(--ink)">The one that costs you least is the one taking up space on the invoice without supplying independent information.</b>
+    If removing a column makes the number <b style="color:var(--ink)">go up</b>, that
+    column was not merely useless &mdash; it was dragging the rest down.
+  </div>
   <div class="panel">
     <table id="drop">
-      <thead><tr><th>移除这一列</th><th class="num">剩下的有效源数</th><th class="num">变化</th><th style="width:280px">读法</th></tr></thead>
+      <thead><tr>
+        <th><span data-lang="zh">移除这一列</span><span data-lang="en">REMOVE</span></th>
+        <th class="num"><span data-lang="zh">剩下的有效源数</span><span data-lang="en">N_EFF LEFT</span></th>
+        <th class="num"><span data-lang="zh">变化</span><span data-lang="en">CHANGE</span></th>
+        <th style="width:280px"><span data-lang="zh">读法</span><span data-lang="en">HOW TO READ IT</span></th>
+      </tr></thead>
       <tbody></tbody>
     </table>
   </div>
 </div>
 
 <div class="sec">
-  <div class="pill g">第四步 &middot; 那我该怎么办</div>
-  <h2>拿到这个数之后的动作</h2>
+  <div class="pill g"><span data-lang="zh">第四步 &middot; 那我该怎么办</span><span data-lang="en">STEP 4 &middot; WHAT TO DO</span></div>
+  <h2 data-lang="zh">拿到这个数之后的动作</h2>
+  <h2 data-lang="en">What follows from the number</h2>
   <div class="panel" id="actions"></div>
 </div>
 
 <div class="sec">
-  <div class="pill">口径</div>
+  <div class="pill"><span data-lang="zh">口径</span><span data-lang="en">HOW IT WAS COUNTED</span></div>
   <div class="panel">
     <table id="meta"><tbody></tbody></table>
   </div>
@@ -172,9 +215,10 @@ AMD	3	3	3	3
 
 <div class="hr"></div>
 
-<div class="kicker" style="margin-top:46px">DECISION-CONFIDENCE &middot; 知识窗口</div>
-<h1>另一条轴：你的回测，模型看过多少？</h1>
-<div class="sub">
+<div class="kicker" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">知识窗口</span><span data-lang="en">KNOWLEDGE WINDOW</span></div>
+<h1 data-lang="zh">另一条轴：你的回测，模型看过多少？</h1>
+<h1 data-lang="en">The other axis: how much of your backtest had the model already read?</h1>
+<div class="sub" data-lang="zh">
   上面那一半问的是<b>几列证据里有几份是独立的</b>。这一半问同一个问题，只是换到时间上：
   <b>一段回测里，有几个月是模型没读过的。</b>
   <br><br>
@@ -184,38 +228,64 @@ AMD	3	3	3	3
   <br><br>
   <b style="color:var(--grn)">同样全部在浏览器里完成，不读取任何行情，不发送任何数据。</b>
 </div>
+<div class="sub" data-lang="en">
+  The half above asks <b>how many of your columns are independent</b>. This half asks
+  the same question of the calendar: <b>how many months of a backtest the model had
+  not already read.</b>
+  <br><br>
+  A model has a knowledge cutoff, and it has read what happened before it. If most
+  of your backtest lies before that date, that stretch is not testing
+  <b>whether the strategy makes money &mdash; it is testing whether the model
+  remembers</b>. This step is pure arithmetic:
+  <b style="color:var(--gold)">you can know whether the result counts before computing a single return.</b>
+  <br><br>
+  <b style="color:var(--grn)">Also entirely in the browser. It reads no market data and sends nothing.</b>
+</div>
 
 <div class="sec">
-  <div class="pill">三个日期</div>
-  <div class="hint" style="margin-bottom:14px">
+  <div class="pill"><span data-lang="zh">三个日期</span><span data-lang="en">THREE DATES</span></div>
+  <div class="hint" style="margin-bottom:14px" data-lang="zh">
     格式 <code>YYYY-MM</code>。回测区间含首尾两个月。目标 Sharpe 是<b style="color:var(--ink)">你声称要检验的强度</b>，
     不是回测跑出来的结果&mdash;&mdash;它决定干净区间要多长才够。
   </div>
+  <div class="hint" style="margin-bottom:14px" data-lang="en">
+    Format <code>YYYY-MM</code>; the range includes both end months. Target Sharpe is
+    <b style="color:var(--ink)">the strength you claim to be testing for</b>, not the
+    number the backtest printed &mdash; it decides how long the clean stretch has to be.
+  </div>
   <div class="panel">
     <div class="row" style="margin-top:0;gap:20px">
-      <label class="hint">模型知识截止<br><input class="dt" id="wcut" value="2024-10" spellcheck="false"></label>
-      <label class="hint">回测起<br><input class="dt" id="wst" value="2020-01" spellcheck="false"></label>
-      <label class="hint">回测止<br><input class="dt" id="wen" value="2025-06" spellcheck="false"></label>
-      <label class="hint">目标 Sharpe<br>
+      <label class="hint"><span data-lang="zh">模型知识截止</span><span data-lang="en">Knowledge cutoff</span><br><input class="dt" id="wcut" value="2024-10" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">回测起</span><span data-lang="en">Backtest start</span><br><input class="dt" id="wst" value="2020-01" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">回测止</span><span data-lang="en">Backtest end</span><br><input class="dt" id="wen" value="2025-06" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">目标 Sharpe</span><span data-lang="en">Target Sharpe</span><br>
         <select class="dt" id="wsr">
           <option value="2">2.0</option><option value="1" selected>1.0</option><option value="0.5">0.5</option>
         </select></label>
-      <label class="hint">t 门槛<br>
+      <label class="hint"><span data-lang="zh">t 门槛</span><span data-lang="en">t bar</span><br>
         <select class="dt" id="wt">
           <option value="2" selected>2.0</option><option value="3">3.0</option>
         </select></label>
-      <label class="hint">筛选过几个变体<br>
-        <input class="dt" id="wtr" value="" placeholder="留空＝未申报" spellcheck="false"></label>
-      <label class="hint">其中独立几次<br>
-        <input class="dt" id="wet" value="" placeholder="留空＝按全额" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">筛选过几个变体</span><span data-lang="en">Variants screened</span><br>
+        <input class="dt" id="wtr" value="" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">其中独立几次</span><span data-lang="en">Of those, independent</span><br>
+        <input class="dt" id="wet" value="" spellcheck="false"></label>
     </div>
-    <div class="hint" style="margin-top:12px">
+    <div class="hint" style="margin-top:12px" data-lang="zh">
       「筛选过几个变体」＝这个策略是从多少个候选里挑出来的。<b style="color:var(--ink)">留空不是中性默认</b>，
       它断言你一次成型。「其中独立几次」是折扣，<b style="color:var(--ink)">必须是量出来的</b>——
       用本页上半部分把那些变体的收益序列贴进去，算出的有效源数就是这个数。
     </div>
+    <div class="hint" style="margin-top:12px" data-lang="en">
+      "Variants screened" is how many candidates this strategy was picked out of.
+      <b style="color:var(--ink)">Leaving it blank is not a neutral default</b> &mdash;
+      it asserts you got it right first time. "Of those, independent" is the discount,
+      and it <b style="color:var(--ink)">has to be measured</b>: paste those variants'
+      return series into the top half of this page, and the effective-source count it
+      returns is the number that belongs here.
+    </div>
     <div class="row">
-      <button class="btn" id="wgo">算一下</button>
+      <button class="btn" id="wgo"><span data-lang="zh">算一下</span><span data-lang="en">Compute</span></button>
     </div>
     <div class="err" id="werr"></div>
   </div>
@@ -225,15 +295,15 @@ AMD	3	3	3	3
 <div class="sec">
   <div class="grid2">
     <div class="panel">
-      <div class="tag">干净区间 &middot; 可用于检验</div>
+      <div class="tag"><span data-lang="zh">干净区间 &middot; 可用于检验</span><span data-lang="en">CLEAN MONTHS &middot; USABLE FOR TESTING</span></div>
       <div class="big" id="weff">&mdash;<small id="wtot"></small></div>
       <div class="ci" id="wshare"></div>
       <div class="bar hi" style="max-width:100%;margin-top:16px"><i id="wbar"></i></div>
-      <div class="hint" style="margin-top:7px">红色部分＝模型已读过的月份</div>
+      <div class="hint" style="margin-top:7px"><span data-lang="zh">红色部分＝模型已读过的月份</span><span data-lang="en">Red = months the model has already read</span></div>
       <div id="wverdict"></div>
     </div>
     <div class="panel">
-      <div class="tag">这么长够不够支撑一个推断</div>
+      <div class="tag"><span data-lang="zh">这么长够不够支撑一个推断</span><span data-lang="en">IS THAT LONG ENOUGH TO INFER ANYTHING</span></div>
       <table id="wreq"><tbody></tbody></table>
       <div class="calm" id="wquad"></div>
     </div>
@@ -241,20 +311,23 @@ AMD	3	3	3	3
 </div>
 
 <div class="sec">
-  <div class="pill">变体筛选校正</div>
-  <h2>这个策略是从多少个候选里挑出来的</h2>
+  <div class="pill"><span data-lang="zh">变体筛选校正</span><span data-lang="en">SCREENING CORRECTION</span></div>
+  <h2 data-lang="zh">这个策略是从多少个候选里挑出来的</h2>
+  <h2 data-lang="en">How many candidates was this one picked out of</h2>
   <div class="panel" id="wsel"></div>
 </div>
 
 <div class="sec">
-  <div class="pill g">那我该怎么办</div>
-  <h2 id="wacth">拿到这个判决之后的动作</h2>
+  <div class="pill g"><span data-lang="zh">那我该怎么办</span><span data-lang="en">WHAT TO DO</span></div>
+  <h2 data-lang="zh">拿到这个判决之后的动作</h2>
+  <h2 data-lang="en">What follows from the verdict</h2>
   <div class="panel" id="wacts"></div>
 </div>
 </div><!-- /wout -->
 
 <div class="foot" style="margin-top:34px">
-  <div class="tag" style="margin-bottom:16px">知识窗口 &middot; 方法与限制</div>
+  <div class="tag" style="margin-bottom:16px"><span data-lang="zh">知识窗口 &middot; 方法与限制</span><span data-lang="en">KNOWLEDGE WINDOW &middot; METHOD AND LIMITS</span></div>
+  <div data-lang="zh">
   <b>方法</b>：<code>所需月数 = ceil((t / SR)&sup2; &times; 12)</code>，来自 t &asymp; SR&middot;&radic;T（Lo 2002，T 以年计）。
   截止日<b>当月算作已读</b>&mdash;&mdash;「知识截止 2024 年 10 月」意味着 2024 年 10 月它读过。
   <br><br>
@@ -269,7 +342,7 @@ AMD	3	3	3	3
   <br>
   &nbsp;&nbsp;② 它假设策略在看数据之前就定好了。若曾在开卷区间里筛选过变体，
   选中这一个本身就用了被污染的数据，t=2.0 门槛偏低（多重检验下 Harvey &amp; Liu 主张约 3.0）。
-  上面的 t 门槛可以自己调高；<b>这个页面不会去猜你试过几个变体</b>。
+  上面的 t 门槛可以自己调高。
   <br><br>
   <b>够长不等于有效</b>：<code>sufficient</code> 只说明「长度」这一条不再是限制，
   它<b>不构成策略有效的任何证据</b>。
@@ -289,19 +362,84 @@ AMD	3	3	3	3
   <b style="color:var(--gold)">不知道试了几个变体就去问用户，不要省略</b>——
   省略不是缺省，是替用户断言了他一次成型。
   <br><br>
-  <b>与命令行同源</b>：算法与 <code>tools/window.py</code> 一致。
+  <b>与命令行同源</b>：算法与 <code>tools/window.py</code> 一致，文案与 <code>src/messages.py</code> 同源。
   默认那组在两边都应给出 <b>58 / 8 / 48 / underpowered</b>。
-  这不靠肉眼比对&mdash;&mdash;<code>python tools/check_js_parity.py</code> 会把本页的 JS 抽出来用
-  Node 跑一遍，和 Python 在 28 组输入上逐个比，<b>所需月数必须完全相等</b>。
+  这不靠肉眼比对&mdash;&mdash;<code>python tools/check_js_parity.py</code> 会把本页的 JS 抽出来用 Node 跑，
+  与 Python 比对 <b>28 组数值、57 条文案（两种语言）、48 组处方文本</b>，<b>所需月数必须完全相等</b>。
   <br>
   <b>一处已知的精度差</b>：浏览器没有内置正态分布，本页的 <code>Φ</code> 用
   Abramowitz &amp; Stegun 7.1.26 近似（|ε| &lt; 1.5e-7），<code>Φ&#8315;&sup1;</code> 用 Acklam。
   实测 t 门槛与 Python 最大差 <b>1.5e-5</b>，显示到两位小数看不出来；
   但它<b>原则上可能在临界点让所需月数进位差一个月</b>，所以那个比对脚本卡的是月数，不是 t。
+  </div>
+  <div data-lang="en">
+  <b>Method</b>: <code>months = ceil((t / SR)&sup2; &times; 12)</code>, from t &asymp;
+  SR&middot;&radic;T with T in years (Lo 2002). The cutoff month <b>counts as read</b>
+  &mdash; "knowledge cutoff: October 2024" means October 2024 was in the training data.
+  <br><br>
+  <b>That one month is not a rounding detail</b>: on the same configuration, including
+  it gives <b>87.9%</b> and excluding it gives <b>86.4%</b>. Both readings are
+  defensible, and people quoting either one rarely say which.
+  <b style="color:var(--gold)">The convention is fixed in code precisely so the figure cannot drift between tellings.</b>
+  <br><br>
+  <b>Two limits that would make this number look better, printed with it</b>:
+  <br>
+  &nbsp;&nbsp;(1) t &asymp; SR&middot;&radic;T assumes i.i.d. returns. Monthly returns are
+  typically positively autocorrelated, which inflates the naive t &mdash; so the length
+  demanded here is a <b>floor</b>, never generous.
+  <br>
+  &nbsp;&nbsp;(2) It assumes the strategy was specified before anyone looked. If you
+  screened variants on the open-book stretch, picking this one already used the
+  contaminated data and t = 2.0 is too low a bar (under multiple testing, Harvey &amp;
+  Liu argue for roughly 3.0). Raise the t bar above yourself.
+  <br><br>
+  <b>Long enough is not the same as valid</b>: <code>sufficient</code> says only that
+  length has stopped being the binding constraint. It is
+  <b>not evidence of anything about the strategy</b>.
+  <br><br>
+  <b>How screening is charged</b>: Bonferroni. Divide the error rate you already
+  accepted by the number of independent trials &mdash;
+  <code>α = 1 &minus; Φ(t)</code>, <code>α' = α / n</code>,
+  <code>t' = Φ&#8315;&sup1;(1 &minus; α')</code>.
+  Deriving α from <b>your own t</b> rather than fixing it at 0.05 is what makes "I tried
+  one thing" an <b>exact identity</b>: declaring a single attempt must not move the
+  requirement by even a month.
+  <br><br>
+  <b>Why independent trials and not just trials</b>: fifty parameter settings of one
+  strategy are not fifty independent tests, any more than five vendors reading one
+  on-chain field are five independent reads. That is the same thing the top half of
+  this page does, <b style="color:var(--gold)">so the independent count should be measured up there</b>
+  &mdash; it is a free-text field, and a number filled in by feel is not a correction,
+  it is an escape hatch.
+  <br><br>
+  <b>For agents</b>: the same axis is exposed as an MCP tool,
+  <code>knowledge_window</code>, so an agent can ask before quoting any backtest
+  figure. Its description carries one instruction aimed at the model:
+  <b style="color:var(--gold)">if you do not know how many variants were screened, ask the user &mdash; do not omit it</b>.
+  Omitting it is not a default; it asserts on the user's behalf that they got it right
+  first time.
+  <br><br>
+  <b>Same source as the command line</b>: the arithmetic matches
+  <code>tools/window.py</code> and the wording is generated from
+  <code>src/messages.py</code>. The defaults above must produce
+  <b>58 / 8 / 48 / underpowered</b> on both sides.
+  That is not left to the eye &mdash; <code>python tools/check_js_parity.py</code>
+  lifts this page's JavaScript, runs it under Node and diffs it against the Python
+  across <b>28 numeric cases, 57 message entries in both languages, and 48 remedy
+  texts</b>, with the months requirement compared exactly.
+  <br>
+  <b>One known precision gap</b>: browsers have no normal distribution, so
+  <code>Φ</code> here is the Abramowitz &amp; Stegun 7.1.26 approximation
+  (|ε| &lt; 1.5e-7) and <code>Φ&#8315;&sup1;</code> is Acklam. The measured gap against
+  Python on the t bar is at most <b>1.5e-5</b>, invisible at the two decimals shown
+  &mdash; but it <b>could in principle flip a ceiling by one month</b>, which is why
+  the parity check is strict on months and tolerant on t.
+  </div>
 </div>
 
 <div class="foot">
-  <div class="tag" style="margin-bottom:16px">有效源数 &middot; 方法与限制</div>
+  <div class="tag" style="margin-bottom:16px"><span data-lang="zh">有效源数 &middot; 方法与限制</span><span data-lang="en">EFFECTIVE SOURCES &middot; METHOD AND LIMITS</span></div>
+  <div data-lang="zh">
   <b>方法</b>：列内取秩 &rarr; 两两皮尔逊相关（即斯皮尔曼秩相关）&rarr;
   <code>n_eff = n&sup2; / (n + 2&Sigma;|&rho;|)</code>。
   区间由对<b>标的</b>（不是对单元格）有放回重抽 1000 次得到，取 2.5% / 97.5% 分位。
@@ -336,6 +474,63 @@ AMD	3	3	3	3
   <br><br>
   <b>这个数不必采信，可以自行核验</b>：方法全部公开，纯前端，右键查看源代码即可读完。
   MIT &middot; 无依赖 &middot; 无网络请求
+  </div>
+  <div data-lang="en">
+  <b>Method</b>: rank within each column &rarr; pairwise Pearson on the ranks (i.e.
+  Spearman) &rarr; <code>n_eff = n&sup2; / (n + 2&Sigma;|&rho;|)</code>.
+  The interval comes from resampling <b>subjects</b> (not cells) with replacement 1000
+  times, taking the 2.5% / 97.5% quantiles. The seed is fixed, so the same table gives
+  the same number every time.
+  <br><br>
+  <b>Why the correlations are taken in absolute value</b>: Kish's original does not,
+  because it comes from a variance derivation &mdash; two negatively correlated
+  estimators cancel each other's noise, so the "equivalent independent sample size" can
+  legitimately exceed the number of columns. That is correct when the question is
+  precision. It is not the question here. Here the question is
+  <b>whether these columns are answering the same question</b>, and two columns
+  correlated at &minus;0.9 are not two independent questions &mdash; they are two sides
+  of one, and knowing either tells you the other. As evidence that is worth a little
+  more than one vote, not two. So sign is ignored and magnitude counted.
+  The cost is that this number is no longer an effective sample size in the variance
+  sense; the benefit is that it never reports "4 columns, 6 votes".
+  <br><br>
+  <b>Zero-variance columns</b>: when every value in a column is identical, its
+  correlation with anything is undefined. Recording that as 0 (= perfectly independent)
+  would let a column with no discriminating power masquerade as a full independent vote
+  &mdash; the worst direction to fail in. So such columns are removed before the
+  calculation and listed separately.
+  <b>A column that distinguishes nothing is not a column that adds information.</b>
+  <br>
+  <b>Missing values</b>: listwise deletion. Any row with a gap sits out entirely, and
+  the count of dropped rows is reported under "how it was counted".
+  <br><br>
+  <b>What this is not</b>: it is not factor research. Factor research asks whether a
+  signal predicts returns; this asks whether several columns are answering one
+  question. The two are orthogonal &mdash; a factor can have no predictive power and
+  still be an independent construct, and two factors can both make money while being
+  the same thing.
+  <br>
+  <b>Nor is it a risk model</b>: a risk model asks how many kinds of
+  <b>financial risk</b> you are carrying. This asks how many pieces of
+  <b>evidence</b> stand behind your conclusion.
+  <br><br>
+  <b>A boundary worth stating plainly</b>: these are raw rank correlations,
+  not conditioned on any outcome variable. If your table has a measurable outcome
+  (it went up, it was delivered) and you control for it first, the number usually falls.
+  So <b>this is the upper-bound reading of independence</b>, not the
+  controlled-for-label reading &mdash; the truth is only ever worse, never better.
+  <br>
+  <b>And one thing it cannot see at all</b>: an effective-source count measures how much
+  the columns you have overlap.
+  <b style="color:var(--gold)">It cannot see what you left out.</b>
+  Four columns can come back beautifully independent, and if the fifth thing that
+  needed measuring has no source at all, the total still does not hold. That part is
+  yours to enumerate.
+  <br><br>
+  <b>You do not have to take this number on trust</b>: the method is fully open, the
+  page is pure front-end, and view-source is the whole of it.
+  MIT &middot; no dependencies &middot; no network requests
+  </div>
 </div>
 
 </div>
@@ -768,7 +963,7 @@ const I18N = {
   "cli.row_required": {en: "required", zh: "所需长度"},
   "cli.row_have": {en: "available", zh: "实有"},
   "cli.formula": {en: "(t ~ SR*sqrt(T); at SR={target_sharpe:g}, T=({t_eff:.2f}/{target_sharpe:g})^2 years)", zh: "（t ≈ SR·√T，SR={target_sharpe:g} 时 T=({t_eff:.2f}/{target_sharpe:g})² 年）"},
-  "cli.of_requirement": {en: "of requirement", zh: "of requirement"},
+  "cli.of_requirement": {en: "of requirement", zh: "达到所需长度"},
   "cli.section_selection": {en: "Screening correction", zh: "变体筛选校正"},
   "cli.sel_declared": {en: "variants declared", zh: "申报变体数"},
   "cli.sel_counted": {en: "counted as independent", zh: "计入独立试验"},
@@ -792,6 +987,23 @@ const I18N = {
   "web.err_eff_range": {en: "\"Independent trials\" must fall between 1 and the number of variants: attempts cannot be more independent than they are numerous.", zh: "「独立几次」要在 1 和变体数之间：试验不可能比它的次数更独立。"},
   "web.err_dates": {en: "Dates must be written YYYY-MM, with the month between 01 and 12.", zh: "日期要写成 YYYY-MM，月份 01–12。"},
   "web.err_range_inverted": {en: "The backtest end precedes its start.", zh: "回测止早于回测起。"},
+  "web.ph_paste": {en: "subject\tgrowth\tvaluation\tquality\tsentiment\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n...", zh: "标的\t增长\t估值\t质量\t情绪\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n..."},
+  "web.ph_trials": {en: "blank = undeclared", zh: "留空＝未申报"},
+  "web.ph_eff_trials": {en: "blank = charge in full", zh: "留空＝按全额"},
+  "web.lang_note": {en: "Numbers are identical in both languages; only the wording changes.", zh: "两种语言的数字完全相同，只有措辞不同。"},
+  "web.share_line": {en: "Open book (model has read) {open_book_months} months, {open_book_share:.1%}", zh: "开卷（模型已读）{open_book_months} 个月，占 {open_book_share:.1%}"},
+  "web.row_have_clean": {en: "clean months available", zh: "实有干净区间"},
+  "web.row_open_book": {en: "open book", zh: "开卷区间"},
+  "web.none": {en: "(none)", zh: "（无）"},
+  "web.quad_note": {en: "Required length grows with the inverse square of Sharpe: halve the target, quadruple the sample. At t >= {t_eff:.2f} — SR 2.0 needs {m2} months, SR 1.0 needs {m1} months, SR 0.5 needs {m05} months.", zh: "所需长度随 Sharpe 平方反比增长：目标减半，样本要四倍。t ≥ {t_eff:.2f} 下 — SR 2.0 需 {m2} 个月，SR 1.0 需 {m1} 个月，SR 0.5 需 {m05} 个月。"},
+  "web.bar_corrected": {en: " (the bar is already corrected for screening)", zh: "（门槛已按筛选校正）"},
+  "web.undeclared_title": {en: "Not declared", zh: "未申报"},
+  "web.undeclared_body": {en: "Charged as a single attempt, so the requirement stays at {months_required} months. This page cannot detect an understated count; it can only decline to read silence as zero.", zh: "按「一次成型」处理，所需长度维持 {months_required} 个月。本页无法检测被低报的次数，只能拒绝把沉默当成零。"},
+  "web.sel_declared_note": {en: "the pool this one was picked out of", zh: "从这么多候选里挑出了当前这一个"},
+  "web.sel_full_note": {en: "undiscounted, charged in full (the penalty is an upper bound)", zh: "未折扣，按全额计（惩罚是上界）"},
+  "web.sel_discounted_note": {en: "measured discount applied", zh: "已按实测折扣"},
+  "web.sel_hint_full": {en: "If those {trials} variants are highly correlated, charging the full count is too heavy. Paste their return series into the top half of this page; the effective-source count it returns is what belongs in \"of those, independent\". The discount has to be measured, not asserted.", zh: "这 {trials} 个变体若彼此高度相关，全额计入就过重了。把它们的收益序列贴进本页上半部分，算出的有效源数就是「独立几次」该填的值。折扣必须是量出来的，不是声明出来的。"},
+  "web.sel_hint_discounted": {en: "Discounted to {n_eff:g} independent trials. Going lower requires actually trying fewer things, not editing this number.", zh: "已按 {n_eff:g} 次独立试验折算。再往下降只能靠真的少试，不能靠改这个数。"},
 };
 
 /* Python str.format 的最小子集。页面只用到 :g 和 :.Nf/.N%，
@@ -799,11 +1011,13 @@ const I18N = {
 function fmtPy(v, spec){
   if (spec === undefined || spec === '') return String(v);
   if (spec === 'g') return String(Number(v));
-  const m = /^\.(\d+)([f%])$/.exec(spec);
+  const m = /^\.(\d+)([fe%])$/.exec(spec);
   if (m) {
     const d = Number(m[1]);
-    return m[2] === 'f' ? Number(v).toFixed(d)
-                        : (Number(v) * 100).toFixed(d) + '%';
+    if (m[2] === 'f') return Number(v).toFixed(d);
+    if (m[2] === '%') return (Number(v) * 100).toFixed(d) + '%';
+    // Python pads the exponent to two digits ("2.28e-02"); JS does not.
+    return Number(v).toExponential(d).replace(/e([+-])(\d)$/, 'e$10$2');
   }
   throw new Error('unsupported format spec: ' + spec);
 }
@@ -967,10 +1181,8 @@ function runWindow(){
   const trials = trRaw === '' ? null : Number(trRaw);
   const effTr  = etRaw === '' ? null : Number(etRaw);
 
-  // Pinned to Chinese for now: the surrounding prose on this page is still
-  // Chinese, and half-translated reads worse than either language alone. The
-  // switch lands with the page's own copy.
-  const w = evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr, 'zh');
+  const L = uiLang();
+  const w = evaluateWindow(cutS, stS, enS, sr, tb, trials, effTr, L);
   if(w.error){
     $('werr').textContent = w.error;
     $('wout').style.display = 'none'; return;
@@ -980,51 +1192,55 @@ function runWindow(){
   const sel = w.selection, req = w.monthsRequired, tEff = w.tEff;
   const share = w.openBookShare, verdict = w.verdict;
 
-  $('weff').innerHTML = eff + '<small> / ' + total + ' 个月</small>';
-  $('wshare').textContent = '开卷（模型已读）' + open + ' 个月，占 ' + (share*100).toFixed(1) + '%';
+  $('weff').innerHTML = eff + '<small> / ' + total + ' ' + tx('cli.unit_months', L) + '</small>';
+  $('wshare').textContent = tx('web.share_line', L,
+    {open_book_months: open, open_book_share: share});
   $('wbar').style.width = (share*100).toFixed(1) + '%';
 
-  const NOTE = {
-    no_holdout:   ['warn',      '回测区间完全落在知识截止日之前。这段区间检验的不是策略能否盈利，而是模型记不记得。由它得出的结论不可采信。'],
-    underpowered: ['warn info', '有干净区间，但短于可做统计推断的长度。正确结论既不是「有效」也不是「无效」，而是<b>这个回测没有分辨能力</b>——它不能拒绝任何假设。'],
-    sufficient:   ['warn ok',   '干净区间达到该 Sharpe 所需的长度。这<b>只</b>解除了「长度」这一条限制，不构成策略有效的证据。']
-  };
+  // Verdict prose comes from the shared table rather than a local copy, which
+  // costs the inline <b> emphasis this block used to carry. Being diffable
+  // against the library beat being bold — the same trade the remedies made.
+  const TONE = {no_holdout: 'warn', underpowered: 'warn info', sufficient: 'warn ok'};
   $('wverdict').innerHTML =
-    '<div class="' + NOTE[verdict][0] + '"><b class="mono">' + verdict + '</b><br>' + NOTE[verdict][1] + '</div>';
+    '<div class="' + TONE[verdict] + '"><b class="mono">' + verdict + '</b><br>' +
+    tx('verdict.' + verdict, L) + '</div>';
 
   const pct = req > 0 ? (eff/req*100) : 0;
   $('wreq').querySelector('tbody').innerHTML = [
-    ['所需长度', req + ' 个月', 'SR ' + sr + '，t ≥ ' + tEff.toFixed(2) + ' → T = (' + tEff.toFixed(2) + '/' + sr + ')² 年'],
-    ['实有干净区间', eff + ' 个月', pct.toFixed(0) + '% of requirement'],
-    ['开卷区间', open + ' 个月', stS + ' .. ' + (c < s ? '（无）' : ymStr(Math.min(c,e)))]
+    [tx('cli.row_required', L), req + ' ' + tx('cli.unit_months', L),
+     tx('cli.formula', L, {target_sharpe: sr, t_eff: tEff})],
+    [tx('web.row_have_clean', L), eff + ' ' + tx('cli.unit_months', L),
+     pct.toFixed(0) + '% ' + tx('cli.of_requirement', L)],
+    [tx('web.row_open_book', L), open + ' ' + tx('cli.unit_months', L),
+     stS + ' .. ' + (c < s ? tx('web.none', L) : ymStr(Math.min(c,e)))]
   ].map(function(r){
     return '<tr><td style="width:130px;color:var(--dim);font-size:14px">' + r[0] +
-           '</td><td class="num" style="width:96px">' + r[1] +
+           '</td><td class="num" style="width:118px">' + r[1] +
            '</td><td style="font-size:13.5px;color:var(--dim)">' + r[2] + '</td></tr>';
   }).join('');
 
-  $('wquad').innerHTML = '所需长度随 Sharpe <b>平方反比</b>增长：目标减半，样本要四倍。' +
-    ' t ≥ ' + tEff.toFixed(2) + ' 下 &mdash; SR 2.0 需 ' + monthsForPower(2, tEff) + ' 个月，' +
-    'SR 1.0 需 ' + monthsForPower(1, tEff) + ' 个月，SR 0.5 需 ' + monthsForPower(0.5, tEff) +
-    ' 个月。' + (sel === null ? '' : '（门槛已按筛选校正）');
+  $('wquad').textContent =
+    tx('web.quad_note', L, {t_eff: tEff, m2: monthsForPower(2, tEff),
+                            m1: monthsForPower(1, tEff), m05: monthsForPower(0.5, tEff)}) +
+    (sel === null ? '' : tx('web.bar_corrected', L));
 
   // 未申报也必须出现在屏幕上：对筛选保持沉默本身就是一个主张，
   // 什么都不显示会让它读起来像「不适用」，而不是「你选择了不说」。
   if(sel === null){
     $('wsel').innerHTML =
-      '<div class="warn info"><b>⚠ 未申报</b><br>' +
-      '按「一次成型」处理，所需长度维持 <b>' + req + '</b> 个月。' +
-      '这不是中性默认，而是断言策略在看数据之前就定好了。<br><br>' +
-      '自报次数还系统性偏低——<b>看一眼就放弃的那个变体，通常不会被算进去</b>。' +
-      '这一条本页无法检测，只能提醒。</div>';
+      '<div class="warn info"><b>⚠ ' + tx('web.undeclared_title', L) + '</b><br>' +
+      tx('undeclared_selection', L) + '<br><br>' +
+      tx('web.undeclared_body', L, {months_required: req}) + '</div>';
   } else {
     const rows = [
-      ['申报变体数', sel.trials + ' 个', '从这么多候选里挑出了当前这一个'],
-      ['计入独立试验', (+sel.nEff.toFixed(4)) + ' 次',
-        sel.nEff === sel.trials ? '未折扣，按全额计（惩罚是上界）' : '已按实测折扣'],
-      ['t 门槛', sel.tBase.toFixed(2) + ' → ' + sel.tAdj.toFixed(2),
-        'Bonferroni：α ' + sel.alphaBase.toExponential(2) + ' → ' + sel.alphaAdj.toExponential(2)],
-      ['所需长度', sel.monthsBase + ' → ' + sel.monthsAdj + ' 个月',
+      [tx('cli.sel_declared', L), String(sel.trials), tx('web.sel_declared_note', L)],
+      [tx('cli.sel_counted', L), String(+sel.nEff.toFixed(4)),
+        tx(sel.nEff === sel.trials ? 'web.sel_full_note' : 'web.sel_discounted_note', L)],
+      [tx('cli.sel_bar', L), sel.tBase.toFixed(2) + ' → ' + sel.tAdj.toFixed(2),
+        tx('cli.sel_bonferroni', L,
+           {alpha_base: sel.alphaBase, alpha_adjusted: sel.alphaAdj})],
+      [tx('cli.row_required', L),
+       sel.monthsBase + ' → ' + sel.monthsAdj + ' ' + tx('cli.unit_months', L),
         '×' + (sel.monthsAdj / sel.monthsBase).toFixed(1)]
     ];
     $('wsel').innerHTML = '<table><tbody>' + rows.map(function(r){
@@ -1033,19 +1249,41 @@ function runWindow(){
              '</td><td style="font-size:13.5px;color:var(--dim)">' + r[2] + '</td></tr>';
     }).join('') + '</tbody></table>' +
     (sel.nEff === sel.trials
-      ? '<div class="calm">这 ' + sel.trials + ' 个变体若彼此高度相关，全额计入就<b>过重</b>了。' +
-        '把它们的收益序列贴进本页上半部分，算出的有效源数就是「独立几次」该填的值。' +
-        '<b style="color:var(--gold)">折扣必须是量出来的，不是声明出来的。</b></div>'
-      : '<div class="calm">已按 ' + (+sel.nEff.toFixed(4)) + ' 次独立试验折算。' +
-        '再往下降只能靠<b>真的少试</b>，不能靠改这个数。</div>');
+      ? '<div class="calm">' + tx('web.sel_hint_full', L, {trials: sel.trials}) + '</div>'
+      : '<div class="calm">' + tx('web.sel_hint_discounted', L, {n_eff: sel.nEff}) + '</div>');
   }
 
-  const acts = remediesFor(w);
+  const acts = remediesFor(w, L);
   $('wacts').innerHTML = '<ol><li>' + acts.join('</li><li>') + '</li></ol>';
 
 
   $('wout').style.display = 'block';
 }
+
+/* ============ 语言切换 ============
+   散文靠 CSS 显隐（见 body[data-ui] 规则）；placeholder 和已渲染的结果
+   拿不到 CSS，所以切换时重设并重跑。结果区只有在已经算过时才重跑——
+   否则切个语言就会把空白区域展开成一份默认结果。 */
+function uiLang(){ return txLang(document.body.dataset.ui); }
+
+function setLang(lang){
+  lang = txLang(lang);
+  document.body.dataset.ui = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.querySelectorAll('.lang').forEach(function(b){
+    b.setAttribute('aria-current', String(b.dataset.set === lang));
+  });
+  $('inp').placeholder = tx('web.ph_paste', lang);
+  $('wtr').placeholder = tx('web.ph_trials', lang);
+  $('wet').placeholder = tx('web.ph_eff_trials', lang);
+  if ($('wout').style.display === 'block') runWindow();
+  if ($('out').style.display === 'block') run();
+  try { localStorage.setItem('dc-lang', lang); } catch (e) {}
+}
+
+document.querySelectorAll('.lang').forEach(function(b){
+  b.onclick = function(){ setLang(b.dataset.set); };
+});
 
 $('wgo').onclick = runWindow;
 ['wcut','wst','wen','wtr','wet'].forEach(function(id){
@@ -1053,6 +1291,11 @@ $('wgo').onclick = runWindow;
   $(id).addEventListener('blur', runWindow);
 });
 ['wsr','wt'].forEach(function(id){ $(id).onchange = runWindow; });
+(function(){
+  let saved = null;
+  try { saved = localStorage.getItem('dc-lang'); } catch (e) {}
+  setLang(saved || (navigator.language || '').toLowerCase().slice(0, 2));
+})();
 runWindow();   // 默认值即 README 与 CLI 共用的那组，页面一打开就可对照
 
 $('go').onclick = run;

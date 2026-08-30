@@ -322,6 +322,13 @@ already drifted once.
 Dependencies: the core library is **pure standard library**. Only the MCP
 server needs an extra (`pip install -e ".[mcp]"`).
 
+Output is **English by default**, with Chinese available (`--lang zh` on the CLI,
+`lang="zh"` in the library and the MCP tool, a toggle on the page). The numbers
+and the verdict are identical either way. Strings live in one table in
+`src/messages.py`; the browser's copy is generated from it, and
+`tools/check_js_parity.py` diffs the two entry by entry in **both** languages,
+because a second language is a second place for them to drift.
+
 Not built on purpose: HTTP fetching inside the library, auth, multi-tenancy.
 The library holds no credentials and reaches nothing; those are host concerns,
 and inventing them here would be scope theatre. Reasoning in

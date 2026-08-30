@@ -245,7 +245,7 @@ MESSAGES.update({
         "en": "(t ~ SR*sqrt(T); at SR={target_sharpe:g}, T=({t_eff:.2f}/{target_sharpe:g})^2 years)",
         "zh": "（t ≈ SR·√T，SR={target_sharpe:g} 时 T=({t_eff:.2f}/{target_sharpe:g})² 年）",
     },
-    "cli.of_requirement": {"en": "of requirement", "zh": "of requirement"},
+    "cli.of_requirement": {"en": "of requirement", "zh": "达到所需长度"},
 
     "cli.section_selection": {"en": "Screening correction", "zh": "变体筛选校正"},
     "cli.sel_declared": {"en": "variants declared", "zh": "申报变体数"},
@@ -328,5 +328,71 @@ MESSAGES.update({
     "web.err_range_inverted": {
         "en": "The backtest end precedes its start.",
         "zh": "回测止早于回测起。",
+    },
+})
+
+MESSAGES.update({
+    "web.ph_paste": {
+        "en": "subject\tgrowth\tvaluation\tquality\tsentiment\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n...",
+        "zh": "标的\t增长\t估值\t质量\t情绪\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n...",
+    },
+    "web.ph_trials": {"en": "blank = undeclared", "zh": "留空＝未申报"},
+    "web.ph_eff_trials": {"en": "blank = charge in full", "zh": "留空＝按全额"},
+    "web.lang_note": {
+        "en": "Numbers are identical in both languages; only the wording changes.",
+        "zh": "两种语言的数字完全相同，只有措辞不同。",
+    },
+})
+
+MESSAGES.update({
+    "web.share_line": {
+        "en": "Open book (model has read) {open_book_months} months, {open_book_share:.1%}",
+        "zh": "开卷（模型已读）{open_book_months} 个月，占 {open_book_share:.1%}",
+    },
+    "web.row_have_clean": {"en": "clean months available", "zh": "实有干净区间"},
+    "web.row_open_book": {"en": "open book", "zh": "开卷区间"},
+    "web.none": {"en": "(none)", "zh": "（无）"},
+    "web.quad_note": {
+        "en": "Required length grows with the inverse square of Sharpe: halve the "
+              "target, quadruple the sample. At t >= {t_eff:.2f} — SR 2.0 needs "
+              "{m2} months, SR 1.0 needs {m1} months, SR 0.5 needs {m05} months.",
+        "zh": "所需长度随 Sharpe 平方反比增长：目标减半，样本要四倍。"
+              "t ≥ {t_eff:.2f} 下 — SR 2.0 需 {m2} 个月，SR 1.0 需 {m1} 个月，"
+              "SR 0.5 需 {m05} 个月。",
+    },
+    "web.bar_corrected": {
+        "en": " (the bar is already corrected for screening)",
+        "zh": "（门槛已按筛选校正）",
+    },
+    "web.undeclared_title": {"en": "Not declared", "zh": "未申报"},
+    "web.undeclared_body": {
+        "en": "Charged as a single attempt, so the requirement stays at "
+              "{months_required} months. This page cannot detect an understated "
+              "count; it can only decline to read silence as zero.",
+        "zh": "按「一次成型」处理，所需长度维持 {months_required} 个月。"
+              "本页无法检测被低报的次数，只能拒绝把沉默当成零。",
+    },
+    "web.sel_declared_note": {
+        "en": "the pool this one was picked out of",
+        "zh": "从这么多候选里挑出了当前这一个",
+    },
+    "web.sel_full_note": {
+        "en": "undiscounted, charged in full (the penalty is an upper bound)",
+        "zh": "未折扣，按全额计（惩罚是上界）",
+    },
+    "web.sel_discounted_note": {"en": "measured discount applied", "zh": "已按实测折扣"},
+    "web.sel_hint_full": {
+        "en": "If those {trials} variants are highly correlated, charging the full "
+              "count is too heavy. Paste their return series into the top half of "
+              "this page; the effective-source count it returns is what belongs in "
+              "\"of those, independent\". The discount has to be measured, not asserted.",
+        "zh": "这 {trials} 个变体若彼此高度相关，全额计入就过重了。"
+              "把它们的收益序列贴进本页上半部分，算出的有效源数就是「独立几次」该填的值。"
+              "折扣必须是量出来的，不是声明出来的。",
+    },
+    "web.sel_hint_discounted": {
+        "en": "Discounted to {n_eff:g} independent trials. Going lower requires "
+              "actually trying fewer things, not editing this number.",
+        "zh": "已按 {n_eff:g} 次独立试验折算。再往下降只能靠真的少试，不能靠改这个数。",
     },
 })
