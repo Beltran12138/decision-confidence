@@ -8,7 +8,9 @@ characters on the first run. English is now the default and Chinese is opt-in.
 project, and the browser copy in ``docs/index.html`` has to carry the same
 strings with no build step. A plain dict is the only form both can hold, and
 ``tools/check_js_parity.py`` diffs the two — in **both** languages, because a
-second language is a second place for them to drift.
+second language is a second place for them to drift. The page's copy is written
+by ``tools/gen_js_messages.py``; run it after changing anything here, or let
+``--check`` tell you it is stale.
 
 Templates use ``str.format`` field names. **A field that appears in one language
 must appear in the other**; ``test_messages.py`` asserts it, since a translation
@@ -394,5 +396,127 @@ MESSAGES.update({
         "en": "Discounted to {n_eff:g} independent trials. Going lower requires "
               "actually trying fewer things, not editing this number.",
         "zh": "已按 {n_eff:g} 次独立试验折算。再往下降只能靠真的少试，不能靠改这个数。",
+    },
+})
+
+# ---------------------------------------------------------------------------
+# The third axis: counterfactual perturbation. Same discount, applied to the
+# inputs — N judgements from one agent are worth fewer independent judgements
+# than N suggests, if the agent is not actually reading the inputs.
+# ---------------------------------------------------------------------------
+
+MESSAGES.update({
+    "cf.verdict.no_control": {
+        "en": "Only one kind of perturbation was supplied, so nothing here is "
+              "interpretable. Material changes alone cannot separate \"ignores its "
+              "inputs\" from \"reacts to everything\"; cosmetic ones alone cannot "
+              "show whether real changes register at all. Both are needed, for the "
+              "same reason a control group is.",
+        "zh": "只提供了一类扰动，结果无法解读。只有实质扰动，分不开「不看输入」和"
+              "「对什么都反应」；只有表面扰动，看不出真实变化到底能不能触发它。"
+              "两类都要，理由和需要对照组是同一个。",
+    },
+    "cf.verdict.no_power": {
+        "en": "Even a perfect split — every material change flipping the conclusion "
+              "and every cosmetic one leaving it alone — would not reach the "
+              "significance bar with this many perturbations. The correct reading is "
+              "not that the agent passed or failed, but that this audit cannot tell.",
+        "zh": "即便结果完美分离——每次实质扰动都翻转、每次表面扰动都不翻——"
+              "以现在的扰动次数也达不到显著性门槛。正确结论不是「通过」或「没通过」，"
+              "而是这次审计分辨不了。",
+    },
+    "cf.verdict.memorised": {
+        "en": "Cosmetic changes never moved the conclusion, and material ones did not "
+              "move it significantly more. The agent is reciting rather than reading: "
+              "an input it should have reacted to went past without effect.",
+        "zh": "表面扰动一次都没有改变结论，而实质扰动也没有显著更能改变它。"
+              "这个 agent 在复述而不是在读输入——本该引起反应的改动，过去了却没有反应。",
+    },
+    "cf.verdict.unstable": {
+        "en": "A cosmetic change moved the conclusion at least once, and material ones "
+              "did not do significantly better. Whatever drives this output, it is not "
+              "the part of the input that matters — a conclusion that flips on a "
+              "renamed ticker is not evidence either.",
+        "zh": "至少有一次表面扰动改变了结论，而实质扰动并没有显著做得更好。"
+              "驱动输出的不是输入里要紧的那部分——换个代码名就翻转的结论，同样不构成证据。",
+    },
+    "cf.verdict.responsive": {
+        "en": "Material changes move the conclusion significantly more than cosmetic "
+              "ones. That is the shape a reading agent should have — and it is all "
+              "this says. It is not evidence the conclusion is correct.",
+        "zh": "实质扰动对结论的影响显著大于表面扰动。这是一个真在读输入的 agent 该有的"
+              "形状——也仅止于此，它不构成结论正确的证据。",
+    },
+    "cf.limits": {
+        "en": "Whether a conclusion \"flipped\", and whether a change was material or "
+              "cosmetic, are both supplied by the caller and cannot be checked here. "
+              "Mislabel a material change as cosmetic and the audit passes; this is an "
+              "escape hatch of the same kind as an undeclared trial count. The test is "
+              "one-sided Fisher against the agent's own cosmetic flip rate rather than "
+              "against an assumed rate, because how often a reading agent should flip "
+              "is not knowable in advance.",
+        "zh": "「结论是否翻转」与「这次改动算实质还是表面」都由调用方给出，本层无法核验。"
+              "把实质扰动标成表面就能通过——这和不申报筛选次数是同一类逃生舱。"
+              "检验用单边 Fisher，比的是这个 agent 自己的表面扰动翻转率，"
+              "而不是某个假定的比率，因为「真在推理的 agent 该翻多少次」事先无从得知。",
+    },
+    "cf.summary": {
+        "en": "{n_material} material perturbations flipped {material_flips} times "
+              "({material_rate:.0%}); {n_cosmetic} cosmetic ones flipped "
+              "{cosmetic_flips} times ({cosmetic_rate:.0%}); one-sided p={p_value:.4f} "
+              "against alpha={alpha:g} -> {verdict}",
+        "zh": "{n_material} 次实质扰动翻转了 {material_flips} 次（{material_rate:.0%}）；"
+              "{n_cosmetic} 次表面扰动翻转了 {cosmetic_flips} 次（{cosmetic_rate:.0%}）；"
+              "单边 p={p_value:.4f}，对照 alpha={alpha:g} → {verdict}",
+    },
+
+    "cf.remedy.add_cosmetic": {
+        "en": "Add cosmetic perturbations — rename the ticker, shift the dates, change "
+              "the magnitudes, reword the narration. Without them a low flip rate "
+              "cannot be told apart from an agent that never flips.",
+        "zh": "补上表面扰动——换标的代码、平移日期、改数量级、改写叙述措辞。"
+              "没有它们，低翻转率和「这个 agent 从不翻转」区分不开。",
+    },
+    "cf.remedy.add_material": {
+        "en": "Add material perturbations — flip good news to bad, reverse the policy "
+              "direction, turn a beat into a miss. Cosmetic ones alone only show the "
+              "agent is stable, not that it is reading anything.",
+        "zh": "补上实质扰动——利好改利空、政策方向翻转、超预期改不及预期。"
+              "只有表面扰动，最多说明它稳定，说明不了它在读什么。",
+    },
+    "cf.remedy.need_more": {
+        "en": "{shortfall} more perturbations are needed: at this split, even a perfect "
+              "result would only reach p={best_p:.4f}. A balanced {min_material}+"
+              "{min_cosmetic} is the smallest set that can clear alpha={alpha:g} at all.",
+        "zh": "还需要 {shortfall} 次扰动：按当前配比，即使结果完美也只能到 p={best_p:.4f}。"
+              "能够达到 alpha={alpha:g} 的最小组合是 {min_material}+{min_cosmetic} 的均衡配置。",
+    },
+    "cf.remedy.inspect_unflipped": {
+        "en": "List the {unflipped} material perturbations that did not flip the "
+              "conclusion and read them one by one. Either the change was not material "
+              "after all — in which case relabel it — or the agent did not read it.",
+        "zh": "把那 {unflipped} 次没能翻转结论的实质扰动列出来逐条看。"
+              "要么那次改动其实不算实质（那就改标注），要么 agent 根本没读它。",
+    },
+    "cf.remedy.inspect_flipped_cosmetic": {
+        "en": "List the {flipped} cosmetic perturbations that did flip the conclusion. "
+              "A conclusion that moves when only the ticker name changed is being "
+              "driven by something other than the evidence.",
+        "zh": "把那 {flipped} 次翻转了结论的表面扰动列出来看。"
+              "只改了代码名就变的结论，驱动它的不是证据。",
+    },
+    "cf.remedy.not_a_pass": {
+        "en": "This says the agent responds to material changes. It does not say the "
+              "conclusion is right, and it says nothing about the other two axes — "
+              "run the sources and the window separately.",
+        "zh": "这只说明 agent 会对实质改动作出反应。它不说明结论正确，"
+              "也不涉及另外两条轴——源和窗口要各自单独跑。",
+    },
+    "cf.remedy.labels_are_yours": {
+        "en": "The material/cosmetic labels and the flip judgements are yours. Before "
+              "quoting this verdict, check that a sceptic reading your perturbation "
+              "list would classify them the same way.",
+        "zh": "实质/表面的标注和「是否翻转」的判断都出自你自己。"
+              "引用这个判决之前，先确认一个持怀疑态度的人看你的扰动清单，会给出同样的分类。",
     },
 })

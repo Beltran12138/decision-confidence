@@ -84,7 +84,11 @@ class Templates(unittest.TestCase):
                   "latest": "2021-06", "sharpe": 2.45, "cutoff": "2024-10",
                   "end": "2025-06", "t_eff": 3.05, "alpha_base": 0.02275,
                   "alpha_adjusted": 0.00114, "sr": 1.0, "have": 8, "err": "boom",
-                  "m2": 28, "m1": 112, "m05": 448}
+                  "m2": 28, "m1": 112, "m05": 448,
+                  "n_material": 6, "n_cosmetic": 6, "material_flips": 5,
+                  "cosmetic_flips": 0, "material_rate": 0.833, "cosmetic_rate": 0.0,
+                  "p_value": 0.0152, "alpha": 0.05, "shortfall": 2, "best_p": 0.1667,
+                  "min_material": 3, "min_cosmetic": 3, "unflipped": 1, "flipped": 2}
         for key, entry in MESSAGES.items():
             need = fields(entry["en"])
             args = {k: sample[k] for k in need if k in sample}

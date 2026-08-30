@@ -252,6 +252,52 @@ python tools/window.py --cutoff 2015-01 --start 2020-01 --end 2025-06 --trials 2
 #   66 clean months, and still underpowered — the bar moved to t ≥ 3.05
 ```
 
+### The third axis: the inputs
+
+A clean window says the model had not read the answer. It does not say the agent
+is reading the *question*. `counterfactual.py` asks that one: change a fact, see
+whether the conclusion follows.
+
+Published work has measured it and the number is worse than people expect —
+perturbing key market inputs left the worst model's predictions unchanged
+**82.13%** of the time ([Li et al., *Profit Mirage*](https://arxiv.org/abs/2510.07920)).
+
+**But a flip rate is not a verdict**, and that is the increment here.
+Perturbations come in two kinds with opposite expectations:
+
+| kind | example | the conclusion should |
+| --- | --- | --- |
+| `material` | good news → bad, policy reversed, a beat → a miss | **move** |
+| `cosmetic` | renamed ticker, shifted dates, rescaled magnitudes | **not move** |
+
+Averaging those into a single "82% unchanged" discards the only part that
+discriminates: an agent that flips on *everything* scores the same as one that
+reads carefully. So the test is **material against the agent's own cosmetic
+rate** — one-sided Fisher, exact, because these counts are single digits. Not
+against 0.5 and not against an assumed rate: how often a reading agent *should*
+flip is unknowable in advance, but its response to meaningless changes is
+measurable and is the right baseline. Same move `carry_cost` makes on the
+sources axis.
+
+| verdict | meaning |
+| --- | --- |
+| `no_control` | only one kind supplied — a missing control, not a result |
+| `no_power` | even a perfect split cannot clear α at this size |
+| `memorised` | no cosmetic flip, and material did not do significantly better |
+| `unstable` | a cosmetic change moved it at least once |
+| `responsive` | material significantly above cosmetic — and that is *all* it says |
+
+⭐ **Six perturbations is the floor.** Three material and three cosmetic, split
+perfectly, give p = 0.0500 exactly; below that no result of any shape can clear
+α = 0.05. Same kind of floor as `months_for_power` — it assumes the cleanest
+outcome you could possibly get.
+
+**The honest limit**: whether a conclusion "flipped", and whether a change was
+material or cosmetic, are both supplied by the caller and unverifiable here.
+Mislabel a material change as cosmetic and the audit passes. That is an escape
+hatch of exactly the same kind as an undeclared trial count, and all the library
+can do is name it on every run.
+
 **Where it sits, and where it deliberately does not.** It is a separate module
 (`src/effective_window.py`) because the inputs share nothing: one side takes
 vendor payloads, the other takes three dates. Merging them would be the exact
@@ -317,6 +363,7 @@ already drifted once.
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
 | **MCP server** | Shipped (reference impl) | 3 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
 | **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window` |
+| **Counterfactual audit (input axis)** | Shipped — library only so far | `perturbation_audit` in `src/counterfactual.py` |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
