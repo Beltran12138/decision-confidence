@@ -36,7 +36,8 @@ import unicodedata
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 
 from effective_window import (  # noqa: E402  (path set above)
-    LIMITS, UNDECLARED_SELECTION, VERDICT_NOTE, effective_window, months_for_power,
+    LIMITS, UNDECLARED_SELECTION, VERDICT_NOTE,
+    effective_window, months_for_power, remedies,
 )
 
 # Alternative targets shown alongside the caller's own, because the quadratic
@@ -48,17 +49,6 @@ COMPARISON_SHARPES = (2.0, 1.0, 0.5)
 CLOSERS = "」』）〉》”’。，；、！？%"
 
 
-def month_idx(ym: str) -> int:
-    """``YYYY-MM`` → month number, for comparing two dates in this file."""
-    y, m = ym.split("-")[0], ym.split("-")[1]
-    return int(y) * 12 + int(m) - 1
-
-
-def month_add(ym: str, months: int) -> str:
-    """Shift a ``YYYY-MM`` string forward. Presentation only — no library state."""
-    year, month = int(ym.split("-")[0]), int(ym.split("-")[1])
-    total = year * 12 + (month - 1) + months
-    return f"{total // 12:04d}-{total % 12 + 1:02d}"
 
 
 def main() -> int:
@@ -158,61 +148,16 @@ def main() -> int:
     # "Not comparable" without "so what do I do" is refusal dressed as
     # judgement — the failure this repo already caught in itself once. The
     # remedy is arithmetic too, so it costs nothing to state.
+    # Dispatch lives in the library: three surfaces need it, and the browser
+    # copy already drifted once by being written from the pre-fix version.
     print("那要怎么办")
-    if w.verdict == "sufficient":
-        for line in _wrap(
-            f"干净区间已达 {w.months_required} 个月。长度这一条不再是限制"
-            f"——但这不是策略有效的证据，只是它现在有资格被检验。", 70):
-            print(f"  {line}")
-    else:
-        # Remedies are gated on *why* the window failed. Open-book contamination
-        # and a screening penalty are different causes and take different
-        # actions; printing the open-book remedies unconditionally produced two
-        # wrong lines — an inverted date range when the cutoff preceded the
-        # start, and "switch to an earlier model" when no cutoff at all could
-        # supply the months a corrected bar demands.
-        # Every line is kept inside the rule above: a remedy that wraps on a
-        # projector reads as a paragraph and gets skipped.
-        need = w.months_required - w.effective_months
-        n = 0
-
-        def step(text):
-            nonlocal n
-            n += 1
-            print(f"  {'①②③④⑤⑥'[n - 1]} {text}")
-
-        # "Report only the clean segment" needs a clean segment to exist, and
-        # the open-book span ends at the backtest's end when the cutoff is
-        # later than it.
-        if w.open_book_months > 0 and w.effective_months > 0:
-            open_end = w.cutoff if month_idx(w.cutoff) <= month_idx(w.end) else w.end
-            step(f"只报干净段，把 {w.start} .. {open_end} 标为开卷，不计入结论。")
-        step(f"还差 {need} 个月：回测终点推到 {month_add(w.end, need)} 才够。")
-        if w.open_book_months > 0:
-            if w.total_months >= w.months_required:
-                # effective >= required  ⇔  cutoff <= start + total - required - 1
-                step(f"或换知识截止更早的模型：截止 "
-                     f"{month_add(w.start, w.total_months - w.months_required - 1)} 及更早即够。")
-            else:
-                step(f"换更早的模型不够——整段只有 {w.total_months} 个月，"
-                     f"达不到 {w.months_required} 个月。")
-        if sel is not None and sel.months_adjusted > sel.months_base:
-            if sel.effective_trials == sel.trials:
-                step(f"量一下那 {sel.trials} 个变体有多重合："
-                     f"tools/neff.py 跑它们的收益序列。")
-                print(f"     用 --effective-trials 报实测值。现在按全额 "
-                      f"{sel.trials} 次计，惩罚是上界。")
-                print(f"     折扣必须是量出来的，不是声明出来的。")
-            else:
-                step(f"筛选已按 {sel.effective_trials:g} 次独立试验折算；"
-                     f"再降只能靠真的少试，不能靠改这个数。")
-        # With no holdout at all there is no Sharpe this sample could
-        # demonstrate, and printing "SR inf" invites a reading that is the
-        # opposite of the truth.
-        if w.effective_months > 0:
-            step(f"或改声明——{w.effective_months} 个月只够证明 SR "
-                 f"{_sharpe_for(w.effective_months, t_eff):.2f} 的策略。")
-            print(f"     但那是要先兑现的主张，不是事后挑的档位。")
+    marks = "①②③④⑤⑥⑦⑧"
+    for i, line in enumerate(remedies(w)):
+        mark = marks[i] if i < len(marks) else "·"
+        wrapped = _wrap(line, 74)
+        print(f"  {mark} {wrapped[0]}")
+        for cont in wrapped[1:]:
+            print(f"     {cont}")
     print()
 
     bar_note = (f"（门槛用筛选校正后的 t≥{t_eff:.2f}）" if sel is not None
@@ -231,12 +176,6 @@ def main() -> int:
     print()
     return 0
 
-
-def _sharpe_for(months: int, t_threshold: float) -> float:
-    """The Sharpe that the clean sample *would* be long enough to demonstrate."""
-    if months <= 0:
-        return float("inf")
-    return t_threshold / ((months / 12.0) ** 0.5)
 
 
 def _cols(text: str) -> int:
@@ -260,13 +199,20 @@ def _wrap(text: str, width: int):
     longer than the rule above it.
     """
     out, line = [], ""
-    soft = max(1, int(width * 0.7))
+    # Two thresholds, because a space and a full stop are not equally good
+    # places to break. Chinese punctuation breaks early and reads fine. A space
+    # in this text is usually hugging a number ("推到 2034-02 才够") and
+    # breaking there strands two characters — but it is also the only thing
+    # standing between a hard break and a bisected `effective_trials`, so it
+    # stays, just later.
+    soft_punct = max(1, int(width * 0.62))
+    soft_space = max(1, int(width * 0.85))
     chars = list(text)
     for i, ch in enumerate(chars):
         line += ch
         cols = _cols(line)
         nxt = chars[i + 1] if i + 1 < len(chars) else ""
-        if cols >= soft and ch in "。，；、！？ ":
+        if (cols >= soft_punct and ch in "。，；、！？") or (cols >= soft_space and ch == " "):
             out.append(line.strip())
             line = ""
         elif cols >= width and nxt not in CLOSERS:

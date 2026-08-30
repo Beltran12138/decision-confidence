@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "decision-confidence"
 version = "0.1.0"
-description = "Agent decision-confidence meta-layer: normalize multi-source risk signals (token instance + multi risk-API mock) onto one 0-100 basis with contradiction detection, confidence, and audit."
+description = "Agent decision-confidence meta-layer. One discount on two axes: across sources, whether several vendors are answering the same question; across time, how much of a backtest a model had already read and whether the clean remainder can support an inference at all."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.8"

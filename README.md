@@ -41,7 +41,7 @@ evidence table → [`docs/failure-families.md`](./docs/failure-families.md)
 
 ## The thirty-second version
 
-Two commands, no keys, no setup beyond Python ≥ 3.8:
+Three commands, no keys, no setup beyond Python ≥ 3.8:
 
 ```bash
 python examples/two_kinds_of_disagreement.py          # the whole argument
@@ -274,13 +274,22 @@ what this repo is about. `tests/test_effective_window.py` names both numbers.
 
 ```python
 from decision_confidence import build_report, effective_window
+from effective_window import remedies
 
-w = effective_window("2024-10", "2020-01", "2025-06", target_sharpe=1.0)
+w = effective_window("2024-10", "2020-01", "2025-06", target_sharpe=1.0, trials=20)
 w.verdict            # 'underpowered'
-w.effective_months   # 8, against months_required = 48
+w.effective_months   # 8, against months_required = 112 once screening is charged
+remedies(w)          # what to do about it, dispatched on the cause
 
 build_report("SUBJ", observations, window=w).confidence   # 'low'
 ```
+
+Three entry points, one implementation: the library above, the CLI
+`tools/window.py`, and the MCP tool `knowledge_window` for agents. The browser
+copy in `docs/index.html` is a fourth — a deliberate reimplementation in JS so
+the page needs no backend — and `tools/check_js_parity.py` diffs it against the
+library on 28 numeric cases and 24 remedy texts, **verbatim**, because that copy
+already drifted once.
 
 ---
 
@@ -302,8 +311,8 @@ build_report("SUBJ", observations, window=w).confidence   # 'low'
 | **Decision-confidence (meta)** | Shipped | `build_report` / `group_by_construct` in `src/decision_confidence.py` |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
-| **MCP server** | Shipped (reference impl) | 2 tools in `src/mcp_server.py` |
-| **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py` |
+| **MCP server** | Shipped (reference impl) | 3 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
+| **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window` |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
@@ -565,19 +574,39 @@ pip install -e ".[mcp]"
 python src/mcp_server.py          # stdio; or: decision-confidence-mcp
 ```
 
-Two tools:
+Three tools — one per axis, plus a lookup:
 
+- `decision_confidence(subject, sources, weights?)` → the full report across
+  **sources**: observations, per-construct groups, composite (or `null` with
+  `verdict = "not_comparable"`), confidence, contradictions, audit.
+  Each entry in `sources` is
+  `{"source_id": ..., "raw": <vendor payload as received>, "vendor": <optional>}`.
+- `knowledge_window(cutoff, start, end, target_sharpe?, t_threshold?, trials?, effective_trials?)`
+  → the same discount across **time**: months open book, months of clean
+  sample, months an inference needs, `verdict`, and `remedies` — concrete
+  actions dispatched on what actually caused the failure.
 - `list_supported_vendors()` → `{vendor_id: description}` for every registered
   adapter.
-- `decision_confidence(subject, sources, weights?)` → the full report:
-  observations, **per-construct groups**, composite (or `null` with
-  `verdict = "not_comparable"`), confidence, contradictions, audit.
 
-Each entry in `sources` is
-`{"source_id": ..., "raw": <vendor payload as received>, "vendor": <optional>}`.
+**The two axes are separate tools on purpose.** A subject and a backtest are
+different objects; folding the window into `decision_confidence` would be the
+category error this library exists to catch, and an agent scoring a token
+should not be asked for backtest dates. Neither answer needs the other.
+
+**A tool description is an interface, and one line of it is load-bearing.**
+`knowledge_window` tells the model: *if you do not know how many variants were
+screened, ask the user — do not omit it.* Omitting `trials` is not a neutral
+default, it asserts the strategy was specified before anyone looked, and
+without that instruction a model will quietly make that assertion on the user's
+behalf. The description also states the two readings most likely to be
+garbled — `underpowered` means "this backtest cannot tell you", **not** "the
+strategy does not work"; `sufficient` means length stopped being the binding
+constraint, **not** that anything was demonstrated. `tests/test_mcp_surface.py`
+asserts those sentences are still present, because deleting them leaves a tool
+that still works and still returns correct numbers.
 
 **The host keeps what the host should keep**: API keys, HTTP, rate limits,
-caching, PII policy. The tool is a pure transform of what it is given.
+caching, PII policy. The tools are pure transforms of what they are given.
 
 ---
 

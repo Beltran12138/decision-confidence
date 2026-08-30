@@ -24,6 +24,15 @@ where Python has the real thing, and the error is largest where alpha is
 smallest. Observed worst case across this grid is ~1.5e-5, which is invisible
 at the two decimals the page prints — but it *could* flip a ceil() at a
 boundary, so the months comparison is the one that is strict.
+
+**Remedies are compared verbatim.** They are where the drift actually happened:
+the page's advice was written from the CLI's *pre-fix* version and carried four
+wrong lines for a while — an inverted date range, a remedy that could not work,
+one that applied to a segment that did not exist, and a Sharpe of infinity.
+Numbers agreeing while advice diverges is the worse failure, because the advice
+is what a reader acts on. This is also why the page emits plain sentences with
+no ``<b>`` markup: a formatted copy cannot be diffed against a plain one, and
+being checkable beat being bold.
 """
 
 from __future__ import annotations
@@ -39,7 +48,9 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
-from effective_window import selection_penalty  # noqa: E402
+from effective_window import (  # noqa: E402
+    effective_window, remedies, selection_penalty,
+)
 
 T_TOL = 1e-4
 
@@ -49,6 +60,18 @@ GRID = [(1, None), (2, None), (5, None), (10, None), (17, None), (20, None),
         (50, None), (100, None), (316, None), (50, 5), (20, 4), (100, 2.5),
         (7, 7), (3, 1)]
 BARS = [2.0, 3.0]
+
+# Date shapes for the remedy comparison: every verdict, with and without an
+# open-book span, and both sides of "could an earlier model fix this".
+RANGES = [
+    ("2024-10", "2020-01", "2025-06"),   # underpowered, open book, earlier model helps
+    ("2026-01", "2020-01", "2025-06"),   # no_holdout
+    ("2015-01", "2020-01", "2025-06"),   # entirely clean
+    ("2015-01", "2010-01", "2025-06"),   # entirely clean and long
+    ("2022-06", "2020-01", "2025-06"),   # cutoff mid-range
+    ("2020-01", "2020-01", "2020-01"),   # single month, fully seen
+]
+REMEDY_TRIALS = [None, 1, 20, 200]
 
 
 def extract_js() -> str:
@@ -91,6 +114,33 @@ console.log(JSON.stringify(out));
     return json.loads(res.stdout)
 
 
+def run_node_remedies(core: str):
+    """Same extraction, exercising the advice rather than the arithmetic."""
+    cases = json.dumps([[c, s, e, t] for (c, s, e) in RANGES for t in REMEDY_TRIALS])
+    harness = core + """
+const out = [];
+for (const [c, s, e, t] of %s) {
+  const w = evaluateWindow(c, s, e, 1.0, 2.0, t, null);
+  if (w.error) { out.push({cutoff: c, start: s, end: e, trials: t,
+                           verdict: "ERROR:" + w.error, remedies: []}); continue; }
+  out.push({cutoff: c, start: s, end: e, trials: t,
+            verdict: w.verdict, remedies: remediesFor(w)});
+}
+console.log(JSON.stringify(out));
+""" % cases
+    fd, path = tempfile.mkstemp(suffix=".js")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(harness)
+        res = subprocess.run(["node", path], capture_output=True,
+                             text=True, encoding="utf-8")
+    finally:
+        os.unlink(path)
+    if res.returncode != 0:
+        raise SystemExit("node failed (remedies):\n" + res.stderr[:2000])
+    return json.loads(res.stdout)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--verbose", action="store_true")
@@ -102,7 +152,8 @@ def main() -> int:
         print("node not found — skipping parity check (not a failure)")
         return 0
 
-    rows = run_node(extract_js())
+    core = extract_js()
+    rows = run_node(core)
     worst_t, mismatches = 0.0, []
 
     if args.verbose:
@@ -122,12 +173,33 @@ def main() -> int:
                   f'{r["months"]:>5}{p.months_adjusted:>5}'
                   f'{"" if same else "   <<<"}')
 
+    rem_rows = run_node_remedies(core)
+    rem_bad = []
+    for r in rem_rows:
+        w = effective_window(r["cutoff"], r["start"], r["end"], trials=r["trials"])
+        want = remedies(w)
+        if w.verdict != r["verdict"] or want != r["remedies"]:
+            rem_bad.append((r, w.verdict, want))
+
     print()
-    print(f"{len(rows)} 组组合  ·  月数不一致 {len(mismatches)}  ·  "
+    print(f"{len(rows)} 组数值组合  ·  月数不一致 {len(mismatches)}  ·  "
           f"t 最大偏差 {worst_t:.2e}（容差 {T_TOL:.0e}）")
+    print(f"{len(rem_rows)} 组处方组合  ·  逐字不一致 {len(rem_bad)}")
+    if rem_bad:
+        print()
+        print("处方文本已漂移：")
+        for r, verdict, want in rem_bad:
+            print(f'  cutoff={r["cutoff"]} {r["start"]}..{r["end"]} trials={r["trials"]}')
+            if verdict != r["verdict"]:
+                print(f'    verdict  PY {verdict}  vs  JS {r["verdict"]}')
+            for a, b in zip(want + [""] * 9, r["remedies"] + [""] * 9):
+                if a != b:
+                    print(f"    PY: {a}")
+                    print(f"    JS: {b}")
+        return 1
     if mismatches:
         print()
-        print("docs/index.html 与 src/effective_window.py 已漂移：")
+        print("docs/index.html 与 src/effective_window.py 数值已漂移：")
         for r, p, dt in mismatches:
             print(f'  trials={r["n"]} n_eff={r["k"]} t_bar={r["tb"]}: '
                   f'JS {r["months"]} 个月 / t={r["t"]:.6f}  vs  '

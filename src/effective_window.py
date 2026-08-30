@@ -59,13 +59,15 @@ from __future__ import annotations
 import math
 from dataclasses import asdict, dataclass, field
 from statistics import NormalDist
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 __all__ = [
     "EvidenceWindow",
     "SelectionPenalty",
     "effective_window",
+    "month_shift",
     "months_for_power",
+    "remedies",
     "selection_penalty",
     "T_THRESHOLD",
     "TARGET_SHARPE",
@@ -105,6 +107,16 @@ def _ym(value: str, field: str) -> int:
     if not 1 <= month <= 12:
         raise ValueError(f"{field}: month {month} out of range in {value!r}")
     return year * 12 + (month - 1)
+
+
+def _ym_str(index: int) -> str:
+    """Month index back to ``YYYY-MM``."""
+    return f"{index // 12:04d}-{index % 12 + 1:02d}"
+
+
+def month_shift(ym: str, months: int) -> str:
+    """Move a ``YYYY-MM`` string forward or back by whole months."""
+    return _ym_str(_ym(ym, "ym") + months)
 
 
 def months_for_power(
@@ -383,3 +395,91 @@ def effective_window(
         ]),
         selection=penalty,
     )
+
+
+def _demonstrable_sharpe(months: int, t_threshold: float) -> float:
+    """The Sharpe a clean sample of this length would be long enough to show."""
+    return t_threshold / ((months / 12.0) ** 0.5)
+
+
+def remedies(window: EvidenceWindow) -> List[str]:
+    """What to do about a verdict, dispatched on *why* it came out that way.
+
+    A verdict with nothing after it is refusal dressed as judgement — the
+    failure this repo has already caught in itself once — and every remedy here
+    is arithmetic, so stating them costs nothing.
+
+    The dispatch is the load-bearing part. Open-book contamination and a
+    screening penalty are different causes and take different actions; printing
+    a fixed list produced four wrong lines in one sitting: an inverted date
+    range when the cutoff preceded the start, "switch to an earlier model" when
+    no cutoff could supply the months a corrected bar demands, "report only the
+    clean segment" when there is no clean segment, and a Sharpe that zero months
+    could demonstrate. The arithmetic was right in all four; the dispatch was
+    not. It lives here rather than in the CLI because there are now three
+    surfaces that need it, and the browser copy already drifted once by being
+    written from the pre-fix version.
+
+    Returns plain sentences, ordered. Numbering and line breaking belong to
+    whatever is rendering them.
+    """
+    w = window
+    sel = w.selection
+    t_eff = sel.t_adjusted if sel is not None else w.t_threshold
+    # The open-book span ends at the backtest's end when the cutoff is later.
+    open_end = w.cutoff if _ym(w.cutoff, "cutoff") <= _ym(w.end, "end") else w.end
+    out: List[str] = []
+
+    if w.verdict == "sufficient":
+        out.append(
+            f"干净区间已达 {w.months_required} 个月，长度不再是限制。"
+            "但这不是策略有效的证据，只是它现在有资格被检验。"
+        )
+        if w.open_book_months > 0:
+            out.append(f"把开卷区间（{w.start} .. {open_end}）的表现单独标出，不要混进结论。")
+        if sel is None:
+            out.append(
+                "申报变体筛选次数：这个判决目前建立在「一次成型」的假设上，"
+                "而那是一个主张，不是中性默认。"
+            )
+        return out
+
+    need = w.months_required - w.effective_months
+    if w.open_book_months > 0 and w.effective_months > 0:
+        out.append(f"只报干净段，把 {w.start} .. {open_end} 标为开卷，不计入结论。")
+    out.append(f"还差 {need} 个月：同一个模型下，回测终点要推到 {month_shift(w.end, need)} 才够。")
+    if w.open_book_months > 0:
+        if w.total_months >= w.months_required:
+            # effective >= required  ⇔  cutoff <= start + total - required - 1
+            out.append(
+                "或换知识截止更早的模型：截止 "
+                f"{month_shift(w.start, w.total_months - w.months_required - 1)} 及更早即够。"
+            )
+        else:
+            out.append(
+                f"换更早的模型不够——整段只有 {w.total_months} 个月，"
+                f"达不到 {w.months_required} 个月。"
+            )
+    if sel is not None and sel.months_adjusted > sel.months_base:
+        if sel.effective_trials == sel.trials:
+            out.append(
+                f"量一下那 {sel.trials} 个变体有多重合：tools/neff.py 跑它们的收益序列，"
+                f"用 effective_trials 报实测值。现在按全额 {sel.trials} 次计，惩罚是上界。"
+                "折扣必须是量出来的，不是声明出来的。"
+            )
+        else:
+            out.append(
+                f"筛选已按 {sel.effective_trials:g} 次独立试验折算；"
+                "再降只能靠真的少试，不能靠改这个数。"
+            )
+    if sel is None:
+        out.append(
+            "申报变体筛选次数：以上都假设你一次成型。若筛选过，所需长度只会更长。"
+        )
+    if w.effective_months > 0:
+        out.append(
+            f"或改声明——{w.effective_months} 个月只够证明 SR "
+            f"{_demonstrable_sharpe(w.effective_months, t_eff):.2f} 的策略。"
+            "但那是要先兑现的主张，不是事后挑的档位。"
+        )
+    return out
