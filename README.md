@@ -196,6 +196,58 @@ for quadruples the sample you need**:
 | 1.0 | 48 |
 | 0.5 | 192 |
 
+### The other way clean months get spent
+
+A clean holdout is necessary, not sufficient. If several variants were screened
+and the best one kept, the survivor's t-statistic is the **maximum of many
+draws**, not one draw. The bar it has to clear is higher, so the sample needed
+to clear it is larger — quadratically.
+
+`selection_penalty` makes that a number instead of a footnote. Bonferroni, with
+α derived from the caller's own `t_threshold` rather than fixed at 0.05, which
+is what keeps `trials=1` an exact identity:
+
+| variants screened | corrected bar | clean months required (SR 1.0) |
+| ---: | ---: | ---: |
+| 1 | t ≥ 2.00 | 48 |
+| 5 | t ≥ 2.61 | 82 |
+| 10 | t ≥ 2.84 | **97** |
+| 20 | t ≥ 3.05 | 112 |
+| 50 | t ≥ 3.32 | 133 |
+
+**Ten variants roughly doubles the clean sample you need.** Seventeen is where
+the corrected bar reaches the t > 3.0 that Harvey, Liu and Zhu argue for — a
+useful check that the scale is not eccentric.
+
+**The count is discounted the same way sources and months are.** Fifty
+parameter settings of one strategy are not fifty independent tests, any more
+than five vendors reading one on-chain field are five independent reads. Pass
+`effective_trials` to take that discount — but it must be **measured, not
+asserted**, and `tools/neff.py` is already the instrument: run it on the
+variants' return series and it returns the same Kish quantity. Omit it and the
+full count is charged, which over-penalises. That asymmetry is deliberate.
+
+**And the part with no arithmetic in it.** Declaring no trials is not a neutral
+default — it is the strongest claim available, that the strategy was specified
+before anyone looked. So it is printed as such on every run that omits it:
+
+```
+变体筛选校正
+  ⚠ 未申报变体筛选次数，按「一次成型」处理。这不是中性默认，
+  而是断言策略在看数据之前就定好了。自报次数还系统性偏低——看一眼就放
+  弃的那个变体，通常不会被算进去。
+```
+
+The last sentence is the one that limits the whole feature. A self-reported
+count runs low, and nothing here can detect that. **This turns an unobservable
+quantity into a required parameter; the default is the assertion, not the
+absence of one.**
+
+```bash
+python tools/window.py --cutoff 2015-01 --start 2020-01 --end 2025-06 --trials 20
+#   66 clean months, and still underpowered — the bar moved to t ≥ 3.05
+```
+
 **Where it sits, and where it deliberately does not.** It is a separate module
 (`src/effective_window.py`) because the inputs share nothing: one side takes
 vendor payloads, the other takes three dates. Merging them would be the exact
@@ -763,12 +815,17 @@ output before trusting a `range` contradiction on a new construct.
   is Lo's approximation; monthly returns are typically positively
   autocorrelated, which inflates the naive t. The months it asks for are a
   **floor** — the real requirement is longer, never shorter.
-- **It also assumes the strategy was specified before anyone looked.** If
-  variants were screened on the open-book portion, choosing this one already
-  used the contaminated data and t = 2.0 is too low a bar (Harvey & Liu argue
-  for roughly 3.0 under multiple testing). The caller must raise `t_threshold`;
-  the library will not guess how many variants were tried, and a `sufficient`
-  verdict does not mean the result survived selection.
+- **The screening correction turns an unobservable quantity into a required
+  parameter.** `trials` is self-reported, and self-reports run low — nobody
+  counts the variant they glanced at and abandoned. The library cannot detect
+  an understated count; all it can do is refuse to treat silence as zero, which
+  is why an undeclared run says so on every line of output.
+- **Bonferroni assumes the trials are independent** and controls the
+  family-wise error rate, which is stricter than controlling the false
+  discovery rate. Correlated variants make it conservative — that is what
+  `effective_trials` is for, and it must be measured (`tools/neff.py`) rather
+  than asserted, because a caller who may set it freely has been handed an
+  escape hatch rather than a correction.
 - **A clean window is a necessary condition, not evidence of anything.**
   `sufficient` says only that length has stopped being the binding constraint.
   It says nothing about whether the strategy works.

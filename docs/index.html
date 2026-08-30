@@ -202,8 +202,17 @@ AMD	3	3	3	3
         </select></label>
       <label class="hint">t 门槛<br>
         <select class="dt" id="wt">
-          <option value="2" selected>2.0</option><option value="3">3.0（筛选过变体）</option>
+          <option value="2" selected>2.0</option><option value="3">3.0</option>
         </select></label>
+      <label class="hint">筛选过几个变体<br>
+        <input class="dt" id="wtr" value="" placeholder="留空＝未申报" spellcheck="false"></label>
+      <label class="hint">其中独立几次<br>
+        <input class="dt" id="wet" value="" placeholder="留空＝按全额" spellcheck="false"></label>
+    </div>
+    <div class="hint" style="margin-top:12px">
+      「筛选过几个变体」＝这个策略是从多少个候选里挑出来的。<b style="color:var(--ink)">留空不是中性默认</b>，
+      它断言你一次成型。「其中独立几次」是折扣，<b style="color:var(--ink)">必须是量出来的</b>——
+      用本页上半部分把那些变体的收益序列贴进去，算出的有效源数就是这个数。
     </div>
     <div class="row">
       <button class="btn" id="wgo">算一下</button>
@@ -229,6 +238,12 @@ AMD	3	3	3	3
       <div class="calm" id="wquad"></div>
     </div>
   </div>
+</div>
+
+<div class="sec">
+  <div class="pill">变体筛选校正</div>
+  <h2>这个策略是从多少个候选里挑出来的</h2>
+  <div class="panel" id="wsel"></div>
 </div>
 
 <div class="sec">
@@ -259,8 +274,25 @@ AMD	3	3	3	3
   <b>够长不等于有效</b>：<code>sufficient</code> 只说明「长度」这一条不再是限制，
   它<b>不构成策略有效的任何证据</b>。
   <br><br>
+  <b>变体筛选怎么算</b>：Bonferroni。把你已经接受的错误率按独立试验数分摊&mdash;&mdash;
+  <code>α = 1 &minus; Φ(t)</code>，<code>α' = α / n</code>，<code>t' = Φ&#8315;&sup1;(1 &minus; α')</code>。
+  α 从<b>你自己设的 t</b> 反推、而不是固定成 0.05，是为了让「只试过 1 次」成为<b>恒等</b>：
+  申报一次不应该让所需长度动一个月。
+  <br><br>
+  <b>为什么是「独立试验数」而不是「试验数」</b>：同一个策略的 50 组参数不是 50 次独立检验，
+  就像五家供应商读同一个链上字段不是五份独立证据。这是本页上半部分在做的同一件事，
+  <b style="color:var(--gold)">所以「独立几次」应该用上半部分量出来</b>&mdash;&mdash;
+  它是一个可自由填写的字段，如果凭感觉填，它就不是校正而是逃生舱。
+  <br><br>
   <b>与命令行同源</b>：算法与 <code>tools/window.py</code> 一致。
-  上面这组默认值在两边都应给出 <b>58 / 8 / 48 / underpowered</b>&mdash;&mdash;对不上就是两处实现漂移了。
+  默认那组在两边都应给出 <b>58 / 8 / 48 / underpowered</b>。
+  这不靠肉眼比对&mdash;&mdash;<code>python tools/check_js_parity.py</code> 会把本页的 JS 抽出来用
+  Node 跑一遍，和 Python 在 28 组输入上逐个比，<b>所需月数必须完全相等</b>。
+  <br>
+  <b>一处已知的精度差</b>：浏览器没有内置正态分布，本页的 <code>Φ</code> 用
+  Abramowitz &amp; Stegun 7.1.26 近似（|ε| &lt; 1.5e-7），<code>Φ&#8315;&sup1;</code> 用 Acklam。
+  实测 t 门槛与 Python 最大差 <b>1.5e-5</b>，显示到两位小数看不出来；
+  但它<b>原则上可能在临界点让所需月数进位差一个月</b>，所以那个比对脚本卡的是月数，不是 t。
 </div>
 
 <div class="foot">
@@ -703,10 +735,75 @@ function ymStr(i){
 }
 function monthsForPower(sr, t){ return Math.ceil(Math.pow(t/sr, 2) * 12); }
 
+/* 标准正态。JS 没有内置，而两处实现给出同一个数是这一节唯一的防漂移手段，
+   所以这里用精度足够高的经典近似，而不是随手一个 sigmoid。
+   normCdf: Abramowitz & Stegun 7.1.26，|ε| < 1.5e-7
+   invNorm: Acklam 2003，相对误差 < 1.15e-9                                   */
+function normCdf(x){
+  const s = x < 0 ? -1 : 1, z = Math.abs(x)/Math.SQRT2;
+  const t = 1/(1 + 0.3275911*z);
+  const y = 1 - (((((1.061405429*t - 1.453152027)*t) + 1.421413741)*t
+                  - 0.284496736)*t + 0.254829592)*t*Math.exp(-z*z);
+  return 0.5*(1 + s*y);
+}
+function invNorm(p){
+  const a=[-3.969683028665376e+01, 2.209460984245205e+02,-2.759285104469687e+02,
+            1.383577518672690e+02,-3.066479806614716e+01, 2.506628277459239e+00];
+  const b=[-5.447609879822406e+01, 1.615858368580409e+02,-1.556989798598866e+02,
+            6.680131188771972e+01,-1.328068155288572e+01];
+  const c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,
+           -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+  const d=[ 7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00,
+            3.754408661907416e+00];
+  const lo=0.02425, hi=1-lo;
+  let q, r;
+  if(p < lo){
+    q = Math.sqrt(-2*Math.log(p));
+    return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) /
+           ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+  }
+  if(p <= hi){
+    q = p-0.5; r = q*q;
+    return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q /
+           (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+  }
+  q = Math.sqrt(-2*Math.log(1-p));
+  return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) /
+          ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+}
+
+/* 与 src/effective_window.py 的 selection_penalty 同一套算术。
+   n<=1 必须恒等返回 tBase：往返 cdf/invNorm 会带回 1e-9 级的尘埃，
+   而 ceil() 会把那点尘埃变成整整一个月（48 → 49）。 */
+function selectionPenalty(trials, effTrials, tBase, sr){
+  const n = (effTrials === null ? trials : effTrials);
+  const alphaBase = 1 - normCdf(tBase);
+  const alphaAdj = alphaBase / n;
+  const tAdj = n <= 1 ? tBase : invNorm(1 - alphaAdj);
+  return {trials: trials, nEff: n, alphaBase: alphaBase, alphaAdj: alphaAdj,
+          tBase: tBase, tAdj: tAdj,
+          monthsBase: monthsForPower(sr, tBase), monthsAdj: monthsForPower(sr, tAdj)};
+}
+
 function runWindow(){
   const cutS = $('wcut').value, stS = $('wst').value, enS = $('wen').value;
   const sr = parseFloat($('wsr').value), tb = parseFloat($('wt').value);
+  const trRaw = $('wtr').value.trim(), etRaw = $('wet').value.trim();
   $('werr').textContent = '';
+  const trials = trRaw === '' ? null : Number(trRaw);
+  const effTr  = etRaw === '' ? null : Number(etRaw);
+  if(trials !== null && (!Number.isInteger(trials) || trials < 1)){
+    $('werr').textContent = '变体数要是 ≥1 的整数，或留空表示未申报。';
+    $('wout').style.display = 'none'; return;
+  }
+  if(effTr !== null && trials === null){
+    $('werr').textContent = '填了「独立几次」却没填「筛选过几个变体」——没有可折扣的对象。';
+    $('wout').style.display = 'none'; return;
+  }
+  if(effTr !== null && (!(effTr >= 1) || effTr > trials)){
+    $('werr').textContent = '「独立几次」要在 1 和变体数之间：试验不可能比它的次数更独立。';
+    $('wout').style.display = 'none'; return;
+  }
   const c = ymIdx(cutS), s = ymIdx(stS), e = ymIdx(enS);
   if(c === null || s === null || e === null){
     $('werr').textContent = '日期要写成 YYYY-MM，月份 01–12。';
@@ -720,7 +817,9 @@ function runWindow(){
   const total = e - s + 1;
   const open  = Math.max(0, Math.min(c, e) - s + 1);   // 截止日当月算已读
   const eff   = total - open;
-  const req   = monthsForPower(sr, tb);
+  const sel   = trials === null ? null : selectionPenalty(trials, effTr, tb, sr);
+  const req   = sel === null ? monthsForPower(sr, tb) : sel.monthsAdj;
+  const tEff  = sel === null ? tb : sel.tAdj;
   const share = open / total;
   const verdict = eff <= 0 ? 'no_holdout' : (eff < req ? 'underpowered' : 'sufficient');
 
@@ -738,7 +837,7 @@ function runWindow(){
 
   const pct = req > 0 ? (eff/req*100) : 0;
   $('wreq').querySelector('tbody').innerHTML = [
-    ['所需长度', req + ' 个月', 'SR ' + sr + '，t ≥ ' + tb + ' → T = (' + tb + '/' + sr + ')² 年'],
+    ['所需长度', req + ' 个月', 'SR ' + sr + '，t ≥ ' + tEff.toFixed(2) + ' → T = (' + tEff.toFixed(2) + '/' + sr + ')² 年'],
     ['实有干净区间', eff + ' 个月', pct.toFixed(0) + '% of requirement'],
     ['开卷区间', open + ' 个月', stS + ' .. ' + (c < s ? '（无）' : ymStr(Math.min(c,e)))]
   ].map(function(r){
@@ -748,25 +847,84 @@ function runWindow(){
   }).join('');
 
   $('wquad').innerHTML = '所需长度随 Sharpe <b>平方反比</b>增长：目标减半，样本要四倍。' +
-    ' t ≥ ' + tb + ' 下 &mdash; SR 2.0 需 ' + monthsForPower(2, tb) + ' 个月，' +
-    'SR 1.0 需 ' + monthsForPower(1, tb) + ' 个月，SR 0.5 需 ' + monthsForPower(0.5, tb) + ' 个月。';
+    ' t ≥ ' + tEff.toFixed(2) + ' 下 &mdash; SR 2.0 需 ' + monthsForPower(2, tEff) + ' 个月，' +
+    'SR 1.0 需 ' + monthsForPower(1, tEff) + ' 个月，SR 0.5 需 ' + monthsForPower(0.5, tEff) +
+    ' 个月。' + (sel === null ? '' : '（门槛已按筛选校正）');
 
-  let acts;
+  // 未申报也必须出现在屏幕上：对筛选保持沉默本身就是一个主张，
+  // 什么都不显示会让它读起来像「不适用」，而不是「你选择了不说」。
+  if(sel === null){
+    $('wsel').innerHTML =
+      '<div class="warn info"><b>⚠ 未申报</b><br>' +
+      '按「一次成型」处理，所需长度维持 <b>' + req + '</b> 个月。' +
+      '这不是中性默认，而是断言策略在看数据之前就定好了。<br><br>' +
+      '自报次数还系统性偏低——<b>看一眼就放弃的那个变体，通常不会被算进去</b>。' +
+      '这一条本页无法检测，只能提醒。</div>';
+  } else {
+    const rows = [
+      ['申报变体数', sel.trials + ' 个', '从这么多候选里挑出了当前这一个'],
+      ['计入独立试验', (+sel.nEff.toFixed(4)) + ' 次',
+        sel.nEff === sel.trials ? '未折扣，按全额计（惩罚是上界）' : '已按实测折扣'],
+      ['t 门槛', sel.tBase.toFixed(2) + ' → ' + sel.tAdj.toFixed(2),
+        'Bonferroni：α ' + sel.alphaBase.toExponential(2) + ' → ' + sel.alphaAdj.toExponential(2)],
+      ['所需长度', sel.monthsBase + ' → ' + sel.monthsAdj + ' 个月',
+        '×' + (sel.monthsAdj / sel.monthsBase).toFixed(1)]
+    ];
+    $('wsel').innerHTML = '<table><tbody>' + rows.map(function(r){
+      return '<tr><td style="width:150px;color:var(--dim);font-size:14px">' + r[0] +
+             '</td><td class="num" style="width:150px">' + r[1] +
+             '</td><td style="font-size:13.5px;color:var(--dim)">' + r[2] + '</td></tr>';
+    }).join('') + '</tbody></table>' +
+    (sel.nEff === sel.trials
+      ? '<div class="calm">这 ' + sel.trials + ' 个变体若彼此高度相关，全额计入就<b>过重</b>了。' +
+        '把它们的收益序列贴进本页上半部分，算出的有效源数就是「独立几次」该填的值。' +
+        '<b style="color:var(--gold)">折扣必须是量出来的，不是声明出来的。</b></div>'
+      : '<div class="calm">已按 ' + (+sel.nEff.toFixed(4)) + ' 次独立试验折算。' +
+        '再往下降只能靠<b>真的少试</b>，不能靠改这个数。</div>');
+  }
+
+  // 处方按「为什么不够」分派，而不是固定四条。开卷污染和筛选惩罚是两个不同
+  // 的原因，动作也不同；照单全列会产出四种荒谬输出——倒过来的日期区间、没有
+  // 干净段却让你「只报干净段」、换任何模型都补不上的月份、以及 0 个月能证明
+  // 的 SR。tests/test_window_cli.py 是这四条在命令行侧的回归。
+  const acts = [];
   if(verdict === 'sufficient'){
-    acts = ['干净区间已达 ' + req + ' 个月，长度不再是限制。<b>但这不是策略有效的证据，只是它现在有资格被检验。</b>',
-            '把开卷区间（' + stS + ' .. ' + ymStr(Math.min(c,e)) + '）的表现单独标出，不要混进结论。',
-            '若你曾在开卷区间里筛选过变体，把上面的 t 门槛调到 3.0 再看一次。'];
+    acts.push('干净区间已达 ' + req + ' 个月，长度不再是限制。' +
+              '<b>但这不是策略有效的证据，只是它现在有资格被检验。</b>');
+    if(open > 0)
+      acts.push('把开卷区间（' + stS + ' .. ' + ymStr(Math.min(c, e)) +
+                '）的表现单独标出，不要混进结论。');
+    if(sel === null)
+      acts.push('<b>申报变体数</b>：这个判决目前建立在「一次成型」的假设上。' +
+                '填上「筛选过几个变体」再看一次。');
   } else {
     const need = req - eff;
-    acts = ['<b>只报干净段</b>：把 ' + stS + ' .. ' + (c < s ? stS : ymStr(Math.min(c,e))) +
-              ' 标为开卷，不计入结论。',
-            '<b>还差 ' + need + ' 个月</b>：同一个模型下，回测终点要推到 <b class="mono">' +
-              ymStr(e + need) + '</b> 才够。',
-            '<b>或换模型</b>：知识截止 <b class="mono">' + ymStr(c - need) +
-              '</b> 及更早的模型，用当前区间即已足够。',
-            '<b>或改声明</b>：' + eff + ' 个月只够证明 SR <b class="mono">' +
-              (eff > 0 ? (tb/Math.sqrt(eff/12)).toFixed(2) : '∞') +
-              '</b> 的策略——但那是要<b>先兑现</b>的主张，不是事后挑的档位。'];
+    if(open > 0 && eff > 0)
+      acts.push('<b>只报干净段</b>：把 ' + stS + ' .. ' + ymStr(Math.min(c, e)) +
+                ' 标为开卷，不计入结论。');
+    acts.push('<b>还差 ' + need + ' 个月</b>：同一个模型下，回测终点要推到 <b class="mono">' +
+              ymStr(e + need) + '</b> 才够。');
+    if(open > 0){
+      if(total >= req)
+        // eff >= req  <=>  cutoff <= start + total - req - 1
+        acts.push('<b>或换模型</b>：知识截止 <b class="mono">' + ymStr(s + total - req - 1) +
+                  '</b> 及更早的模型，用当前区间即已足够。');
+      else
+        acts.push('<b>换更早的模型不够</b>：整段只有 ' + total + ' 个月，达不到 ' +
+                  req + ' 个月。');
+    }
+    if(sel !== null && sel.monthsAdj > sel.monthsBase)
+      acts.push(sel.nEff === sel.trials
+        ? '<b>量一下那 ' + sel.trials + ' 个变体有多重合</b>：用本页上半部分算它们的有效源数，' +
+          '填进「独立几次」。现在按全额计，惩罚是上界。'
+        : '<b>筛选已折算</b>为 ' + (+sel.nEff.toFixed(4)) + ' 次独立试验；' +
+          '再降只能靠真的少试，不能靠改这个数。');
+    if(sel === null)
+      acts.push('<b>申报变体数</b>：以上都假设你一次成型。若筛选过，所需长度只会更长。');
+    if(eff > 0)
+      acts.push('<b>或改声明</b>：' + eff + ' 个月只够证明 SR <b class="mono">' +
+                (tEff / Math.sqrt(eff / 12)).toFixed(2) +
+                '</b> 的策略——但那是要<b>先兑现</b>的主张，不是事后挑的档位。');
   }
   $('wacts').innerHTML = '<ol><li>' + acts.join('</li><li>') + '</li></ol>';
 
@@ -774,8 +932,9 @@ function runWindow(){
 }
 
 $('wgo').onclick = runWindow;
-['wcut','wst','wen'].forEach(function(id){
+['wcut','wst','wen','wtr','wet'].forEach(function(id){
   $(id).addEventListener('keydown', function(ev){ if(ev.key === 'Enter') runWindow(); });
+  $(id).addEventListener('blur', runWindow);
 });
 ['wsr','wt'].forEach(function(id){ $(id).onchange = runWindow; });
 runWindow();   // 默认值即 README 与 CLI 共用的那组，页面一打开就可对照
