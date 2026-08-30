@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>有效源数 · 你这几列，实际上值几票？</title>
+<title>decision-confidence · 有效源数 · 知识窗口</title>
 <style>
 :root{--bg:#0B0D10;--panel:#101319;--panel2:#0E1116;--ink:#E9E5DC;--dim:#767C85;--dim2:#565C64;
       --rule:#22262C;--rule2:#191D23;--gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A;--blue:#6E90AF}
@@ -68,6 +68,12 @@ td.num{font-size:16px}
 .foot b{color:#9AA0A8}
 .foot a{color:var(--blue)}
 #out{display:none}
+.dt{background:#080A0D;color:var(--ink);border:1px solid var(--rule);padding:8px 11px;margin-top:6px;
+    font-family:Consolas,monospace;font-size:14px;width:132px;display:block}
+.dt:focus{outline:none;border-color:var(--gold)}
+select.dt{width:150px;cursor:pointer}
+#wout{display:none}
+#wverdict .warn{margin-top:16px}
 .err{color:var(--red);font-size:14.5px;line-height:1.7;margin-top:14px}
 code{font-family:Consolas,monospace;background:#191D23;padding:1px 6px;font-size:13px;color:var(--gold)}
 ol,ul{margin:10px 0 0 20px}
@@ -164,7 +170,101 @@ AMD	3	3	3	3
 
 </div><!-- /out -->
 
+<div class="hr"></div>
+
+<div class="kicker" style="margin-top:46px">DECISION-CONFIDENCE &middot; 知识窗口</div>
+<h1>另一条轴：你的回测，模型看过多少？</h1>
+<div class="sub">
+  上面那一半问的是<b>几列证据里有几份是独立的</b>。这一半问同一个问题，只是换到时间上：
+  <b>一段回测里，有几个月是模型没读过的。</b>
+  <br><br>
+  模型有知识截止日，截止日之前发生的事它读过。回测区间若大部分落在截止日之前，
+  那段区间检验的<b>不是策略能不能赚钱，是模型记不记得</b>。
+  这一步是纯算术&mdash;&mdash;<b style="color:var(--gold)">在算出任何一个收益数字之前就能知道结论作不作数。</b>
+  <br><br>
+  <b style="color:var(--grn)">同样全部在浏览器里完成，不读取任何行情，不发送任何数据。</b>
+</div>
+
+<div class="sec">
+  <div class="pill">三个日期</div>
+  <div class="hint" style="margin-bottom:14px">
+    格式 <code>YYYY-MM</code>。回测区间含首尾两个月。目标 Sharpe 是<b style="color:var(--ink)">你声称要检验的强度</b>，
+    不是回测跑出来的结果&mdash;&mdash;它决定干净区间要多长才够。
+  </div>
+  <div class="panel">
+    <div class="row" style="margin-top:0;gap:20px">
+      <label class="hint">模型知识截止<br><input class="dt" id="wcut" value="2024-10" spellcheck="false"></label>
+      <label class="hint">回测起<br><input class="dt" id="wst" value="2020-01" spellcheck="false"></label>
+      <label class="hint">回测止<br><input class="dt" id="wen" value="2025-06" spellcheck="false"></label>
+      <label class="hint">目标 Sharpe<br>
+        <select class="dt" id="wsr">
+          <option value="2">2.0</option><option value="1" selected>1.0</option><option value="0.5">0.5</option>
+        </select></label>
+      <label class="hint">t 门槛<br>
+        <select class="dt" id="wt">
+          <option value="2" selected>2.0</option><option value="3">3.0（筛选过变体）</option>
+        </select></label>
+    </div>
+    <div class="row">
+      <button class="btn" id="wgo">算一下</button>
+    </div>
+    <div class="err" id="werr"></div>
+  </div>
+</div>
+
+<div id="wout">
+<div class="sec">
+  <div class="grid2">
+    <div class="panel">
+      <div class="tag">干净区间 &middot; 可用于检验</div>
+      <div class="big" id="weff">&mdash;<small id="wtot"></small></div>
+      <div class="ci" id="wshare"></div>
+      <div class="bar hi" style="max-width:100%;margin-top:16px"><i id="wbar"></i></div>
+      <div class="hint" style="margin-top:7px">红色部分＝模型已读过的月份</div>
+      <div id="wverdict"></div>
+    </div>
+    <div class="panel">
+      <div class="tag">这么长够不够支撑一个推断</div>
+      <table id="wreq"><tbody></tbody></table>
+      <div class="calm" id="wquad"></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="pill g">那我该怎么办</div>
+  <h2 id="wacth">拿到这个判决之后的动作</h2>
+  <div class="panel" id="wacts"></div>
+</div>
+</div><!-- /wout -->
+
+<div class="foot" style="margin-top:34px">
+  <div class="tag" style="margin-bottom:16px">知识窗口 &middot; 方法与限制</div>
+  <b>方法</b>：<code>所需月数 = ceil((t / SR)&sup2; &times; 12)</code>，来自 t &asymp; SR&middot;&radic;T（Lo 2002，T 以年计）。
+  截止日<b>当月算作已读</b>&mdash;&mdash;「知识截止 2024 年 10 月」意味着 2024 年 10 月它读过。
+  <br><br>
+  <b>这一个月不是小事</b>：同一组配置，含当月是 <b>87.9%</b>，不含是 <b>86.4%</b>。
+  两种读法都站得住，而引用的人通常不说自己用的是哪一种。
+  <b style="color:var(--gold)">口径在这里被写死，正是为了它不能在两次讲述之间漂移。</b>
+  <br><br>
+  <b>两条会让这个数好看的限制，跟着结果一起给</b>：
+  <br>
+  &nbsp;&nbsp;① t &asymp; SR&middot;&radic;T 假设收益 i.i.d.。月度收益通常正自相关，会抬高朴素 t 值&mdash;&mdash;
+  所以这里要求的长度是<b>下限</b>，真实需求只多不少。
+  <br>
+  &nbsp;&nbsp;② 它假设策略在看数据之前就定好了。若曾在开卷区间里筛选过变体，
+  选中这一个本身就用了被污染的数据，t=2.0 门槛偏低（多重检验下 Harvey &amp; Liu 主张约 3.0）。
+  上面的 t 门槛可以自己调高；<b>这个页面不会去猜你试过几个变体</b>。
+  <br><br>
+  <b>够长不等于有效</b>：<code>sufficient</code> 只说明「长度」这一条不再是限制，
+  它<b>不构成策略有效的任何证据</b>。
+  <br><br>
+  <b>与命令行同源</b>：算法与 <code>tools/window.py</code> 一致。
+  上面这组默认值在两边都应给出 <b>58 / 8 / 48 / underpowered</b>&mdash;&mdash;对不上就是两处实现漂移了。
+</div>
+
 <div class="foot">
+  <div class="tag" style="margin-bottom:16px">有效源数 &middot; 方法与限制</div>
   <b>方法</b>：列内取秩 &rarr; 两两皮尔逊相关（即斯皮尔曼秩相关）&rarr;
   <code>n_eff = n&sup2; / (n + 2&Sigma;|&rho;|)</code>。
   区间由对<b>标的</b>（不是对单元格）有放回重抽 1000 次得到，取 2.5% / 97.5% 分位。
@@ -586,6 +686,99 @@ const DEMO2 = '品种\t价差\t盘口薄侧\t成交额\t日内振幅\t24h涨跌\
 'AVAX\t45\t97\t55\t55\t30\nDOT\t55\t97\t70\t55\t30\nLTC\t20\t88\t45\t30\t30\n' +
 'HYPE\t20\t97\t20\t55\t30\nXAUT\t5\t88\t45\t10\t30\nUNI\t45\t97\t55\t70\t30\n' +
 'AAVE\t45\t88\t55\t55\t30';
+
+/* ================= 另一条轴：知识窗口 =================
+   与 src/effective_window.py 同一套算法。Python 是权威源；这里是它的前端副本，
+   两处漂移的唯一防线是页脚那组可核对的默认值（58 / 8 / 48 / underpowered）。 */
+
+function ymIdx(s){
+  const m = /^(\d{4})-(\d{1,2})$/.exec(String(s).trim());
+  if(!m) return null;
+  const mo = +m[2];
+  if(mo < 1 || mo > 12) return null;
+  return +m[1]*12 + (mo-1);
+}
+function ymStr(i){
+  return String(Math.floor(i/12)).padStart(4,'0') + '-' + String(i%12+1).padStart(2,'0');
+}
+function monthsForPower(sr, t){ return Math.ceil(Math.pow(t/sr, 2) * 12); }
+
+function runWindow(){
+  const cutS = $('wcut').value, stS = $('wst').value, enS = $('wen').value;
+  const sr = parseFloat($('wsr').value), tb = parseFloat($('wt').value);
+  $('werr').textContent = '';
+  const c = ymIdx(cutS), s = ymIdx(stS), e = ymIdx(enS);
+  if(c === null || s === null || e === null){
+    $('werr').textContent = '日期要写成 YYYY-MM，月份 01–12。';
+    $('wout').style.display = 'none'; return;
+  }
+  if(e < s){
+    $('werr').textContent = '回测止早于回测起。';
+    $('wout').style.display = 'none'; return;
+  }
+
+  const total = e - s + 1;
+  const open  = Math.max(0, Math.min(c, e) - s + 1);   // 截止日当月算已读
+  const eff   = total - open;
+  const req   = monthsForPower(sr, tb);
+  const share = open / total;
+  const verdict = eff <= 0 ? 'no_holdout' : (eff < req ? 'underpowered' : 'sufficient');
+
+  $('weff').innerHTML = eff + '<small> / ' + total + ' 个月</small>';
+  $('wshare').textContent = '开卷（模型已读）' + open + ' 个月，占 ' + (share*100).toFixed(1) + '%';
+  $('wbar').style.width = (share*100).toFixed(1) + '%';
+
+  const NOTE = {
+    no_holdout:   ['warn',      '回测区间完全落在知识截止日之前。这段区间检验的不是策略能否盈利，而是模型记不记得。由它得出的结论不可采信。'],
+    underpowered: ['warn info', '有干净区间，但短于可做统计推断的长度。正确结论既不是「有效」也不是「无效」，而是<b>这个回测没有分辨能力</b>——它不能拒绝任何假设。'],
+    sufficient:   ['warn ok',   '干净区间达到该 Sharpe 所需的长度。这<b>只</b>解除了「长度」这一条限制，不构成策略有效的证据。']
+  };
+  $('wverdict').innerHTML =
+    '<div class="' + NOTE[verdict][0] + '"><b class="mono">' + verdict + '</b><br>' + NOTE[verdict][1] + '</div>';
+
+  const pct = req > 0 ? (eff/req*100) : 0;
+  $('wreq').querySelector('tbody').innerHTML = [
+    ['所需长度', req + ' 个月', 'SR ' + sr + '，t ≥ ' + tb + ' → T = (' + tb + '/' + sr + ')² 年'],
+    ['实有干净区间', eff + ' 个月', pct.toFixed(0) + '% of requirement'],
+    ['开卷区间', open + ' 个月', stS + ' .. ' + (c < s ? '（无）' : ymStr(Math.min(c,e)))]
+  ].map(function(r){
+    return '<tr><td style="width:130px;color:var(--dim);font-size:14px">' + r[0] +
+           '</td><td class="num" style="width:96px">' + r[1] +
+           '</td><td style="font-size:13.5px;color:var(--dim)">' + r[2] + '</td></tr>';
+  }).join('');
+
+  $('wquad').innerHTML = '所需长度随 Sharpe <b>平方反比</b>增长：目标减半，样本要四倍。' +
+    ' t ≥ ' + tb + ' 下 &mdash; SR 2.0 需 ' + monthsForPower(2, tb) + ' 个月，' +
+    'SR 1.0 需 ' + monthsForPower(1, tb) + ' 个月，SR 0.5 需 ' + monthsForPower(0.5, tb) + ' 个月。';
+
+  let acts;
+  if(verdict === 'sufficient'){
+    acts = ['干净区间已达 ' + req + ' 个月，长度不再是限制。<b>但这不是策略有效的证据，只是它现在有资格被检验。</b>',
+            '把开卷区间（' + stS + ' .. ' + ymStr(Math.min(c,e)) + '）的表现单独标出，不要混进结论。',
+            '若你曾在开卷区间里筛选过变体，把上面的 t 门槛调到 3.0 再看一次。'];
+  } else {
+    const need = req - eff;
+    acts = ['<b>只报干净段</b>：把 ' + stS + ' .. ' + (c < s ? stS : ymStr(Math.min(c,e))) +
+              ' 标为开卷，不计入结论。',
+            '<b>还差 ' + need + ' 个月</b>：同一个模型下，回测终点要推到 <b class="mono">' +
+              ymStr(e + need) + '</b> 才够。',
+            '<b>或换模型</b>：知识截止 <b class="mono">' + ymStr(c - need) +
+              '</b> 及更早的模型，用当前区间即已足够。',
+            '<b>或改声明</b>：' + eff + ' 个月只够证明 SR <b class="mono">' +
+              (eff > 0 ? (tb/Math.sqrt(eff/12)).toFixed(2) : '∞') +
+              '</b> 的策略——但那是要<b>先兑现</b>的主张，不是事后挑的档位。'];
+  }
+  $('wacts').innerHTML = '<ol><li>' + acts.join('</li><li>') + '</li></ol>';
+
+  $('wout').style.display = 'block';
+}
+
+$('wgo').onclick = runWindow;
+['wcut','wst','wen'].forEach(function(id){
+  $(id).addEventListener('keydown', function(ev){ if(ev.key === 'Enter') runWindow(); });
+});
+['wsr','wt'].forEach(function(id){ $(id).onchange = runWindow; });
+runWindow();   // 默认值即 README 与 CLI 共用的那组，页面一打开就可对照
 
 $('go').onclick = run;
 $('demo1').onclick = function(){ $('inp').value = DEMO1; run(); };

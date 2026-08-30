@@ -16,6 +16,14 @@ definitional**, and returns a **confidence** label with an **audit trail**.
 Most tooling asks whether independent sources *agree*. This one asks whether they are
 measuring the same thing at all — two sources can differ by 68 points and both be right.
 
+The same discount applies on a second axis. Across sources, several vendors
+answering one question are worth fewer independent reads than the invoice says.
+Across **time**, a backtest that ran mostly before a model's knowledge cutoff is
+worth fewer independent months than the calendar says — and that one is pure
+arithmetic, available before any performance number is computed.
+See [the second axis](#the-second-axis-time), or run
+`python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06`.
+
 The same five failure families keep surfacing in four unrelated domains — and a sixth
 has appeared in one of them. This repo is the **third-party-vendor** instance.
 
@@ -38,6 +46,7 @@ Two commands, no keys, no setup beyond Python ≥ 3.8:
 ```bash
 python examples/two_kinds_of_disagreement.py          # the whole argument
 python examples/live_multi_source.py --offline usdt   # three real vendors, replayed
+python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06   # the time axis
 ```
 
 The first prints these two blocks from the same engine:
@@ -125,6 +134,7 @@ So the rule:
 | Spread across *different* constructs | Nothing. They cannot contradict; the split is reported structurally |
 | A fraud classifier fires while a peer reads safe | `hard_flag` — this one **does** cross constructs |
 | A construct has zero usable sources | Confidence capped at `medium` — `unavailable` is not `safe` |
+| The backtest behind the call has no usable holdout | Confidence floored at `low` — see [the second axis](#the-second-axis-time) |
 
 The blended number still exists as `blended_composite_unsafe`. A caller who
 genuinely wants it can have it; the name is the warning.
@@ -138,6 +148,87 @@ makes the rule mean something.
 
 **Sources with no declared construct behave exactly as before** — one group,
 one composite. Adopting the rule is opt-in per adapter.
+
+---
+
+## The second axis: time
+
+Everything above discounts evidence **across sources**. The same discount
+applies **across time**, and the arithmetic is simpler than anyone expects.
+
+A model with a knowledge cutoff has read what happened before that date. A
+backtest that runs mostly before the cutoff therefore does not test whether a
+strategy works — it tests whether the model remembers. A 2020-01 to 2025-06
+backtest against an October 2024 cutoff is **58 of 66 months open book**.
+
+```
+python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
+
+回测区间构成
+  总长                   66 个月
+  开卷（模型已见）       58 个月     87.9%
+  干净（可用于检验）      8 个月     12.1%
+
+干净区间够不够支撑一个推断
+  所需长度               48 个月    （t ≈ SR·√T，SR=1 时 T=(2/1)² 年）
+  实有                    8 个月       17% of requirement
+```
+
+**The share alone does not finish the argument.** "86% was open book" invites
+the reply "fine, I will trust the other 14%". The other 14% is eight months,
+and eight months of monthly returns cannot distinguish a Sharpe of 1.0 from
+zero at any conventional bar. So a backtest fails here in two different ways,
+and they call for different responses:
+
+| verdict | meaning | the correct reading |
+| --- | --- | --- |
+| `no_holdout` | nothing is out of sample | the result is recall, not performance |
+| `underpowered` | some is, but too little | **neither** "it works" nor "it does not" — this backtest has no power to tell you |
+| `sufficient` | the clean remainder clears the bar | length is no longer the constraint; that is all it means |
+
+Length comes from t ≈ SR·√T (Lo 2002), so T = (t/SR)² years. The quadratic is
+the part nobody has internalised — **halving the Sharpe you claim to be testing
+for quadruples the sample you need**:
+
+| target Sharpe | clean months required at t ≥ 2 |
+| --- | --- |
+| 2.0 | 12 |
+| 1.0 | 48 |
+| 0.5 | 192 |
+
+**Where it sits, and where it deliberately does not.** It is a separate module
+(`src/effective_window.py`) because the inputs share nothing: one side takes
+vendor payloads, the other takes three dates. Merging them would be the exact
+category error this library exists to catch. They meet only in
+`DecisionReport.window`.
+
+- It is **not** emitted as a `Contradiction`. Contradictions are disagreements
+  between sources answering the same question; a knowledge window is not a
+  source and disagrees with nothing. Filing it there to reuse the plumbing
+  would repeat the mistake the construct rule refuses to make with scores.
+- It never moves `verdict`. That is a statement about the subject's risk, and
+  how a backtest was sliced says nothing about it.
+- It **does** floor `confidence`, unconditionally. Ten agreeing sources do not
+  make a period the model has already read informative, so there is no source
+  count that repairs it.
+- Omit the window and every existing caller behaves exactly as before. Absent
+  is unknown, not clean.
+
+**One convention, fixed in code because it moves the headline.** The cutoff
+month counts as seen — a model whose knowledge ends in October 2024 has read
+October 2024. The same configuration reads **87.9% inclusive and 86.4%
+exclusive**, and a quoted share whose convention goes unstated is precisely
+what this repo is about. `tests/test_effective_window.py` names both numbers.
+
+```python
+from decision_confidence import build_report, effective_window
+
+w = effective_window("2024-10", "2020-01", "2025-06", target_sharpe=1.0)
+w.verdict            # 'underpowered'
+w.effective_months   # 8, against months_required = 48
+
+build_report("SUBJ", observations, window=w).confidence   # 'low'
+```
 
 ---
 
@@ -160,6 +251,7 @@ one composite. Adopting the rule is opt-in per adapter.
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
 | **MCP server** | Shipped (reference impl) | 2 tools in `src/mcp_server.py` |
+| **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py` |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
@@ -667,6 +759,19 @@ output before trusting a `range` contradiction on a new construct.
 - A general LLM with web access may see *more current* on-chain data than a
   sandboxed caller of this library. This project's edge is **repeatable,
   comparable, construct-honest verdicts** — not data freshness.
+- **The length requirement on the time axis assumes i.i.d. returns.** t ≈ SR·√T
+  is Lo's approximation; monthly returns are typically positively
+  autocorrelated, which inflates the naive t. The months it asks for are a
+  **floor** — the real requirement is longer, never shorter.
+- **It also assumes the strategy was specified before anyone looked.** If
+  variants were screened on the open-book portion, choosing this one already
+  used the contaminated data and t = 2.0 is too low a bar (Harvey & Liu argue
+  for roughly 3.0 under multiple testing). The caller must raise `t_threshold`;
+  the library will not guess how many variants were tried, and a `sufficient`
+  verdict does not mean the result survived selection.
+- **A clean window is a necessary condition, not evidence of anything.**
+  `sufficient` says only that length has stopped being the binding constraint.
+  It says nothing about whether the strategy works.
 
 ---
 
