@@ -5,12 +5,14 @@ the caller supplies: no network calls, no API keys, no chain reads. Fetching
 from the underlying risk vendors — and everything that comes with it
 (credentials, rate limits, caching, PII policy) — stays with the host.
 
-Two axes, and they are separate tools on purpose. ``decision_confidence``
+Three axes, and they are separate tools on purpose. ``decision_confidence``
 discounts evidence **across sources** and takes a subject plus vendor payloads.
 ``knowledge_window`` discounts it **across time** and takes three dates and a
-trial count. A subject and a backtest are not the same object, so folding the
-second into the first would be exactly the category error this library exists
-to catch. An agent reads them separately; neither answer needs the other.
+trial count. ``counterfactual_audit`` discounts it **across inputs** and takes a
+list of perturbations. A subject, a backtest and an agent's responsiveness are
+three different objects, so folding any of them together would be exactly the
+category error this library exists to catch. An agent reads them separately;
+no answer needs the others.
 
 Run directly::
 
@@ -36,6 +38,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from adapters import observe_vendor, supported_vendors  # noqa: E402
 from decision_confidence import build_report  # noqa: E402
+from counterfactual import (  # noqa: E402
+    Perturbation, minimum_perturbations, perturbation_audit,
+)
+from counterfactual import remedies as cf_remedies  # noqa: E402
 from effective_window import effective_window, remedies  # noqa: E402
 
 try:
@@ -230,6 +236,98 @@ def knowledge_window(
     result = window.to_dict()
     result["remedies"] = remedies(window)
     result["summary"] = window.summary()
+    return result
+
+
+@mcp.tool()
+def counterfactual_audit(
+    perturbations: List[Dict[str, Any]],
+    alpha: float = 0.05,
+    lang: str = "en",
+) -> Dict[str, Any]:
+    """Test whether an agent reads its inputs or recites an outcome it already knows.
+
+    Use this when a language model has produced an analysis or a trading
+    decision and you need to know whether the *inputs* drove it. It is the third
+    axis of this server: ``decision_confidence`` discounts across sources,
+    ``knowledge_window`` across time, this one across inputs.
+
+    **You have to run the perturbations yourself before calling this.** The
+    procedure is: take the case the agent already analysed, change one fact,
+    re-ask, and record whether the conclusion changed. Repeat with different
+    changes. This tool scores the resulting table; it cannot generate or
+    evaluate the runs for you.
+
+    Two kinds of change are required, with opposite expectations:
+
+    * ``material`` — good news to bad, a policy direction reversed, an earnings
+      beat turned into a miss, a covenant broken. The conclusion **should** move.
+    * ``cosmetic`` — a renamed ticker, shifted dates, rescaled magnitudes,
+      reworded narration. The conclusion **should not** move.
+
+    **Supply both.** With only material changes, "never flips" and "reads
+    nothing" are the same observation and the tool will refuse to score it.
+    Cosmetic ones are the control that makes the material ones mean something.
+
+    **Six is the minimum**, three of each. A perfect 3+3 split gives p = 0.0500
+    exactly; below that no result of any shape can be significant, and the tool
+    returns ``no_power`` rather than a flattering verdict. Prefer more.
+
+    Args:
+        perturbations: One entry per run, as
+            ``{"kind": "material"|"cosmetic", "detail": str, "flipped": bool}``.
+            ``flipped`` is your judgement that the agent's conclusion changed —
+            not that its wording changed. A different phrasing of the same call
+            is **not** a flip. ``detail`` is free text describing what you
+            altered; it is echoed back so the report is auditable.
+        alpha: Significance bar for the one-sided Fisher test. 0.05 by default.
+        lang: ``en`` (default) or ``zh`` for the prose fields.
+
+    Returns:
+        ``verdict`` is the headline:
+
+        * ``no_control`` — only one kind supplied. **Not a result.** Report it as
+          a missing control and ask the user for the other kind.
+        * ``no_power`` — too few perturbations for any outcome to be significant.
+          Report as "this audit cannot tell", **never** as a pass or a failure.
+        * ``memorised`` — no cosmetic change moved it, and material ones did not
+          do significantly better. The agent is reciting, not reading.
+        * ``unstable`` — a cosmetic change moved the conclusion at least once.
+          Whatever drives this output, it is not the evidence.
+        * ``responsive`` — material significantly above cosmetic. **This is not a
+          statement that the conclusion is correct**, only that the agent
+          responds to changes that matter. Say so when reporting it.
+
+        Also returned: the two flip counts and rates, the exact ``p_value``,
+        ``best_possible_p`` (what a perfect split at this size would have
+        reached — the number that explains a ``no_power``), ``note`` carrying the
+        caveats, and ``remedies``, which are dispatched on what is actually
+        missing. Surface the remedies rather than inventing advice.
+
+    **The limit that cannot be engineered away**: whether a conclusion flipped,
+    and whether a change was material or cosmetic, are both your labels. Mislabel
+    a material change as cosmetic and the audit passes. If you are running the
+    perturbations on a user's behalf, show them the list and the labels before
+    quoting the verdict.
+
+    Raises:
+        ValueError: on an unknown ``kind`` or an ``alpha`` outside (0, 1). These
+        are caller errors and are not absorbed into a plausible number.
+    """
+    parsed = []
+    for entry in perturbations:
+        if not isinstance(entry, dict):
+            raise ValueError("each perturbation must be an object")
+        parsed.append(Perturbation(
+            kind=str(entry.get("kind", "")),
+            detail=str(entry.get("detail", "")),
+            flipped=bool(entry.get("flipped", False)),
+        ))
+    report = perturbation_audit(parsed, alpha=alpha, lang=lang)
+    result = report.to_dict()
+    result["remedies"] = cf_remedies(report)
+    result["summary"] = report.summary()
+    result["minimum_perturbations"] = minimum_perturbations(alpha)
     return result
 
 

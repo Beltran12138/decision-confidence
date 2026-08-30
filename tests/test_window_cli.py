@@ -35,6 +35,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 CLI = os.path.join(ROOT, "tools", "window.py")
 
 from messages import LANGS, text  # noqa: E402
+from textcompare import flat  # noqa: E402
 
 
 def run(*args, lang="en"):
@@ -42,25 +43,6 @@ def run(*args, lang="en"):
                          capture_output=True, text=True, encoding="utf-8")
     assert out.returncode == 0, out.stderr
     return out.stdout
-
-
-CJK = r"　-〿一-鿿＀-￯"
-
-
-def flat(s):
-    """Undo wrapping before comparing.
-
-    The library returns one sentence; the CLI wraps it and indents the
-    continuations. Asserting the unwrapped string against wrapped output fails
-    for a reason that has nothing to do with what is being tested.
-
-    Collapsing whitespace is not enough on its own: a line break between two
-    Chinese characters carries no space in the original, so turning it into one
-    leaves ``少试， 不能`` where the source says ``少试，不能``. English keeps
-    its spaces; CJK-to-CJK ones are removed.
-    """
-    s = re.sub(r"\s+", " ", s).strip()
-    return re.sub(r"(?<=[" + CJK + r"]) (?=[" + CJK + r"])", "", s)
 
 
 def remedies(text_out, lang="en"):

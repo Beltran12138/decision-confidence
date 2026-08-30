@@ -298,6 +298,26 @@ Mislabel a material change as cosmetic and the audit passes. That is an escape
 hatch of exactly the same kind as an undeclared trial count, and all the library
 can do is name it on every run.
 
+```bash
+python tools/perturb.py --material 5/6 --cosmetic 0/6
+#   one-sided Fisher p = 0.0076  ->  responsive
+python tools/perturb.py --material 2/2 --cosmetic 0/2
+#   best possible here p = 0.1667  <- already the best this size can do  ->  no_power
+```
+
+```python
+from counterfactual import Perturbation, perturbation_audit, remedies
+
+runs = [Perturbation("material", "beat -> miss", flipped=True), ...]
+r = perturbation_audit(runs)
+r.verdict     # 'responsive' | 'memorised' | 'unstable' | 'no_control' | 'no_power'
+remedies(r)   # dispatched on what is actually missing
+```
+
+The MCP tool is `counterfactual_audit`, and its description carries the
+instruction that keeps it honest: **you run the perturbations first**, both kinds
+are required, and a reworded answer is not a flip.
+
 **Where it sits, and where it deliberately does not.** It is a separate module
 (`src/effective_window.py`) because the inputs share nothing: one side takes
 vendor payloads, the other takes three dates. Merging them would be the exact
@@ -361,9 +381,9 @@ already drifted once.
 | **Decision-confidence (meta)** | Shipped | `build_report` / `group_by_construct` in `src/decision_confidence.py` |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
-| **MCP server** | Shipped (reference impl) | 3 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
+| **MCP server** | Shipped (reference impl) | 4 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
 | **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window` |
-| **Counterfactual audit (input axis)** | Shipped — library only so far | `perturbation_audit` in `src/counterfactual.py` |
+| **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit` |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
@@ -632,7 +652,7 @@ pip install -e ".[mcp]"
 python src/mcp_server.py          # stdio; or: decision-confidence-mcp
 ```
 
-Three tools — one per axis, plus a lookup:
+Four tools — one per axis, plus a lookup:
 
 - `decision_confidence(subject, sources, weights?)` → the full report across
   **sources**: observations, per-construct groups, composite (or `null` with
@@ -643,6 +663,9 @@ Three tools — one per axis, plus a lookup:
   → the same discount across **time**: months open book, months of clean
   sample, months an inference needs, `verdict`, and `remedies` — concrete
   actions dispatched on what actually caused the failure.
+- `counterfactual_audit(perturbations, alpha?, lang?)` → the same discount across
+  **inputs**. You run the perturbations; it scores the table. Each entry is
+  `{"kind": "material"|"cosmetic", "detail": str, "flipped": bool}`.
 - `list_supported_vendors()` → `{vendor_id: description}` for every registered
   adapter.
 
