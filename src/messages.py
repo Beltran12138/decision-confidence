@@ -519,4 +519,57 @@ MESSAGES.update({
         "zh": "实质/表面的标注和「是否翻转」的判断都出自你自己。"
               "引用这个判决之前，先确认一个持怀疑态度的人看你的扰动清单，会给出同样的分类。",
     },
+
+    # ---- the same axis in the browser -----------------------------------
+    # The CLI takes two ratios; the page takes the runs one by one, because the
+    # page is where the labels can be shown back. ``labels_are_yours`` asks the
+    # reader to check that a sceptic would classify them the same way, and that
+    # request is empty unless the list is on screen next to the verdict.
+    "web.cf_kind_material": {"en": "material", "zh": "实质扰动"},
+    "web.cf_kind_cosmetic": {"en": "cosmetic", "zh": "表面扰动"},
+    "web.cf_expect_move": {
+        "en": "the conclusion should move",
+        "zh": "结论本该改变",
+    },
+    "web.cf_expect_hold": {
+        "en": "the conclusion should not move",
+        "zh": "结论本不该改变",
+    },
+    "web.cf_detail_ph": {"en": "what you changed", "zh": "你改了什么"},
+    "web.cf_flipped_label": {"en": "flipped", "zh": "翻转了"},
+    "web.cf_unchanged": {"en": "unchanged", "zh": "未翻转"},
+    "web.cf_no_detail": {"en": "(not described)", "zh": "（未填写）"},
+    "web.cf_col_flipped": {"en": "FLIPPED", "zh": "翻转"},
+    "web.cf_col_runs": {"en": "RUNS", "zh": "次数"},
+    "web.cf_col_rate": {"en": "RATE", "zh": "翻转率"},
+    "web.cf_err_empty": {
+        "en": "Record at least one perturbation. This page scores runs you have "
+              "already made; it cannot make them for you.",
+        "zh": "至少记录一次扰动。本页给你已经跑过的结果打分，不能替你跑。",
+    },
+    "web.cf_p_line": {
+        "en": "one-sided Fisher, p = {p_value:.4f} against alpha = {alpha:g}",
+        "zh": "单边 Fisher，p = {p_value:.4f}，对照 alpha = {alpha:g}",
+    },
+    "web.cf_p_none": {
+        "en": "No p-value: one kind of perturbation is missing, so there is nothing "
+              "to compare against.",
+        "zh": "没有 p 值：缺一类扰动，没有可比的对照。",
+    },
+    "web.cf_best_line": {
+        "en": "The best {n_total} perturbations split this way could reach is "
+              "p = {best_p:.4f}.",
+        "zh": "{n_total} 次扰动按当前配比，最好也只能到 p = {best_p:.4f}。",
+    },
+    "web.cf_best_is_floor": {
+        "en": " That is already the best case, so no arrangement of these runs "
+              "could clear the bar.",
+        "zh": "这已经是最好情况——这些次数怎么排都过不了门槛。",
+    },
+    "web.cf_floor_line": {
+        "en": "Floor at alpha = {alpha:g}: {total} perturbations, {material} "
+              "material and {cosmetic} cosmetic, split perfectly.",
+        "zh": "alpha = {alpha:g} 下的下限：{total} 次扰动（{material} 实质 + "
+              "{cosmetic} 表面），且结果完美分离。",
+    },
 })

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>decision-confidence · 有效源数 · 知识窗口</title>
+<title>decision-confidence · sources / window / perturbation</title>
 <style>
 :root{--bg:#0B0D10;--panel:#101319;--panel2:#0E1116;--ink:#E9E5DC;--dim:#767C85;--dim2:#565C64;
       --rule:#22262C;--rule2:#191D23;--gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A;--blue:#6E90AF}
@@ -88,6 +88,24 @@ select.dt{width:150px;cursor:pointer}
 code{font-family:Consolas,monospace;background:#191D23;padding:1px 6px;font-size:13px;color:var(--gold)}
 ol,ul{margin:10px 0 0 20px}
 li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
+
+/* 第三条轴：扰动逐条录入。一行＝跑过的一次，因为这些标注要能被人回看。 */
+#pout{display:none}
+.prow{display:flex;gap:10px;align-items:center;margin-bottom:9px}
+.prow select.dt,.prow input.dt{margin-top:0}
+.prow select.dt{width:132px}
+.prow .det{flex:1;min-width:120px;width:auto}
+.prow label{font-family:Consolas,monospace;font-size:13px;color:var(--dim);
+            white-space:nowrap;cursor:pointer;user-select:none}
+.prow input[type=checkbox]{accent-color:var(--gold);width:15px;height:15px;
+                           vertical-align:-2px;margin-right:5px;cursor:pointer}
+.prow .x{background:transparent;border:none;color:var(--dim2);font-size:17px;
+         cursor:pointer;padding:0 5px;line-height:1}
+.prow .x:hover{color:var(--red)}
+.echo{font-size:14px;line-height:1.9;color:var(--dim)}
+.echo b{color:var(--ink)}
+.echo .f{color:var(--gold)}
+.echo .u{color:var(--dim2)}
 </style>
 </head>
 <body data-ui="en">
@@ -324,6 +342,221 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
   <div class="panel" id="wacts"></div>
 </div>
 </div><!-- /wout -->
+
+<div class="hr"></div>
+
+<div class="kicker" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">反事实扰动</span><span data-lang="en">COUNTERFACTUAL PERTURBATION</span></div>
+<h1 data-lang="zh">第三条轴：这个结论是读出来的，还是背出来的？</h1>
+<h1 data-lang="en">The third axis: was the conclusion read, or recited?</h1>
+<div class="sub" data-lang="zh">
+  前两条轴问的是<b>你手上的证据够不够</b>——几列里有几份独立，几个月是模型没读过的。
+  这一条问的是更前面的一件事：<b>那个给出结论的 agent，到底有没有在看输入。</b>
+  <br><br>
+  做法是反事实扰动：改一个事实，重问一次，看结论跟不跟着动。
+  已发表的测量给出的数字比多数人预期的糟——扰动关键市场输入之后，
+  最差的模型有 <b style="color:var(--red)">82.13%</b> 的情况预测原封不动
+  （Li et al., <i>Profit Mirage</i>, arXiv:2510.07920）。
+  <br><br>
+  但<b>单看一个翻转率不构成判决</b>，这一节存在的理由就在这里。扰动分两类，期待相反：
+  <b style="color:var(--ink)">实质扰动</b>（利好改利空、政策方向翻转）结论<b>本该</b>变；
+  <b style="color:var(--ink)">表面扰动</b>（换代码名、平移日期、改数量级）结论<b>本不该</b>变。
+  两类平均成一个数，恰好把唯一有分辨力的部分丢掉了。
+  <br><br>
+  <b style="color:var(--grn)">同样纯前端，不调用任何模型，不发送任何数据。</b>
+  扰动是你自己跑的，本页只给那张表打分。
+</div>
+<div class="sub" data-lang="en">
+  The first two axes ask whether <b>the evidence you hold is enough</b> — how many of
+  your columns are independent, how many months the model had not read. This one asks
+  something earlier: <b>was the agent that produced the conclusion reading its inputs
+  at all?</b>
+  <br><br>
+  The method is counterfactual perturbation: change a fact, re-ask, and see whether the
+  conclusion follows. The published measurement is worse than most people expect —
+  perturbing key market inputs left the worst model's prediction unchanged
+  <b style="color:var(--red)">82.13%</b> of the time
+  (Li et al., <i>Profit Mirage</i>, arXiv:2510.07920).
+  <br><br>
+  <b>A flip rate on its own is not a verdict</b>, which is the whole reason for this
+  section. Perturbations come in two kinds with opposite expectations:
+  <b style="color:var(--ink)">material</b> ones (good news to bad, a policy reversed)
+  <b>should</b> move the conclusion; <b style="color:var(--ink)">cosmetic</b> ones
+  (a renamed ticker, shifted dates, rescaled magnitudes) <b>should not</b>.
+  Averaging the two into one number throws away the only part that discriminates.
+  <br><br>
+  <b style="color:var(--grn)">Pure front-end again: it calls no model and sends nothing.</b>
+  You run the perturbations; this page scores the table.
+</div>
+
+<div class="sec">
+  <div class="pill"><span data-lang="zh">逐条录入</span><span data-lang="en">ONE ROW PER RUN</span></div>
+  <div class="hint" style="margin-bottom:14px" data-lang="zh">
+    一行＝你已经跑过的一次。「翻转」指<b style="color:var(--ink)">结论变了</b>——
+    同一个判断换个说法<b>不算</b>翻转。描述会原样回显，
+    因为这些标注要能被别人回看：把实质扰动标成表面就能通过，这是本页唯一的逃生舱。
+    <br>
+    <b style="color:var(--ink)">两类都要填</b>：只有实质扰动时，「从不翻转」和「根本没读」是同一个观察。
+  </div>
+  <div class="hint" style="margin-bottom:14px" data-lang="en">
+    One row per run you have already made. "Flipped" means the
+    <b style="color:var(--ink)">conclusion</b> changed &mdash; a different wording of
+    the same call does <b>not</b> count. The descriptions are echoed back, because these
+    labels have to be inspectable: mislabel a material change as cosmetic and the audit
+    passes, which is the one escape hatch on this page.
+    <br>
+    <b style="color:var(--ink)">Both kinds are required</b>: with material ones alone,
+    "never flips" and "read nothing" are the same observation.
+  </div>
+  <div class="panel">
+    <div id="prows"></div>
+    <div class="row">
+      <button class="btn ghost" id="paddm"><span data-lang="zh">+ 实质扰动</span><span data-lang="en">+ material</span></button>
+      <button class="btn ghost" id="paddc"><span data-lang="zh">+ 表面扰动</span><span data-lang="en">+ cosmetic</span></button>
+      <label class="hint"><span data-lang="zh">显著性门槛 alpha</span><span data-lang="en">Significance bar alpha</span>
+        <select class="dt" id="palpha" style="display:inline-block;width:96px;margin:0 0 0 8px">
+          <option value="0.05" selected>0.05</option><option value="0.01">0.01</option>
+        </select></label>
+    </div>
+    <div class="row">
+      <button class="btn" id="pgo"><span data-lang="zh">算一下</span><span data-lang="en">Compute</span></button>
+      <button class="btn ghost" id="pdemo1"><span data-lang="zh">载入示例：在背结论的 agent</span><span data-lang="en">Example: an agent reciting</span></button>
+      <button class="btn ghost" id="pdemo2"><span data-lang="zh">载入示例：在读输入的 agent</span><span data-lang="en">Example: an agent reading</span></button>
+      <button class="btn ghost" id="pclr"><span data-lang="zh">清空</span><span data-lang="en">Clear</span></button>
+    </div>
+    <div class="err" id="perr"></div>
+  </div>
+</div>
+
+<div id="pout">
+<div class="sec">
+  <div class="grid2">
+    <div class="panel">
+      <div class="tag"><span data-lang="zh">判决</span><span data-lang="en">VERDICT</span></div>
+      <div class="big mono" id="pbig" style="font-size:52px">&mdash;</div>
+      <div class="ci" id="pp"></div>
+      <div id="pverdict"></div>
+    </div>
+    <div class="panel">
+      <div class="tag"><span data-lang="zh">两类扰动各翻了几次</span><span data-lang="en">HOW OFTEN EACH KIND FLIPPED IT</span></div>
+      <table id="ptab"><tbody></tbody></table>
+      <div class="calm" id="pfloor"></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="pill"><span data-lang="zh">你标了什么</span><span data-lang="en">WHAT YOU LABELLED</span></div>
+  <h2 data-lang="zh">这份清单，是一个持怀疑态度的人会看的东西</h2>
+  <h2 data-lang="en">This is the list a sceptic would read</h2>
+  <div class="hint" style="margin-bottom:16px" data-lang="zh">
+    判决的可信度不高于这张表的标注质量。<b style="color:var(--ink)">本页无法核验其中任何一格</b>——
+    「实质还是表面」和「算不算翻转」都是你给的。回显它，是为了让它可以被质疑。
+  </div>
+  <div class="hint" style="margin-bottom:16px" data-lang="en">
+    The verdict is no better than the labels in this table.
+    <b style="color:var(--ink)">This page cannot check a single cell of it</b> &mdash;
+    material-versus-cosmetic and flipped-versus-not are both yours. It is echoed here so
+    that it can be argued with.
+  </div>
+  <div class="panel"><div class="echo" id="pecho"></div></div>
+</div>
+
+<div class="sec">
+  <div class="pill g"><span data-lang="zh">那我该怎么办</span><span data-lang="en">WHAT TO DO</span></div>
+  <h2 data-lang="zh">拿到这个判决之后的动作</h2>
+  <h2 data-lang="en">What follows from the verdict</h2>
+  <div class="panel" id="pacts"></div>
+</div>
+</div><!-- /pout -->
+
+<div class="foot" style="margin-top:34px">
+  <div class="tag" style="margin-bottom:16px"><span data-lang="zh">反事实扰动 &middot; 方法与限制</span><span data-lang="en">COUNTERFACTUAL PERTURBATION &middot; METHOD AND LIMITS</span></div>
+  <div data-lang="zh">
+  <b>方法</b>：把实质扰动与表面扰动排成 2&times;2 列联表，做<b>单边 Fisher 精确检验</b>。
+  精确检验而非卡方，是因为这里的计数全是个位数&mdash;&mdash;正是近似最差的地方。
+  <br><br>
+  <b>对照系是 agent 自己的表面扰动翻转率</b>，不是 0.5，也不是任何假定值。
+  「一个真在读输入的 agent 应该翻转多少次」事先无从得知；
+  但「它对无意义改动反应多少次」是可测的，而且恰好是正确的基线。
+  <b style="color:var(--gold)">这和上半部分 carry_cost 是同一个动作：一个对照案例，把拒答变成测量。</b>
+  <br><br>
+  <b>六次是下限</b>：3 实质 + 3 表面完美分离，p 恰好等于 0.0500。
+  低于这个数，任何形状的结果都过不了 α = 0.05&mdash;&mdash;
+  那时给出的是 <code>no_power</code>，不是「通过」。
+  <b>「这次审计分辨不了」和「这个 agent 没问题」是两件事。</b>
+  <br><br>
+  <b>为什么 memorised 和 unstable 按「有没有表面翻转」分</b>，而不是比两个比率：
+  比率法是第一版，它把两个极端都判反了&mdash;&mdash;0% 对 0% 会触发「表面 ≥ 实质」而把一个
+  完全无反应的 agent 判成 unstable，100% 对 100% 反而落到 memorised。
+  给「多不稳算不稳」设一个阈值，就是这个仓库在别处一直拒绝的那种没标定的数字；
+  <b style="color:var(--ink)">而一次表面翻转本身就是问题</b>，所以门槛是一。
+  <br><br>
+  <b>无法工程化消除的限制</b>：「结论是否翻转」和「这次改动算实质还是表面」都由你给出，
+  本页核验不了。<b style="color:var(--gold)">把实质扰动标成表面，审计就会通过</b>&mdash;&mdash;
+  这和不申报筛选次数是同一类逃生舱。所以清单被原样回显在判决旁边。
+  <br><br>
+  <b>responsive 不是「结论正确」</b>：它只说明 agent 会对实质改动作出反应。
+  三条轴各测各的，一条通过不替另外两条说话。
+  <br><br>
+  <b>给 agent 用</b>：同一条轴有 MCP 工具 <code>counterfactual_audit</code>。
+  它的工具说明里写着一句给模型的指令：<b style="color:var(--gold)">扰动要你自己跑</b>——
+  这个工具只给表打分，不能替你生成或评判那些运行。
+  <br><br>
+  <b>与命令行同源</b>：算法与 <code>tools/perturb.py</code> 一致，文案与 <code>src/messages.py</code> 同源，
+  同样由 <code>python tools/check_js_parity.py</code> 抽出本页 JS 用 Node 跑，
+  与 Python 逐条比对判决、p 值与处方文本（两种语言）。
+  页面载入时的那组（实质 1/4、表面 0/4）在两边都应给出
+  <b>p = 0.5000 &middot; memorised</b>，命令行对应 <code>python tools/perturb.py --material 1/4 --cosmetic 0/4</code>。
+  </div>
+  <div data-lang="en">
+  <b>Method</b>: arrange material and cosmetic runs as a 2&times;2 table and apply a
+  <b>one-sided Fisher exact test</b>. Exact rather than chi-square because the counts
+  here are single digits &mdash; precisely where the approximation is worst.
+  <br><br>
+  <b>The baseline is the agent's own cosmetic flip rate</b>, not 0.5 and not any assumed
+  rate. How often a genuinely reading agent ought to flip is not knowable in advance;
+  how often it responds to meaningless changes is measurable, and is exactly the right
+  comparison. <b style="color:var(--gold)">This is the same move <code>carry_cost</code>
+  makes in the sources axis: a control case is what turns a refusal into a measurement.</b>
+  <br><br>
+  <b>Six is the floor</b>: three material and three cosmetic, split perfectly, give
+  p = 0.0500 exactly. Below that no result of any shape clears α = 0.05, and what comes
+  back is <code>no_power</code> rather than a pass.
+  <b>"This audit cannot tell" and "the agent is fine" are different statements.</b>
+  <br><br>
+  <b>Why memorised and unstable split on whether any cosmetic flip happened</b> rather
+  than on a comparison of the two rates: comparing rates was the first attempt, and it
+  inverted both extremes &mdash; 0% against 0% fires the "cosmetic &ge; material" test
+  and calls a completely unresponsive agent unstable, while 100% against 100% falls
+  through to memorised. A threshold on "too unstable" would be an uncalibrated number of
+  exactly the kind this repository refuses elsewhere, and
+  <b style="color:var(--ink)">one cosmetic flip is a real problem on its own</b>, so the
+  bar is one.
+  <br><br>
+  <b>The limit that cannot be engineered away</b>: whether a conclusion flipped, and
+  whether a change was material or cosmetic, are both supplied by you and cannot be
+  checked here. <b style="color:var(--gold)">Mislabel a material change as cosmetic and
+  the audit passes</b> &mdash; the same kind of escape hatch as an undeclared trial
+  count. That is why the list is echoed back beside the verdict.
+  <br><br>
+  <b>Responsive is not correct</b>: it says the agent reacts to material changes, and
+  nothing else. The three axes measure three different things, and passing one does not
+  speak for the other two.
+  <br><br>
+  <b>For agents</b>: the same axis is exposed as the MCP tool
+  <code>counterfactual_audit</code>, whose description carries one instruction aimed at
+  the model: <b style="color:var(--gold)">you run the perturbations yourself</b>. The
+  tool scores a table; it cannot generate or judge the runs for you.
+  <br><br>
+  <b>Same source as the command line</b>: the arithmetic matches
+  <code>tools/perturb.py</code> and the wording is generated from
+  <code>src/messages.py</code>. <code>python tools/check_js_parity.py</code> lifts this
+  page's JavaScript, runs it under Node, and diffs verdicts, p-values and remedy texts
+  against the Python in both languages. The set loaded on arrival (1/4 material, 0/4
+  cosmetic) must give <b>p = 0.5000 &middot; memorised</b> on both sides;
+  <code>python tools/perturb.py --material 1/4 --cosmetic 0/4</code> is the same case.
+  </div>
+</div>
 
 <div class="foot" style="margin-top:34px">
   <div class="tag" style="margin-bottom:16px"><span data-lang="zh">知识窗口 &middot; 方法与限制</span><span data-lang="en">KNOWLEDGE WINDOW &middot; METHOD AND LIMITS</span></div>
@@ -1019,6 +1252,23 @@ const I18N = {
   "cf.remedy.inspect_flipped_cosmetic": {en: "List the {flipped} cosmetic perturbations that did flip the conclusion. A conclusion that moves when only the ticker name changed is being driven by something other than the evidence.", zh: "把那 {flipped} 次翻转了结论的表面扰动列出来看。只改了代码名就变的结论，驱动它的不是证据。"},
   "cf.remedy.not_a_pass": {en: "This says the agent responds to material changes. It does not say the conclusion is right, and it says nothing about the other two axes — run the sources and the window separately.", zh: "这只说明 agent 会对实质改动作出反应。它不说明结论正确，也不涉及另外两条轴——源和窗口要各自单独跑。"},
   "cf.remedy.labels_are_yours": {en: "The material/cosmetic labels and the flip judgements are yours. Before quoting this verdict, check that a sceptic reading your perturbation list would classify them the same way.", zh: "实质/表面的标注和「是否翻转」的判断都出自你自己。引用这个判决之前，先确认一个持怀疑态度的人看你的扰动清单，会给出同样的分类。"},
+  "web.cf_kind_material": {en: "material", zh: "实质扰动"},
+  "web.cf_kind_cosmetic": {en: "cosmetic", zh: "表面扰动"},
+  "web.cf_expect_move": {en: "the conclusion should move", zh: "结论本该改变"},
+  "web.cf_expect_hold": {en: "the conclusion should not move", zh: "结论本不该改变"},
+  "web.cf_detail_ph": {en: "what you changed", zh: "你改了什么"},
+  "web.cf_flipped_label": {en: "flipped", zh: "翻转了"},
+  "web.cf_unchanged": {en: "unchanged", zh: "未翻转"},
+  "web.cf_no_detail": {en: "(not described)", zh: "（未填写）"},
+  "web.cf_col_flipped": {en: "FLIPPED", zh: "翻转"},
+  "web.cf_col_runs": {en: "RUNS", zh: "次数"},
+  "web.cf_col_rate": {en: "RATE", zh: "翻转率"},
+  "web.cf_err_empty": {en: "Record at least one perturbation. This page scores runs you have already made; it cannot make them for you.", zh: "至少记录一次扰动。本页给你已经跑过的结果打分，不能替你跑。"},
+  "web.cf_p_line": {en: "one-sided Fisher, p = {p_value:.4f} against alpha = {alpha:g}", zh: "单边 Fisher，p = {p_value:.4f}，对照 alpha = {alpha:g}"},
+  "web.cf_p_none": {en: "No p-value: one kind of perturbation is missing, so there is nothing to compare against.", zh: "没有 p 值：缺一类扰动，没有可比的对照。"},
+  "web.cf_best_line": {en: "The best {n_total} perturbations split this way could reach is p = {best_p:.4f}.", zh: "{n_total} 次扰动按当前配比，最好也只能到 p = {best_p:.4f}。"},
+  "web.cf_best_is_floor": {en: " That is already the best case, so no arrangement of these runs could clear the bar.", zh: "这已经是最好情况——这些次数怎么排都过不了门槛。"},
+  "web.cf_floor_line": {en: "Floor at alpha = {alpha:g}: {total} perturbations, {material} material and {cosmetic} cosmetic, split perfectly.", zh: "alpha = {alpha:g} 下的下限：{total} 次扰动（{material} 实质 + {cosmetic} 表面），且结果完美分离。"},
 };
 
 /* Python str.format 的最小子集。页面只用到 :g 和 :.Nf/.N%，
@@ -1188,6 +1438,101 @@ function remediesFor(w, lang){
   return out;
 }
 
+/* ============ 第三条轴：反事实扰动 ============
+   与 src/counterfactual.py 同一套算术，同样拆成纯函数供 check_js_parity.py 抽出来跑。
+   前两条轴问「证据够不够」；这一条问更前面的一件事——给出结论的 agent 有没有在读输入。 */
+
+function comb(n, k){
+  if(k < 0 || k > n) return 0;
+  k = Math.min(k, n - k);
+  let r = 1;
+  // 每一步的部分积恰好是 C(n-k+i, i)，本身是整数；逐步取整让它在双精度里保持精确，
+  // 1/C(6,3) 才会正好等于 0.05 —— 那正是「3+3 是下限」这个判据本身。
+  for(let i = 1; i <= k; i++) r = Math.round(r * (n - k + i) / i);
+  return r;
+}
+
+/* 单边 Fisher 精确检验。2x2 是 [[a,b],[c,d]]＝实质翻转/未翻，表面翻转/未翻。
+   用精确检验而不是卡方：这里的计数全是个位数，正是近似最差的地方。 */
+function fisherOneSided(a, b, c, d){
+  const n = a + b + c + d, row1 = a + b, col1 = a + c;
+  if(n === 0 || row1 === 0 || col1 === 0 || row1 === n || col1 === n) return 1;
+  const hi = Math.min(row1, col1);
+  let s = 0;
+  for(let x = a; x <= hi; x++) s += comb(col1, x) * comb(n - col1, row1 - x);
+  return s / comb(n, row1);
+}
+
+function minimumPerturbations(alpha){
+  if(!(alpha > 0 && alpha < 1)) throw new Error('alpha must be in (0, 1)');
+  for(let k = 1; k < 60; k++)
+    if(fisherOneSided(k, 0, 0, k) <= alpha)
+      return {material: k, cosmetic: k, total: 2 * k};
+  throw new Error('no balanced set under 60+60 reaches alpha=' + alpha);
+}
+
+/* memorised 与 unstable 按「有没有出现过表面翻转」分，而不是比两个比率。
+   比率法是第一版，它把两个极端都判反了：0% 对 0% 会触发「表面 ≥ 实质」，
+   于是一个完全无反应的 agent 被判成 unstable；100% 对 100% 反而落到 memorised。 */
+function perturbationAudit(runs, alpha, lang){
+  lang = txLang(lang || I18N_DEFAULT);
+  if(!(alpha > 0 && alpha < 1)) throw new Error('alpha must be in (0, 1)');
+  runs.forEach(function(p){
+    if(p.kind !== 'material' && p.kind !== 'cosmetic')
+      throw new Error('unknown perturbation kind: ' + p.kind);
+  });
+  const mat = runs.filter(function(p){ return p.kind === 'material'; });
+  const cos = runs.filter(function(p){ return p.kind === 'cosmetic'; });
+  const a = mat.filter(function(p){ return p.flipped; }).length, b = mat.length - a;
+  const c = cos.filter(function(p){ return p.flipped; }).length, d = cos.length - c;
+  const need = minimumPerturbations(alpha);
+
+  let verdict, pValue = null, best = null;
+  if(!mat.length || !cos.length){
+    verdict = 'no_control';
+  }else{
+    pValue = fisherOneSided(a, b, c, d);
+    best = fisherOneSided(mat.length, 0, 0, cos.length);   // 这个规模最干净的结果
+    if(best > alpha)          verdict = 'no_power';
+    else if(pValue <= alpha)  verdict = 'responsive';
+    else if(c)                verdict = 'unstable';
+    else                      verdict = 'memorised';
+  }
+  return {verdict: verdict, nMaterial: mat.length, nCosmetic: cos.length,
+          materialFlips: a, cosmeticFlips: c,
+          materialRate: mat.length ? a / mat.length : 0,
+          cosmeticRate: cos.length ? c / cos.length : 0,
+          pValue: pValue, bestPossibleP: best, alpha: alpha,
+          perturbationsRequired: need.total, lang: lang, perturbations: runs};
+}
+
+/* 与 src/counterfactual.py 的 remedies 逐条对应：按「缺的是哪一块」分派，
+   而不是固定列表 —— 「补上表面扰动」对已经有六条表面扰动的人毫无用处。 */
+function cfRemediesFor(r, lang){
+  lang = txLang(lang || r.lang || I18N_DEFAULT);
+  const out = [];
+  const say = function(key, vars){ out.push(tx(key, lang, vars)); };
+
+  if(r.nCosmetic === 0) say('cf.remedy.add_cosmetic');
+  if(r.nMaterial === 0) say('cf.remedy.add_material');
+
+  if(r.verdict === 'no_power'){
+    const need = minimumPerturbations(r.alpha);
+    const short = Math.max(need.total - (r.nMaterial + r.nCosmetic), 1);
+    say('cf.remedy.need_more', {shortfall: short, best_p: r.bestPossibleP,
+                                min_material: need.material,
+                                min_cosmetic: need.cosmetic, alpha: r.alpha});
+  }
+  if((r.verdict === 'memorised' || r.verdict === 'unstable') && r.nMaterial){
+    const unflipped = r.nMaterial - r.materialFlips;
+    if(unflipped) say('cf.remedy.inspect_unflipped', {unflipped: unflipped});
+  }
+  if(r.cosmeticFlips) say('cf.remedy.inspect_flipped_cosmetic', {flipped: r.cosmeticFlips});
+  if(r.verdict === 'responsive') say('cf.remedy.not_a_pass');
+  say('cf.remedy.labels_are_yours');
+  return out;
+}
+
 function runWindow(){
   const cutS = $('wcut').value, stS = $('wst').value, enS = $('wen').value;
   const sr = parseFloat($('wsr').value), tb = parseFloat($('wt').value);
@@ -1275,6 +1620,135 @@ function runWindow(){
   $('wout').style.display = 'block';
 }
 
+/* ============ 第三条轴 · 界面 ============
+   命令行只收两个比率（--material 5/6 --cosmetic 0/6）；页面逐条收，
+   因为页面是唯一能把标注回显给人看的地方。cf.remedy.labels_are_yours 让读者
+   「确认一个持怀疑态度的人会给出同样的分类」—— 清单不在屏幕上，这句话就是空的。 */
+
+let PROWS = [];
+
+function renderRows(){
+  const L = uiLang();
+  $('prows').innerHTML = PROWS.map(function(p, i){
+    return '<div class="prow" data-i="' + i + '">' +
+      '<select class="dt k">' +
+        '<option value="material"' + (p.kind === 'material' ? ' selected' : '') + '>' +
+          esc(tx('web.cf_kind_material', L)) + '</option>' +
+        '<option value="cosmetic"' + (p.kind === 'cosmetic' ? ' selected' : '') + '>' +
+          esc(tx('web.cf_kind_cosmetic', L)) + '</option>' +
+      '</select>' +
+      '<input class="dt det" value="' + esc(p.detail) + '" spellcheck="false" placeholder="' +
+        esc(tx('web.cf_detail_ph', L)) + '">' +
+      '<label><input type="checkbox" class="fl"' + (p.flipped ? ' checked' : '') + '>' +
+        esc(tx('web.cf_flipped_label', L)) + '</label>' +
+      '<button class="x">&times;</button></div>';
+  }).join('');
+}
+
+function runPerturb(){
+  const L = uiLang();
+  $('perr').textContent = '';
+  if(!PROWS.length){
+    $('perr').textContent = tx('web.cf_err_empty', L);
+    $('pout').style.display = 'none';
+    return;
+  }
+  const r = perturbationAudit(PROWS, parseFloat($('palpha').value), L);
+
+  const TONE = {responsive: 'warn ok', no_control: 'warn info', no_power: 'warn info',
+                memorised: 'warn', unstable: 'warn'};
+  const HUE  = {responsive: 'var(--grn)', no_control: 'var(--dim)',
+                no_power: 'var(--dim)', memorised: 'var(--red)', unstable: 'var(--red)'};
+  $('pbig').textContent = r.verdict;
+  $('pbig').style.color = HUE[r.verdict];
+
+  let pl = r.pValue === null
+    ? tx('web.cf_p_none', L)
+    : tx('web.cf_p_line', L, {p_value: r.pValue, alpha: r.alpha});
+  if(r.bestPossibleP !== null)
+    pl += '<br>' + tx('web.cf_best_line', L,
+                      {n_total: r.nMaterial + r.nCosmetic, best_p: r.bestPossibleP}) +
+          (r.verdict === 'no_power' ? tx('web.cf_best_is_floor', L) : '');
+  $('pp').innerHTML = pl;
+
+  $('pverdict').innerHTML =
+    '<div class="' + TONE[r.verdict] + '">' + tx('cf.verdict.' + r.verdict, L) + '</div>';
+
+  // 实质扰动翻得多是好事，表面扰动翻一次都不是 —— 两行的配色方向相反。
+  const body = [
+    ['web.cf_kind_material', 'web.cf_expect_move', r.materialFlips, r.nMaterial,
+     r.materialRate, r.materialRate >= 0.5 ? 'lo' : 'hi'],
+    ['web.cf_kind_cosmetic', 'web.cf_expect_hold', r.cosmeticFlips, r.nCosmetic,
+     r.cosmeticRate, r.cosmeticFlips ? 'hi' : 'lo']
+  ].map(function(x){
+    const pctv = x[3] ? Math.round(x[4] * 100) : 0;
+    return '<tr><td><b>' + esc(tx(x[0], L)) + '</b>' +
+      '<div style="font-size:13px;color:var(--dim2);margin-top:3px">' +
+        esc(tx(x[1], L)) + '</div></td>' +
+      '<td class="num">' + x[2] + '</td><td class="num">' + x[3] + '</td>' +
+      '<td>' + (x[3] ? pctv + '%' : esc(tx('web.none', L))) +
+      '<div class="bar ' + x[5] + '" style="max-width:150px"><i style="width:' +
+        pctv + '%"></i></div></td></tr>';
+  }).join('');
+  $('ptab').querySelector('tbody').innerHTML =
+    '<tr><th>&nbsp;</th><th class="num">' + esc(tx('web.cf_col_flipped', L)) +
+    '</th><th class="num">' + esc(tx('web.cf_col_runs', L)) + '</th><th>' +
+    esc(tx('web.cf_col_rate', L)) + '</th></tr>' + body;
+
+  const need = minimumPerturbations(r.alpha);
+  $('pfloor').textContent = tx('web.cf_floor_line', L, {alpha: r.alpha, total: need.total,
+                                                       material: need.material,
+                                                       cosmetic: need.cosmetic});
+
+  $('pecho').innerHTML = PROWS.map(function(p, i){
+    return '<div>' + (i + 1) + '. <b>' + esc(tx('web.cf_kind_' + p.kind, L)) + '</b>' +
+      ' &middot; ' + (p.detail.trim()
+        ? esc(p.detail)
+        : '<span class="u">' + esc(tx('web.cf_no_detail', L)) + '</span>') +
+      ' &middot; <span class="' + (p.flipped ? 'f' : 'u') + '">' +
+      esc(tx(p.flipped ? 'web.cf_flipped_label' : 'web.cf_unchanged', L)) + '</span></div>';
+  }).join('');
+
+  $('pacts').innerHTML = '<ol><li>' + cfRemediesFor(r, L).join('</li><li>') + '</li></ol>';
+  $('pout').style.display = 'block';
+}
+
+/* 示例的描述在载入时按当前语言定死。之后切语言不会重写它们 —— 一旦载入，
+   它们就是用户的数据，而用户可能已经改过。 */
+const PDEMO_RECITE = [
+  ['material', {en: 'earnings beat rewritten as a miss', zh: '超预期改写成不及预期'}, false],
+  ['material', {en: 'guidance raised rewritten as guidance cut', zh: '上调指引改写成下调指引'}, false],
+  ['material', {en: 'regulator approved rewritten as blocked', zh: '监管批准改写成监管否决'}, true],
+  ['material', {en: 'net cash rewritten as net debt', zh: '净现金改写成净负债'}, false],
+  ['cosmetic', {en: 'ticker renamed to a fictional one', zh: '标的代码换成一个虚构的'}, false],
+  ['cosmetic', {en: 'all dates shifted forward two years', zh: '所有日期整体后移两年'}, false],
+  ['cosmetic', {en: 'all figures rescaled x10', zh: '所有数字统一放大十倍'}, false],
+  ['cosmetic', {en: 'narration reworded, same facts', zh: '叙述换一种措辞，事实不变'}, false]
+];
+const PDEMO_READ = [
+  ['material', {en: 'earnings beat rewritten as a miss', zh: '超预期改写成不及预期'}, true],
+  ['material', {en: 'guidance raised rewritten as guidance cut', zh: '上调指引改写成下调指引'}, true],
+  ['material', {en: 'regulator approved rewritten as blocked', zh: '监管批准改写成监管否决'}, true],
+  ['material', {en: 'net cash rewritten as net debt', zh: '净现金改写成净负债'}, true],
+  ['material', {en: 'margin expansion rewritten as contraction', zh: '毛利率扩张改写成收缩'}, true],
+  ['material', {en: 'buyback rewritten as a dilutive raise', zh: '回购改写成摊薄增发'}, false],
+  ['cosmetic', {en: 'ticker renamed to a fictional one', zh: '标的代码换成一个虚构的'}, false],
+  ['cosmetic', {en: 'all dates shifted forward two years', zh: '所有日期整体后移两年'}, false],
+  ['cosmetic', {en: 'all figures rescaled x10', zh: '所有数字统一放大十倍'}, false],
+  ['cosmetic', {en: 'narration reworded, same facts', zh: '叙述换一种措辞，事实不变'}, false],
+  ['cosmetic', {en: 'currency relabelled', zh: '计价货币换个名字'}, false],
+  ['cosmetic', {en: 'sector label changed', zh: '行业标签改掉'}, false]
+];
+
+function loadDemo(rows){
+  const L = uiLang();
+  PROWS = rows.map(function(x){
+    return {kind: x[0], detail: x[1][L] || x[1].en, flipped: x[2]};
+  });
+  renderRows();
+  runPerturb();
+}
+
 /* ============ 语言切换 ============
    散文靠 CSS 显隐（见 body[data-ui] 规则）；placeholder 和已渲染的结果
    拿不到 CSS，所以切换时重设并重跑。结果区只有在已经算过时才重跑——
@@ -1291,7 +1765,9 @@ function setLang(lang){
   $('inp').placeholder = tx('web.ph_paste', lang);
   $('wtr').placeholder = tx('web.ph_trials', lang);
   $('wet').placeholder = tx('web.ph_eff_trials', lang);
+  renderRows();                                   // 行内的下拉与勾选标签也要跟着换
   if ($('wout').style.display === 'block') runWindow();
+  if ($('pout').style.display === 'block') runPerturb();
   if ($('out').style.display === 'block') run();
   try { localStorage.setItem('dc-lang', lang); } catch (e) {}
 }
@@ -1312,6 +1788,43 @@ $('wgo').onclick = runWindow;
   setLang(saved || (navigator.language || '').toLowerCase().slice(0, 2));
 })();
 runWindow();   // 默认值即 README 与 CLI 共用的那组，页面一打开就可对照
+
+/* 扰动行的事件用委托，不逐行绑定：删掉一行会重排 data-i，
+   逐行绑定的回调会指向旧的下标。 */
+$('prows').addEventListener('input', function(ev){
+  const row = ev.target.closest('.prow');
+  if(row && ev.target.classList.contains('det')) PROWS[+row.dataset.i].detail = ev.target.value;
+});
+$('prows').addEventListener('change', function(ev){
+  const row = ev.target.closest('.prow');
+  if(!row) return;
+  const p = PROWS[+row.dataset.i];
+  if(ev.target.classList.contains('k'))  p.kind = ev.target.value;
+  if(ev.target.classList.contains('fl')) p.flipped = ev.target.checked;
+  runPerturb();
+});
+$('prows').addEventListener('click', function(ev){
+  if(!ev.target.classList.contains('x')) return;
+  PROWS.splice(+ev.target.closest('.prow').dataset.i, 1);
+  renderRows();
+  runPerturb();
+});
+function addRow(kind){
+  PROWS.push({kind: kind, detail: '', flipped: false});
+  renderRows();
+  $('prows').lastElementChild.querySelector('.det').focus();
+}
+$('paddm').onclick = function(){ addRow('material'); };
+$('paddc').onclick = function(){ addRow('cosmetic'); };
+$('pgo').onclick = runPerturb;
+$('palpha').onchange = runPerturb;
+$('pdemo1').onclick = function(){ loadDemo(PDEMO_RECITE); };
+$('pdemo2').onclick = function(){ loadDemo(PDEMO_READ); };
+$('pclr').onclick = function(){
+  PROWS = []; renderRows();
+  $('pout').style.display = 'none'; $('perr').textContent = '';
+};
+loadDemo(PDEMO_RECITE);   // 页脚引用的那组默认值：实质 1/4、表面 0/4 → p=0.5000 / memorised
 
 $('go').onclick = run;
 $('demo1').onclick = function(){ $('inp').value = DEMO1; run(); };

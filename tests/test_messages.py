@@ -88,7 +88,8 @@ class Templates(unittest.TestCase):
                   "n_material": 6, "n_cosmetic": 6, "material_flips": 5,
                   "cosmetic_flips": 0, "material_rate": 0.833, "cosmetic_rate": 0.0,
                   "p_value": 0.0152, "alpha": 0.05, "shortfall": 2, "best_p": 0.1667,
-                  "min_material": 3, "min_cosmetic": 3, "unflipped": 1, "flipped": 2}
+                  "min_material": 3, "min_cosmetic": 3, "unflipped": 1, "flipped": 2,
+                  "n_total": 6, "total": 6, "material": 3, "cosmetic": 3}
         for key, entry in MESSAGES.items():
             need = fields(entry["en"])
             args = {k: sample[k] for k in need if k in sample}

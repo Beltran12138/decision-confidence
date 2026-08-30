@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Do the browser and the library still agree?
 
-``docs/index.html`` reimplements ``src/effective_window.py`` in JavaScript so
-the page can run with no backend. Two implementations of one rule drift, and
+``docs/index.html`` reimplements ``src/effective_window.py`` and
+``src/counterfactual.py`` in JavaScript so the page can run with no backend.
+Two implementations of one rule drift, and
 the drift is silent: nothing fails, the page just quietly answers a different
 question than the CLI. The footer states a checkable default for a human to
 eyeball, which catches a rewrite but not a rounding change.
@@ -39,6 +40,20 @@ Numbers agreeing while advice diverges is the worse failure, because the advice
 is what a reader acts on. This is also why the page emits plain sentences with
 no ``<b>`` markup: a formatted copy cannot be diffed against a plain one, and
 being checkable beat being bold.
+
+**The third axis is compared the same way**, and needs no tolerance at all: both
+sides sum exact integer binomials, so the p-values agree to the last bit. What
+is worth watching there is the *dispatch*, not the arithmetic — ``memorised``
+and ``unstable`` split on whether any cosmetic flip happened, and an earlier
+version that compared the two rates instead inverted both extremes. Every
+verdict appears in the grid for that reason.
+
+**What is not compared**: ``PerturbationReport.summary()`` and the window's
+one-line summary have no counterpart on the page, because the page renders the
+panels instead. Percentages formatted through ``{x:.0%}`` are the one place
+Python's round-half-even and JavaScript's ``toFixed`` could disagree, and the
+page computes its own rate cells rather than routing them through a shared
+template.
 """
 
 from __future__ import annotations
@@ -54,12 +69,20 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
+from counterfactual import (  # noqa: E402
+    Perturbation, perturbation_audit,
+)
+from counterfactual import remedies as cf_remedies  # noqa: E402
 from effective_window import (  # noqa: E402
     effective_window, remedies, selection_penalty,
 )
 from messages import LANGS, MESSAGES  # noqa: E402
 
 T_TOL = 1e-4
+# The counterfactual side has no approximation in it — both implementations sum
+# exact integer binomials — so the only slack it needs is double-precision dust
+# from the final division.
+P_TOL = 1e-12
 
 # trials, effective_trials — spanning the identity case, the ordinary range,
 # the published-factor end, and every shape of discount.
@@ -79,6 +102,26 @@ RANGES = [
     ("2020-01", "2020-01", "2020-01"),   # single month, fully seen
 ]
 REMEDY_TRIALS = [None, 1, 20, 200]
+
+# The third axis. Each entry is (n_material, material_flips, n_cosmetic,
+# cosmetic_flips) and every verdict appears at least once — a checker that can
+# only reach one branch is not checking the dispatch, which is where both the
+# CLI and this page have actually gone wrong before.
+CF_CASES = [
+    (4, 1, 4, 0),     # the page's default on arrival: memorised, p = 0.5000
+    (6, 5, 6, 0),     # responsive
+    (6, 0, 6, 0),     # nothing moved at all — memorised, not "stable"
+    (6, 6, 6, 6),     # everything moved — unstable, not "responsive"
+    (3, 3, 3, 0),     # exactly the floor: p = 0.0500, the identity case
+    (2, 2, 2, 0),     # one short of it: no_power however clean the split
+    (4, 4, 0, 0),     # no_control, material only
+    (0, 0, 4, 0),     # no_control, cosmetic only
+    (5, 3, 5, 2),     # a middling real audit
+    (8, 6, 4, 1),     # lopsided, and a cosmetic flip present
+    (10, 9, 3, 0),
+    (1, 1, 1, 0),
+]
+CF_ALPHAS = [0.05, 0.01]
 
 
 def extract_js() -> str:
@@ -155,6 +198,41 @@ console.log(JSON.stringify(out));
     return _node(harness)
 
 
+def run_node_counterfactual(core: str):
+    """The third axis, verdict and advice together.
+
+    The perturbation list is rebuilt from counts on both sides rather than
+    passed across, so the two implementations are fed the same *shape* and not
+    the same object — a serialisation that silently reordered the runs would
+    otherwise be invisible.
+    """
+    cases = json.dumps([[nm, mf, nc, cf, alpha, lang]
+                        for (nm, mf, nc, cf) in CF_CASES
+                        for alpha in CF_ALPHAS
+                        for lang in LANGS])
+    harness = core + """
+const out = [];
+for (const [nm, mf, nc, cf, alpha, lang] of %s) {
+  const runs = [];
+  for (let i = 0; i < nm; i++) runs.push({kind: 'material', detail: 'm' + i, flipped: i < mf});
+  for (let i = 0; i < nc; i++) runs.push({kind: 'cosmetic', detail: 'c' + i, flipped: i < cf});
+  const r = perturbationAudit(runs, alpha, lang);
+  out.push({nm: nm, mf: mf, nc: nc, cf: cf, alpha: alpha, lang: lang,
+            verdict: r.verdict, p: r.pValue, best: r.bestPossibleP,
+            floor: r.perturbationsRequired, remedies: cfRemediesFor(r, lang)});
+}
+console.log(JSON.stringify(out));
+""" % cases
+    return _node(harness)
+
+
+def close(a, b, tol):
+    """None means "not computable" on both sides; it is not a number near zero."""
+    if a is None or b is None:
+        return a is None and b is None
+    return abs(a - b) <= tol
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--verbose", action="store_true")
@@ -211,11 +289,29 @@ def main() -> int:
         if w.verdict != r["verdict"] or want != r["remedies"]:
             rem_bad.append((r, w.verdict, want))
 
+    cf_rows = run_node_counterfactual(core)
+    cf_bad, worst_p = [], 0.0
+    for r in cf_rows:
+        runs = ([Perturbation("material", "m%d" % i, i < r["mf"]) for i in range(r["nm"])]
+                + [Perturbation("cosmetic", "c%d" % i, i < r["cf"]) for i in range(r["nc"])])
+        py = perturbation_audit(runs, alpha=r["alpha"], lang=r["lang"])
+        want = cf_remedies(py)
+        if py.p_value is not None and r["p"] is not None:
+            worst_p = max(worst_p, abs(py.p_value - r["p"]))
+        if (py.verdict != r["verdict"]
+                or py.perturbations_required != r["floor"]
+                or not close(py.p_value, r["p"], P_TOL)
+                or not close(py.best_possible_p, r["best"], P_TOL)
+                or want != r["remedies"]):
+            cf_bad.append((r, py, want))
+
     print()
     print(f"{len(rows)} 组数值组合  ·  月数不一致 {len(mismatches)}  ·  "
           f"t 最大偏差 {worst_t:.2e}（容差 {T_TOL:.0e}）")
     print(f"{len(MESSAGES)} 条文案 × {len(LANGS)} 语言  ·  与页面不一致 {len(table_bad)}")
     print(f"{len(rem_rows)} 组处方组合（含双语）  ·  逐字不一致 {len(rem_bad)}")
+    print(f"{len(cf_rows)} 组扰动组合（含双语）  ·  判决/处方不一致 {len(cf_bad)}  ·  "
+          f"p 最大偏差 {worst_p:.2e}（容差 {P_TOL:.0e}）")
     if table_bad:
         print()
         print("文案表已漂移——页面的副本需要重新从 src/messages.py 生成：")
@@ -234,6 +330,25 @@ def main() -> int:
                   f'trials={r["trials"]} lang={r["lang"]}')
             if verdict != r["verdict"]:
                 print(f'    verdict  PY {verdict}  vs  JS {r["verdict"]}')
+            for a, b in zip(want + [""] * 9, r["remedies"] + [""] * 9):
+                if a != b:
+                    print(f"    PY: {a}")
+                    print(f"    JS: {b}")
+        return 1
+    if cf_bad:
+        print()
+        print("docs/index.html 与 src/counterfactual.py 已漂移：")
+        for r, py, want in cf_bad:
+            print(f'  material {r["mf"]}/{r["nm"]}  cosmetic {r["cf"]}/{r["nc"]}  '
+                  f'alpha={r["alpha"]} lang={r["lang"]}')
+            if py.verdict != r["verdict"]:
+                print(f'    verdict  PY {py.verdict}  vs  JS {r["verdict"]}')
+            if not close(py.p_value, r["p"], P_TOL):
+                print(f'    p        PY {py.p_value}  vs  JS {r["p"]}')
+            if not close(py.best_possible_p, r["best"], P_TOL):
+                print(f'    best     PY {py.best_possible_p}  vs  JS {r["best"]}')
+            if py.perturbations_required != r["floor"]:
+                print(f'    floor    PY {py.perturbations_required}  vs  JS {r["floor"]}')
             for a, b in zip(want + [""] * 9, r["remedies"] + [""] * 9):
                 if a != b:
                     print(f"    PY: {a}")

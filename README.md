@@ -318,6 +318,13 @@ The MCP tool is `counterfactual_audit`, and its description carries the
 instruction that keeps it honest: **you run the perturbations first**, both kinds
 are required, and a reworded answer is not a flip.
 
+`docs/index.html` carries this axis too, and takes the runs one at a time rather
+than as two ratios. That is not a nicer form of the same input: the page is the
+only surface that can put the perturbation list back on screen next to the
+verdict, and the remedy every run ends with — *check that a sceptic reading your
+list would classify them the same way* — is an empty instruction anywhere the
+list cannot be seen.
+
 **Where it sits, and where it deliberately does not.** It is a separate module
 (`src/effective_window.py`) because the inputs share nothing: one side takes
 vendor payloads, the other takes three dates. Merging them would be the exact
@@ -358,8 +365,10 @@ Three entry points, one implementation: the library above, the CLI
 `tools/window.py`, and the MCP tool `knowledge_window` for agents. The browser
 copy in `docs/index.html` is a fourth — a deliberate reimplementation in JS so
 the page needs no backend — and `tools/check_js_parity.py` diffs it against the
-library on 28 numeric cases and 24 remedy texts, **verbatim**, because that copy
-already drifted once.
+library on 28 numeric cases and 48 remedy texts, **verbatim**, because that copy
+already drifted once. The page carries the perturbation axis on the same terms:
+48 more combinations, and the p-values agree exactly rather than to a tolerance,
+because both sides sum integer binomials.
 
 ---
 
@@ -382,8 +391,8 @@ already drifted once.
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
 | **MCP server** | Shipped (reference impl) | 4 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
-| **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window` |
-| **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit` |
+| **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window`; page `docs/index.html` |
+| **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit`; page `docs/index.html` |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP
@@ -669,10 +678,11 @@ Four tools — one per axis, plus a lookup:
 - `list_supported_vendors()` → `{vendor_id: description}` for every registered
   adapter.
 
-**The two axes are separate tools on purpose.** A subject and a backtest are
-different objects; folding the window into `decision_confidence` would be the
-category error this library exists to catch, and an agent scoring a token
-should not be asked for backtest dates. Neither answer needs the other.
+**The three axes are separate tools on purpose.** A subject, a backtest and an
+agent's responsiveness are three different objects; folding the window into
+`decision_confidence` would be the category error this library exists to catch,
+and an agent scoring a token should not be asked for backtest dates. No answer
+needs the others.
 
 **A tool description is an interface, and one line of it is load-bearing.**
 `knowledge_window` tells the model: *if you do not know how many variants were

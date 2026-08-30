@@ -42,6 +42,19 @@ class FisherArithmetic(unittest.TestCase):
         self.assertAlmostEqual(fisher_one_sided(3, 0, 0, 3), 1 / comb(6, 3), places=12)
         self.assertAlmostEqual(fisher_one_sided(3, 0, 0, 3), 0.05, places=12)
 
+    def test_the_page_and_the_cli_quote_a_checkable_default(self):
+        """``docs/index.html`` loads 1/4 material and 0/4 cosmetic on arrival and
+        its footer states the answer, the same way the window half states
+        58/8/48. A published number with nothing pinning it drifts on the next
+        edit and is then wrong in two places at once — the footer and the CLI's
+        ``--material 1/4 --cosmetic 0/4``, which is the same case."""
+        r = perturbation_audit(mat(4, 1) + cos(4, 0))
+        self.assertEqual(r.verdict, "memorised")
+        self.assertAlmostEqual(r.p_value, 0.5, places=12)
+        self.assertAlmostEqual(r.best_possible_p, 1 / comb(8, 4), places=12)
+        self.assertEqual("%.4f" % r.best_possible_p, "0.0143")
+        self.assertEqual(r.perturbations_required, 6)
+
     def test_a_degenerate_table_is_not_significant(self):
         """No variation in a margin means nothing can be concluded from it."""
         for table in [(0, 0, 0, 0), (3, 0, 3, 0), (0, 3, 0, 3), (2, 2, 0, 0)]:
