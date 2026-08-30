@@ -39,5 +39,5 @@ decision-confidence-mcp = "mcp_server:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-py-modules = ["normalize", "decision_confidence", "mcp_server"]
+py-modules = ["normalize", "decision_confidence", "effective_window", "mcp_server"]
 packages = ["adapters"]

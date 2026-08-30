@@ -16,6 +16,15 @@ Design constraints (see ``docs/ARCHITECTURE.md``):
   *methodology* — 0-100 risk basis, clamping, verdict bands, confidence
   degraded by thin evidence or internal contradiction — not its code.
 
+Two axes, one discount. Everything above discounts evidence **across sources**:
+several vendors answering the same question are worth fewer independent reads
+than the invoice suggests. :mod:`effective_window` applies the same discount
+**across time**: a backtest that ran mostly before the model's knowledge cutoff
+is worth fewer independent months than the calendar suggests. They are separate
+modules because their inputs share nothing — one takes vendor payloads, the
+other takes three dates — and merging them would be exactly the category error
+this library exists to catch. They meet only in :class:`DecisionReport`.
+
 Stdlib only.
 """
 
@@ -24,12 +33,16 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set
 
+from effective_window import EvidenceWindow, effective_window
+
 __all__ = [
     "SourceObservation",
     "ConstructGroup",
     "Contradiction",
     "AuditEntry",
     "DecisionReport",
+    "EvidenceWindow",
+    "effective_window",
     "observe_safety_score",
     "observe_risk_score",
     "observe_kyt_tier",
@@ -164,6 +177,11 @@ class DecisionReport:
     blended_composite_unsafe: Optional[int] = None
     audit: List[AuditEntry] = field(default_factory=list)
     note: str = ""
+    # The second axis: how much of the backtest behind this call was out of
+    # sample. Optional and defaulted, because most callers score a subject
+    # without a backtest at all, and absent is not "clean" — it is unknown,
+    # which is why it does not touch confidence when it is None.
+    window: Optional[EvidenceWindow] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -526,6 +544,7 @@ def synthesize_confidence(
     n_ok: int,
     contradictions: Sequence[Contradiction],
     groups: Optional[Sequence[ConstructGroup]] = None,
+    window: Optional[EvidenceWindow] = None,
 ) -> str:
     """Evidence-quality label — NOT a probability that the verdict is correct.
 
@@ -539,7 +558,18 @@ def synthesize_confidence(
     that is not thinner evidence on a question — it is a question that was
     never answered. ``unavailable`` is not ``safe``, and a report that reads
     ``high`` while an entire construct is blind would launder the gap.
+
+    An ``EvidenceWindow`` that failed floors the label at ``low``, and does so
+    before any source is counted. This is the strongest cap in the function,
+    deliberately: a blind construct means one question went unanswered, while a
+    backtest with no holdout — or a holdout too short to reject anything — means
+    the evidence has no power at all. Ten agreeing sources scored on a period
+    the model has read do not make that period informative. The cap is
+    unconditional rather than another "medium", because there is no source count
+    that repairs it.
     """
+    if window is not None and window.verdict in ("no_holdout", "underpowered"):
+        return "low"
     scored = [c for c in contradictions if c.severity != "info"]
     high_sev = any(c.severity == "high" for c in scored)
     if high_sev or n_ok < 2:
@@ -559,8 +589,22 @@ def build_report(
     observations: List[SourceObservation],
     weights: Optional[Dict[str, float]] = None,
     fraud_source_ids: Optional[Iterable[str]] = None,
+    window: Optional[EvidenceWindow] = None,
 ) -> DecisionReport:
-    """Run the full pipeline and record every step in the audit trail."""
+    """Run the full pipeline and record every step in the audit trail.
+
+    ``window`` is the optional second axis (:mod:`effective_window`): how much
+    of the backtest behind this call was out of the model's sample. It never
+    changes ``verdict`` — that is a statement about the subject's risk, and how
+    a backtest was cut says nothing about it — but a failed window floors
+    ``confidence``, because the claim being scored has no power behind it.
+
+    It is deliberately *not* emitted as a ``Contradiction``. Contradictions are
+    disagreements between sources answering the same question; a knowledge
+    window is not a source and disagrees with nothing. Filing it there to reuse
+    the plumbing would be the same category error this module refuses to make
+    with scores.
+    """
     audit: List[AuditEntry] = []
     for o in observations:
         audit.append(AuditEntry(
@@ -615,14 +659,28 @@ def build_report(
             source_id=",".join(c.sources),
         ))
 
+    if window is not None:
+        audit.append(AuditEntry(
+            step="window",
+            detail=(
+                f"cutoff={window.cutoff} range={window.start}..{window.end} "
+                f"total={window.total_months}m open_book={window.open_book_months}m "
+                f"({window.open_book_share:.1%}) effective={window.effective_months}m "
+                f"required={window.months_required}m (SR={window.target_sharpe:g}, "
+                f"t≥{window.t_threshold:g}) power_ratio={window.power_ratio:.2f} "
+                f"verdict={window.verdict}"
+            ),
+        ))
+
     n_ok = sum(1 for o in observations if o.status == "ok" and o.normalized_0_100 is not None)
-    confidence = synthesize_confidence(n_ok, contradictions, groups)
+    confidence = synthesize_confidence(n_ok, contradictions, groups, window)
     blind = [g.construct for g in groups if g.n_ok == 0]
     audit.append(AuditEntry(
         step="confidence",
         detail=(
             f"n_ok={n_ok} confidence={confidence} "
             f"n_contradictions={len(contradictions)} blind_constructs={blind}"
+            + (f" window={window.verdict}" if window is not None else "")
         ),
     ))
 
@@ -644,4 +702,5 @@ def build_report(
         blended_composite_unsafe=blended,
         audit=audit,
         note=REPORT_NOTE,
+        window=window,
     )
