@@ -463,7 +463,8 @@ def remedies(window: EvidenceWindow) -> List[str]:
     if sel is not None and sel.months_adjusted > sel.months_base:
         if sel.effective_trials == sel.trials:
             out.append(
-                f"量一下那 {sel.trials} 个变体有多重合：tools/neff.py 跑它们的收益序列，"
+                f"量一下那 {sel.trials} 个变体有多重合：把它们的收益序列当成列，"
+                "算 Kish 有效源数（docs/index.html 上半部分可直接贴表），"
                 f"用 effective_trials 报实测值。现在按全额 {sel.trials} 次计，惩罚是上界。"
                 "折扣必须是量出来的，不是声明出来的。"
             )

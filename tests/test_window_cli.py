@@ -82,14 +82,23 @@ class RemedyDispatch(unittest.TestCase):
             self.assertNotIn("nan", out)
 
     def test_the_screening_remedy_appears_only_when_screening_costs_something(self):
-        self.assertNotIn("tools/neff.py", remedies(run(*BASE)))
-        self.assertNotIn("tools/neff.py", remedies(run(*BASE, "--trials", "1")))
-        self.assertIn("tools/neff.py", remedies(run(*BASE, "--trials", "20")))
+        self.assertNotIn("Kish", remedies(run(*BASE)))
+        self.assertNotIn("Kish", remedies(run(*BASE, "--trials", "1")))
+        self.assertIn("Kish", remedies(run(*BASE, "--trials", "20")))
+
+    def test_the_screening_remedy_points_at_something_that_can_do_the_job(self):
+        """Regression: it used to name tools/neff.py, which takes this repo's
+        JSONL corpus and cannot be fed an arbitrary set of return series. The
+        page's paste-a-table half can. Naming the wrong instrument is the same
+        failure as inviting a number."""
+        r = remedies(run(*BASE, "--trials", "20"))
+        self.assertIn("docs/index.html", r)
+        self.assertNotIn("tools/neff.py", r)
 
     def test_an_already_discounted_count_is_not_told_to_discount_again(self):
         r = remedies(run(*BASE, "--trials", "20", "--effective-trials", "4"))
         self.assertIn("再降只能靠真的少试", r)
-        self.assertNotIn("tools/neff.py", r)
+        self.assertNotIn("Kish", r)
 
 
 class Reporting(unittest.TestCase):

@@ -35,7 +35,8 @@ has appeared in one of them. This repo is the **third-party-vendor** instance.
 | `ai-game-bench` *(local, not published)* | multi-agent game testbed | can this metric detect a failure I injected on purpose? |
 
 The argument → [`docs/same-question.md`](./docs/same-question.md) ·
-evidence table → [`docs/failure-families.md`](./docs/failure-families.md)
+evidence table → [`docs/failure-families.md`](./docs/failure-families.md) ·
+the time axis, worked through → [`docs/shorter-than-you-think.md`](./docs/shorter-than-you-think.md)
 
 ---
 
@@ -152,6 +153,9 @@ one composite. Adopting the rule is opt-in per adapter.
 ---
 
 ## The second axis: time
+
+> The argument at length, with all three numbers worked through →
+> [**Your backtest is shorter than you think**](./docs/shorter-than-you-think.md)
 
 Everything above discounts evidence **across sources**. The same discount
 applies **across time**, and the arithmetic is simpler than anyone expects.
