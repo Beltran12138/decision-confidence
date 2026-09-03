@@ -1,4 +1,4 @@
-# Six failure families
+# Seven failure families
 
 *Cross-domain evidence for one question: **are these sources answering the same question?***
 
@@ -8,9 +8,11 @@ differ by 68 points and both be right.
 
 Five of these families keep surfacing in four unrelated domains. They were not
 designed as a taxonomy; each was found the hard way, in one domain, and only later
-recognised in the others. A sixth has so far appeared in **one** domain, and is
-listed on the same logic that makes the table useful at all: a family with one
-instance is a prediction about where to look next, not a finding.
+recognised in the others. A sixth has so far appeared in **one** domain. A seventh
+was found the other way round — first in **someone else's published work**, and only
+then looked for here. Both are listed on the same logic that makes the table useful
+at all: a family with one instance is a prediction about where to look next, not a
+finding.
 
 | domain | repo | what it scores |
 |---|---|---|
@@ -127,6 +129,54 @@ requirement, or self-report added for observability is a candidate. The honest
 status is *one experiment, 48 games, one model* — cited as a hypothesis with a
 number attached, not as an established family.
 
+### 7. The ceiling and the result are in different units
+
+A performance number means nothing alone. It means something against the best
+achievable — a human ceiling, a baseline, a published rate. This family is what
+happens when both are reported and **neither can be subtracted from the other**.
+It has the shape of full disclosure and does none of the work.
+
+The founding instance is not from these four domains. It is from a well-resourced
+team's published work, which is the point: this failure survives careful review
+precisely because reporting a ceiling *at all* already puts a paper above most of
+its field.
+
+In [Gandalf the Grader](https://joinhandshake.com/research/ai/gandalf-the-grader/)
+(Handshake AI Research, 2026-05-27), an agentic verifier is evaluated on a
+meta-eval of **3,204 expert-graded judgments across 21 tasks**. The reference labels
+come from practicing bankers; a dual-coded subset puts **inter-annotator agreement
+at 89.5%**, with disagreements adjudicated before inclusion. The verifier's own
+result is reported as **F1 0.633–0.664**, against a strongest-competitor F1 of
+**0.604**. Both the ceiling and the result are disclosed. They are a raw agreement
+percentage and an F1 — different quantities. A reader cannot compute how far the
+verifier sits from what two experts manage against each other, and on a binary task
+with unstated class balance, 89.5% agreement is consistent with a wide band of F1.
+The one number that would decide whether 0.633 is near-ceiling or poor is the one
+number not derivable from what is published.
+
+| domain | instance |
+|---|---|
+| vendors | **The corrected form, and it was built for another reason.** `holder_base` exists in the agreement table only to anchor a unit: both vendors read the same on-chain holder count, 87% of pairs agree within 1%, and the median spread is **0** over 359 pairs. Because the ceiling is expressed as a *spread*, and every other construct is also expressed as a spread, the numbers subtract: a median of **22** on `authority_control` is not noise, it is the distance between reading thirteen permission flags and reading four. |
+| judge | **A near-miss, caught by accident.** Had the parser default not been fixed (family 1), the run would have reported *"self-preference measured at ~98 points, far above the published 10–25%."* The 98 is a gap between faithfulness scores on a 0–1 scale; the 10–25% is a published self-preference rate. **They are not the same quantity and the comparison is not defined** — which is exactly why the fabricated number would have passed: nobody can check a difference they cannot compute, and it pointed the way the literature said it should. Separately, the one hallucination this repo claims a judge caught rests on *"my reading of the context — not against any human label."* There is no human ceiling in this domain at all. |
+| equity | **The corrected form, and it was deliberate.** Gate A's benchmark is **SMH**, not SPY, on the stated ground that beating a broad index "would only prove long beta — the most self-flattering benchmark available." Reference and result are the same quantity (risk-adjusted return over the same window), so the difference is a number rather than a juxtaposition. |
+| game | **Citations, but nothing to subtract.** Its postmortem cites four external works, and every one of them is invoked for *design* or for a qualitative finding — this benchmark occupies that problem space, that one's daily-cost mechanism is what makes idle-drift measurable at all. Not one supplies a rate this project's numbers could be measured against, so every figure it produced stands alone: the "1 execution failure in 240" of family 1 was read as near-zero with nothing to be near-zero *against*. **The one time an external work did real work, it worked as a design check, not as a ceiling** — the comparison is what reclassified that metric from "measured zero" to "structurally unreachable." A bibliography is not a reference point. |
+
+**How this differs from family 2.** Family 2 is two measurements sharing a name and
+answering different questions — the error is in averaging them. Here the two numbers
+are *supposed* to be different things: one is a ceiling, one is a result. The error
+is reporting them in units that make the distance between them uncomputable, and
+treating the pair as disclosure.
+
+**And it explains a survival mechanism the other families do not.** Family 1
+describes how a wrong number gets produced. Family 7 describes why it then survives
+review: a reader who cannot subtract has no way to challenge, and a result pointed
+in the direction the literature predicts will be waved through. The parser default
+made the 98; the unit mismatch is what would have published it.
+
+**Cheap diagnostic, two questions:** for any headline number, what is the best
+achievable value — and can you subtract the two? A citation is not a reference
+point, and a ceiling you cannot subtract from is decoration.
+
 ---
 
 ## Why the table is worth more than the sum of its rows
@@ -157,6 +207,14 @@ answer* 0.80–0.90. A positive control built the obvious way — make the failu
 unmistakable — would have passed, and certified a sensitivity the pipeline does not
 have at realistic density.
 
+**Family 7 was found running the table backwards.** The first six were found in one
+domain and then looked for in the others. The seventh was read off a published paper
+from an unrelated team and then looked for here — where it turned up as one
+near-miss, two cases that had been fixed for unrelated reasons, and one domain that
+reports no reference point at all. That is a second way to use the table, and a
+cheaper one: someone else's disclosed methodology is a free test of whether a family
+generalises past the author who wrote it down.
+
 ## Honest limitations
 
 - Four domains, one author. Convergence across them is suggestive, not established.
@@ -166,6 +224,13 @@ have at realistic density.
   known label — and excluded from any claim that rests on reproducibility.
 - **Family 6 rests on a single experiment in a single domain.** It is a hypothesis
   with a number, not a demonstrated family.
+- **Family 7's only shipped instance belongs to someone else.** Within these four
+  domains it is one *near-miss* (a headline the parser fix prevented), two cases
+  where the right form was already in place for unrelated reasons, and one domain
+  with no reference point to get wrong. Read it as a diagnostic worth running, not
+  as four independent confirmations. The Handshake figures are quoted from a launch
+  blog post; the underlying meta-eval dataset is stated there as not yet released,
+  so they cannot currently be re-derived by a reader — including by this one.
 - The equity column draws on a personal research engine; its findings are internal
   governance notes, published as evidence rather than as a product claim.
 - The judge column's headline (rubric underspecification drives judge disagreement)
