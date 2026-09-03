@@ -233,7 +233,7 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
 
 <div class="hr"></div>
 
-<div class="kicker" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">知识窗口</span><span data-lang="en">KNOWLEDGE WINDOW</span></div>
+<div class="kicker" id="window" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">知识窗口</span><span data-lang="en">KNOWLEDGE WINDOW</span></div>
 <h1 data-lang="zh">另一条轴：你的回测，模型看过多少？</h1>
 <h1 data-lang="en">The other axis: how much of your backtest had the model already read?</h1>
 <div class="sub" data-lang="zh">
@@ -304,7 +304,9 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
     </div>
     <div class="row">
       <button class="btn" id="wgo"><span data-lang="zh">算一下</span><span data-lang="en">Compute</span></button>
+      <button class="btn ghost" id="wcopy"></button>
     </div>
+    <div class="hint" id="wsharenote" style="margin-top:12px"></div>
     <div class="err" id="werr"></div>
   </div>
 </div>
@@ -1225,6 +1227,10 @@ const I18N = {
   "web.ph_trials": {en: "blank = undeclared", zh: "留空＝未申报"},
   "web.ph_eff_trials": {en: "blank = charge in full", zh: "留空＝按全额"},
   "web.lang_note": {en: "Numbers are identical in both languages; only the wording changes.", zh: "两种语言的数字完全相同，只有措辞不同。"},
+  "web.share_btn": {en: "Copy link to this verdict", zh: "复制这个判决的链接"},
+  "web.share_done": {en: "Copied", zh: "已复制"},
+  "web.share_manual": {en: "Copy it from the address bar", zh: "从地址栏复制"},
+  "web.share_note": {en: "Whoever opens the link lands on these same inputs and the same verdict. The numbers sit in the address bar in plain sight, which is also why anyone can edit them: this makes a verdict reproducible, not tamper-proof.", zh: "对方打开链接，看到的是同一组输入、同一个判决。数字明写在地址栏里，这也正是任何人都能改它的原因：它让判决可复现，不构成不可篡改的记录。"},
   "web.share_line": {en: "Open book (model has read) {open_book_months} months, {open_book_share:.1%}", zh: "开卷（模型已读）{open_book_months} 个月，占 {open_book_share:.1%}"},
   "web.row_have_clean": {en: "clean months available", zh: "实有干净区间"},
   "web.row_open_book": {en: "open book", zh: "开卷区间"},
@@ -1618,6 +1624,11 @@ function runWindow(){
 
 
   $('wout').style.display = 'block';
+  // Only once someone has actually touched this axis, or arrived carrying a
+  // link. The page runs this on load with its defaults, and rewriting the
+  // address bar for a visitor who has done nothing would hand out a link to
+  // an opinion they never held.
+  if (WTOUCHED) writeWindowState();
 }
 
 /* ============ 第三条轴 · 界面 ============
@@ -1749,6 +1760,55 @@ function loadDemo(rows){
   runPerturb();
 }
 
+/* ============ 判决链接 ============
+   一个判决要经得起复核，得先能离开算它的那台机器。整组输入短到能明写在
+   地址栏里，所以这里不压缩、不编码成一串 base64——把输入藏起来的分享链接，
+   跟本页教的东西正好相反。
+
+   这也划出了它的边界：明写就意味着可改。链接让判决可复现，不让它不可篡改；
+   不可篡改那一半在 CLI 那侧（冻结文件 + git），不在这里。页面上把这句话
+   写给用户看（web.share_note），不留给他自己发现。
+
+   ⚠ 本段必须留在 function runWindow 之后：tools/check_js_parity.py 只截取
+   I18N_LANGS..runWindow 那一段丢进 Node 裸跑，那里没有 location 也没有 DOM。 */
+var WTOUCHED = false;                      // var：runWindow 的首次调用早于此处
+const WFIELDS = {wcut: 'cut', wst: 'start', wen: 'end',
+                 wsr: 'sharpe', wt: 't', wtr: 'trials', wet: 'ind'};
+
+function windowQuery(){
+  const q = new URLSearchParams();
+  Object.keys(WFIELDS).forEach(function(id){
+    const v = $(id).value.trim();
+    if(v !== '') q.set(WFIELDS[id], v);    // 留空是「未申报」，不写进链接
+  });
+  q.set('lang', uiLang());
+  return '?' + q.toString() + '#window';
+}
+
+function writeWindowState(){
+  // file:// 下 replaceState 会抛 SecurityError；那只是分享功能不可用，
+  // 不该连带把这一页的计算结果一起废掉。
+  try { history.replaceState(null, '', windowQuery()); } catch (e) {}
+}
+
+/* 从链接里恢复。下拉框收到不认识的值会静默变成空选中，parseFloat 随后拿到
+   NaN——一个坏链接会让页面算出一个没人打过的数字，正是本页反对的那类事。
+   所以下拉只接受它真的有的选项，其余一律忽略、退回默认值。 */
+function readWindowState(){
+  const q = new URLSearchParams(location.search);
+  let carried = false;
+  Object.keys(WFIELDS).forEach(function(id){
+    const v = q.get(WFIELDS[id]);
+    if(v === null) return;
+    const el = $(id);
+    if(el.tagName === 'SELECT' &&
+       !Array.prototype.some.call(el.options, function(o){ return o.value === v; })) return;
+    el.value = v;
+    carried = true;
+  });
+  return {carried: carried, lang: q.get('lang')};
+}
+
 /* ============ 语言切换 ============
    散文靠 CSS 显隐（见 body[data-ui] 规则）；placeholder 和已渲染的结果
    拿不到 CSS，所以切换时重设并重跑。结果区只有在已经算过时才重跑——
@@ -1765,6 +1825,8 @@ function setLang(lang){
   $('inp').placeholder = tx('web.ph_paste', lang);
   $('wtr').placeholder = tx('web.ph_trials', lang);
   $('wet').placeholder = tx('web.ph_eff_trials', lang);
+  $('wcopy').textContent = tx('web.share_btn', lang);
+  $('wsharenote').textContent = tx('web.share_note', lang);
   renderRows();                                   // 行内的下拉与勾选标签也要跟着换
   if ($('wout').style.display === 'block') runWindow();
   if ($('pout').style.display === 'block') runPerturb();
@@ -1776,18 +1838,49 @@ document.querySelectorAll('.lang').forEach(function(b){
   b.onclick = function(){ setLang(b.dataset.set); };
 });
 
-$('wgo').onclick = runWindow;
+// 每一处都经 touchWindow 而不是直接 runWindow：地址栏从这一刻起归用户所有。
+function touchWindow(){ WTOUCHED = true; runWindow(); }
+$('wgo').onclick = touchWindow;
 ['wcut','wst','wen','wtr','wet'].forEach(function(id){
-  $(id).addEventListener('keydown', function(ev){ if(ev.key === 'Enter') runWindow(); });
-  $(id).addEventListener('blur', runWindow);
+  $(id).addEventListener('keydown', function(ev){ if(ev.key === 'Enter') touchWindow(); });
+  $(id).addEventListener('blur', touchWindow);
 });
-['wsr','wt'].forEach(function(id){ $(id).onchange = runWindow; });
+['wsr','wt'].forEach(function(id){ $(id).onchange = touchWindow; });
+
+$('wcopy').onclick = function(){
+  const L = uiLang(), btn = $('wcopy');
+  WTOUCHED = true;
+  writeWindowState();          // 先落到地址栏——降级路径要真的能用
+  const url = location.href;
+  function flash(key){
+    btn.textContent = tx(key, L);
+    setTimeout(function(){ btn.textContent = tx('web.share_btn', uiLang()); }, 1800);
+  }
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(url)
+      .then(function(){ flash('web.share_done'); },
+            function(){ flash('web.share_manual'); });
+  } else {
+    flash('web.share_manual');
+  }
+};
+
 (function(){
   let saved = null;
   try { saved = localStorage.getItem('dc-lang'); } catch (e) {}
-  setLang(saved || (navigator.language || '').toLowerCase().slice(0, 2));
+  const carried = readWindowState();
+  // 链接自带的语言压过上次的选择：收到的是别人给出的那个判决，
+  // 连同他措辞的那一份。
+  setLang(carried.lang || saved || (navigator.language || '').toLowerCase().slice(0, 2));
+  WTOUCHED = carried.carried;
+  runWindow();   // 无参数时即 README 与 CLI 共用的那组，页面一打开就可对照
+  if(carried.carried){
+    // 上面这次 runWindow 把结果区从 display:none 展开了，浏览器早先按 hash
+    // 滚到的位置已经不是判决所在的位置，重滚一次。
+    const anchor = document.getElementById('window');
+    if(anchor) anchor.scrollIntoView();
+  }
 })();
-runWindow();   // 默认值即 README 与 CLI 共用的那组，页面一打开就可对照
 
 /* 扰动行的事件用委托，不逐行绑定：删掉一行会重排 data-i，
    逐行绑定的回调会指向旧的下标。 */

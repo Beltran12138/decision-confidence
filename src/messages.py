@@ -346,6 +346,26 @@ MESSAGES.update({
     },
 })
 
+# The verdict is worth more to the person who has to sign off on it than to the
+# person who produced it, and that person is rarely at the same keyboard. These
+# four strings are the whole of what it takes to hand a verdict over — the
+# address bar carries the inputs, so the fallback below is a real fallback and
+# not an apology: with the clipboard denied the link is still right there.
+MESSAGES.update({
+    "web.share_btn": {"en": "Copy link to this verdict", "zh": "复制这个判决的链接"},
+    "web.share_done": {"en": "Copied", "zh": "已复制"},
+    "web.share_manual": {"en": "Copy it from the address bar",
+                         "zh": "从地址栏复制"},
+    "web.share_note": {
+        "en": "Whoever opens the link lands on these same inputs and the same "
+              "verdict. The numbers sit in the address bar in plain sight, which "
+              "is also why anyone can edit them: this makes a verdict "
+              "reproducible, not tamper-proof.",
+        "zh": "对方打开链接，看到的是同一组输入、同一个判决。数字明写在地址栏里，"
+              "这也正是任何人都能改它的原因：它让判决可复现，不构成不可篡改的记录。",
+    },
+})
+
 MESSAGES.update({
     "web.share_line": {
         "en": "Open book (model has read) {open_book_months} months, {open_book_share:.1%}",
