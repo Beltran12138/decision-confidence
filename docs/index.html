@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>decision-confidence · sources / window / perturbation</title>
+<title>decision-confidence — what is this evidence actually worth?</title>
 <style>
 :root{--bg:#0B0D10;--panel:#101319;--panel2:#0E1116;--ink:#E9E5DC;--dim:#767C85;--dim2:#565C64;
       --rule:#22262C;--rule2:#191D23;--gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A;--blue:#6E90AF}
 *{margin:0;padding:0;box-sizing:border-box}
+/* padding-top 归零，顶部留白改由 .hero 出：顶栏 sticky 但不脱离文档流，
+   若靠负 margin 把它拉进 body 的上 padding 里，它在流中占的位置就比它
+   贴顶时的位置高一截，中间那段差值会被它盖住。 */
 body{background:var(--bg);color:var(--ink);font-family:'Microsoft YaHei','PingFang SC',Inter,sans-serif;
-     -webkit-font-smoothing:antialiased;padding:34px 40px 80px;line-height:1.6}
+     -webkit-font-smoothing:antialiased;padding:0 40px 80px;line-height:1.6}
 .wrap{max-width:1080px;margin:0 auto}
 .mono{font-family:Consolas,'JetBrains Mono',monospace}
 h1{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:34px;font-weight:600;line-height:1.35}
@@ -68,12 +71,41 @@ td.num{font-size:16px}
 .foot{margin-top:52px;color:var(--dim);font-size:13px;line-height:1.9;border-top:1px solid var(--rule);padding-top:22px}
 .foot b{color:#9AA0A8}
 .foot a{color:var(--blue)}
+
+/* 顶栏与开场。三条轴此前各带一个 kicker、一个页脚，纵向堆着——
+   读起来是三份东西装订在一起，不是一件东西的三个面。顶栏说的就是
+   它们属于同一件东西，开场说的是那件东西是什么。
+   负 margin 抵掉 body 的 padding，条才是通栏的；里层再收回 1080，
+   跟正文对齐。 */
+.topbar{position:sticky;top:0;z-index:30;margin:0 -40px;padding:0 40px;
+        background:rgba(11,13,16,.94);backdrop-filter:blur(8px);
+        border-bottom:1px solid var(--rule)}
+.topbar-in{max-width:1080px;margin:0 auto;height:54px;display:flex;align-items:center;gap:28px}
+.brand{font-family:Consolas,monospace;font-size:13.5px;letter-spacing:.14em;
+       color:var(--ink);text-decoration:none;white-space:nowrap}
+.axes{display:flex;gap:22px;flex:1}
+.axes a{font-family:Consolas,monospace;font-size:12.5px;letter-spacing:.1em;color:var(--dim);
+        text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.axes a:hover,.axes a:hover .ax{color:var(--gold)}
+.ax{color:var(--dim2);font-size:11px}
+/* 顶栏会盖住跳过去的标题——判决链接的 scrollIntoView 也走这条。 */
+#top,#sources,#window,#perturb{scroll-margin-top:66px}
+
+.hero{padding:44px 0 6px}
+.hero-q{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:40px;
+        font-weight:600;line-height:1.3;letter-spacing:-.01em}
+.hero-s{color:var(--dim);font-size:15.5px;margin-top:18px;line-height:1.85;max-width:800px}
+.hero-s b{color:var(--ink)}
+@media(max-width:720px){
+  .axes{display:none}
+  .hero-q{font-size:28px}
+}
 #out{display:none}
 /* 双语：散文两份，交互元素只有一份（id 不能重复）。默认隐藏非当前语言，
    而不是「只显示当前语言」——后者会把 flex/grid 布局压成 block。 */
 body[data-ui="en"] [data-lang="zh"]{display:none}
 body[data-ui="zh"] [data-lang="en"]{display:none}
-.langbar{display:flex;justify-content:flex-end;gap:0;margin-bottom:18px}
+.langbar{display:flex;gap:0}
 .lang{font-family:Consolas,monospace;font-size:12px;letter-spacing:.1em;background:transparent;
       color:var(--dim);border:1px solid var(--rule);padding:5px 13px;cursor:pointer}
 .lang+.lang{border-left:none}
@@ -109,13 +141,47 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
 </style>
 </head>
 <body data-ui="en">
-<div class="wrap">
 
-<div class="langbar">
-  <button class="lang" data-set="en">EN</button><button class="lang" data-set="zh">中文</button>
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top">decision-confidence</a>
+    <nav class="axes">
+      <a href="#sources"><span class="ax">1</span><span data-lang="zh">源</span><span data-lang="en">sources</span></a>
+      <a href="#window"><span class="ax">2</span><span data-lang="zh">时间</span><span data-lang="en">time</span></a>
+      <a href="#perturb"><span class="ax">3</span><span data-lang="zh">扰动</span><span data-lang="en">perturbation</span></a>
+    </nav>
+    <div class="langbar">
+      <button class="lang" data-set="en">EN</button><button class="lang" data-set="zh">中文</button>
+    </div>
+  </div>
 </div>
 
-<div class="kicker">DECISION-CONFIDENCE &middot; <span data-lang="zh">有效源数</span><span data-lang="en">EFFECTIVE SOURCES</span></div>
+<div class="wrap">
+
+<div class="hero" id="top">
+  <div class="hero-q" data-lang="zh">你手上这份证据，实际值多少？</div>
+  <div class="hero-q" data-lang="en">What is this evidence actually worth?</div>
+  <div class="hero-s" data-lang="zh">
+    一个问题，在三条轴上各问一次：<b>几份源真的是独立的</b>；<b>一段回测里有几个月是模型没读过的</b>；
+    <b>这个结论是从输入读出来的，还是背出来的</b>。三条轴共用同一件事——
+    <b style="color:var(--gold)">把「你以为有多少证据」折算成「实际有多少」。</b>
+    <br>
+    每一条都在你自己的浏览器里算完，不上传任何东西，也不需要注册。
+  </div>
+  <div class="hero-s" data-lang="en">
+    One question, asked on three axes: <b>how many of your sources are actually
+    independent</b>; <b>how many months of a backtest the model had not already
+    read</b>; <b>whether a conclusion was read off the inputs or recited from
+    memory</b>. All three do the same job —
+    <b style="color:var(--gold)">they convert what you think you have into what
+    you actually have.</b>
+    <br>
+    Each runs entirely in your own browser. Nothing is uploaded and nothing is
+    signed up for.
+  </div>
+</div>
+
+<div class="kicker" id="sources">DECISION-CONFIDENCE &middot; <span data-lang="zh">有效源数</span><span data-lang="en">EFFECTIVE SOURCES</span></div>
 <h1 data-lang="zh">你这几列，实际上值几票？</h1>
 <h1 data-lang="en">How many votes are your columns actually worth?</h1>
 <div class="sub" data-lang="zh">
@@ -347,7 +413,7 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
 
 <div class="hr"></div>
 
-<div class="kicker" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">反事实扰动</span><span data-lang="en">COUNTERFACTUAL PERTURBATION</span></div>
+<div class="kicker" id="perturb" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">反事实扰动</span><span data-lang="en">COUNTERFACTUAL PERTURBATION</span></div>
 <h1 data-lang="zh">第三条轴：这个结论是读出来的，还是背出来的？</h1>
 <h1 data-lang="en">The third axis: was the conclusion read, or recited?</h1>
 <div class="sub" data-lang="zh">
@@ -1227,6 +1293,7 @@ const I18N = {
   "web.ph_trials": {en: "blank = undeclared", zh: "留空＝未申报"},
   "web.ph_eff_trials": {en: "blank = charge in full", zh: "留空＝按全额"},
   "web.lang_note": {en: "Numbers are identical in both languages; only the wording changes.", zh: "两种语言的数字完全相同，只有措辞不同。"},
+  "web.page_title": {en: "decision-confidence — what is this evidence actually worth?", zh: "decision-confidence — 你手上这份证据，实际值多少？"},
   "web.share_btn": {en: "Copy link to this verdict", zh: "复制这个判决的链接"},
   "web.share_done": {en: "Copied", zh: "已复制"},
   "web.share_manual": {en: "Copy it from the address bar", zh: "从地址栏复制"},
@@ -1827,6 +1894,7 @@ function setLang(lang){
   $('wet').placeholder = tx('web.ph_eff_trials', lang);
   $('wcopy').textContent = tx('web.share_btn', lang);
   $('wsharenote').textContent = tx('web.share_note', lang);
+  document.title = tx('web.page_title', lang);
   renderRows();                                   // 行内的下拉与勾选标签也要跟着换
   if ($('wout').style.display === 'block') runWindow();
   if ($('pout').style.display === 'block') runPerturb();

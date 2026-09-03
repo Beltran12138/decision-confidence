@@ -898,6 +898,62 @@ output before trusting a `range` contradiction on a new construct.
 
 ---
 
+## Case study: prophetmap
+
+The rules in this repository have been applied to a live scoring engine —
+[prophetmap](https://github.com/Beltran12138/prophetmap), a public US-equity
+funnel maintained by the same author. It is the first thing this library was
+pointed at, and the only case whose audit is published.
+
+**Stated plainly: this is the author auditing his own project, not an
+independent adoption.** It is evidence that the rules find something when
+applied, and evidence of nothing about demand.
+
+What the audit found, before any return was computed:
+
+| defect | measured |
+|---|---|
+| membership look-ahead | all 87 roster members carry an `addedDate` *later* than the scoring start |
+| forward re-scoring | **39** in-window edits to fields that decide basket membership |
+| survivorship | a downgraded ticker leaves the basket rather than being carried at its loss |
+
+None of the three makes the program fail. All three make the number look
+better.
+
+The engine has since been frozen — roster pinned, basket rule written down
+before the window opens, lock running to 2027-08-17 — and the first reading
+under those rules put the author's own selected basket **last of four**:
+cumulative **−2.45%** against −0.95% for the whole universe, paired
+**t = −1.14, n = 9, not significant**. It is published in that repository's
+changelog in the same words it would have carried had the sign been positive.
+
+### Why the two repositories stay separate
+
+This library **measures**; prophetmap is **measured**. Folding one into the
+other would not simplify anything — it would destroy the property that makes
+the reading worth reading.
+
+More concretely: prophetmap's integrity check asks git whether the frozen
+roster still has exactly one commit and a clean worktree. **The anchor is that
+repository's own history.** Moving the file, or retiring the repository, ends
+the freeze — during a lock the author wrote and has to sit out. A
+pre-registration the author can dissolve by reorganising his folders is not
+one.
+
+The division of labour follows from that:
+
+- **Here** — diagnosis. Given the dates, the trial count and the sources,
+  what is this evidence worth? Nothing is enforced; the page will tell you
+  the honest answer and then let you ignore it.
+- **There** — enforcement. A pre-registered rule is checked before the run,
+  and a violation exits non-zero and is recorded as *a test that failed to
+  run* rather than yielding a number.
+
+Diagnosis without enforcement gets ignored. Enforcement without diagnosis has
+nothing to enforce.
+
+---
+
 ## Honest limitations
 
 - **Read-only analysis, not investment advice, not a safety guarantee, not a

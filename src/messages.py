@@ -352,6 +352,12 @@ MESSAGES.update({
 # address bar carries the inputs, so the fallback below is a real fallback and
 # not an apology: with the clipboard denied the link is still right there.
 MESSAGES.update({
+    # The tab title is what a shared link looks like in someone else's browser,
+    # so it says what the page is for rather than listing its three modules.
+    "web.page_title": {
+        "en": "decision-confidence — what is this evidence actually worth?",
+        "zh": "decision-confidence — 你手上这份证据，实际值多少？",
+    },
     "web.share_btn": {"en": "Copy link to this verdict", "zh": "复制这个判决的链接"},
     "web.share_done": {"en": "Copied", "zh": "已复制"},
     "web.share_manual": {"en": "Copy it from the address bar",
