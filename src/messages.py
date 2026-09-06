@@ -89,6 +89,52 @@ MESSAGES: Dict[str, Dict[str, str]] = {
               "看一眼就放弃的那个变体，通常不会被算进去。",
     },
 
+    # ---- where the trial count came from --------------------------------
+    # A declared 20 and a counted 20 move the bar identically and are not the
+    # same evidence. These strings are the only place that difference surfaces.
+    "trials.declared": {
+        "en": "Trial count {count} was declared, not derived: {derivation}.",
+        "zh": "试验次数 {count} 为申报值，非推导值：{derivation}。",
+    },
+    "trials.grid": {
+        "en": "Trial count {count} was derived from the shape of the search "
+              "({derivation}), so it can be recounted from the code that ran it.",
+        "zh": "试验次数 {count} 由搜索结构推导而来（{derivation}），"
+              "可依据跑这次搜索的代码重新数一遍。",
+    },
+    "trials.log": {
+        "en": "Trial count {count} was counted from an execution record "
+              "({derivation}), so it can be recounted from the log.",
+        "zh": "试验次数 {count} 由运行记录数出（{derivation}），可依据日志重新数一遍。",
+    },
+    "trials.blind_to": {
+        "en": "It is a lower bound: this method cannot see {items}.",
+        "zh": "该数是下限——这种数法看不见：{items}。",
+    },
+    "trials.derivation_declared": {
+        "en": "the caller stated {count}",
+        "zh": "调用方声明为 {count}",
+    },
+    "trials.blind_declared": {
+        "en": "anything at all, since nothing was recorded to recount from",
+        "zh": "任何东西——没有留下可供重数的记录",
+    },
+    "trials.blind_grid": {
+        "en": "attempts made outside the grid, such as hand-tuned runs or "
+              "anything tried before the grid was written",
+        "zh": "网格之外的尝试，例如手工调参、或写下这个网格之前试过的东西",
+    },
+    "trials.blind_log_generic": {
+        "en": "whatever the log does not cover — runs before logging was enabled, "
+              "runs that crashed before writing, runs on another machine",
+        "zh": "日志没覆盖到的部分——开日志之前的运行、写盘前崩掉的运行、别的机器上的运行",
+    },
+    "trials.blind_log_incomplete": {
+        "en": "{n} records missing a requested field, each counted as distinct "
+              "rather than dropped",
+        "zh": "{n} 条记录缺少所选字段，按各自独立计入而非剔除",
+    },
+
     # ---- selection penalty ---------------------------------------------
     "penalty.single": {
         "en": "One attempt declared. That is a **claim**, not a neutral default: it "
@@ -310,8 +356,10 @@ MESSAGES.update({
 
 MESSAGES.update({
     "web.err_trials": {
-        "en": "Variants screened must be a whole number >= 1, or blank for undeclared.",
-        "zh": "变体数要是 ≥1 的整数，或留空表示未申报。",
+        "en": "Variants screened: a whole number >= 1 (20), or the shape of the "
+              "sweep (5x2x2), or blank for undeclared. Every factor must be >= 1.",
+        "zh": "变体数：填 ≥1 的整数（20），或填搜索结构（5x2x2），或留空表示未申报。"
+              "每个因子都要 ≥1。",
     },
     "web.err_eff_without_trials": {
         "en": "\"Independent trials\" given without \"variants screened\" — there is "
@@ -338,7 +386,26 @@ MESSAGES.update({
         "en": "subject\tgrowth\tvaluation\tquality\tsentiment\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n...",
         "zh": "标的\t增长\t估值\t质量\t情绪\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n...",
     },
-    "web.ph_trials": {"en": "blank = undeclared", "zh": "留空＝未申报"},
+    "web.ph_trials": {"en": "20  or  5x2x2", "zh": "20  或  5x2x2"},
+    # The page's one-line version of trial_count.py. It takes no dimension
+    # names — a single input cannot hold them without becoming a form — so it
+    # reports the factors instead, which is still something a reader can check
+    # against the code that ran the sweep.
+    "web.prov_label": {"en": "where it came from", "zh": "这个数哪来的"},
+    "web.prov_declared_value": {"en": "typed in", "zh": "手填"},
+    "web.prov_declared": {
+        "en": "declared — nothing here can be recounted by anyone else. "
+              "Enter the sweep instead (5x2x2) and it becomes checkable.",
+        "zh": "申报值——这里没有任何东西能被别人重数一遍。"
+              "改填搜索结构（5x2x2），它就变成可核的了。",
+    },
+    "web.prov_derived": {
+        "en": "derived from the shape of the search — anyone holding the same "
+              "code can recount it. Still a lower bound: a grid cannot see "
+              "hand-tuned runs, or anything tried before it was written.",
+        "zh": "由搜索结构推导——拿到同一份代码的人可以重新数一遍。"
+              "仍是下限：网格看不见手工调参，也看不见写下它之前试过的东西。",
+    },
     "web.ph_eff_trials": {"en": "blank = charge in full", "zh": "留空＝按全额"},
     "web.lang_note": {
         "en": "Numbers are identical in both languages; only the wording changes.",

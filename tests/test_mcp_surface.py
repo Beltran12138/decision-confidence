@@ -95,10 +95,30 @@ class ToolDescription(unittest.TestCase):
         tools = {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
         return tools["knowledge_window"].description or ""
 
-    def test_it_tells_the_agent_to_ask_rather_than_omit_the_trial_count(self):
+    def test_it_tells_the_agent_to_derive_the_trial_count_before_asking_for_it(self):
+        """The priority order changed and the assertion has to change with it.
+
+        The old rule was "ask the user rather than omit". Asking still beats
+        omitting, but it now ranks second: a remembered integer cannot be
+        recounted by anyone, and a sweep's dimensions can. So the description
+        must offer the derived route *and* say what asking gets you instead.
+        """
         d = self.description()
-        self.assertIn("ask the user", d)
+        self.assertIn("trial_grid", d)
+        self.assertIn("Prefer this over", d)
+        self.assertIn("recounted", d)
+        self.assertIn("asking the user", d)          # still there, as fallback
         self.assertIn("not a neutral default", d)
+        # The derived route must appear before the fallback, or the ordering
+        # lives only in the prose and not in anything that can fail.
+        self.assertLess(d.index("trial_grid"), d.index("asking the user")
+                        if "asking the user" in d else len(d))
+
+    def test_the_trial_grid_parameter_is_exposed(self):
+        tools = {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
+        kw = tools["knowledge_window"].inputSchema
+        self.assertIn("trial_grid", kw["properties"])
+        self.assertNotIn("trial_grid", kw.get("required", []))
 
     def test_it_forbids_estimating_the_independence_discount(self):
         """A freely chosen discount is an escape hatch, not a correction."""

@@ -43,6 +43,7 @@ from counterfactual import (  # noqa: E402
 )
 from counterfactual import remedies as cf_remedies  # noqa: E402
 from effective_window import effective_window, remedies  # noqa: E402
+import trial_count  # noqa: E402
 
 try:
     from mcp.server.fastmcp import FastMCP
@@ -138,6 +139,7 @@ def knowledge_window(
     target_sharpe: float = 1.0,
     t_threshold: float = 2.0,
     trials: Optional[int] = None,
+    trial_grid: Optional[Dict[str, int]] = None,
     effective_trials: Optional[float] = None,
     lang: str = "en",
 ) -> Dict[str, Any]:
@@ -173,13 +175,22 @@ def knowledge_window(
             quadruples the requirement.
         t_threshold: The t bar the clean sample must clear. 2.0 by default.
         trials: How many strategy variants were screened before this one was
-            kept. **If you do not know, ask the user — do not omit it.**
+            kept. **If you do not know, do not omit it** — prefer ``trial_grid``
+            below, and only fall back to asking the user for a number.
             Omitting it is not a neutral default: it asserts the strategy was
             specified before anyone looked, which is the strongest claim
-            available here, and the result will say so. Self-reported counts
-            also run low, because nobody counts the variant they glanced at and
-            abandoned, so treat a small number sceptically rather than as
-            precise.
+            available here, and the result will say so. A number given this way
+            is recorded as *declared* — unverifiable, and low, because nobody
+            counts the variant they glanced at and abandoned.
+        trial_grid: The **shape of the search**, as ``{"configs": 6,
+            "windows": 4, "scenarios": 2}``. Prefer this over ``trials``
+            whenever the search was a sweep, a grid, or any loop you can read
+            off the code: the product is the count, and unlike a remembered
+            integer it can be recounted by anyone holding the same code. The
+            result records it as *derived* and names what a grid cannot see —
+            hand-tuned runs, and anything tried before the grid was written.
+            Mutually exclusive with ``trials``. If the user reports having run
+            a sweep, ask for its dimensions rather than for a total.
         effective_trials: How many of those trials were *independent*. Fifty
             parameter settings of one strategy are not fifty independent tests.
             Pass this only when it has been **measured** — ``tools/neff.py``
@@ -220,16 +231,22 @@ def knowledge_window(
         fixes for different problems, and some do not apply.
 
     Raises:
-        ValueError: on unparseable dates, an inverted range, or a trial count
-        that cannot be true (fewer than one, or more independent trials than
-        trials). These are caller errors and are not absorbed into a plausible
-        number.
+        ValueError: on unparseable dates, an inverted range, a trial count that
+        cannot be true (fewer than one, or more independent trials than
+        trials), or both ``trials`` and ``trial_grid`` at once. These are caller
+        errors and are not absorbed into a plausible number.
     """
+    if trials is not None and trial_grid:
+        raise ValueError(
+            "pass trials or trial_grid, not both — two counts of one search "
+            "is two answers to one question, and this tool does not pick"
+        )
+    count = trial_count.from_grid(lang=lang, **trial_grid) if trial_grid else trials
     window = effective_window(
         cutoff, start, end,
         target_sharpe=target_sharpe,
         t_threshold=t_threshold,
-        trials=trials,
+        trials=count,
         effective_trials=effective_trials,
         lang=lang,
     )

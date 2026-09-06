@@ -1318,6 +1318,15 @@ const I18N = {
   "verdict.sufficient": {en: "The clean segment reaches the length this Sharpe requires. That removes the length constraint and nothing else; it is not evidence the strategy works.", zh: "干净区间达到该 Sharpe 所需的长度。这只解除了「长度」这一条限制，不构成策略有效的证据。"},
   "limits": {en: "The bar uses t ~ SR*sqrt(T) (Lo 2002), which assumes i.i.d. returns; monthly returns are typically positively autocorrelated, inflating the naive t — so the length required here is a floor, never generous. Screening is corrected with Bonferroni, which controls the family-wise error rate and assumes the trials are independent; correlated variants make it conservative, and that discount must come from effective_trials as a measured value.", zh: "阈值用 t ≈ SR·√T（Lo 2002），假设收益 i.i.d.；月度收益通常正自相关，会抬高朴素 t 值 —— 所以这里给出的所需长度是下限，真实需求只多不少。 变体筛选用 Bonferroni 校正，它控制族错误率且假设各次试验独立；变体彼此相关时偏保守，折扣须由 effective_trials 给出且应为实测值。"},
   "undeclared_selection": {en: "No screening count was declared; treated as a single attempt. This is not a neutral default — it asserts the strategy was specified before anyone looked at the data. Self-reported counts also run low: the variant you glanced at and abandoned does not usually get counted.", zh: "⚠ 未申报变体筛选次数，按「一次成型」处理。这不是中性默认，而是断言策略在看数据之前就定好了。自报次数还系统性偏低——看一眼就放弃的那个变体，通常不会被算进去。"},
+  "trials.declared": {en: "Trial count {count} was declared, not derived: {derivation}.", zh: "试验次数 {count} 为申报值，非推导值：{derivation}。"},
+  "trials.grid": {en: "Trial count {count} was derived from the shape of the search ({derivation}), so it can be recounted from the code that ran it.", zh: "试验次数 {count} 由搜索结构推导而来（{derivation}），可依据跑这次搜索的代码重新数一遍。"},
+  "trials.log": {en: "Trial count {count} was counted from an execution record ({derivation}), so it can be recounted from the log.", zh: "试验次数 {count} 由运行记录数出（{derivation}），可依据日志重新数一遍。"},
+  "trials.blind_to": {en: "It is a lower bound: this method cannot see {items}.", zh: "该数是下限——这种数法看不见：{items}。"},
+  "trials.derivation_declared": {en: "the caller stated {count}", zh: "调用方声明为 {count}"},
+  "trials.blind_declared": {en: "anything at all, since nothing was recorded to recount from", zh: "任何东西——没有留下可供重数的记录"},
+  "trials.blind_grid": {en: "attempts made outside the grid, such as hand-tuned runs or anything tried before the grid was written", zh: "网格之外的尝试，例如手工调参、或写下这个网格之前试过的东西"},
+  "trials.blind_log_generic": {en: "whatever the log does not cover — runs before logging was enabled, runs that crashed before writing, runs on another machine", zh: "日志没覆盖到的部分——开日志之前的运行、写盘前崩掉的运行、别的机器上的运行"},
+  "trials.blind_log_incomplete": {en: "{n} records missing a requested field, each counted as distinct rather than dropped", zh: "{n} 条记录缺少所选字段，按各自独立计入而非剔除"},
   "penalty.single": {en: "One attempt declared. That is a **claim**, not a neutral default: it asserts the strategy was specified before anyone looked at the data.", zh: "申报只试过一个变体。这是一个**主张**，不是中性默认——它断言策略在看数据之前就定好了。"},
   "penalty.screened": {en: "{trials} variants were screened{shrunk}, so the survivor's t-statistic is the maximum of several draws. The bar rises from t>={t_base:g} to t>={t_adjusted:.2f}, and the clean sample required goes from {months_base} to {months_adjusted} months (x{ratio:.1f}).", zh: "筛选了 {trials} 个变体{shrunk}，胜出者的 t 值是多次抽样的最大值。门槛由 t≥{t_base:g} 抬到 t≥{t_adjusted:.2f}，所需干净区间从 {months_base} 个月增至 {months_adjusted} 个月（×{ratio:.1f}）。"},
   "penalty.shrunk": {en: " (counted as {n_eff:g} independent trials; the discount must be measured, not asserted)", zh: "（按 {n_eff:g} 次独立试验计，折扣需为实测所得，不能自行声明）"},
@@ -1365,13 +1374,17 @@ const I18N = {
   "cli.sweep_note": {en: "  (Required length grows with the inverse square of Sharpe: halve the target, quadruple the sample.)", zh: "  （所需长度随 Sharpe 平方反比增长：目标减半，样本要四倍。）"},
   "cli.bad_input": {en: "Invalid input: {err}", zh: "输入无效：{err}"},
   "cli.arrow": {en: "->", zh: "→"},
-  "web.err_trials": {en: "Variants screened must be a whole number >= 1, or blank for undeclared.", zh: "变体数要是 ≥1 的整数，或留空表示未申报。"},
+  "web.err_trials": {en: "Variants screened: a whole number >= 1 (20), or the shape of the sweep (5x2x2), or blank for undeclared. Every factor must be >= 1.", zh: "变体数：填 ≥1 的整数（20），或填搜索结构（5x2x2），或留空表示未申报。每个因子都要 ≥1。"},
   "web.err_eff_without_trials": {en: "\"Independent trials\" given without \"variants screened\" — there is nothing to discount.", zh: "填了「独立几次」却没填「筛选过几个变体」——没有可折扣的对象。"},
   "web.err_eff_range": {en: "\"Independent trials\" must fall between 1 and the number of variants: attempts cannot be more independent than they are numerous.", zh: "「独立几次」要在 1 和变体数之间：试验不可能比它的次数更独立。"},
   "web.err_dates": {en: "Dates must be written YYYY-MM, with the month between 01 and 12.", zh: "日期要写成 YYYY-MM，月份 01–12。"},
   "web.err_range_inverted": {en: "The backtest end precedes its start.", zh: "回测止早于回测起。"},
   "web.ph_paste": {en: "subject\tgrowth\tvaluation\tquality\tsentiment\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n...", zh: "标的\t增长\t估值\t质量\t情绪\nNVDA\t4\t2\t5\t4\nAMD\t3\t3\t3\t3\n..."},
-  "web.ph_trials": {en: "blank = undeclared", zh: "留空＝未申报"},
+  "web.ph_trials": {en: "20  or  5x2x2", zh: "20  或  5x2x2"},
+  "web.prov_label": {en: "where it came from", zh: "这个数哪来的"},
+  "web.prov_declared_value": {en: "typed in", zh: "手填"},
+  "web.prov_declared": {en: "declared — nothing here can be recounted by anyone else. Enter the sweep instead (5x2x2) and it becomes checkable.", zh: "申报值——这里没有任何东西能被别人重数一遍。改填搜索结构（5x2x2），它就变成可核的了。"},
+  "web.prov_derived": {en: "derived from the shape of the search — anyone holding the same code can recount it. Still a lower bound: a grid cannot see hand-tuned runs, or anything tried before it was written.", zh: "由搜索结构推导——拿到同一份代码的人可以重新数一遍。仍是下限：网格看不见手工调参，也看不见写下它之前试过的东西。"},
   "web.ph_eff_trials": {en: "blank = charge in full", zh: "留空＝按全额"},
   "web.lang_note": {en: "Numbers are identical in both languages; only the wording changes.", zh: "两种语言的数字完全相同，只有措辞不同。"},
   "web.page_title": {en: "decision-confidence — what is this evidence actually worth?", zh: "decision-confidence — 你手上这份证据，实际值多少？"},
@@ -1687,12 +1700,30 @@ function cfRemediesFor(r, lang){
   return out;
 }
 
+/* 「5x2x2」→ {count:20, factors:[5,2,2]}；不是网格写法就返回 null。
+   镜像 src/trial_count.py 的 from_grid。这里不收维度名，页面上一个单行输入框
+   放不下具名维度而不变成表单；库那边收，因为读报告的人需要知道哪几维被数了。
+   拒绝 0 和负数的理由和库里一样：一个不存在的维度不能让乘积变小。 */
+function parseTrialGrid(raw){
+  const s = String(raw || '').trim().replace(/×/g, 'x');
+  if(!/^\d+\s*(x\s*\d+\s*)+$/i.test(s)) return null;
+  const factors = s.split(/x/i).map(function(p){ return parseInt(p.trim(), 10); });
+  if(factors.some(function(n){ return !isFinite(n) || n < 1; })) return null;
+  return {count: factors.reduce(function(a, b){ return a * b; }, 1), factors: factors};
+}
+
 function runWindow(){
   const cutS = $('wcut').value, stS = $('wst').value, enS = $('wen').value;
   const sr = parseFloat($('wsr').value), tb = parseFloat($('wt').value);
   const trRaw = $('wtr').value.trim(), etRaw = $('wet').value.trim();
   $('werr').textContent = '';
-  const trials = trRaw === '' ? null : Number(trRaw);
+  // 这个框接受两种写法，而它们不是同一种证据。
+  //   20        →  申报值：没有任何东西可供第三方重数
+  //   5x2x2     →  推导值：搜索结构的乘积，拿到同一份代码的人能重新数一遍
+  // 两种写法给出同一个 20，同一个门槛，同一个判决——差别只在这个 20 是什么。
+  // 把差别显示出来，是这一栏存在的理由；两种都渲染成「20」等于把它抹掉。
+  const grid = parseTrialGrid(trRaw);
+  const trials = trRaw === '' ? null : (grid ? grid.count : Number(trRaw));
   const effTr  = etRaw === '' ? null : Number(etRaw);
 
   const L = uiLang();
@@ -1796,7 +1827,17 @@ function runWindow(){
       tx('undeclared_selection', L) + '<br><br>' +
       tx('web.undeclared_body', L, {months_required: req}) + '</div>';
   } else {
+    // 这一行是整张表里唯一一条不影响任何数字的行，也是唯一一条说明
+    // 上面那些数字凭什么成立的行。放第一行，因为它决定了后面几行怎么读。
+    const prov = grid
+      ? [tx('web.prov_label', L),
+         grid.factors.join(' × ') + ' = ' + grid.count,
+         tx('web.prov_derived', L)]
+      : [tx('web.prov_label', L),
+         tx('web.prov_declared_value', L),
+         tx('web.prov_declared', L)];
     const rows = [
+      prov,
       [tx('cli.sel_declared', L), String(sel.trials), tx('web.sel_declared_note', L)],
       [tx('cli.sel_counted', L), String(+sel.nEff.toFixed(4)),
         tx(sel.nEff === sel.trials ? 'web.sel_full_note' : 'web.sel_discounted_note', L)],

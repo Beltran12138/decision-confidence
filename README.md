@@ -361,6 +361,34 @@ remedies(w)          # what to do about it, dispatched on the cause
 build_report("SUBJ", observations, window=w).confidence   # 'low'
 ```
 
+### Don't ask for the trial count. Count it.
+
+`trials=20` moves the requirement from 48 months to 112. That integer is the
+single most consequential input here, and it is the one nobody can check —
+which is the standing objection to every multiple-testing correction in this
+family, not just to this one. Asking the person with the incentive to
+under-count is a design choice, and `src/trial_count.py` is the alternative:
+
+```python
+import trial_count as tc
+
+tc.from_grid(configs=5, windows=2, scenarios=2)      # 20, recountable from the code
+tc.from_runs(runs, fields=["lookback", "threshold"]) # 20, recountable from the log
+
+effective_window("2024-10", "2020-01", "2025-06", trials=tc.from_grid(configs=5, windows=2, scenarios=2))
+```
+
+**The arithmetic is identical.** Both give 20, 112 months, `underpowered`. What
+changes is the record: a declared count reports *"nothing here can be recounted
+by anyone else"*, a derived one reports the product it came from and names what
+that method is blind to — hand-tuned runs outside the grid, runs the log does
+not cover. All three provenances are lower bounds and say so; deriving a number
+does not make it true, it makes its basis inspectable.
+
+The page takes both in one field — type `20` or type `5x2x2` — and the MCP tool
+takes `trial_grid` alongside `trials`, with the description telling the caller
+to prefer the sweep's dimensions over a remembered total.
+
 Three entry points, one implementation: the library above, the CLI
 `tools/window.py`, and the MCP tool `knowledge_window` for agents. The browser
 copy in `docs/index.html` is a fourth — a deliberate reimplementation in JS so
@@ -393,6 +421,7 @@ because both sides sum integer binomials.
 | **MCP server** | Shipped (reference impl) | 4 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
 | **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window`; page `docs/index.html` |
 | **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit`; page `docs/index.html` |
+| **Trial-count provenance** | Shipped — derives the count instead of asking for it | `from_grid` / `from_runs` in `src/trial_count.py`; MCP arg `trial_grid`; page accepts `5x2x2` in the trials field |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP

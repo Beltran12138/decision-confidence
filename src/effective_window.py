@@ -59,9 +59,11 @@ from __future__ import annotations
 import math
 from dataclasses import asdict, dataclass, field
 from statistics import NormalDist
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
+import trial_count
 from messages import DEFAULT_LANG, resolve_lang, text
+from trial_count import TrialCount
 
 __all__ = [
     "EvidenceWindow",
@@ -162,13 +164,20 @@ class SelectionPenalty:
     months_adjusted: int
     note: str = ""
     lang: str = DEFAULT_LANG
+    # How the caller arrived at ``trials``. ``None`` means a bare integer was
+    # passed, which is recorded as ``declared`` rather than left blank: an
+    # unmarked count reads as a fact, and this one is a claim until something
+    # can be recounted from. See ``trial_count.py``.
+    provenance: Optional[str] = None
+    derivation: Optional[str] = None
+    blind_to: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
 
 def selection_penalty(
-    trials: int,
+    trials: Union[int, "TrialCount"],
     *,
     effective_trials: Optional[float] = None,
     t_base: float = T_THRESHOLD,
@@ -195,7 +204,13 @@ def selection_penalty(
     same Kish quantity on the variants' return series); omit it and the full
     count is used, which over-penalises. That asymmetry is deliberate: the
     common failure is not declaring trials at all, not declaring too many.
+
+    ``trials`` also accepts a :class:`trial_count.TrialCount`, which carries
+    where the number came from. The arithmetic is identical either way — the
+    provenance changes what the result is *evidence of*, not what it is.
     """
+    src = trials if isinstance(trials, TrialCount) else None
+    trials = src.count if src is not None else int(trials)
     if trials < 1:
         raise ValueError("trials must be >= 1")
     if t_base <= 0:
@@ -229,6 +244,13 @@ def selection_penalty(
                     t_base=t_base, t_adjusted=t_adjusted,
                     months_base=months_base, months_adjusted=months_adjusted,
                     ratio=months_adjusted / months_base)
+    # A bare integer is recorded as ``declared``, not as absent. Leaving the
+    # field blank would let the commonest case — someone typing a number they
+    # remember — print as though it had a basis.
+    if src is None:
+        src = trial_count.declared(trials, lang=lang)
+    note = note + " " + src.note(lang)
+
     return SelectionPenalty(
         trials=trials,
         effective_trials=n_eff,
@@ -240,6 +262,9 @@ def selection_penalty(
         months_adjusted=months_adjusted,
         note=note,
         lang=lang,
+        provenance=src.provenance,
+        derivation=src.derivation,
+        blind_to=list(src.blind_to),
     )
 
 
@@ -299,7 +324,7 @@ def effective_window(
     *,
     target_sharpe: float = TARGET_SHARPE,
     t_threshold: float = T_THRESHOLD,
-    trials: Optional[int] = None,
+    trials: Optional[Union[int, TrialCount]] = None,
     effective_trials: Optional[float] = None,
     lang: str = None,
 ) -> EvidenceWindow:
@@ -314,6 +339,11 @@ def effective_window(
     raises ``months_required``. Leaving it out changes no arithmetic but is
     recorded in ``note`` as the claim it is — the requirement shown is then
     valid only for a strategy nobody went looking for.
+
+    Pass an integer and it is recorded as *declared*. Pass a
+    :class:`trial_count.TrialCount` — from ``from_grid`` or ``from_runs`` — and
+    the result also carries what the number can be recounted from, and what
+    that method of counting cannot see. Same arithmetic, different evidence.
 
     Raises ``ValueError`` on unparseable dates or an inverted range. These are
     caller mistakes, not missing data — the library's usual "record it and lower

@@ -89,7 +89,9 @@ class Templates(unittest.TestCase):
                   "cosmetic_flips": 0, "material_rate": 0.833, "cosmetic_rate": 0.0,
                   "p_value": 0.0152, "alpha": 0.05, "shortfall": 2, "best_p": 0.1667,
                   "min_material": 3, "min_cosmetic": 3, "unflipped": 1, "flipped": 2,
-                  "n_total": 6, "total": 6, "material": 3, "cosmetic": 3}
+                  "n_total": 6, "total": 6, "material": 3, "cosmetic": 3,
+                  "count": 20, "derivation": "configs=5 x windows=4 = 20",
+                  "items": "runs made before logging was on", "n": 3}
         for key, entry in MESSAGES.items():
             need = fields(entry["en"])
             args = {k: sample[k] for k in need if k in sample}
