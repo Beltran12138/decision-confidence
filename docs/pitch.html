@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>投研证据折扣器 — 现场演示</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230B0D10'/%3E%3Crect x='5' y='14' width='22' height='4' rx='1' fill='%23C9A24C'/%3E%3Crect x='5' y='21' width='9' height='4' rx='1' fill='%235E8C6A'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0B0D10;--panel:#101319;--panel2:#0E1116;--ink:#E9E5DC;--dim:#767C85;--dim2:#565C64;
+      --rule:#22262C;--rule2:#191D23;--gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Microsoft YaHei','PingFang SC',sans-serif;
+     -webkit-font-smoothing:antialiased;overflow:hidden}
+.mono{font-family:Consolas,'JetBrains Mono',monospace}
+.serif{font-family:'Noto Serif SC','Source Han Serif SC',serif}
+
+/* ── chrome ── */
+header{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:26px;
+       padding:0 42px;height:58px;border-bottom:1px solid var(--rule);background:rgba(11,13,16,.92);z-index:5}
+.brand{font-family:Consolas,monospace;font-weight:700;font-size:15px;letter-spacing:.06em}
+.brand em{color:var(--gold);font-style:normal}
+nav{display:flex;gap:8px;margin-left:auto}
+nav button{font-family:Consolas,monospace;font-size:12px;letter-spacing:.14em;color:var(--dim);
+     background:transparent;border:1px solid transparent;padding:7px 13px;cursor:pointer;border-radius:2px}
+nav button .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;background:var(--dim2)}
+nav button.on{color:var(--ink);border-color:var(--rule)}
+nav button.on .dot.g{background:var(--grn)}nav button.on .dot.r{background:var(--gold)}
+nav button.on .dot.k{background:var(--ink)}
+footer{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;gap:18px;
+       padding:0 42px;height:46px;border-top:1px solid var(--rule2);color:var(--dim2);
+       font-size:12px;font-family:Consolas,monospace;letter-spacing:.05em;background:rgba(11,13,16,.92)}
+footer a{color:var(--dim);text-decoration:none;border-bottom:1px solid var(--rule)}
+footer .keys{margin-left:auto;letter-spacing:.15em}
+
+/* ── stage ── */
+main{height:100%;padding:58px 0 46px;display:flex}
+.slide{display:none;flex:1;padding:0 max(42px,6vw);align-items:center;justify-content:center}
+.slide.on{display:flex;animation:rise .45s cubic-bezier(.2,.8,.25,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* cover */
+.cover{flex-direction:column;text-align:center;gap:4vh}
+.cover .kick{font-family:Consolas,monospace;font-size:13px;letter-spacing:.34em;color:var(--gold)}
+.cover h1{font-family:'Noto Serif SC',serif;font-size:clamp(30px,4.2vw,52px);font-weight:600;line-height:1.3}
+.nums{display:flex;gap:5vw;justify-content:center;align-items:baseline}
+.nums div{text-align:center}
+.nums b{display:block;font-family:Consolas,monospace;font-weight:700;font-size:clamp(46px,7.5vw,104px);line-height:1}
+.nums span{display:block;margin-top:12px;font-size:14px;color:var(--dim);letter-spacing:.08em}
+.nums .n1 b{color:var(--ink)}.nums .n2 b{color:var(--red)}
+.nums .n3 b{color:var(--gold)}.nums .n4 b{color:var(--gold)}
+.cover .sub{font-family:'Noto Serif SC',serif;font-size:clamp(17px,1.7vw,24px);color:var(--dim);letter-spacing:.04em}
+.cover .sub b{color:var(--ink);font-weight:600}
+
+/* scenario */
+.scene{gap:max(46px,5vw)}
+.left{max-width:460px}
+.tagline{font-family:Consolas,monospace;font-size:12.5px;letter-spacing:.3em;color:var(--gold);margin-bottom:22px}
+.story{font-family:'Noto Serif SC',serif;font-size:clamp(23px,2.35vw,34px);font-weight:600;line-height:1.62}
+.story em{font-style:normal;color:var(--gold)}
+.story .hl-r{font-style:normal;color:var(--red)}
+.story .hl-g{font-style:normal;color:var(--grn)}
+.moral{margin-top:26px;font-size:15.5px;line-height:1.8;color:var(--dim);border-left:2px solid var(--rule);padding-left:16px}
+.card{width:min(520px,44vw);background:var(--panel);border:1px solid var(--rule);border-top:2px solid rgba(201,162,76,.55);
+      padding:34px 38px;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 14px 34px rgba(0,0,0,.38)}
+.card .cap{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.24em;color:var(--dim);margin-bottom:18px}
+.big{font-family:Consolas,monospace;font-weight:700;font-size:76px;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:27px;color:var(--dim);font-weight:400}
+.badge{display:inline-block;font-family:Consolas,monospace;font-size:13px;font-weight:700;letter-spacing:.16em;
+       padding:6px 15px;border-radius:2px;margin:18px 0 4px}
+.badge.warn{color:var(--gold);border:1px solid var(--gold);background:rgba(201,162,76,.09)}
+.badge.ok{color:var(--grn);border:1px solid var(--grn);background:rgba(94,140,106,.12)}
+.bar{height:11px;background:#20252C;border-radius:2px;overflow:hidden;margin:20px 0 8px}
+.bar i{display:block;height:100%;background:var(--red);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.bar-note{font-size:12.5px;color:var(--dim2)}
+.rows{margin-top:20px;border-top:1px solid var(--rule2)}
+.rows div{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--rule2)}
+.rows dt{font-size:14px;color:var(--dim)}
+.rows dd{font-family:Consolas,monospace;font-size:16px;font-variant-numeric:tabular-nums}
+.rows .key dd{font-size:22px;color:var(--gold);font-weight:700}
+.verify{display:inline-block;margin-top:20px;font-family:Consolas,monospace;font-size:12px;letter-spacing:.1em;
+        color:var(--dim);text-decoration:none;border:1px solid var(--rule);padding:8px 14px;border-radius:2px}
+.verify:hover{color:var(--ink);border-color:var(--dim2)}
+@media (max-width:980px){.slide.scene{flex-direction:column;align-items:flex-start;overflow:auto}.card{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">decision-confidence <em>· 投研证据折扣器</em></div>
+  <nav id="nav"></nav>
+</header>
+
+<main id="stage"></main>
+
+<footer>
+  <span>每一页的数字都可复算 —— 判决链接在提交材料里，打开就能改，也就能验</span>
+  <span class="keys">← → 翻页 · 0–4 直达</span>
+</footer>
+
+<script>
+const BASE='https://beltran12138.github.io/decision-confidence/';
+const S=[
+{nav:'开场',dot:'k',cover:true},
+{nav:'场景 1',dot:'r',tag:'场景 1 / 4 · 知识污染',
+ story:'你让 AI 回测了一个策略：<br>66 个月，年化很漂亮。<br>但其中 58 个月，<em>模型是开卷的</em>。',
+ moral:'模型 2024 年 10 月之前的行情全都背过。这 58 个月考的不是它会不会选股，是它记不记得。',
+ clean:8,total:66,open:58,share:87.9,need:48,verdict:'UNDERPOWERED',ok:false,
+ url:'?cut=2024-10&start=2020-01&end=2025-06&sharpe=1&t=2&lang=zh#window'},
+{nav:'场景 2',dot:'r',tag:'场景 2 / 4 · 选择效应',
+ story:'你其实试了 20 组参数，<br>只留下最好的那组——<br><em>20 个荐股群，总有一个全对</em>。',
+ moral:'你留下的那组参数，就是那个「全对的群」。所以门槛从 48 跳到 112 —— 手上还是那 8 个月。',
+ clean:8,total:66,open:58,share:87.9,need:112,verdict:'UNDERPOWERED',ok:false,
+ url:'?cut=2024-10&start=2020-01&end=2025-06&sharpe=1&t=2&trials=20&lang=zh#window'},
+{nav:'场景 3',dot:'g',tag:'场景 3 / 4 · 判决翻转',
+ story:'换一个知识截止更早的模型：<br>闭卷 48 个月。<br>这一次，<span class="hl-g">结论站得住</span>。',
+ moral:'数据没变，策略没变——变的只是「有多少证据真正作数」。这是全场唯一的绿色。',
+ clean:48,total:66,open:18,share:27.3,need:48,verdict:'SUFFICIENT',ok:true,
+ url:'?cut=2021-06&start=2020-01&end=2025-06&sharpe=1&t=2&lang=zh#window'},
+{nav:'场景 4',dot:'r',tag:'场景 4 / 4 · 量出来的折扣',
+ story:'申报：20 次里只有 6 次<br>是真正独立的。<br>折扣被接受了——<span class="hl-r">但还是不够</span>。',
+ moral:'不是 112，因为折扣被接受了。也不是 48，因为折扣是量出来的，不是嘴上说的。',
+ clean:48,total:66,open:18,share:27.3,need:86,verdict:'UNDERPOWERED',ok:false,
+ url:'?cut=2021-06&start=2020-01&end=2025-06&sharpe=1&t=2&trials=20&ind=6&lang=zh#window'}
+];
+
+const stage=document.getElementById('stage'),nav=document.getElementById('nav');
+S.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.innerHTML='<span class="dot '+(s.dot)+'"></span>'+s.nav;
+  b.onclick=()=>go(i);nav.appendChild(b);
+  const d=document.createElement('div');
+  if(s.cover){
+    d.className='slide cover';
+    d.innerHTML=
+    '<div class="kick">EVIDENCE DEFLATOR · 现场演示</div>'+
+    '<h1>把「你以为有多少证据」<br>折算成「实际有多少」</h1>'+
+    '<div class="nums">'+
+      '<div class="n1"><b>66</b><span>回测月数</span></div>'+
+      '<div class="n2"><b>8</b><span>模型没读过的</span></div>'+
+      '<div class="n3"><b>48</b><span>下结论需要的</span></div>'+
+      '<div class="n4"><b>112</b><span>试过 20 组之后需要的</span></div>'+
+    '</div>'+
+    '<div class="sub">数据一个字都没有变，<b>门槛翻了一倍多</b></div>';
+  }else{
+    d.className='slide scene';
+    d.innerHTML=
+    '<div class="left"><div class="tagline">'+s.tag+'</div>'+
+    '<div class="story serif">'+s.story+'</div>'+
+    '<div class="moral">'+s.moral+'</div></div>'+
+    '<div class="card"><div class="cap">干净区间 · 可用于检验</div>'+
+    '<div class="big">'+s.clean+'<small> / '+s.total+' 个月</small></div>'+
+    '<div><span class="badge '+(s.ok?'ok':'warn')+'">'+s.verdict+'</span></div>'+
+    '<div class="bar"><i style="width:0%" data-w="'+s.share+'"></i></div>'+
+    '<div class="bar-note">红色 = 模型已读过的 '+s.open+' 个月（'+s.share+'%）</div>'+
+    '<div class="rows">'+
+      '<div class="key"><dt>所需长度</dt><dd>'+s.need+' 个月</dd></div>'+
+      '<div><dt>实有干净区间</dt><dd>'+s.clean+' 个月</dd></div>'+
+      '<div><dt>开卷（模型已读）</dt><dd>'+s.open+' 个月</dd></div>'+
+    '</div>'+
+    '<a class="verify" href="'+BASE+s.url+'" target="_blank" rel="noopener">打开可验版 ↗ 数字都在地址栏里</a></div>';
+  }
+  stage.appendChild(d);
+});
+
+let cur=-1;
+function go(i){
+  if(i<0||i>=S.length||i===cur)return;cur=i;
+  [...stage.children].forEach((el,k)=>{
+    el.classList.toggle('on',k===i);
+    if(k===i){const bar=el.querySelector('.bar i');
+      if(bar){bar.style.width='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.width=bar.dataset.w+'%';}));}}
+  });
+  [...nav.children].forEach((el,k)=>el.classList.toggle('on',k===i));
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+  else if(/^[0-4]$/.test(e.key))go(+e.key);
+});
+go(0);
+</script>
+</body>
+</html>
