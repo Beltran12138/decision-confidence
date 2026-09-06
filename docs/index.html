@@ -139,6 +139,12 @@ select.dt{width:150px;cursor:pointer}
 #wreq tr:last-child td{border-bottom:none}
 #wout .warn{line-height:1.75;font-size:13.5px}
 #wout .warn b.mono{font-size:13px}
+/* ?note= — 分享判决链接时带一句上下文。textContent 插入，纯展示。 */
+.dc-note{border-left:3px solid var(--gold);background:var(--panel);padding:20px 24px;
+      margin:0 0 22px;font-family:'Noto Serif SC','Source Han Serif SC',serif;
+      font-size:20px;line-height:1.65;color:var(--ink)}
+.dc-note small{display:block;font-family:Consolas,monospace;font-size:11.5px;
+      letter-spacing:.22em;color:var(--gold);margin-bottom:8px}
 .err{color:var(--red);font-size:14.5px;line-height:1.7;margin-top:14px}
 code{font-family:Consolas,monospace;background:#191D23;padding:1px 6px;font-size:13px;color:var(--gold)}
 ol,ul{margin:10px 0 0 20px}
@@ -2028,6 +2034,23 @@ try{
   setTimeout(function(){
     var wout=document.getElementById('wout');
     if(!wout||wout.style.display==='none')return;
+    /* ?note=…&tag=… — a caption the sharer attached to this verdict.
+       textContent only; the page never interprets it. */
+    try{
+      /* The page rewrites the address bar down to computed fields, so read
+         the note from the URL the tab was actually opened with. */
+      var nav=performance.getEntriesByType?performance.getEntriesByType('navigation'):[];
+      var raw=(nav[0]&&nav[0].name)||location.href;
+      var q=new URL(raw,location.href).searchParams;
+      var note=q.get('note');
+      if(note&&!document.querySelector('.dc-note')){
+        var d=document.createElement('div');d.className='dc-note';
+        var s=document.createElement('small');s.textContent=q.get('tag')||'NOTE';
+        var tx=document.createElement('span');tx.textContent=note;
+        d.appendChild(s);d.appendChild(tx);
+        wout.insertBefore(d,wout.firstChild);
+      }
+    }catch(_e){}
     var v=document.querySelector('#wverdict b.mono');
     var eff=document.getElementById('weff');
     var req=document.querySelector('#wreq tr td.num');
