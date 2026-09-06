@@ -82,6 +82,19 @@ main{height:100%;padding:58px 0 46px;display:flex}
         color:var(--dim);text-decoration:none;border:1px solid var(--rule);padding:8px 14px;border-radius:2px}
 .verify:hover{color:var(--ink);border-color:var(--dim2)}
 @media (max-width:980px){.slide.scene{flex-direction:column;align-items:flex-start;overflow:auto}.card{width:100%}}
+/* axes map */
+.axes3{display:flex;gap:2.6vw;justify-content:center}
+.axes3>div{width:min(300px,26vw);background:var(--panel);border:1px solid var(--rule);
+      border-top:2px solid var(--rule);padding:30px 28px;text-align:left;opacity:.62}
+.axes3>div.now{opacity:1;border-top-color:var(--gold);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 14px 34px rgba(0,0,0,.38)}
+.axes3 i{font-family:Consolas,monospace;font-style:normal;font-size:13px;color:var(--gold);letter-spacing:.2em}
+.axes3 h3{font-family:'Noto Serif SC',serif;font-size:22px;margin:10px 0 12px}
+.axes3 p{font-size:15px;line-height:1.7;color:var(--dim)}
+.axes3>div.now p{color:var(--ink)}
+.axes3 small{display:block;margin-top:16px;font-family:Consolas,monospace;font-size:11.5px;
+      letter-spacing:.12em;color:var(--dim2)}
+.axes3>div.now small{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -94,13 +107,14 @@ main{height:100%;padding:58px 0 46px;display:flex}
 
 <footer>
   <span>每一页的数字都可复算 —— 判决链接在提交材料里，打开就能改，也就能验</span>
-  <span class="keys">← → 翻页 · 0–4 直达</span>
+  <span class="keys">← → 翻页 · 1–4 直达场景</span>
 </footer>
 
 <script>
 const BASE='https://beltran12138.github.io/decision-confidence/';
 const S=[
 {nav:'开场',dot:'k',cover:true},
+{nav:'全貌',dot:'k',map:true},
 {nav:'场景 1',dot:'r',tag:'场景 1 / 4 · 知识污染',
  story:'你让 AI 回测了一个策略：<br>66 个月，年化很漂亮。<br>但其中 58 个月，<em>模型是开卷的</em>。',
  moral:'模型 2024 年 10 月之前的行情全都背过。这 58 个月考的不是它会不会选股，是它记不记得。',
@@ -141,6 +155,16 @@ S.forEach((s,i)=>{
       '<div class="n4"><b>112</b><span>试过 20 组之后需要的</span></div>'+
     '</div>'+
     '<div class="sub">数据一个字都没有变，<b>门槛翻了一倍多</b></div>';
+  }else if(s.map){
+    d.className='slide cover';
+    d.innerHTML=
+    '<div class="kick">同一个问题 · 三条轴上各问一次</div>'+
+    '<div class="axes3">'+
+      '<div><i>1</i><h3>有效源数</h3><p>你这五列评分，<br>实际值几票？</p><small>上一场讲过 · 已上线</small></div>'+
+      '<div class="now"><i>2</i><h3>知识窗口</h3><p>你这 66 个月，<br>实际值几个月？</p><small>← 今天演示这条</small></div>'+
+      '<div><i>3</i><h3>反事实扰动</h3><p>这个结论，是读出来的<br>还是背出来的？</p><small>已上线</small></div>'+
+    '</div>'+
+    '<div class="sub">三条轴共用同一个动作：<b>把「你以为有多少证据」折算成「实际有多少」</b></div>';
   }else{
     d.className='slide scene';
     d.innerHTML=
@@ -175,7 +199,9 @@ function go(i){
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
   else if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
-  else if(/^[0-4]$/.test(e.key))go(+e.key);
+  else if(e.key==='0')go(0);
+  else if(e.key==='5')go(1);
+  else if(/^[1-4]$/.test(e.key))go(+e.key+1);
 });
 go(0);
 </script>
