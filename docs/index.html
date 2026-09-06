@@ -89,6 +89,10 @@ td.num{font-size:16px}
         text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap}
 .axes a:hover,.axes a:hover .ax{color:var(--gold)}
 .ax{color:var(--dim2);font-size:11px}
+/* 当前所在的那条轴。三条轴同页堆叠，没有指示就不知道自己在哪一段。 */
+.axes a{padding:5px 0;border-bottom:1.5px solid transparent;transition:color .15s,border-color .15s}
+.axes a.here,.axes a.here .ax{color:var(--ink)}
+.axes a.here{border-bottom-color:var(--gold)}
 /* 顶栏会盖住跳过去的标题——判决链接的 scrollIntoView 也走这条。 */
 #top,#sources,#window,#perturb{scroll-margin-top:66px}
 
@@ -124,6 +128,51 @@ select.dt{width:150px;cursor:pointer}
       color:var(--red);border-radius:2px;margin-bottom:12px;background:rgba(196,69,60,.09)}
 #wverdict .warn.info b.mono{border-color:var(--gold);color:var(--gold);background:rgba(201,162,76,.09)}
 #wverdict .warn.ok b.mono{border-color:var(--grn);color:var(--grn);background:rgba(94,140,106,.12)}
+
+/* ── 判决主视觉（#whero）──
+   落地第一眼必须是结论，不是表单。此前带参数打开页面时，判决落在视口
+   1106px 处、而视口只有 900px：切链接演示时判决在屏幕外，观众看到的是
+   六个输入框。纯展示层，读的是 runWindow() 已经算完的同一批数值，
+   不参与任何计算、不新增任何输入。 */
+#whero{display:none;margin:22px 0 30px;border:1px solid var(--rule);border-left-width:3px;
+  background:linear-gradient(180deg,#13171E 0%,var(--panel) 100%);
+  box-shadow:0 14px 34px rgba(0,0,0,.34)}
+#whero.on{display:block}
+#whero.t-gold{border-left-color:var(--gold)}
+#whero.t-grn {border-left-color:var(--grn)}
+#whero.t-red {border-left-color:var(--red)}
+.vh-top{display:flex;align-items:stretch;flex-wrap:wrap}
+.vh-word{flex:0 0 300px;padding:24px 28px;border-right:1px solid var(--rule2);
+  display:flex;flex-direction:column;justify-content:center}
+.vh-word .l{font-family:Consolas,monospace;font-size:10.5px;letter-spacing:.24em;
+  color:var(--dim2);margin-bottom:10px}
+.vh-word .w{font-family:Consolas,monospace;font-size:34px;font-weight:700;
+  letter-spacing:.04em;line-height:1.05;font-variant-numeric:tabular-nums}
+#whero.t-gold .vh-word .w{color:var(--gold)}
+#whero.t-grn  .vh-word .w{color:var(--grn)}
+#whero.t-red  .vh-word .w{color:var(--red)}
+.vh-stats{flex:1 1 420px;display:flex}
+.vh-cell{flex:1;padding:24px 26px;border-left:1px solid var(--rule2)}
+.vh-cell:first-child{border-left:none}
+.vh-cell .k{font-family:Consolas,monospace;font-size:10.5px;letter-spacing:.2em;
+  color:var(--dim2);margin-bottom:9px;white-space:nowrap}
+.vh-cell .v{font-family:Consolas,monospace;font-size:31px;font-weight:700;line-height:1;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.vh-cell .v u{text-decoration:none;font-size:15px;color:var(--dim);font-weight:400}
+.vh-read{padding:15px 28px;border-top:1px solid var(--rule2);font-size:14.5px;
+  color:var(--dim);line-height:1.7}
+.vh-read b{color:var(--ink);font-weight:600}
+.vh-track{height:4px;background:var(--rule2);overflow:hidden}
+.vh-track i{display:block;height:100%;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+#whero.t-gold .vh-track i{background:var(--gold)}
+#whero.t-grn  .vh-track i{background:var(--grn)}
+#whero.t-red  .vh-track i{background:var(--red)}
+@media(max-width:900px){
+  .vh-word{flex:1 1 100%;border-right:none;border-bottom:1px solid var(--rule2)}
+  .vh-stats{flex:1 1 100%}
+  .vh-cell{padding:18px 20px}
+  .vh-cell .v{font-size:25px}
+}
 #wout .bar{height:11px;border-radius:2px;overflow:hidden}
 #wbar{transition:width .7s cubic-bezier(.2,.8,.2,1)}
 #wout .big,#wout td,#wout th{font-variant-numeric:tabular-nums}
@@ -331,6 +380,9 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
 <div class="kicker" id="window" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">知识窗口</span><span data-lang="en">KNOWLEDGE WINDOW</span></div>
 <h1 data-lang="zh">另一条轴：你的回测，模型看过多少？</h1>
 <h1 data-lang="en">The other axis: how much of your backtest had the model already read?</h1>
+
+<!-- 判决主视觉：带参数打开时，这一条就是首屏。内容由 runWindow() 写入。 -->
+<div id="whero"></div>
 <div class="sub" data-lang="zh">
   上面那一半问的是<b>几列证据里有几份是独立的</b>。这一半问同一个问题，只是换到时间上：
   <b>一段回测里，有几个月是模型没读过的。</b>
@@ -1667,6 +1719,56 @@ function runWindow(){
     '<div class="' + TONE[verdict] + '"><b class="mono">' + verdict + '</b><br>' +
     tx('verdict.' + verdict, L) + '</div>';
 
+  // 判决主视觉。读的全是上面已经算完的量，一个都不重算——重算就等于给同一个
+  // 判决开了第二条计算路径，两条迟早会分叉，而分叉时没人知道该信哪一条。
+  (function(){
+    const hero = $('whero');
+    if(!hero) return;
+    const zh = (L === 'zh');
+    const HT  = {no_holdout: 't-red', underpowered: 't-gold', sufficient: 't-grn'};
+    const WORD = zh ? {no_holdout: '无干净区间', underpowered: '分辨力不足', sufficient: '长度达标'}
+                    : {no_holdout: 'NO HOLDOUT', underpowered: 'UNDERPOWERED', sufficient: 'SUFFICIENT'};
+    const unit = tx('cli.unit_months', L);
+    const gap  = Math.max(req - eff, 0);
+    const fill = req > 0 ? Math.min(eff / req * 100, 100) : 0;
+    const esc  = function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+    const cell = function(k, v, u){
+      return '<div class="vh-cell"><div class="k">' + esc(k) + '</div>' +
+             '<div class="v">' + esc(v) + (u ? '<u> ' + esc(u) + '</u>' : '') + '</div></div>';
+    };
+    // 一句人话。刻意不复用 verdict.* 那段长文案：那段是解释，这里要的是读数。
+    let read;
+    if(verdict === 'no_holdout'){
+      read = zh ? '回测区间<b>整段</b>落在模型知识截止日之前。这里没有任何一个月可以用来检验。'
+                : 'The whole backtest sits before the cutoff. <b>No month here can test anything.</b>';
+    } else if(verdict === 'sufficient'){
+      read = zh ? '干净区间已达到该 Sharpe 所需长度。<b>这只解除了「长度」一条限制，不构成策略有效的证据。</b>'
+                : 'Clean span meets the length this Sharpe needs. <b>That clears length only — it is not evidence the strategy works.</b>';
+    } else {
+      read = zh ? '还差 <b>' + gap + ' ' + unit + '</b>。正确结论既不是「有效」也不是「无效」，而是<b>这段回测没有分辨能力</b>——它拒绝不了任何假设。'
+                : 'Short by <b>' + gap + ' ' + unit + '</b>. The correct read is neither "works" nor "fails" — <b>this backtest cannot discriminate</b>.';
+    }
+    hero.className = 'on ' + (HT[verdict] || 't-gold');
+    hero.innerHTML =
+      '<div class="vh-top">' +
+        '<div class="vh-word"><div class="l">' + (zh ? '判决' : 'VERDICT') + '</div>' +
+        '<div class="w">' + esc(WORD[verdict] || verdict) + '</div></div>' +
+        '<div class="vh-stats">' +
+          cell(zh ? '干净区间' : 'CLEAN SPAN', eff + ' / ' + total, unit) +
+          cell(zh ? '需要'     : 'REQUIRED',   req, unit) +
+          cell(zh ? '缺口'     : 'SHORT BY',   gap > 0 ? '−' + gap : '0', unit) +
+        '</div>' +
+      '</div>' +
+      '<div class="vh-read">' + read +
+        (sel === null
+          ? (zh ? ' <b>未申报筛选次数</b>——本页把「不说」当成一个主张，不当成零。'
+                : ' <b>Selection undeclared</b> — this page treats silence as a claim, not as zero.')
+          : (zh ? ' 已申报试过 <b>' + sel.trials + '</b> 次，其中计入 <b>' + (+sel.nEff.toFixed(2)) + '</b> 次；门槛已因此上调。'
+                : ' Declared <b>' + sel.trials + '</b> trials, <b>' + (+sel.nEff.toFixed(2)) + '</b> counted; the bar was raised accordingly.')) +
+      '</div>' +
+      '<div class="vh-track"><i style="width:' + fill.toFixed(1) + '%"></i></div>';
+  })();
+
   const pct = req > 0 ? (eff/req*100) : 0;
   $('wreq').querySelector('tbody').innerHTML = [
     [tx('cli.row_required', L), req + ' ' + tx('cli.unit_months', L),
@@ -2025,6 +2127,34 @@ $('clr').onclick = function(){
 $('inp').addEventListener('keydown', function(e){
   if((e.metaKey || e.ctrlKey) && e.key === 'Enter') run();
 });
+
+/* 顶栏当前位置。纯装饰：只读滚动位置、只写 class。任何一步失败都不影响
+   页面其余部分，所以整段包在 try 里而不是让它抛出去。 */
+try{
+  const AXES = ['sources', 'window', 'perturb'];
+  const links = {};
+  AXES.forEach(function(id){
+    const a = document.querySelector('.axes a[href="#' + id + '"]');
+    if(a) links[id] = a;
+  });
+  const markHere = function(){
+    let cur = AXES[0];
+    for(let i = 0; i < AXES.length; i++){
+      const el = document.getElementById(AXES[i]);
+      if(el && el.getBoundingClientRect().top <= 120) cur = AXES[i];
+    }
+    AXES.forEach(function(id){
+      if(links[id]) links[id].classList.toggle('here', id === cur);
+    });
+  };
+  let tick = false;
+  window.addEventListener('scroll', function(){
+    if(tick) return;
+    tick = true;
+    requestAnimationFrame(function(){ markHere(); tick = false; });
+  }, {passive: true});
+  markHere();
+}catch(e){}
 </script>
 <script>
 /* Tab title mirrors the verdict. Cosmetic and fallible by design: reads the
