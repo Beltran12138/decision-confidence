@@ -398,6 +398,96 @@ already drifted once. The page carries the perturbation axis on the same terms:
 48 more combinations, and the p-values agree exactly rather than to a tolerance,
 because both sides sum integer binomials.
 
+### The trial count does not survive the call stack
+
+Counting honestly still leaves a hole, and it is structural rather than moral.
+This is the shape, taken from a shipped open-source screening tool read in
+September 2026 — described generically because the point is the architecture,
+not the authors, who were more careful than most:
+
+**Lower layer — a statistical engine.** It tests a dozen-odd rules per
+instrument and knows it. The methodology note volunteers that the
+naive estimator is biased on small samples, replaces a fixed cutoff with a
+shuffled null distribution, raises the per-test threshold above the nominal one
+*specifically* because 14 tests inflate false positives, states plainly that
+this is **not** a formal Bonferroni or FDR correction, and lists four known
+limitations including overlapping forward windows and understated standard
+errors. By the standards of shipped code this is unusually honest work.
+
+**Upper layer — a product verdict.** It aggregates that engine's output across
+signal families and markets into one user-facing sentence. Reconstructed to its
+essentials:
+
+```python
+def verdict(picks, baseline):
+    if len(picks) < 5:                    # the entire sample-size guard
+        return None
+    beats_pool = mean(picks) > mean(baseline)
+    beats_index = mean(excess(picks)) > 0
+    if beats_pool and beats_index and win_rate(picks) >= 55:
+        return "this signal has demonstrated stock-selection value historically"
+```
+
+No p-value, no t-statistic, no out-of-sample split, no correction of any
+kind — grep the file and the multiple-comparison vocabulary that saturates the
+layer below is simply absent. **Five observations are enough to print the
+sentence.**
+
+The interesting question is not how the lower layer got it right. It is why the
+upper layer, in the same repository, by the same authors, got it wrong.
+
+**Because the denominator is local and the credibility is global.** The lower
+layer can see its own `n`: 14 is the length of a loop, visible inside one
+function. The upper layer's real `n` — signal families × markets × however many
+people run it and keep the market that looked best — does not live in any
+function. It is spread across a loop bound, a config file, a UI dropdown, and a
+population of users the process never observes. **No single frame in the call
+stack can see the whole count.** Meanwhile the *reassurance* propagates
+upward without friction: the lower layer tested something, so the number
+arriving at the top arrives pre-validated. Correction is local; the
+impression of having corrected is not.
+
+Two consequences worth checking for in any layered tool, this library included:
+
+1. **Rigor does not inherit.** A carefully-caveated engine wrapped in an
+   uncorrected decision function ships the decision function's standards, not
+   the engine's. The caveats are still in the repository; they are just not on
+   the path the user reads.
+2. **Silent denominator swaps.** The same tool widens its pool when the strict
+   bucket is thin, falling back to a looser one so the headline still has
+   samples to report — and the verdict wording does not change; only an
+   undisplayed field records the substitution. That is this library's own
+   [construct rule](#the-construct-rule) violated inside one function: two
+   different questions answered under one sentence, with the switch recorded
+   where nobody reads it. Absence demoted to a field is still absence
+   presented as data.
+
+What this costs, in this library's own units — `t` rising with the count, and
+months rising with `t` squared:
+
+| trials | adjusted `t` | months required at SR 1.0 |
+| ---: | ---: | ---: |
+| 1 | 2.00 | 48 |
+| 20 | 3.05 | 112 |
+| 200 | 3.69 | 164 |
+| 1080 | 4.10 | 202 |
+
+Two honesty notes, because the correction is easier to overclaim than to apply.
+First, evaluating one fixed rule across many instruments and dates is **not**
+1080 trials in the Bonferroni sense — that is one hypothesis measured
+repeatedly, not a search over hypotheses, and treating it as a search inflates
+the penalty rather than correcting it. Second, the cross-user selection effect
+— many people running the same scan, each keeping whichever market looked best
+— is real, is structurally identical to a parameter sweep, and is **not**
+something Bonferroni reaches: no participant is in a position to count it, and
+this library cannot count it either.
+
+Which bounds the claim made two sections above. `from_grid` and `from_runs`
+produce a count that someone else can recount — but it is the count *visible
+from the layer where the call was written*. A derived trial count is a lower
+bound on a local denominator, not an estimate of the global one. The correct
+reading of `trials=20` is "twenty, as seen from here."
+
 ---
 
 ## Why not "just one risk API"?
