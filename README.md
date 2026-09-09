@@ -9,7 +9,7 @@ definitional**, and returns a **confidence** label with an **audit trail**.
 > execution. Fetching is the caller's job; the value is a *repeatable,
 > comparable basis* — not data freshness.
 
-### One question, three domains
+### One question, five domains
 
 **"Are these sources answering the same question?"**
 
@@ -24,8 +24,10 @@ arithmetic, available before any performance number is computed.
 See [the second axis](#the-second-axis-time), or run
 `python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06`.
 
-The same five failure families keep surfacing in four unrelated domains — and a sixth
-has appeared in one of them. This repo is the **third-party-vendor** instance.
+Five failure families keep surfacing in five unrelated domains; a sixth has so far
+appeared in one domain, and a seventh was found the other way round — first in
+someone else's published work, and only then looked for here. This repo is the
+**third-party-vendor** instance.
 
 | repo | domain | the question it asks |
 |---|---|---|
