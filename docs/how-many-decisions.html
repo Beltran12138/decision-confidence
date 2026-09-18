@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>最小案例数 — 你的判断质量，需要多少次决策才看得出来</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230B0D10'/%3E%3Crect x='5' y='14' width='22' height='4' rx='1' fill='%23C9A24C'/%3E%3Crect x='5' y='21' width='9' height='4' rx='1' fill='%235E8C6A'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0B0D10;--panel:#101319;--panel2:#0E1116;--ink:#E9E5DC;--dim:#767C85;--dim2:#565C64;
+      --rule:#22262C;--rule2:#191D23;--gold:#C9A24C;--red:#C4453C;--grn:#5E8C6A;--blue:#6E90AF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Microsoft YaHei','PingFang SC',Inter,sans-serif;
+     -webkit-font-smoothing:antialiased;padding:0 20px 80px;line-height:1.6}
+.wrap{max-width:1000px;margin:0 auto}
+.mono{font-family:Consolas,'JetBrains Mono',monospace}
+h1{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:30px;font-weight:600;line-height:1.3}
+h2{font-family:'Noto Serif SC','Source Han Serif SC',serif;font-size:19px;font-weight:600;margin-bottom:14px}
+.hero{padding:44px 0 26px;border-bottom:1px solid var(--rule)}
+.kicker{font-size:12px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.lede{color:var(--dim);margin-top:14px;max-width:70ch;font-size:15px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:22px;margin-top:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px}
+label{display:block;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+label b{color:var(--ink);font-weight:600}
+input,select{width:100%;background:var(--panel2);border:1px solid var(--rule);border-radius:5px;
+  color:var(--ink);padding:9px 10px;font-size:14px;font-family:Consolas,'JetBrains Mono',monospace}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+.hint{font-size:11.5px;color:var(--dim2);margin-top:5px;line-height:1.5}
+.sep{border:0;border-top:1px solid var(--rule2);margin:22px 0 18px}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);
+     border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-top:22px}
+.cell{background:var(--panel);padding:18px 16px}
+.cell .k{font-size:11.5px;color:var(--dim);margin-bottom:8px;line-height:1.4}
+.cell .v{font-size:30px;font-weight:600;font-family:Consolas,'JetBrains Mono',monospace;line-height:1.1}
+.cell .u{font-size:12px;color:var(--dim2);margin-top:5px}
+.gold{color:var(--gold)} .red{color:var(--red)} .grn{color:var(--grn)} .blue{color:var(--blue)}
+.verdict{margin-top:22px;border-radius:8px;padding:18px 20px;border:1px solid}
+.verdict.bad{background:rgba(196,69,60,.07);border-color:rgba(196,69,60,.42)}
+.verdict.ok{background:rgba(94,140,106,.07);border-color:rgba(94,140,106,.42)}
+.verdict .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.tw{overflow-x:auto}                     /* 窄屏下让表格自己横滚，不让 body 横滚 */
+table{width:100%;min-width:430px;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule2)}
+th{color:var(--dim);font-weight:500;font-size:12px}
+td.n{text-align:right;font-family:Consolas,'JetBrains Mono',monospace}
+tr:last-child td{border-bottom:0}
+.rx li{margin:0 0 13px 18px;font-size:14px}
+.rx li b{color:var(--gold)}
+.save{display:inline-block;font-family:Consolas,monospace;font-size:12px;color:var(--grn);
+      border:1px solid rgba(94,140,106,.4);border-radius:4px;padding:1px 7px;margin-left:6px}
+.save.none{color:var(--dim2);border-color:var(--rule)}
+.limits{font-size:13px;color:var(--dim)}
+.limits li{margin:0 0 9px 18px}
+.limits b{color:var(--ink)}
+footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--dim2)}
+a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(110,144,175,.35)}
+.warn{color:var(--gold)}
+@media(max-width:560px){h1{font-size:24px}.cell .v{font-size:25px}body{padding:0 14px 60px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="kicker">decision-confidence · 最小案例数</div>
+  <h1>你的判断质量，需要多少次决策才看得出来</h1>
+  <p class="lede">
+    「我这次判断对了吗」答不了——单次结果是一次抽样。「我这套方法有没有优势」答得了，但它要求样本。
+    这个页面把后一句话变成一个具体的数字：<b>在你做第一笔交易之前就能算出来</b>，不需要任何收益数据。
+    全部计算在本地完成，不上传、不注册、无后端。
+  </p>
+</div>
+
+<div class="panel">
+  <h2>一、基准：先让 p₀ = 0.5 成立</h2>
+  <div class="grid">
+    <div>
+      <label><b>基准怎么选</b></label>
+      <select id="bench">
+        <option value="0.50">候选集的等权中位数（推荐）</option>
+        <option value="0.40">市值加权指数 / BTC（右偏，须自测）</option>
+        <option value="custom">我自己测过 p₀</option>
+      </select>
+      <div class="hint" id="benchHint"></div>
+    </div>
+    <div>
+      <label>零假设 <b>p₀</b>　无技能时跑赢基准的概率</label>
+      <input id="p0" type="number" step="0.01" min="0.05" max="0.94" value="0.50">
+      <div class="hint">从 N 个候选里随机抽一个，它高于这 N 个的<b>中位数</b>的概率恰好 0.5——这是定义，不是假设。换成市值加权指数或均值，因为右偏，这个概率天然低于 0.5。</div>
+    </div>
+    <div>
+      <label>目标 <b>p₁</b>　你想识别出来的胜率</label>
+      <input id="p1" type="number" step="0.01" min="0.06" max="0.99" value="0.60">
+      <div class="hint">不是你觉得自己有多少，是你希望这次检验<b>有能力发现</b>的最小优势。填得越接近 p₀，需要的样本越多，而且是平方级。</div>
+    </div>
+  </div>
+
+  <hr class="sep">
+  <h2>二、样本的真实成色</h2>
+  <div class="grid">
+    <div>
+      <label>簇大小 <b>m</b>　一个判断通常被执行成几笔</label>
+      <input id="m" type="number" step="1" min="1" max="50" value="5">
+      <div class="hint">同一条主线买五个标的 = 一个判断五笔交易。填 1 表示每笔交易都是彼此无关的独立判断。</div>
+    </div>
+    <div>
+      <label>簇内平均相关 <b>ρ̄</b></label>
+      <input id="rho" type="number" step="0.05" min="0" max="0.95" value="0.6">
+      <div class="hint">同簇内两笔的结果相关程度。测出来就填测的，拍的就记成拍的——本页会在下方如实标出。</div>
+    </div>
+    <div>
+      <label>口径试验次数 <b>k</b>　你换过几套复盘口径</label>
+      <input id="k" type="number" step="1" min="1" max="200" value="3">
+      <div class="hint">改归因框架、换基准、调「算不算成立」的门槛，每换一次算一次。最终采用的那套是从 k 套里挑出来的，它跨过门槛这件事有一部分来自挑选本身。</div>
+    </div>
+  </div>
+
+  <hr class="sep">
+  <h2>三、检验设定与你的节奏</h2>
+  <div class="grid">
+    <div>
+      <label>显著性 <b>α</b>（单尾）</label>
+      <select id="alpha"><option value="0.10">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select>
+    </div>
+    <div>
+      <label>功效 <b>1−β</b></label>
+      <select id="power"><option value="0.80" selected>80%</option><option value="0.90">90%</option></select>
+    </div>
+    <div>
+      <label>每年真实决策数</label>
+      <input id="peryear" type="number" step="1" min="1" max="2000" value="12">
+    </div>
+    <div>
+      <label>ρ̄ 和 p₀ 的来源</label>
+      <select id="prov">
+        <option value="measured">测出来的</option>
+        <option value="guessed" selected>拍的（未测量）</option>
+      </select>
+      <div class="hint">这一项不影响算术，只影响结论该被怎么引用。</div>
+    </div>
+  </div>
+</div>
+
+<div class="out">
+  <div class="cell"><div class="k">① 理想情形<br>决策独立、口径从未改过</div><div class="v" id="o1">—</div><div class="u">个独立决策</div></div>
+  <div class="cell"><div class="k">② 口径校正后<br>换过 k 套口径</div><div class="v gold" id="o2">—</div><div class="u" id="o2u">—</div></div>
+  <div class="cell"><div class="k">③ 名义决策数<br>把簇相关折算回去</div><div class="v red" id="o3">—</div><div class="u" id="o3u">—</div></div>
+  <div class="cell"><div class="k">④ 按你的节奏<br>需要多久</div><div class="v" id="o4">—</div><div class="u">年</div></div>
+</div>
+
+<div class="verdict" id="verdict"><div class="tag" id="vtag">—</div><div id="vtext">—</div></div>
+
+<div class="panel">
+  <h2>算式分解</h2>
+  <div class="tw"><table>
+    <thead><tr><th>步骤</th><th>做了什么</th><th class="n">结果</th><th class="n">乘数</th></tr></thead>
+    <tbody id="chain"></tbody>
+  </table></div>
+  <div class="hint" style="margin-top:14px">
+    ① 两比例单尾检验样本量公式；② Bonferroni——α 由你自己设的门槛反推，<span class="mono">α_adj = α/k</span>，再取分位；
+    ③ Kish 设计效应 <span class="mono">DEFF = 1 + (m−1)·ρ̄</span>，与 <span class="mono">tools/neff.py</span> 同一个量。
+  </div>
+</div>
+
+<div class="panel">
+  <h2>那我该怎么办——按杠杆从大到小</h2>
+  <ul class="rx" id="rx"></ul>
+  <div class="panel" style="margin-top:6px;background:var(--panel2)">
+    <div style="font-size:13.5px">
+      <b>收益版</b>：如果你保留了每笔决策的<b>超额收益序列</b>而不只是对错，用
+      <span class="mono">N = (t/IR)²</span>。填入每笔决策超额收益的信息比：
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div><label>每决策 <b>IR</b></label><input id="ir" type="number" step="0.05" min="0.01" max="3" value="0.20"></div>
+      <div><label>目标 <b>|t|</b></label><input id="tir" type="number" step="0.1" min="0.5" max="6" value="2.0"></div>
+      <div><label>所需决策数</label><input id="oir" readonly style="color:var(--grn);font-weight:600"></div>
+    </div>
+    <div class="hint">记幅度往往能把需求砍掉一半。代价是<b>超额收益的算法必须在决策时就定死</b>——事后再定，就回到上面的口径试验里去了。</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>这个数字的诚实边界</h2>
+  <ul class="limits">
+    <li><b>正态近似。</b>大样本近似；结果 &lt; 20 时应改用精确二项，本页会在结果处提示。</li>
+    <li><b>Kish 折算是乐观的下界。</b>它假设簇与簇之间不相关，而真实组合还有共同的市场 Beta 穿过所有簇。算进去只会更少，不会更多。</li>
+    <li><b>ρ̄ 和 p₀ 本身要估，而估它们也要样本。</b>这个循环绕不过去，只能申报——上面那个下拉就是用来申报的。</li>
+    <li><b class="warn">别拿今天的榜单去反推 p₀。</b>死掉的标的已经不在榜单里了，用现存 top-N 测出的「随机抽一个跑赢基准的概率」必然偏高。<b>这个测量本身就带幸存者偏差。</b>要用「跑赢 BTC」当基准，就得用当期快照的候选集去测，并申报候选集怎么来的；测不出来就别假设，改用中位数基准。</li>
+    <li><b>这里测的是「在给定候选集里选得准不准」。</b>「候选集本身选得对不对」是另一个决策，不在这个检验里，要单独记——否则两个信号互相掩盖。</li>
+    <li><b>本页回答「够不够」，不回答「行不行」。</b>算出一个很大的数，不等于你的方法没用；等于到目前为止，证据还不足以让任何人（包括你自己）判断它有没有用。</li>
+  </ul>
+</div>
+
+<footer>
+  口径与代码：<a href="https://github.com/Beltran12138/decision-confidence">github.com/Beltran12138/decision-confidence</a>　·
+  诊断侧：<a href="./index.html">知识窗口与试验次数折算</a><br>
+  本页不构成投资建议。全部计算在浏览器本地完成，不发送任何数据。
+</footer>
+
+</div>
+<script>
+// ---- Φ 与 Φ⁻¹：与 src/effective_window.py 同口径 ----
+// Φ 用 Hart(1968) 的有理逼近（West 2005 的 cumnorm 形式），双精度 ~1e-15。
+// ⛔ 不要换成 NR 的 erfcc（1.2e-7）：z 会在第 4 位小数上与 Python 分叉，
+//    ceil 边界上足以产生 off-by-one。本页与 tools/ 的整数输出必须逐格相等。
+function Phi(x){
+  var xa=Math.abs(x), c;
+  if(xa>37) c=0;
+  else{
+    var e=Math.exp(-xa*xa/2), b, d;
+    if(xa<7.07106781186547){
+      b=3.52624965998911e-02*xa+0.700383064443688;
+      b=b*xa+6.37396220353165;  b=b*xa+33.912866078383;
+      b=b*xa+112.079291497871;  b=b*xa+221.213596169931;
+      b=b*xa+220.206867912376;
+      d=8.83883476483184e-02*xa+1.75566716318264;
+      d=d*xa+16.064177579207;   d=d*xa+86.7807322029461;
+      d=d*xa+296.564248779674;  d=d*xa+637.333633378831;
+      d=d*xa+793.826512519948;  d=d*xa+440.413735824752;
+      c=e*b/d;
+    } else {
+      var f=xa+1/(xa+2/(xa+3/(xa+4/(xa+0.65))));
+      c=e/(f*2.506628274631);
+    }
+  }
+  return x>0 ? 1-c : c;
+}
+function zOf(p){ var lo=-10,hi=10,mid; for(var i=0;i<200;i++){ mid=(lo+hi)/2; if(Phi(mid)<p) lo=mid; else hi=mid; } return (lo+hi)/2; }
+
+function nHit(p1,p0,alpha,power,zAlpha){
+  var za = (zAlpha===undefined||zAlpha===null) ? zOf(1-alpha) : zAlpha;
+  var zb = zOf(power);
+  var num = Math.pow(za*Math.sqrt(p0*(1-p0)) + zb*Math.sqrt(p1*(1-p1)), 2);
+  return Math.ceil(num/Math.pow(p1-p0,2));
+}
+function deff(m,rho){ return 1+(m-1)*rho; }
+function zAdj(zBase,k){ var a=1-Phi(zBase); return zOf(1-a/k); }
+
+var $=function(id){return document.getElementById(id)};
+var F=['p0','p1','m','rho','k','alpha','power','peryear','bench','prov','ir','tir'];
+
+var BENCH_HINT={
+ '0.50':'从候选集里随机抽一个，高于该集中位数的概率恰好 0.5。这是唯一让 p₀ = 0.5 从假设变成事实的基准。',
+ '0.40':'⚠ 右偏使随机抽取跑赢指数的概率低于 0.5。0.40 只是一个占位值，用之前必须用当期快照的候选集自己测。',
+ 'custom':'填你自己测出来的值，并在下方「来源」里选「测出来的」。'
+};
+
+function calc(){
+  var p0=+$('p0').value, p1=+$('p1').value, m=+$('m').value, rho=+$('rho').value,
+      k=Math.max(1,Math.round(+$('k').value)), alpha=+$('alpha').value, power=+$('power').value,
+      py=+$('peryear').value;
+  $('benchHint').textContent = BENCH_HINT[$('bench').value]||'';
+  if(!(p1>p0)){
+    // ⛔ 输入非法时必须把上一次的读数清掉。留着旧数字配「输入无效」的横幅，
+    //    正是本页在讲的那种「看起来有结论其实没有」。
+    ['o1','o2','o3','o4'].forEach(function(i){$(i).textContent='—'});
+    $('o2u').textContent='—'; $('o3u').textContent='—';
+    $('chain').innerHTML=''; $('rx').innerHTML='';
+    $('vtag').textContent='输入无效'; $('vtag').className='tag red';
+    $('vtext').textContent='目标胜率 p₁ 必须大于零假设 p₀，否则没有要检验的优势。';
+    $('verdict').className='verdict bad'; return; }
+
+  var zb0=zOf(1-alpha);
+  var n1=nHit(p1,p0,alpha,power);
+  var za=zAdj(zb0,k);
+  var n2=nHit(p1,p0,alpha,power,za);
+  var d=deff(m,rho);
+  var n3=Math.ceil(n2*d);
+  var yrs=n3/py;
+
+  $('o1').textContent=n1;
+  $('o2').textContent=n2; $('o2u').textContent='个独立决策　×'+(n2/n1).toFixed(2);
+  $('o3').textContent=n3; $('o3u').textContent='笔名义决策　×'+d.toFixed(1);
+  $('o4').textContent=yrs<10?yrs.toFixed(1):Math.round(yrs);
+
+  var rows=[
+    ['① 基准算式','两比例单尾检验，p₀='+p0.toFixed(2)+' → p₁='+p1.toFixed(2)+'，α='+alpha+'，功效'+(power*100)+'%',n1,'—'],
+    ['② 口径校正','换过 '+k+' 套口径，z 从 '+zb0.toFixed(4)+' 抬到 '+za.toFixed(4),n2,'×'+(n2/n1).toFixed(2)],
+    ['③ 独立性折算','簇大小 '+m+'、ρ̄='+rho.toFixed(2)+' → DEFF = '+d.toFixed(2),n3,'×'+d.toFixed(2)],
+    ['④ 换算时间','每年 '+py+' 个真实决策',(yrs<10?yrs.toFixed(1):Math.round(yrs))+' 年','—']
+  ];
+  $('chain').innerHTML=rows.map(function(r){
+    return '<tr><td><b>'+r[0]+'</b></td><td style="color:var(--dim)">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n" style="color:var(--dim)">'+r[3]+'</td></tr>';
+  }).join('');
+
+  // ---- 处方：每条按当前参数算出实际能省多少 ----
+  var rx=[];
+  var nFlat=n2; // m=1
+  if(d>1.01) rx.push(['分散决策来源，别提高频次',
+    '把同一主线下的 '+m+' 个标的换成 '+m+' 条彼此无关的主线，DEFF 从 '+d.toFixed(2)+' 降到 1.00。'+
+    '这不需要你多做任何一笔交易——提高频次是线性的，降低相关性是成倍的。',
+    n3+' → '+nFlat+' 笔']);
+  var nK1=nHit(p1,p0,alpha,power);
+  if(k>1) rx.push(['预注册口径，一次定死',
+    '开始复盘之前把归因框架、基准和判定门槛写下来并且不改，k 从 '+k+' 降到 1。这是零成本的。',
+    Math.ceil(n2*d)+' → '+Math.ceil(nK1*d)+' 笔']);
+  rx.push(['记幅度，不只记对错',
+    '保留每笔决策的超额收益序列，用下面的收益版。二元对错丢掉了幅度，往往要多花一倍样本换同样的结论。','见下']);
+  var nEasy=nHit(Math.min(0.99,p0+ (p1-p0)*2),p0,alpha,power);
+  rx.push(['改问一个你负担得起的问题',
+    '「我有没有 alpha」要 '+n3+' 笔。但「我有没有明显跑输」这类更粗的问题，门槛低得多，而且答案更可行动。'+
+    '若识别目标放宽一倍（p₁ 取 '+Math.min(0.99,p0+(p1-p0)*2).toFixed(2)+'），只要 '+Math.ceil(nEasy*d)+' 笔。',
+    n3+' → '+Math.ceil(nEasy*d)+' 笔']);
+  $('rx').innerHTML=rx.map(function(r){
+    return '<li><b>'+r[0]+'</b>&nbsp;<span class="save'+(r[2]==='见下'?' none':'')+'">'+r[2]+'</span><br>'+
+           '<span style="color:var(--dim)">'+r[1]+'</span></li>';
+  }).join('');
+
+  // ---- 判决 ----
+  var prov=$('prov').value==='measured';
+  var small = n1<20;
+  var v=$('verdict'), tag=$('vtag'), txt=$('vtext');
+  var provNote = prov ? '' : '<br><span class="warn">⚠ ρ̄ 与 p₀ 申报为「拍的」——这个数字只能当量级用，不能作为结论依据引用。</span>';
+  // p₀ 偏离 0.5 会大幅压低所需样本；如果这个 p₀ 还是拍的，得到的就是一个讨好你的数字。
+  if(!prov && Math.abs(p0-0.5)>0.005){
+    var nRef=Math.ceil(nHit(p1,0.5,alpha,power,za)*d);
+    provNote += '<br><span class="warn">⚠ p₀ 被设成 '+p0.toFixed(2)+' 而非 0.50，这让所需样本从 '+nRef+' 降到 '+n3+
+      '。<b>p₀ 每偏离 0.5 一点，这个页面就对你宽容一点</b>——没测过就把它调回 0.50（中位数基准），别让一个拍出来的数替你把门槛降下去。</span>';
+  }
+  var smallNote = small ? '<br><span class="warn">⚠ 所需样本 &lt; 20，正态近似在此处不可靠，应改用精确二项检验。</span>' : '';
+  if(yrs>15){
+    v.className='verdict bad'; tag.className='tag red'; tag.textContent='这个问题不该用你自己的交易记录来回答';
+    txt.innerHTML='按当前节奏需要 <b>'+(yrs<10?yrs.toFixed(1):Math.round(yrs))+' 年</b>。'+
+      '这不是说你的方法没用，是说<b>用自己的决策记录去证明它，在你的有生之年做不完</b>。'+
+      '先做上面第一条和第二条；仍然不够，就换一条证据链——同一套规则在更多标的、更长历史上的样本外检验，比在自己身上等几十年现实。'+provNote+smallNote;
+  }else if(yrs>5){
+    v.className='verdict bad'; tag.className='tag gold'; tag.textContent='勉强够得着，但要先改结构';
+    txt.innerHTML='按当前节奏需要 <b>'+yrs.toFixed(1)+' 年</b>。上面第一条（分散决策来源）通常能把它压掉一半以上，'+
+      '而且不需要你多做交易。'+provNote+smallNote;
+  }else{
+    v.className='verdict ok'; tag.className='tag grn'; tag.textContent='这个自评在可行范围内';
+    txt.innerHTML='按当前节奏需要 <b>'+yrs.toFixed(1)+' 年</b>、共 <b>'+n3+'</b> 笔名义决策。'+
+      '现在就把判断快照和口径固定下来——<b>样本要从写下第一条快照那天开始算，不是从今天回头补</b>。'+provNote+smallNote;
+  }
+
+  var ir=+$('ir').value, tt=+$('tir').value;
+  $('oir').value = (ir>0? Math.ceil(Math.pow(tt/ir,2)) : '—');
+}
+
+$('bench').addEventListener('change',function(){
+  if(this.value!=='custom') $('p0').value=(+this.value).toFixed(2);
+  calc();
+});
+F.forEach(function(id){ var e=$(id); e.addEventListener('input',calc); e.addEventListener('change',calc); });
+calc();
+</script>
+</body>
+</html>
