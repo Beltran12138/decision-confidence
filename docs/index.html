@@ -72,6 +72,11 @@ td.num{font-size:16px}
 .foot{margin-top:52px;color:var(--dim);font-size:13px;line-height:1.9;border-top:1px solid var(--rule);padding-top:22px}
 .foot b{color:#9AA0A8}
 .foot a{color:var(--blue)}
+/* 开场里唯一一条出站链接（去 how-many-decisions）。本文件没有通用 a{} 规则，
+   不给它上色就是浏览器默认的 #0000EE，在暗底上刺眼且不成体系。 */
+.hero-s a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(110,144,175,.35)}
+.hero-s a:hover{color:var(--gold);border-bottom-color:rgba(201,162,76,.5)}
+.hero-s a b{color:inherit}
 
 /* 顶栏与开场。三条轴此前各带一个 kicker、一个页脚，纵向堆着——
    读起来是三份东西装订在一起，不是一件东西的三个面。顶栏说的就是
@@ -245,6 +250,8 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
     <b style="color:var(--gold)">把「你以为有多少证据」折算成「实际有多少」。</b>
     <br>
     每一条都在你自己的浏览器里算完，不上传任何东西，也不需要注册。
+    <br>
+    <a href="./how-many-decisions.html">换一个单位问同一件事：你的判断质量，需要多少<b>次决策</b>才看得出来 &rarr;</a>
   </div>
   <div class="hero-s" data-lang="en">
     One question, asked on three axes: <b>how many of your sources are actually
@@ -256,6 +263,8 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
     <br>
     Each runs entirely in your own browser. Nothing is uploaded and nothing is
     signed up for.
+    <br>
+    <a href="./how-many-decisions.html">Same question, different unit: how many <b>decisions</b> before your judgement can be judged &rarr;</a>
   </div>
 </div>
 
