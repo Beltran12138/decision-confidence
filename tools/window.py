@@ -176,7 +176,16 @@ def main() -> int:
     print()
 
     print(f"{text('cli.section_verdict', lang)}  {w.verdict}")
-    for line in _wrap(text("verdict." + w.verdict, lang), W - 6):
+    # Third copy of one rule. The library composes it into `note`, the page
+    # appends it in its own renderer, and this prints it here — because all
+    # three build the verdict block from the message key rather than from each
+    # other. Adding the caveat in only one place is how the browser copy drifted
+    # the last time; the parity checker compares the table, not the callers, so
+    # nothing would have caught it.
+    body = text("verdict." + w.verdict, lang)
+    if w.verdict == "sufficient":
+        body += " " + text("recency_not_cleared", lang)
+    for line in _wrap(body, W - 6):
         print(f"      {line}")
     print()
 

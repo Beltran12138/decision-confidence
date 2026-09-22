@@ -1,5 +1,7 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+# 77+ for the SPDX `license` string and `license-files`; this floor applies to
+# the build environment only, not to consumers — the wheel is py3-none-any.
+requires = ["setuptools>=77.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +9,13 @@ name = "decision-confidence"
 version = "0.1.0"
 description = "Agent decision-confidence meta-layer. One discount on two axes: across sources, whether several vendors are answering the same question; across time, how much of a backtest a model had already read and whether the clean remainder can support an inference at all."
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
+# Floor established by reading the source, not by a test matrix: no lowercase
+# generics, no `X | Y` unions, no match statements, and every module carries
+# `from __future__ import annotations`. Only 3.11 has actually been run. Stated
+# this way because "supports 3.8" and "was tested on 3.8" are different claims
+# and this package exists to keep those apart.
 requires-python = ">=3.8"
 authors = [{ name = "Path B" }]
 keywords = [
@@ -23,11 +31,22 @@ keywords = [
     "audit",
 ]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
+    # No per-version Python classifiers on purpose — see the note on
+    # requires-python. Listing 3.8-3.13 would assert a test matrix that does
+    # not exist.
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
     "Programming Language :: Python :: 3",
     "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 dependencies = []
+
+[project.urls]
+Homepage = "https://beltran12138.github.io/decision-confidence/"
+Repository = "https://github.com/Beltran12138/decision-confidence"
+Issues = "https://github.com/Beltran12138/decision-confidence/issues"
 
 [project.optional-dependencies]
 # Core stays dependency-free. The MCP server is opt-in.

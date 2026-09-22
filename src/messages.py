@@ -65,6 +65,23 @@ MESSAGES: Dict[str, Dict[str, str]] = {
               "不构成策略有效的证据。",
     },
 
+    # Attached to `sufficient` only. The other two verdicts already refuse to
+    # conclude anything, so there is no reading for this to correct.
+    "recency_not_cleared": {
+        "en": "Length is not the only thing that can be wrong with a clean segment. "
+              "Models know more about the period near their cutoff, so an edge measured "
+              "just after it can be recency rather than skill, and no passive backtest "
+              "separates the two (Zhang & Stadie, arXiv:2608.02985). This tool never ran "
+              "the check that paper refutes: it does not compare scores before and after "
+              "the cutoff, it only counts length. But clearing recency needs a reference "
+              "from outside the backtest, such as a matched clean control.",
+        "zh": "长度不是干净区间唯一可能出问题的地方。模型对靠近截止日的那段时期本来就知道得更多，"
+              "所以紧接其后测到的优势可能是「离得近」而不是「有本事」，"
+              "而任何被动回测都分不开这两者（Zhang & Stadie，arXiv:2608.02985）。"
+              "本工具从未跑过那篇论文所反驳的检查：它不比较截止日前后的得分，只数长度。"
+              "但要排掉「离得近」，需要回测之外的参照，例如一个匹配的干净对照组。",
+    },
+
     # ---- caveats that travel with every result --------------------------
     "limits": {
         "en": "The bar uses t ~ SR*sqrt(T) (Lo 2002), which assumes i.i.d. returns; "

@@ -135,6 +135,30 @@ class RemedyDispatch(unittest.TestCase):
             self.assertNotIn(flat(text("remedy.measure_overlap", lang, trials=20)), flat(r), lang)
 
 
+class RecencyCaveatReachesTheScreen(unittest.TestCase):
+    """The third surface.
+
+    `effective_window` composes this caveat into `note`, the page appends it in
+    its own renderer, and the CLI prints it here — three callers that each build
+    the verdict block from the message key rather than from one another. The
+    parity checker compares the message *table*, not the callers, so a caveat
+    added in one place and missed in another passes every existing check. This
+    suite is the only thing standing between that and a silent divergence, which
+    is the failure the browser copy already had once.
+    """
+
+    def test_a_sufficient_verdict_carries_it(self):
+        for lang in LANGS:
+            out = run(*CLEAN, lang=lang)
+            self.assertIn(flat(text("recency_not_cleared", lang)), flat(out), lang)
+
+    def test_the_verdicts_that_refuse_to_conclude_do_not(self):
+        for lang in LANGS:
+            caveat = flat(text("recency_not_cleared", lang))
+            for args in (BASE, NOHOLD):
+                self.assertNotIn(caveat, flat(run(*args, lang=lang)), lang)
+
+
 class Reporting(unittest.TestCase):
 
     def test_undeclared_screening_is_stated_rather_than_omitted(self):

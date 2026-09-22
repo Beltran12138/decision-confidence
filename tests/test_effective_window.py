@@ -417,5 +417,76 @@ class ReportIntegration(unittest.TestCase):
         self.assertEqual(synthesize_confidence(5, clash, None, w), "low")
 
 
+class RecencyCaveatTravelsWithSufficient(unittest.TestCase):
+    """`sufficient` must not be readable as "the clean segment is clean".
+
+    The length test and the recency confound are two different objections, and
+    passing the first says nothing about the second: models know more about the
+    period near their cutoff, so an edge measured just after it can be recency
+    rather than skill, and no passive backtest separates them (Zhang & Stadie,
+    arXiv:2608.02985, verified against the abstract 2026-09-22).
+
+    Assertions are anchored on *which claim is present*, not on wording, so a
+    rewrite of the sentence does not fail the suite but a deletion does.
+    """
+
+    SUFFICIENT = ("2019-12", "2020-01", "2025-06")
+
+    def _note(self, cutoff, lang="en"):
+        return effective_window(cutoff, "2020-01", "2025-06",
+                                target_sharpe=1.0, lang=lang).note
+
+    def test_sufficient_says_the_length_bar_is_not_the_only_bar(self):
+        note = self._note(self.SUFFICIENT[0])
+        self.assertIn(text("recency_not_cleared", "en"), note)
+
+    def test_the_caveat_names_its_source_so_it_can_be_checked(self):
+        # A caveat asserting something about LLM backtests, with no pointer to
+        # why, is an opinion the reader cannot audit.
+        self.assertIn("2608.02985", text("recency_not_cleared", "en"))
+        self.assertIn("2608.02985", text("recency_not_cleared", "zh"))
+
+    def test_it_disclaims_the_check_the_paper_refutes(self):
+        """Half that citation would be a misquote.
+
+        The paper refutes "compare scores before and after the cutoff". This
+        library never does that — it counts months. Citing the paper without
+        saying so would concede an objection that does not apply, and would
+        also misdescribe what the tool computes.
+        """
+        for lang in LANGS:
+            body = text("recency_not_cleared", lang)
+            self.assertTrue(
+                ("only counts length" in body) or ("只数长度" in body),
+                "the caveat must state that this tool counts length rather than "
+                "running the refuted before/after comparison (%s)" % lang,
+            )
+
+    def test_the_other_two_verdicts_do_not_carry_it(self):
+        """A caveat against a refusal corrects nothing.
+
+        `no_holdout` and `underpowered` already decline to conclude, so adding
+        "and it might be recency" there would be noise, and noise in a caveat
+        is how caveats stop being read.
+        """
+        caveat = text("recency_not_cleared", "en")
+        for cutoff, expected in (("2025-07", "no_holdout"), ("2024-10", "underpowered")):
+            w = effective_window(cutoff, "2020-01", "2025-06", target_sharpe=1.0)
+            self.assertEqual(w.verdict, expected)
+            self.assertNotIn(caveat, w.note)
+
+    def test_it_is_present_in_both_languages(self):
+        for lang in LANGS:
+            self.assertIn(text("recency_not_cleared", lang),
+                          self._note(self.SUFFICIENT[0], lang=lang))
+
+    def test_the_existing_limits_still_travel_alongside_it(self):
+        # Guard against the new caveat silently displacing the old ones.
+        note = self._note(self.SUFFICIENT[0])
+        self.assertIn(text("limits", "en"), note)
+        self.assertIn(text("undeclared_selection", "en"), note)
+
+
+
 if __name__ == "__main__":
     unittest.main()

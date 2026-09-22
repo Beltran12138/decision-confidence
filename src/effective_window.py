@@ -398,6 +398,11 @@ def effective_window(
         power_ratio=effective / required,
         note=" ".join([
             text("verdict." + verdict, lang),
+            # `sufficient` is the only verdict that invites the reader to proceed,
+            # so it is the only one where "the length is fine" can be misread as
+            # "the clean segment is clean". The other two already refuse to
+            # conclude, and a caveat against a refusal corrects nothing.
+        ] + ([text("recency_not_cleared", lang)] if verdict == "sufficient" else []) + [
             penalty.note if penalty is not None else text("undeclared_selection", lang),
             text("limits", lang),
         ]),

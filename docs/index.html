@@ -1325,6 +1325,7 @@ const I18N = {
   "verdict.no_holdout": {en: "The backtest lies entirely before the knowledge cutoff. This range does not test whether the strategy makes money; it tests whether the model remembers. Nothing concluded from it can be relied on.", zh: "回测区间完全落在知识截止日之前。这段区间检验的不是策略能否盈利，而是模型记不记得。任何由它得出的结论都不可采信。"},
   "verdict.underpowered": {en: "There is a clean segment, but it is shorter than an inference needs. The correct reading is neither \"it works\" nor \"it does not\" — it is that this backtest has no power to tell you. It rejects nothing.", zh: "有干净区间，但短于可做统计推断的长度。正确结论既不是「有效」也不是「无效」，而是「这个回测没有分辨能力」——它不能拒绝任何假设。"},
   "verdict.sufficient": {en: "The clean segment reaches the length this Sharpe requires. That removes the length constraint and nothing else; it is not evidence the strategy works.", zh: "干净区间达到该 Sharpe 所需的长度。这只解除了「长度」这一条限制，不构成策略有效的证据。"},
+  "recency_not_cleared": {en: "Length is not the only thing that can be wrong with a clean segment. Models know more about the period near their cutoff, so an edge measured just after it can be recency rather than skill, and no passive backtest separates the two (Zhang & Stadie, arXiv:2608.02985). This tool never ran the check that paper refutes: it does not compare scores before and after the cutoff, it only counts length. But clearing recency needs a reference from outside the backtest, such as a matched clean control.", zh: "长度不是干净区间唯一可能出问题的地方。模型对靠近截止日的那段时期本来就知道得更多，所以紧接其后测到的优势可能是「离得近」而不是「有本事」，而任何被动回测都分不开这两者（Zhang & Stadie，arXiv:2608.02985）。本工具从未跑过那篇论文所反驳的检查：它不比较截止日前后的得分，只数长度。但要排掉「离得近」，需要回测之外的参照，例如一个匹配的干净对照组。"},
   "limits": {en: "The bar uses t ~ SR*sqrt(T) (Lo 2002), which assumes i.i.d. returns; monthly returns are typically positively autocorrelated, inflating the naive t — so the length required here is a floor, never generous. Screening is corrected with Bonferroni, which controls the family-wise error rate and assumes the trials are independent; correlated variants make it conservative, and that discount must come from effective_trials as a measured value.", zh: "阈值用 t ≈ SR·√T（Lo 2002），假设收益 i.i.d.；月度收益通常正自相关，会抬高朴素 t 值 —— 所以这里给出的所需长度是下限，真实需求只多不少。 变体筛选用 Bonferroni 校正，它控制族错误率且假设各次试验独立；变体彼此相关时偏保守，折扣须由 effective_trials 给出且应为实测值。"},
   "undeclared_selection": {en: "No screening count was declared; treated as a single attempt. This is not a neutral default — it asserts the strategy was specified before anyone looked at the data. Self-reported counts also run low: the variant you glanced at and abandoned does not usually get counted.", zh: "⚠ 未申报变体筛选次数，按「一次成型」处理。这不是中性默认，而是断言策略在看数据之前就定好了。自报次数还系统性偏低——看一眼就放弃的那个变体，通常不会被算进去。"},
   "trials.declared": {en: "Trial count {count} was declared, not derived: {derivation}.", zh: "试验次数 {count} 为申报值，非推导值：{derivation}。"},
@@ -1755,9 +1756,15 @@ function runWindow(){
   // costs the inline <b> emphasis this block used to carry. Being diffable
   // against the library beat being bold — the same trade the remedies made.
   const TONE = {no_holdout: 'warn', underpowered: 'warn info', sufficient: 'warn ok'};
+  // `sufficient` carries one extra caveat, for the same reason the library
+  // attaches it there and nowhere else: it is the only verdict that invites
+  // the reader to proceed, so it is the only one where "long enough" can be
+  // misread as "clean". Kept identical to effective_window.py — this block and
+  // that one are two copies of one rule, which is what the parity check is for.
+  const extra = (verdict === 'sufficient') ? ' ' + tx('recency_not_cleared', L) : '';
   $('wverdict').innerHTML =
     '<div class="' + TONE[verdict] + '"><b class="mono">' + verdict + '</b><br>' +
-    tx('verdict.' + verdict, L) + '</div>';
+    tx('verdict.' + verdict, L) + extra + '</div>';
 
   // 判决主视觉。读的全是上面已经算完的量，一个都不重算——重算就等于给同一个
   // 判决开了第二条计算路径，两条迟早会分叉，而分叉时没人知道该信哪一条。
