@@ -20,7 +20,9 @@ The same discount applies on a second axis. Across sources, several vendors
 answering one question are worth fewer independent reads than the invoice says.
 Across **time**, a backtest that ran mostly before a model's knowledge cutoff is
 worth fewer independent months than the calendar says — and that one is pure
-arithmetic, available before any performance number is computed.
+arithmetic, available before any performance number is computed. Most
+pipelines already screen the code for look-ahead; this axis is about the
+look-ahead that lives in the weights.
 See [the second axis](#the-second-axis-time), or run
 `python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06`.
 
@@ -387,6 +389,11 @@ that method is blind to — hand-tuned runs outside the grid, runs the log does
 not cover. All three provenances are lower bounds and say so; deriving a number
 does not make it true, it makes its basis inspectable.
 
+The grid has one dimension people forget to list: **how the candidates were
+judged.** A pipeline that also searches over its own evaluation metrics has
+run a search on that axis too — `from_grid(candidates=…, metrics=…)` — and a
+count that leaves it out is short by exactly that factor.
+
 The page takes both in one field — type `20` or type `5x2x2` — and the MCP tool
 takes `trial_grid` alongside `trials`, with the description telling the caller
 to prefer the sweep's dimensions over a remembered total.
@@ -489,6 +496,44 @@ produce a count that someone else can recount — but it is the count *visible
 from the layer where the call was written*. A derived trial count is a lower
 bound on a local denominator, not an estimate of the global one. The correct
 reading of `trials=20` is "twenty, as seen from here."
+
+### A worked case: rigor in the code, silence in the weights
+
+A second shape, from a 2026 preprint on LLM-driven factor mining by a team that
+sells a financial-engineering harness. Again described generically; again the
+work is careful by the standards of its field. Every generated factor passes
+execution guards, a look-ahead screen on the code, and a train / validation /
+test split of 2016–20 / 2021–22 / 2023–25. The search is disclosed in full:
+16 plans a round, 80 rounds, 5 runs.
+
+Three things this library would add, all computable from the paper's own
+tables, none requiring its code:
+
+1. **Length.** The headline pools report an annualised information ratio of
+   0.76 and 1.09 over a 36-month test. At t ≈ SR·√T that is **t ≈ 1.32 and
+   1.88** — both below 2 *before any correction*, taking the most generous
+   reading that the test set was looked at exactly once. Clearing t = 2 would
+   take about 83 and 41 clean months. Verdict: `underpowered`, which is a
+   statement about the window, not about the method.
+2. **Where the 6,400 go.** The disclosed search (16 × 80 × 5) selects the pool
+   on validation data, so it does not enter the test-period count — *if* the
+   test period played no part in development. That condition is exactly what
+   no single frame can see, as above.
+3. **The weights.** The test window ends in December 2025; the code-writing
+   models evaluated include releases whose training data plausibly covers all
+   of it. The paper's word "leakage" refers only to the code. Here this
+   library's own arithmetic stops short, and it should say so: `window.py`
+   assumes the model is the *forecaster*. In this pipeline the LLM only
+   *translates* a pre-specified plan into code, while a separate model trained
+   on validation rewards chooses which plans to try. Contamination still has a
+   route, since the translator decides how a plan becomes a formula, but it is
+   narrower than the one the tool measures. The tool has no field for the
+   model's role; until a second real case appears, that stays a noted gap, not
+   a new parameter.
+
+None of this says the method is wrong. It says the three years available could
+not have shown that it is right, and the paper's checks, all of them real, all
+look at the code.
 
 ---
 
