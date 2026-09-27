@@ -139,7 +139,7 @@ does not. The judges used 9–14 distinct values. On the rung that keeps the
 supporting block but swaps the rest, 73–78% of scores fall strictly between 0 and 1.
 The pair known to differ most, intact against the relevant block removed, is tied
 in **0 of 39** cells for both judges. The weakest pair, intact against
-a contradicting context, ties in 3 of 39 for each. The scale resolves. The collapse
+a contradicting context, ties in 3 of 39 and 3 of 38. The scale resolves. The collapse
 was in the experiment built around it.
 
 ### 4. Availability skew
