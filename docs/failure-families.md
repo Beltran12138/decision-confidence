@@ -109,6 +109,39 @@ known-good and known-bad samples, the spread is about the vendors, not the subje
 Deliberately **not** hard-coded — an offset belongs to a *pair* of vendors and
 expires when either is swapped.
 
+#### A mirror form: resolution collapse (added 2026-09-27)
+
+The family as written asks about a *spread between two instruments*. Applied word
+for word to one of its own rows, it lets that row through. The equity instance
+above involves one field, not two, and its fault is not disagreement but
+**sameness**: an endpoint comparison cannot tell "declined all year" from "rose 180%
+then gave it back". There is no pair, so there is no spread for the cheap diagnostic
+to examine. That row has been in this family since it was added. Nobody had checked
+it against the family's own wording, and until someone did, the mismatch did not
+show.
+
+So the mirror form gets its own test:
+
+> **On this instrument's scale, could these two objects have landed on different
+> values at all?** If not, their sameness was made by the scale and says nothing
+> about the objects.
+
+| domain | instance |
+|---|---|
+| equity | The 6-month momentum row above, reclassified: a two-point comparison maps every path with the same endpoints to one value. |
+| judge | A substitution ladder whose rungs were all-or-nothing. Three different interventions (unrelated filler, another query's real context, no context) all scored ≈ 0 for both judges, and the planned primary contrast came back "both judges read the context", which was true and useless. The ladder, not the judge, had no middle. Adding partial rungs gave it four populated points ([assay, substitution stage 2 → 3](https://github.com/Beltran12138/assay/blob/main/docs/SUBSTITUTION-CONTROL.md)). Recognised as this form only on 2026-09-27, after the fact, so it is **not** evidence that the table predicted anything. |
+| external | A published taxonomy of agents grades five capabilities as absent, finite or infinite. Every physical system is finite, so any system that has all five lands in the same cell. That is how a bacterium and a human end up sharing a configuration, and the paper reads this as architectural unity. The scale guarantees the result before any data is looked at. |
+
+**A prediction this form made, and lost.** Once the form was named, it predicted
+that the judge's own 0–1 scale would collapse in practice onto a few values, with
+answers of known different quality scored identically. Four existing runs (two judges; stages 2–4; no new calls) say it
+does not. The judges used 9–14 distinct values. On the rung that keeps the
+supporting block but swaps the rest, 73–78% of scores fall strictly between 0 and 1.
+The pair known to differ most, intact against the relevant block removed, is tied
+in **0 of 39** cells for both judges. The weakest pair, intact against
+a contradicting context, ties in 3 of 39 for each. The scale resolves. The collapse
+was in the experiment built around it.
+
 ### 4. Availability skew
 
 Which subjects have data is itself correlated with the answer. A threshold sweep
