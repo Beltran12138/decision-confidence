@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Public audit — how much of an LLM trading backtest is closed-book?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230B0D10'/%3E%3Crect x='5' y='14' width='22' height='4' rx='1' fill='%23C9A24C'/%3E%3Crect x='5' y='21' width='9' height='4' rx='1' fill='%235E8C6A'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0B0D10;--panel:#101319;--ink:#E9E5DC;--dim:#8A9099;--dim2:#5E646C;--rule:#22262C;--gold:#C9A24C;--red:#D0574E;--grn:#6E9C7A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 'Segoe UI','Microsoft YaHei','PingFang SC',sans-serif}
+main{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+h1{font-family:Georgia,'Noto Serif SC',serif;font-size:clamp(24px,3.4vw,36px);line-height:1.3;margin:6px 0 10px}
+h2{font-family:Georgia,'Noto Serif SC',serif;font-size:20px;margin:44px 0 10px;border-top:1px solid var(--rule);padding-top:26px}
+.kick{font-family:Consolas,monospace;font-size:12px;letter-spacing:.24em;color:var(--gold)}
+.lang{float:right;font-family:Consolas,monospace;font-size:12px}
+.lang button{background:none;border:1px solid var(--rule);color:var(--dim);padding:5px 10px;cursor:pointer}
+.lang button.on{color:var(--ink);border-color:var(--gold)}
+.nums{display:flex;flex-wrap:wrap;gap:28px;margin:26px 0}
+.nums div{min-width:150px}
+.nums b{display:block;font-family:Consolas,monospace;font-size:52px;line-height:1}
+.nums span{color:var(--dim);font-size:13px}
+.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-dim{color:var(--dim)}
+.wrap{overflow-x:auto;border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:13.5px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.08em;color:var(--dim);background:var(--panel);font-weight:600}
+td.n{font-family:Consolas,monospace;text-align:right;white-space:nowrap}
+.v-no{color:var(--red);font-family:Consolas,monospace;font-size:12px}
+.v-under{color:var(--gold);font-family:Consolas,monospace;font-size:12px}
+a{color:var(--ink);text-decoration-color:var(--dim2)}
+ol li,ul li{margin:6px 0}
+.note{color:var(--dim);font-size:13.5px}
+code{font-family:Consolas,monospace;font-size:13px;background:var(--panel);padding:1px 5px}
+[data-l="en"] .zh,[data-l="zh"] .en{display:none}
+</style>
+</head>
+<body data-l="en">
+<main>
+<div class="lang"><button data-k="en" class="on">EN</button> <button data-k="zh">中文</button></div>
+<div class="kick">EVIDENCE DEFLATOR · PUBLIC AUDIT · 2026-10-05</div>
+<h1><span class="en">17 published LLM trading papers: how much of each backtest did the model not already know?</span><span class="zh">17 篇公开的 LLM 交易论文：每个回测里，有多少个月是模型没读过的？</span></h1>
+<p class="note"><span class="en">Cutoffs are taken only from the model provider's own documentation, never from the paper. Where none is published, the row says so. Facts only — no judgement of the papers' quality or intent.</span><span class="zh">截止日只取模型方的官方文档，不取论文自报。查不到的如实标注。只陈述事实，不评价论文质量或作者意图。</span></p>
+
+<div class="nums">
+ <div><b>17</b><span class="en">papers audited</span><span class="zh">篇审计</span></div>
+ <div><b>9</b><span class="en">with a documented cutoff</span><span class="zh">查得到官方截止日</span></div>
+ <div><b class="c-red">0</b><span class="en">reach 48 clean months</span><span class="zh">干净样本 ≥ 48 个月</span></div>
+ <div><b class="c-gold">4</b><span class="en">tested mostly before the cutoff</span><span class="zh">测试期大半在截止日前</span></div>
+ <div><b class="c-dim">8</b><span class="en">cannot be assessed</span><span class="zh">无从判断</span></div>
+</div>
+<p class="note"><span class="en">48 months is what a Sharpe-1 claim needs to clear t = 2 (Lo 2002, i.i.d. — a floor). At Sharpe 2 the bar is 12 months, and two papers would clear it.</span><span class="zh">48 个月是夏普 1 的主张达到 t = 2 所需的干净月数（Lo 2002，假设 i.i.d.，是下限）。若按夏普 2，门槛为 12 个月，有 2 篇够长。</span></p>
+
+<h2><span class="en">1 · Nine papers with a documented cutoff</span><span class="zh">一 · 查得到官方截止日的 9 篇</span></h2>
+<div class="wrap"><table>
+<tr><th>PAPER</th><th><span class="en">HEADLINE MODEL</span><span class="zh">主结果模型</span></th><th><span class="en">PROVIDER CUTOFF</span><span class="zh">官方截止日</span></th><th><span class="en">TEST PERIOD</span><span class="zh">测试区间</span></th><th><span class="en">READ / TOTAL</span><span class="zh">已读／总</span></th><th><span class="en">CLEAN</span><span class="zh">干净</span></th><th><span class="en">VERDICT</span><span class="zh">判决</span></th></tr>
+<tr><td><a href="https://arxiv.org/abs/2311.13743">FinMem</a></td><td>GPT-4-Turbo</td><td><a href="https://platform.openai.com/docs/models/gpt-4-turbo">2023-12</a></td><td>2022-10 → 2023-04</td><td class="n">7 / 7</td><td class="n">0</td><td class="v-no">no_holdout</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2412.20138">TradingAgents</a></td><td>gpt-4o, o1-preview</td><td><a href="https://platform.openai.com/docs/models/gpt-4o">2023-10</a></td><td>2024-01 → 2024-03</td><td class="n">0 / 3</td><td class="n">3</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2407.09546">CryptoTrade</a></td><td>GPT-4o</td><td><a href="https://platform.openai.com/docs/models/gpt-4o">2023-10</a></td><td>2023-04 → 2023-11 <span class="note">(3 segments)</span></td><td class="n">7 / 8</td><td class="n">1</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2505.11122">Alpha Jungle</a></td><td>GPT-4.1</td><td><a href="https://platform.openai.com/docs/models/gpt-4.1">2024-06</a></td><td>2021-01 → 2024-11</td><td class="n">42 / 47</td><td class="n">5</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2602.23330">Expert Investment Teams</a></td><td>GPT-4o</td><td><a href="https://platform.openai.com/docs/models/gpt-4o">2023-10</a></td><td>2023-09 → 2025-11</td><td class="n">2 / 27</td><td class="n">25</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2501.00826">Crypto portfolio multi-agent</a></td><td>GPT-5</td><td><a href="https://platform.openai.com/docs/models/gpt-5">2024-09</a></td><td>2025-01 → 2025-12</td><td class="n">0 / 12</td><td class="n">12</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2510.15949">ATLAS</a></td><td>o4-mini</td><td><a href="https://platform.openai.com/docs/models/o4-mini">2024-06</a></td><td>2025-04 → 2025-06</td><td class="n">0 / 3</td><td class="n">3</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2609.17632">EvolveTrade</a></td><td>GPT-5-mini</td><td><a href="https://platform.openai.com/docs/models/gpt-5-mini">2024-05</a></td><td>2025-09 → 2025-11 <span class="note">(longest window)</span></td><td class="n">0 / 3</td><td class="n">3</td><td class="v-under">underpowered</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2605.06024">Strat-LLM</a> <span class="note">US</span></td><td>GPT-5.4</td><td><a href="https://platform.openai.com/docs/models/gpt-5.4">2025-08</a></td><td>2025-01 → 2025-06</td><td class="n">6 / 6</td><td class="n">0</td><td class="v-no">no_holdout</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2605.06024">Strat-LLM</a> <span class="note">A-share</span></td><td>GPT-5.4</td><td><a href="https://platform.openai.com/docs/models/gpt-5.4">2025-08</a></td><td>2025-06 → 2025-09</td><td class="n">3 / 4</td><td class="n">1</td><td class="v-under">underpowered</td></tr>
+</table></div>
+
+<h3 class="note"><span class="en">What the papers say, quoted</span><span class="zh">论文原话</span></h3>
+<ul class="note">
+<li><b>CryptoTrade</b> — <span class="en">"We carefully select the test period after September 2021, the GPT-3.5's knowledge cutoff date". The headline runs use GPT-4 and GPT-4o. Test segments are chosen by market label (bear, sideways, bull).</span><span class="zh">「We carefully select the test period after September 2021, the GPT-3.5's knowledge cutoff date」；主实验用的是 GPT-4 与 GPT-4o。三段测试期按熊、横、牛行情标签选取。</span></li>
+<li><b>Expert Investment Teams</b> — <span class="en">"GPT-4o … with the knowledge cutoff date in August 2023". The provider page says October 2023, which puts September and October 2023 inside the test.</span><span class="zh">「GPT-4o … with the knowledge cutoff date in August 2023」；官方页面写 2023 年 10 月，按官方则 2023 年 9、10 月在测试期内且已读。</span></li>
+<li><b>Strat-LLM</b> — <span class="en">"Operating in a live-forward setting throughout 2025 … to eliminate look-ahead bias"; "T+1 rolling-window backtest using real-time 2025 data". The headline model's documented cutoff is 2025-08-31.</span><span class="zh">「Operating in a live-forward setting throughout 2025 … to eliminate look-ahead bias」「T+1 rolling-window backtest using real-time 2025 data」；主模型官方截止日为 2025-08-31。</span></li>
+<li><b>EvolveTrade</b> — <span class="en">chooses windows "after each model's knowledge cutoff" — the right design; the windows are one to three months long.</span><span class="zh">按「after each model's knowledge cutoff」选窗口，设计正确；窗口长 1 到 3 个月。</span></li>
+<li><b>FinMem</b> — <span class="en">the provider page lists the current GPT-4-Turbo snapshot; an earlier snapshot can only have an earlier or equal cutoff, which leaves the test entirely before it either way.</span><span class="zh">官方页面列的是现行 GPT-4-Turbo 版本；若论文用的是更早版本，截止日只会更早或相同，测试期仍全部在截止日之前。</span></li>
+</ul>
+
+<h2><span class="en">2 · Eight papers that cannot be assessed</span><span class="zh">二 · 无从判断的 8 篇</span></h2>
+<div class="wrap"><table>
+<tr><th>PAPER</th><th><span class="en">MODEL</span><span class="zh">模型</span></th><th><span class="en">TEST PERIOD</span><span class="zh">测试区间</span></th><th><span class="en">WHY NOT</span><span class="zh">原因</span></th></tr>
+<tr><td><a href="https://arxiv.org/abs/2502.11433">FLAG-Trader</a></td><td>SmolLM2-135M-Instruct</td><td>2020-10 → 2021-05; BTC 2023-04 → 2023-11</td><td><span class="en">no published cutoff</span><span class="zh">未公布截止日</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2502.07393">FinRL-DeepSeek</a></td><td>DeepSeek V3</td><td>2019 → 2023</td><td><span class="en">no published cutoff. Its Llama 3.3 variant (cutoff 2023-12, <a href="https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md">model card</a>) is 60 of 60 months read</span><span class="zh">未公布截止日；同篇 Llama 3.3 变体（截止 2023-12，见模型卡）60 个月全部已读</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2509.11420">Trading-R1</a></td><td>Qwen3-4B (fine-tuned)</td><td>2024-06 → 2024-08</td><td><span class="en">no published cutoff; "held-out" refers to its own fine-tuning data</span><span class="zh">未公布截止日；「held-out」指其微调数据</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2510.04787">Trade in Minutes</a></td><td>DeepSeek-V3/R1, Qwen2.5-Coder</td><td>2024; 2025-01 → 2025-04</td><td><span class="en">no published cutoffs</span><span class="zh">均未公布截止日</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2607.26642">AlphaSchema</a></td><td>DeepSeek-V4-Flash</td><td>2023-01 → 2025-12</td><td><span class="en">no published cutoff; 16 plans × 80 rounds per run, 5 runs</span><span class="zh">未公布截止日；每次运行 16 方案 × 80 轮，共 5 次</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2508.17565">TradingGroup</a></td><td>Qwen3-8B (fine-tuned)</td><td>—</td><td><span class="en">test period not stated</span><span class="zh">测试区间未写明</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2507.20474">MountainLion</a></td><td>GPT-4o, DeepSeek V3, Grok-3</td><td>—</td><td><span class="en">test period not stated</span><span class="zh">测试区间未写明</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2604.02279">Self-Driving Portfolio</a></td><td>—</td><td>—</td><td><span class="en">authors state "any historical 'out-of-sample' evaluation is contaminated by look-ahead bias" and mitigate with "proprietary techniques"; model and period not checkable</span><span class="zh">作者明写历史样本外评估必然被污染，以未公开方法缓解；模型与区间无法核对</span></td></tr>
+</table></div>
+
+<h2><span class="en">3 · What the two tables say</span><span class="zh">三 · 两张表说明了什么</span></h2>
+<ol>
+<li><span class="en">None of the nine reaches 48 clean months.</span><span class="zh">9 篇里没有一篇的干净样本达到 48 个月。</span></li>
+<li><span class="en">Four tested mostly on months the model may already have read.</span><span class="zh">4 篇的测试期大半落在模型可能读过的月份里。</span></li>
+<li><span class="en">Five of the eight that cannot be assessed used open-weight models that publish no cutoff at all.</span><span class="zh">无从判断的 8 篇里，5 篇用的开源权重模型根本没有公布截止日。</span></li>
+<li><span class="en">Since 2025 most papers test after the cutoff. The problem is moving from open-book to too short.</span><span class="zh">2025 年以后多数论文已在截止日之后测试，问题正从「开卷」变成「太短」。</span></li>
+</ol>
+
+<h2><span class="en">Prior work</span><span class="zh">前人工作</span></h2>
+<p class="note"><span class="en">This is not a new criterion. <a href="https://arxiv.org/abs/2605.16895">The Alpha Illusion</a> lists model version and knowledge cutoff among minimum disclosures; <a href="https://arxiv.org/abs/2608.27734">What survives honest evaluation?</a> works the same power arithmetic; <a href="https://arxiv.org/abs/2309.17322">Glasserman &amp; Lin (2023)</a> measured look-ahead bias in GPT sentiment signals. What this page adds is narrower: a paper-by-paper table with each cutoff traced to the provider.</span><span class="zh">这不是新判据。Alpha Illusion 把模型版本与知识截止日列为最低披露；What survives honest evaluation? 做的是同一种样本量算术；Glasserman &amp; Lin（2023）最早量化了 GPT 情绪信号的前视偏差。本页的增量更窄：一张逐篇、每个截止日都追溯到模型方的表。</span></p>
+
+<h2><span class="en">Method and limits</span><span class="zh">做法与限定</span></h2>
+<ul class="note">
+<li><span class="en">105 candidates from five arXiv API queries; 18 selected as LLM trading frameworks reporting historical backtests; 1 excluded (planned experiments, no results). Full texts read 2026-10-05.</span><span class="zh">五组 arXiv 检索得 105 篇候选，筛出 18 篇报告历史回测的 LLM 交易框架，排除 1 篇（只有实验计划）。全文于 2026-10-05 读取。</span></li>
+<li><span class="en">Computed with <code>effective_window</code> from this repository: the cutoff month counts as read; required length for Sharpe 1 at t = 2.</span><span class="zh">用本仓库的 <code>effective_window</code> 计算：截止当月算已读；所需长度按夏普 1、t = 2。</span></li>
+<li><span class="en">"Before the cutoff" means the model may have read it, not that it did.</span><span class="zh">「截止日之前」指无法排除读过，不是一定读过。</span></li>
+<li><span class="en">Headline results only; one auditor; selection may have missed papers.</span><span class="zh">只看主结果；一人审计，候选筛选可能有遗漏。</span></li>
+<li><span class="en">Corrections welcome — and so are additions: three dates and a trial count are enough.</span><span class="zh">欢迎指正，也欢迎补充：三个日期加一个试验次数就够。</span></li>
+</ul>
+<p class="note">decision-confidence · <a href="https://github.com/Beltran12138/decision-confidence">GitHub</a> · <code>pip install decision-confidence</code></p>
+</main>
+<script>
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{document.body.dataset.l=b.dataset.k;
+ document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x===b));});
+</script>
+</body>
+</html>
