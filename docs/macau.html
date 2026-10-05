@@ -36,7 +36,9 @@ main{height:100%;padding:58px 0 46px;display:flex}
 .nums div{text-align:center}
 .nums b{display:block;font-family:Consolas,monospace;font-weight:700;font-size:clamp(46px,7.5vw,104px);line-height:1}
 .nums span{display:block;margin-top:12px;font-size:14px;color:var(--dim);letter-spacing:.06em}
-.c-ink{color:var(--ink)}.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-grn{color:var(--grn)}
+.c-ink{color:var(--ink)}.c-dim{color:var(--dim)}
+.caveat{font-size:13px;color:var(--grn);margin-top:6px}
+[hidden]{display:none!important}.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-grn{color:var(--grn)}
 .sub{font-family:'Noto Serif SC',serif;font-size:clamp(17px,1.7vw,24px);color:var(--dim)}
 .sub b{color:var(--ink);font-weight:600}
 .scene{gap:max(46px,5vw)}
@@ -109,15 +111,16 @@ main{height:100%;padding:58px 0 46px;display:flex}
 // 数字均为 tools/window.py 现跑结果（2026-10-05）：区间 2020-01→2025-06，目标夏普 1，t=2
 const SC={
   late:{cut:'2024-10',clean:8,open:58,share:87.9,need:48,ok:false},
-  late20:{cut:'2024-10',clean:8,open:58,share:87.9,need:112,ok:false},
-  early:{cut:'2021-06',clean:48,open:18,share:27.3,need:48,ok:true}
+  early:{cut:'2021-06',clean:48,open:18,share:27.3,need:48,ok:true},
+  early20:{cut:'2021-06',clean:48,open:18,share:27.3,need:112,ok:false}
 };
 function card(id,s,toggle){
   return '<div class="card" id="'+id+'"><div class="cap"><span class="zh">干净区间 · 可用于检验</span><span class="en">CLEAN MONTHS · USABLE FOR TESTING</span></div>'+
   '<div class="big"><span class="v-clean">'+s.clean+'</span><small> / 66 <span class="zh">个月</span><span class="en">months</span></small></div>'+
   '<div><span class="badge '+(s.ok?'ok':'warn')+'">'+(s.ok?'SUFFICIENT':'UNDERPOWERED')+'</span></div>'+
+  '<div class="caveat"'+(s.ok?'':' hidden')+'><span class="zh">只解除「长度」这一条限制，不构成策略有效的证据</span><span class="en">clears length only — not evidence the strategy works</span></div>'+
   '<div class="bar"><i style="width:0%" data-w="'+s.share+'"></i></div>'+
-  '<div class="bar-note"><span class="zh">红色 = 模型训练时已读过的月份</span><span class="en">red = months the model had already read</span></div>'+
+  '<div class="bar-note"><span class="zh">红色 = 无法排除模型训练时已读过的月份</span><span class="en">red = months the model may already have read</span></div>'+
   '<div class="rows">'+
    '<div class="key"><dt><span class="zh">所需长度</span><span class="en">required</span></dt><dd><span class="v-need">'+s.need+'</span></dd></div>'+
    '<div><dt><span class="zh">实有干净区间</span><span class="en">clean available</span></dt><dd class="v-clean2">'+s.clean+'</dd></div>'+
@@ -129,49 +132,49 @@ function card(id,s,toggle){
 const S=[
  {nav:'00',html:
   '<div class="slide cover"><div class="kick">EVIDENCE DEFLATOR · AI+X FUTURE SUMMIT 2026</div>'+
-  '<h1><span class="zh">每个 AI 策略都会给你看回测<br>这张图里，有多少证据是真的？</span><span class="en">Every AI strategy shows you a backtest.<br>How much of it actually counts?</span></h1>'+
+  '<h1><span class="zh">AI 让每个数都有了出处<br>出处之后的那一步：这份证据值多少？</span><span class="en">AI can now cite every number.<br>The next question: what is that evidence worth?</span></h1>'+
   '<div class="nums"><div><b class="c-ink">66</b><span class="zh">回测月数</span><span class="en">months backtested</span></div>'+
-  '<div><b class="c-red">8</b><span class="zh">模型没读过的</span><span class="en">the model never read</span></div>'+
+  '<div><b class="c-red">8</b><span class="zh">闭卷的</span><span class="en">closed-book</span></div>'+
   '<div><b class="c-gold">48</b><span class="zh">下结论需要的</span><span class="en">needed to conclude</span></div>'+
   '<div><b class="c-gold">112</b><span class="zh">试过 20 组之后</span><span class="en">after 20 tries</span></div></div>'+
   '<div class="sub"><span class="zh">伯纳德 · 《AI 智能投资手册》第十一章作者</span><span class="en">Bernard · author, Chapter 11</span></div></div>'},
- {nav:'01',scene:'late',html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">场景一 · 开卷考试</span><span class="en">01 · OPEN-BOOK EXAM</span></div>'+
-  '<div class="story"><span class="zh">AI 回测了 66 个月，曲线很漂亮。<br>但其中 58 个月，<em>模型训练时已经读过</em>。</span><span class="en">66 months, a beautiful curve.<br>But <em>58 of them the model had already read</em>.</span></div>'+
-  '<div class="moral"><span class="zh">这 58 个月考的不是会不会选股，是记不记得答案。真正闭卷的只有 8 个月，而结论需要 48 个月。</span><span class="en">Those months test memory, not skill. Only 8 are closed-book; a conclusion needs 48.</span></div></div>'+
+ {nav:'01',html:
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">一 · 开卷考试</span><span class="en">01 · OPEN-BOOK EXAM</span></div>'+
+  '<div class="story"><span class="zh">回测 66 个月，曲线很漂亮。<br>其中 58 个月，<em>无法排除模型读过</em>。</span><span class="en">66 months, a beautiful curve.<br><em>58 of them the model may already have read.</em></span></div>'+
+  '<div class="moral"><span class="zh">闭卷的只有 8 个月。夏普为 1 的策略，要站住约需 48 个月干净数据。</span><span class="en">Only 8 are closed-book. A Sharpe-1 claim needs about 48.</span></div></div>'+
   card('c1',SC.late,false)+'</div>'},
- {nav:'02',scene:'late20',html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">场景二 · 试了 20 次</span><span class="en">02 · TWENTY TRIES</span></div>'+
-  '<div class="story"><span class="zh">他其实试了 20 组参数，<br>只给你看最好的一组——<br><em>20 个荐股群，总有一个全对</em>。</span><span class="en">Twenty parameter sets were tried;<br>you only see the best —<br><em>one of twenty tip groups is always right</em>.</span></div>'+
-  '<div class="moral"><span class="zh">算进挑选，门槛从 48 跳到 112。数据一个字没变。</span><span class="en">Count the selection and the bar jumps from 48 to 112. Not one data point changed.</span></div></div>'+
-  card('c2',SC.late20,false)+'</div>'},
- {nav:'03',scene:'late',toggle:true,html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">场景三 · 判决翻转</span><span class="en">03 · THE VERDICT FLIPS</span></div>'+
-  '<div class="story"><span class="zh">只改一处：换一个<br>训练截止更早的模型。</span><span class="en">Change one thing:<br>a model with an earlier cutoff.</span></div>'+
-  '<div class="moral"><span class="zh">策略没变，数据没变。变的只是有多少证据真正作数。按 T 切换。</span><span class="en">Same strategy, same data. Only the evidence that counts changes. Press T.</span></div></div>'+
+ {nav:'02',html:
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">二 · 换一个模型</span><span class="en">02 · AN EARLIER MODEL</span></div>'+
+  '<div class="story"><span class="zh">换一个训练截止更早的模型，<br>闭卷变成 48 个月，<em>刚好够长</em>。</span><span class="en">An earlier cutoff:<br>48 closed-book months, <em>just long enough</em>.</span></div>'+
+  '<div class="moral"><span class="zh">这只说明样本有资格被检验，不说明策略好。按 T 切换。</span><span class="en">Long enough to be tested — not proof it works. Press T.</span></div></div>'+
   card('c3',SC.late,true)+'</div>'},
+ {nav:'03',html:
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">三 · 试了 20 次</span><span class="en">03 · TWENTY TRIES</span></div>'+
+  '<div class="story"><span class="zh">他试过 20 组参数，只给你看最好的。<br><em>20 个荐股群，总有一个看起来最准</em>。</span><span class="en">Twenty parameter sets tried, the best one shown.<br><em>One of twenty tip groups always looks best.</em></span></div>'+
+  '<div class="moral"><span class="zh">算进挑选，门槛升到 112。哪怕 66 个月全部闭卷，也不够。</span><span class="en">Count the selection: the bar is 112. Even all 66 closed-book would fall short.</span></div></div>'+
+  card('c2',SC.early20,false)+'</div>'},
  {nav:'04',html:
-  '<div class="slide cover"><div class="kick"><span class="zh">第二条轴 · 多个来源不等于多份证据</span><span class="en">SECOND AXIS · MORE SOURCES ≠ MORE EVIDENCE</span></div>'+
+  '<div class="slide cover"><div class="kick"><span class="zh">公开审计 · 17 篇 LLM 交易论文 · 截止日只认模型方官方文档</span><span class="en">PUBLIC AUDIT · 17 LLM TRADING PAPERS · CUTOFFS FROM PROVIDER DOCS ONLY</span></div>'+
+  '<div class="nums"><div><b class="c-ink">9</b><span class="zh">查得到截止日</span><span class="en">with a documented cutoff</span></div>'+
+  '<div><b class="c-red">0</b><span class="zh">干净样本 ≥ 48 个月</span><span class="en">reach 48 clean months</span></div>'+
+  '<div><b class="c-gold">4</b><span class="zh">测试期大半在截止日前</span><span class="en">tested mostly before cutoff</span></div>'+
+  '<div><b class="c-dim">8</b><span class="zh">无从判断</span><span class="en">cannot be assessed</span></div></div>'+
+  '<div class="sub"><span class="zh">多数无从判断，是因为模型<b>根本没有公布</b>训练截止日。新论文已多在截止日之后测试：<b>问题正从「开卷」变成「太短」</b>。</span><span class="en">Most of those cannot be assessed because the model <b>never published</b> a cutoff. Newer papers test after the cutoff: <b>the problem is moving from open-book to too short</b>.</span></div></div>'},
+ {nav:'05',html:
+  '<div class="slide cover"><div class="kick"><span class="zh">第二条轴 · 出处都对，问题不同</span><span class="en">SECOND AXIS · SOURCES RIGHT, QUESTIONS DIFFERENT</span></div>'+
   '<div class="vs"><div><h4><span class="zh">风险数据商 A</span><span class="en">VENDOR A</span></h4><b class="c-red">69</b><p><span class="zh">量的是：发行方对合约有多大控制权</span><span class="en">measures: how much control the issuer holds</span></p></div>'+
   '<div class="avg"><s>35</s><span class="zh">平均数没有意义</span><span class="en">the average means nothing</span></div>'+
   '<div><h4><span class="zh">风险数据商 B</span><span class="en">VENDOR B</span></h4><b class="c-grn">1</b><p><span class="zh">量的是：这个代币现在能不能交易</span><span class="en">measures: whether it can trade right now</span></p></div></div>'+
-  '<div class="sub"><span class="zh">同一个代币，两家都没算错，<b>它们回答的是两个问题</b>。引擎会拒绝给综合分。</span><span class="en">Same token, both correct — <b>they answer different questions</b>. The engine refuses to blend them.</span></div></div>'},
- {nav:'05',html:
-  '<div class="slide cover"><div class="kick"><span class="zh">谁会为它付钱</span><span class="en">WHO PAYS</span></div>'+
-  '<div class="three"><div><i>01</i><h3><span class="zh">看 AI 策略的人</span><span class="en">People who evaluate AI strategies</span></h3><p><span class="zh">投资人、FoF、策略平台：每次尽调都要判断一张回测图值多少</span><span class="en">Investors, FoFs, strategy platforms pricing a backtest in every diligence</span></p></div>'+
-  '<div><i>02</i><h3><span class="zh">让 agent 下单的平台</span><span class="en">Platforms letting agents trade</span></h3><p><span class="zh">数据源互相矛盾时，先查它们问的是不是同一个问题</span><span class="en">Check whether conflicting sources even ask the same question</span></p></div>'+
-  '<div><i>03</i><h3><span class="zh">要向监管解释 AI 的机构</span><span class="en">Firms explaining AI to regulators</span></h3><p><span class="zh">需要一份能交出去的证据说明</span><span class="en">Need an evidence statement they can hand over</span></p></div></div>'+
-  '<div class="model"><div><b>OPEN CORE</b><span class="zh">开源引擎，免费使用</span><span class="en">open-source engine, free</span></div>'+
-  '<div><b>PAID</b><span class="zh">第三方证据折扣报告与存证</span><span class="en">third-party deflation report &amp; attestation</span></div></div>'+
-  '<div class="honest"><span class="zh">目前还没有付费客户。</span><span class="en">No paying customers yet.</span></div></div>'},
+  '<div class="sub"><span class="zh">同一个代币，两家都没算错，<b>出处都清清楚楚，问的却是两个问题</b>。</span><span class="en">Same token, both correct, <b>both cited — answering different questions</b>.</span></div></div>'},
  {nav:'06',html:
-  '<div class="slide cover"><div class="kick"><span class="zh">进展与请求</span><span class="en">WHERE IT STANDS · THE ASK</span></div>'+
+  '<div class="slide cover"><div class="kick"><span class="zh">不需要你的策略 · 只要三样东西</span><span class="en">NO STRATEGY NEEDED · JUST THREE THINGS</span></div>'+
   '<div class="ask"><ul class="facts">'+
-   '<li><span class="zh">开源，已发布 PyPI：pip install decision-confidence</span><span class="en">Open source, on PyPI: pip install decision-confidence</span></li>'+
-   '<li><span class="zh">方法收入今天发布的《AI 智能投资手册》第十一章</span><span class="en">Method published in Chapter 11 of the book launched today</span></li>'+
-   '<li><span class="zh">失效分类经多个大模型独立盲审</span><span class="en">Failure taxonomy blind-reviewed by several models</span></li>'+
-  '</ul><div class="qr">QR<br>（v1 占位）</div></div>'+
-  '<h1 style="font-size:clamp(24px,3vw,40px)"><span class="zh">寻找 3 家试点伙伴：<br>给我一份 AI 策略材料，我免费告诉你有多少证据是真的</span><span class="en">Looking for 3 pilot partners:<br>send one AI strategy, I\'ll tell you — free — how much evidence counts</span></h1></div>'}
+   '<li><span class="zh">模型训练截止日</span><span class="en">the model\'s knowledge cutoff</span></li>'+
+   '<li><span class="zh">回测起止月份</span><span class="en">backtest start and end month</span></li>'+
+   '<li><span class="zh">试了几组参数</span><span class="en">how many variants were tried</span></li>'+
+  '</ul><div class="qr">QR<br><span class="zh">公开审计表</span><span class="en">public audit</span><br>（v2 占位）</div></div>'+
+  '<h1 style="font-size:clamp(24px,3vw,40px)"><span class="zh">发给我，我当场告诉你有多少证据作数；<br>也欢迎把你见过的回测加进公开审计表</span><span class="en">Send them and I\'ll tell you how much evidence counts —<br>and help grow the public audit</span></h1>'+
+  '<div class="sub">pip install decision-confidence · <span class="zh">方法见本书第十一章</span><span class="en">method in Chapter 11</span></div></div>'}
 ];
 const stage=document.getElementById('stage'),nav=document.getElementById('nav');
 S.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.nav;b.onclick=()=>go(i);nav.appendChild(b);
@@ -181,7 +184,7 @@ function animBar(el){const bar=el.querySelector('.bar i');if(bar){bar.style.widt
 function setScene(c,k){const s=SC[k];
   c.querySelector('.v-clean').textContent=s.clean;c.querySelector('.v-clean2').textContent=s.clean;
   c.querySelector('.v-need').textContent=s.need;c.querySelector('.v-cut').textContent=s.cut;
-  const bd=c.querySelector('.badge');bd.className='badge '+(s.ok?'ok':'warn');bd.textContent=s.ok?'SUFFICIENT':'UNDERPOWERED';
+  const bd=c.querySelector('.badge');bd.className='badge '+(s.ok?'ok':'warn');bd.textContent=s.ok?'SUFFICIENT':'UNDERPOWERED';c.querySelector('.caveat').hidden=!s.ok;
   const bar=c.querySelector('.bar i');bar.dataset.w=s.share;bar.style.width=s.share+'%';
   c.querySelectorAll('.toggle button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));}
 document.querySelectorAll('.toggle button').forEach(b=>b.onclick=()=>setScene(b.closest('.card'),b.dataset.k));
