@@ -141,6 +141,7 @@ def knowledge_window(
     trials: Optional[int] = None,
     trial_grid: Optional[Dict[str, int]] = None,
     effective_trials: Optional[float] = None,
+    cutoff_source: Optional[str] = None,
     lang: str = "en",
 ) -> Dict[str, Any]:
     """Check whether a backtest could have told anyone anything, before trusting it.
@@ -191,6 +192,11 @@ def knowledge_window(
             hand-tuned runs, and anything tried before the grid was written.
             Mutually exclusive with ``trials``. If the user reports having run
             a sweep, ask for its dimensions rather than for a total.
+        cutoff_source: Where ``cutoff`` came from — the model provider's page for
+            the exact snapshot tested. Omit it and the result says the cutoff is
+            declared and unsourced; the verdict depends on this input more than
+            any other, and moving it earlier always helps. Never fetched here.
+            If the provider publishes no cutoff, do not invent one.
         effective_trials: How many of those trials were *independent*. Fifty
             parameter settings of one strategy are not fifty independent tests.
             Pass this only when it has been **measured** — ``tools/neff.py``
@@ -248,6 +254,7 @@ def knowledge_window(
         t_threshold=t_threshold,
         trials=count,
         effective_trials=effective_trials,
+        cutoff_source=cutoff_source,
         lang=lang,
     )
     result = window.to_dict()

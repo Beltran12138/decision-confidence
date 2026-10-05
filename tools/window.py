@@ -79,6 +79,11 @@ def main() -> int:
                     dest="effective_trials",
                     help="how many of those were independent — a measured number. "
                          "Omit to charge the full count")
+    ap.add_argument("--cutoff-source", default=None, metavar="SOURCE",
+                    dest="cutoff_source",
+                    help="where the cutoff came from — ideally the provider's page for "
+                         "the exact model snapshot. Omitting it records the cutoff as "
+                         "declared and unsourced. The tool does not fetch it")
     ap.add_argument("--lang", default=None, choices=list(LANGS),
                     help="output language (default en)")
     args = ap.parse_args()
@@ -89,6 +94,7 @@ def main() -> int:
             args.cutoff, args.start, args.end,
             target_sharpe=args.sharpe, t_threshold=args.t_threshold,
             trials=args.trials, effective_trials=args.effective_trials,
+            cutoff_source=args.cutoff_source,
             lang=lang,
         )
     except ValueError as exc:
@@ -115,6 +121,12 @@ def main() -> int:
     print(text("cli.header_dates", lang, cutoff=w.cutoff, start=w.start, end=w.end))
     print(text("cli.header_target", lang,
                target_sharpe=w.target_sharpe, t_threshold=w.t_threshold))
+    # Printed every time, like the screening section: an unsourced cutoff is
+    # the default, and saying nothing would let it read as a checked one.
+    caveat = (text("cutoff.documented", lang, source=w.cutoff_source)
+              if w.cutoff_provenance == "documented" else text("cutoff.declared", lang))
+    for line in _wrap(caveat, W):
+        print(f"  {line}")
     print()
 
     print(text("cli.section_split", lang))

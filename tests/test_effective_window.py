@@ -490,3 +490,40 @@ class RecencyCaveatTravelsWithSufficient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CutoffProvenance(unittest.TestCase):
+    """Who vouches for the cutoff. The input the verdict leans on hardest."""
+
+    def test_omitted_source_is_recorded_as_declared_and_said_so(self):
+        w = effective_window("2024-10", "2020-01", "2025-06", lang="en")
+        self.assertEqual(w.cutoff_provenance, "declared")
+        self.assertIsNone(w.cutoff_source)
+        self.assertIn("cannot check", w.note)
+
+    def test_supplied_source_is_quoted_back_and_marked_unverified(self):
+        src = "https://platform.openai.com/docs/models/gpt-4o"
+        w = effective_window("2023-10", "2024-01", "2024-03", cutoff_source=src, lang="en")
+        self.assertEqual(w.cutoff_provenance, "documented")
+        self.assertEqual(w.cutoff_source, src)
+        self.assertIn(src, w.note)
+        self.assertIn("did not fetch", w.note)
+        self.assertNotIn("cannot check", w.note)
+
+    def test_source_changes_no_arithmetic(self):
+        a = effective_window("2024-10", "2020-01", "2025-06", trials=20)
+        b = effective_window("2024-10", "2020-01", "2025-06", trials=20, cutoff_source="x")
+        self.assertEqual((a.effective_months, a.months_required, a.verdict),
+                         (b.effective_months, b.months_required, b.verdict))
+
+    def test_blank_source_is_refused_not_absorbed(self):
+        with self.assertRaises(ValueError):
+            effective_window("2024-10", "2020-01", "2025-06", cutoff_source="   ")
+
+    def test_both_languages_carry_the_caveat(self):
+        zh = effective_window("2024-10", "2020-01", "2025-06", lang="zh")
+        self.assertIn("无法核实", zh.note)
+
+
+if __name__ == "__main__":
+    unittest.main()

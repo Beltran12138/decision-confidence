@@ -106,6 +106,29 @@ MESSAGES: Dict[str, Dict[str, str]] = {
               "看一眼就放弃的那个变体，通常不会被算进去。",
     },
 
+    # ---- where the cutoff came from -------------------------------------
+    # The verdict is more sensitive to the cutoff than to any other input, and
+    # moving it earlier always helps the strategy. These strings say who is
+    # vouching for it. Neither one means the tool checked it.
+    "cutoff.declared": {
+        "en": "⚠ The cutoff was declared without a source, and the tool cannot check "
+              "it. Every number here inherits it, and an earlier cutoff always makes "
+              "the result look better — so the input the verdict depends on most is "
+              "the one nothing here can verify. Open-weight models often publish no "
+              "cutoff at all; in that case say so rather than estimating one.",
+        "zh": "⚠ 截止日为申报值，没有给出处，本工具也无法核实。这里每个数都建立在它之上，"
+              "而截止日往前填，结果总会更好看 —— 判决最依赖的输入，恰好是这里无法核实的那一个。"
+              "许多开源权重模型根本没有公布截止日；遇到这种情况应如实写「未公布」，不要估一个。",
+    },
+    "cutoff.documented": {
+        "en": "Cutoff as stated by the source the caller supplied: {source}. The tool "
+              "did not fetch or verify that source. Use the model provider's own "
+              "documentation for the exact snapshot tested; a paper's own statement of "
+              "its model's cutoff is not a source.",
+        "zh": "截止日取自调用方给出的出处：{source}。本工具没有抓取或核实该出处。"
+              "应使用模型方对所测具体版本的官方文档；论文自己写的模型截止日不算出处。",
+    },
+
     # ---- where the trial count came from --------------------------------
     # A declared 20 and a counted 20 move the bar identically and are not the
     # same evidence. These strings are the only place that difference surfaces.

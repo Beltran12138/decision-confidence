@@ -408,6 +408,23 @@ already drifted once. The page carries the perturbation axis on the same terms:
 48 more combinations, and the p-values agree exactly rather than to a tolerance,
 because both sides sum integer binomials.
 
+### The cutoff needs a provenance too
+
+The trial count now says where it came from. The cutoff did not, and the verdict
+leans on it harder than on anything else: move it earlier and the result always
+improves. `effective_window(..., cutoff_source=...)` (CLI `--cutoff-source`, MCP
+arg `cutoff_source`) records who vouches for it. Omitted, the result is marked
+`cutoff_provenance: "declared"` and the note says plainly that nothing here can
+verify it; supplied, it is marked `"documented"` and quoted back — **unverified,
+never fetched**. No arithmetic changes. The point is that the input most worth
+gaming can no longer pass silently as a checked one.
+
+An audit of 17 published LLM trading papers (2026-10-05) is why this exists: only
+nine used a model whose provider documents a cutoff, two quoted a cutoff that
+disagreed with the provider's own page, and most of the rest used open-weight
+models that publish none. Where a provider publishes no cutoff, say so; do not
+estimate one.
+
 ### The trial count does not survive the call stack
 
 Counting honestly still leaves a hole, and it is structural rather than moral.
@@ -560,6 +577,7 @@ look at the code.
 | **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window`; page `docs/index.html` |
 | **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit`; page `docs/index.html` |
 | **Trial-count provenance** | Shipped — derives the count instead of asking for it | `from_grid` / `from_runs` in `src/trial_count.py`; MCP arg `trial_grid`; page accepts `5x2x2` in the trials field |
+| **Cutoff provenance** | Shipped — records who vouches for the cutoff; never verifies it | `cutoff_source` on `effective_window`; CLI `--cutoff-source`; MCP arg `cutoff_source`. Not yet on the page |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
 Dependencies: the core library is **pure standard library**. Only the MCP

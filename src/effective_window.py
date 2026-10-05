@@ -293,6 +293,10 @@ class EvidenceWindow:
     # ``None`` means undeclared, which is treated as one attempt *and said so*
     # in ``note`` — silence here would be the same as claiming a single try.
     selection: Optional[SelectionPenalty] = None
+    # Who vouches for ``cutoff``: "declared" (no source given) or "documented"
+    # (the caller named one). Neither means the cutoff was checked here.
+    cutoff_provenance: str = "declared"
+    cutoff_source: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -326,6 +330,7 @@ def effective_window(
     t_threshold: float = T_THRESHOLD,
     trials: Optional[Union[int, TrialCount]] = None,
     effective_trials: Optional[float] = None,
+    cutoff_source: Optional[str] = None,
     lang: str = None,
 ) -> EvidenceWindow:
     """Split a backtest at a model's knowledge cutoff and test the remainder for power.
@@ -345,12 +350,20 @@ def effective_window(
     the result also carries what the number can be recounted from, and what
     that method of counting cannot see. Same arithmetic, different evidence.
 
+    ``cutoff_source`` names where the cutoff came from — ideally the model
+    provider's documentation for the exact snapshot tested. It changes no
+    arithmetic. Omitted, the cutoff is recorded as *declared* and ``note`` says
+    that nothing vouches for it; supplied, it is recorded as *documented* and
+    quoted back, unverified. The tool never fetches it.
+
     Raises ``ValueError`` on unparseable dates or an inverted range. These are
     caller mistakes, not missing data — the library's usual "record it and lower
     confidence" path is for sources that failed to answer, and a malformed date
     is not a source.
     """
     lang = resolve_lang(lang)
+    if cutoff_source is not None and not cutoff_source.strip():
+        raise ValueError("cutoff_source is empty — omit it to declare the cutoff unsourced")
     c, s, e = _ym(cutoff, "cutoff"), _ym(start, "start"), _ym(end, "end")
     if e < s:
         raise ValueError(f"end {end!r} precedes start {start!r}")
@@ -404,9 +417,13 @@ def effective_window(
             # conclude, and a caveat against a refusal corrects nothing.
         ] + ([text("recency_not_cleared", lang)] if verdict == "sufficient" else []) + [
             penalty.note if penalty is not None else text("undeclared_selection", lang),
+            (text("cutoff.documented", lang, source=cutoff_source.strip())
+             if cutoff_source is not None else text("cutoff.declared", lang)),
             text("limits", lang),
         ]),
         selection=penalty,
+        cutoff_provenance="documented" if cutoff_source is not None else "declared",
+        cutoff_source=cutoff_source.strip() if cutoff_source is not None else None,
         lang=lang,
     )
 
