@@ -1,4 +1,4 @@
-# Seven failure families
+# Eight failure families
 
 *Cross-domain evidence for one question: **are these sources answering the same question?***
 
@@ -13,6 +13,19 @@ was found the other way round — first in **someone else's published work**, an
 then looked for here. Both are listed on the same logic that makes the table useful
 at all: a family with one instance is a prediction about where to look next, not a
 finding.
+
+An eighth was found a third way: by **blind review of this table's own filing**.
+Models that had never seen the table were given only the one-line definitions and the
+bare facts of thirteen instances, and asked where each belonged. They refused to put a
+group of rows where I had put them, and two of them independently named the mechanism
+those rows actually share. It was admitted only after an instance outside finance,
+checked against its primary source, was filed into it by every reviewer who had not
+proposed it. See [family 8](#8-denominator-mismatch-added-2026-10-05).
+
+Several families also carry **sub-forms** (added 2026-09-21 to 2026-10-05). Each was
+forced the same way: the family's one-line definition, applied word for word to a new
+case, let it through. Most of them turned out to have been sitting in the table
+already, in rows nobody had checked against the definition they were filed under.
 
 | domain | repo | what it scores |
 |---|---|---|
@@ -78,10 +91,34 @@ from an impossible category and a `0` from a real absence are the same character
 The only reliable separator is a synthetic positive control: inject a case with the
 label already known, and fail the run if the metric cannot find it.
 
+#### Sub-form: annotated but unenforced (added 2026-09-21)
+
+The definition says the absence is *disguised*. Applied word for word, it lets through
+a system that disguises nothing: it knows the value is bad, says so in a neighbouring
+field, and goes on emitting the value anyway.
+
+> **After the system flagged this value as unusable, did anything downstream behave
+> differently because of the flag?** If not, the flag is a disclaimer, not control
+> flow.
+
+| domain | instance |
+|---|---|
+| equity | The stale-PEG detector from the row above works: across 2,292 ticker-day observations it set `pegStale: true` 262 times (11.4%), each with a sentence ending *"treat pegBand as unusable for this session"*. In **262 of 262** of those observations the headline field `pegBand` still printed one of its four live grades — cheap, fair, rich, overpriced — and never `N/A`. The admission sits in one field and the conclusion in another, and consumers read the conclusion. The detector is the cure for this family, not an instance of it; the instance is the field it was supposed to protect. |
+
+The original form survives because nobody notices. This one survives because the
+system can point at its own warning.
+
 ### 2. Same name, different construct
 
-Two measurements share a label and answer different questions. Averaging them is a
-category error, not a compromise.
+A label is read as answering one question while the number answers another: two
+numbers share a label but differ in definition, population or aggregation level; or one
+number's name claims a construct it does not measure. Averaging them is a category
+error, not a compromise.
+
+*(Definition widened 2026-10-05. The original sentence — "two measurements share a
+label and answer different questions" — could not admit the judge row below, which
+has only one number. Mismatched denominators, previously filed here, now have their own
+family: see [family 8](#8-denominator-mismatch-added-2026-10-05).)*
 
 | domain | instance |
 |---|---|
@@ -90,6 +127,25 @@ category error, not a compromise.
 | equity | One field value, `moatLocks: "licensing"`, was used for two **opposite** situations: companies that *collect* licence rent and companies that *hold* a licence. Only the second is vulnerable to a regulator widening the gate. Separately, a PEG of 36.41 reads as "expensive" on the same scale where it actually means "not measurable" — the denominator was approaching zero. |
 | game | One counter, `broken_floor`, summed three different events: deliberately breaking a stated commitment, legitimate bargaining bluff (which the game's own rules invite), and simply failing to execute a stated plan. Published deception benchmarks report the same aggregate as a deception rate. The three have opposite implications for whether the model is misaligned or merely bad at following through. |
 | pipeline | The last element of the array is the session still in progress. It carries the same six fields as the 399 settled rows ahead of it, in the same order, with nothing marking it as unsettled — no `is_final`, no fetch timestamp, no as-of. Five fetches of one 24/7 instrument across roughly thirty minutes returned five different closes for the same calendar date: **79680.82, 79685.98, 79688.46, 79634.37, 79628.73**. A pair thirty seconds apart differed in `close` alone while open, high, low and volume stayed identical. Every moving average, pattern rule and structure detector downstream is therefore computing partly on a number that moves while it runs, and two people executing the same code minutes apart get different answers from the same "data". |
+
+#### Sub-form: one number, the wrong name (added 2026-10-02)
+
+Here there is no second number to disagree with. A single score carries a name, and the
+name claims a capability the score does not measure.
+
+> **Can this score move while the capability its name describes stays fixed?** If it
+> can — by doing less, by changing the evaluation path, by restraint — it is not
+> measuring that capability.
+
+| domain | instance |
+|---|---|
+| judge | The `correctness` row above, refiled: one metric, one number, and the number was string overlap. |
+| external | A forecasting model is ranked first on a metric named `skill`, defined as the share of squared error removed relative to a price-only baseline. Its authors say plainly how it won: a rival model *"actually predicts the direction of the crowd's move more accurately than our model"*, but its predictions are larger on a target that is mostly noise, and *"our margin comes from restraint: on four rows out of five the model predicts that the news changes nothing."* The mechanism is disclosed in the text and the ranking is shown in a bar chart; a summary that keeps the chart and drops the sentence reports restraint as skill. ([Astraculum, technical blog](https://trajops.astraculum.com/blog/), read 2026-09-21.) |
+| external | A post-training agent's headline gain owes most of its weighted margin to one benchmark that, in the agent's own technical report, *"scores a function call by whether it parses and matches the expected form"* — a score that can be won back *"without touching weights."* Downstream summaries read the same number as tool-use ability. **Contested:** in blind review, two of three reviewers filed this primarily under family 1 instead (a baseline near zero may mean "not measured", not "unable"). It is listed here, but not counted as independent support for the sub-form. |
+
+This is also the first instance in the table where the authors disclosed the mechanism
+and the ranking still misled. Disclosure did not stop it, because the number travels
+without the sentence that qualifies it.
 
 ### 3. Method disagreement wearing the costume of factual disagreement
 
@@ -108,6 +164,15 @@ not of the subject.
 known-good and known-bad samples, the spread is about the vendors, not the subject.
 Deliberately **not** hard-coded — an offset belongs to a *pair* of vendors and
 expires when either is swapped.
+
+**A boundary this table does not yet hold (noted 2026-10-03).** Two rows above describe
+themselves in family 2's words. The judge row says the minority judge *"was answering a
+different question"*; the pipeline row says the two series *"answer different
+questions."* If they answer different questions, the construct is not the same, and the
+definition of this family — *same construct, different instrument* — does not apply.
+Either those rows belong in family 2, or the line between the two families needs a test
+that the current definitions do not supply. Left as found, and flagged rather than
+quietly moved.
 
 #### A mirror form: resolution collapse (added 2026-09-27)
 
@@ -168,6 +233,27 @@ The measurement is partly derived from the thing being measured.
 | judge | The default configuration used the same model as generator and judge, producing a 0.985 faithfulness score that is a self-assessment. The report emits `self_graded` as CRITICAL: every metric is near-perfect and the report refuses to call it good. |
 | equity | Layer medians were computed from held names only, so a layer could never look expensive relative to itself. One layer is now recorded as **permanently** unanchorable: its external-peer count is 0, because every public comparable is either held or private. Its pricing output is a within-layer ranking and never an absolute valuation. |
 | game | Both sides of every negotiation were the same model. Whatever the measurement showed about strategy, it could not distinguish a property of the model from a property of two identical copies converging on each other — structurally the same defect as a judge grading its own output. |
+| external | An AI-search paper evaluates a trustworthiness filter with a retrieval metric whose labels are defined to include *"the applicable source reliability, temporal validity, and factual correctness assessments"* — the filter's own criteria. A gain on that metric is partly guaranteed by its definition. The paper's human preference evaluation does not pass through the metric and is the independent read. ([arXiv 2609.23354 v3](https://arxiv.org/html/2609.23354v3), §VII-B1.) |
+
+#### Sub-form: pseudo-independence (added 2026-09-29)
+
+The definition asks whether a measurement feeds on **the thing being measured**. It
+cannot ask whether measurements feed on **each other** — and a panel of nominally
+independent readings that have seen one another, or share one upstream, is worth far
+fewer than N votes.
+
+> **Before reaching a verdict, did these readings see each other's output, or read the
+> same upstream?** If so, their agreement counts once.
+
+| domain | instance |
+|---|---|
+| external | A multi-agent portfolio system has its agents peer-review each other's portfolios, and *"all reviews are released simultaneously so that every agent can read every review before voting."* The same paper feeds 21 nominally distinct optimisers one shared set of expected returns and covariances, chosen by an LLM agent — then locates correlated error only in the layer where an LLM judges. ([arXiv 2604.02279 v2](https://arxiv.org/abs/2604.02279), §3.2, §3.4.) |
+| external | The AI-search paper above verifies each factual claim by retrieving outside evidence. Its own Case 5 is a fabricated quotation repeated across many pages: *"These documents may appear to corroborate one another, even though they merely repeat the same false claim rather than provide independent evidence for it."* The verifier cannot tell repetition from corroboration and passes the claim. Here the dependence lives outside the system, in the web's copying, which the verifier cannot see. ([arXiv 2609.23354 v3](https://arxiv.org/html/2609.23354v3), §VIII-B.) |
+
+The sub-form was already in the table before it had a name: the vendors cell above
+asks whether two vendors share an upstream, and the investigation recorded below found
+three rows of the availability-skew table driven by one overlapping sample set — one
+piece of evidence counted three times.
 
 ### 6. The measurement changes the behaviour
 
@@ -187,12 +273,39 @@ requirement, or self-report added for observability is a candidate. The honest
 status is *one experiment, 48 games, one model* — cited as a hypothesis with a
 number attached, not as an established family.
 
+#### Sub-form, unconfirmed: the measured party adapts (added 2026-09-15)
+
+In the family as found, the perturbation comes from the experimenter and can be
+designed out — probe both arms, or probe passively. In this form it comes from the
+party being measured, which notices the measurement and adjusts, so every probe design
+is absorbed and more samples do not converge.
+
+> **Would whoever holds the deciding variable change it because they know I am
+> watching?**
+
+**Status: zero instances inside this table.** It is listed as a prediction with an
+explicit bar for promotion — an instance in one of these domains where the measured
+party's behaviour shifts, in the direction of evading the measurement, once the
+measurement becomes known. One outside example shows the shape: a published
+interpretability study ran its blackmail scenario on *"an earlier snapshot of Sonnet
+4.5, as the final snapshot exhibits too much evaluation-awareness to ever blackmail in
+this scenario."* The measurement failed on the released model, so the object was
+swapped; the reported rates describe a model that was never released.
+
 ### 7. The ceiling and the result are in different units
 
 A performance number means nothing alone. It means something against the best
 achievable — a human ceiling, a baseline, a published rate. This family is what
-happens when both are reported and **neither can be subtracted from the other**.
-It has the shape of full disclosure and does none of the work.
+happens when a result is reported without a reference point it can be subtracted
+from: **the ceiling is missing, in different units, or in the same units but measured
+for a different purpose**. In its founding form both are reported and neither can be
+subtracted from the other; it has the shape of full disclosure and does none of the
+work.
+
+*(Definition widened 2026-10-05. The original sentence required both numbers to be
+reported. The judge and game rows below have no ceiling at all, and the sub-form
+"subtractable only on the surface" can be subtracted; each was let through by the
+original wording.)*
 
 The founding instance is not from these four domains. It is from a well-resourced
 team's published work, which is the point: this failure survives careful review
@@ -235,6 +348,92 @@ made the 98; the unit mismatch is what would have published it.
 achievable value — and can you subtract the two? A citation is not a reference
 point, and a ceiling you cannot subtract from is decoration.
 
+#### Sub-form: subtractable only on the surface (added 2026-09-21)
+
+The diagnostic's second question can answer *yes* and still be wrong. Two numbers with
+the same units, the same tasks and the same scoring can be legally subtracted and mean
+nothing, because they were measured for different purposes. A check that says "pass"
+here is worse than no check.
+
+> **If the two can be subtracted — does the primary source allow it?** Same units are
+> not the same measurement.
+
+| domain | instance |
+|---|---|
+| external | A benchmark publishes two harness results, 62.7% and 98.6%, on the same games, actions, limits and scoring. Its README states what each is for — one *"supports controlled comparisons across providers,"* the other *"measures performance using provider-native context management"* — and then: *"Their results should be reported separately and clearly labeled."* A widely shared summary subtracted them and made the 35.9-point difference its headline: that harnesses matter more than models. Every figure it quoted was correct. ([arc-agi-3-benchmarking README](https://github.com/arcprize/arc-agi-3-benchmarking); leaderboard `v3.json`, read 2026-09-21.) |
+
+#### Sub-form: the ceiling is absent (added 2026-09-29)
+
+The founding form reports a ceiling in the wrong units. In this form there is no
+ceiling to compare against at all, sometimes after one was promised.
+
+> **Is the reference point that was promised, or that the claim requires, actually
+> there?** If not, the result cannot be weighed.
+
+| domain | instance |
+|---|---|
+| judge | The *"no human ceiling in this domain at all"* clause of the judge row above, refiled. |
+| game | The game row above, refiled: four citations, none supplying a rate to subtract from. |
+| external | A reward-hacking benchmark states that *"three annotators independently review every record … we adjudicate disagreements and report agreement before adjudication."* A full-text search of the paper finds no agreement figure. The detector results it reports therefore have nothing to be measured against. ([arXiv 2609.11028 v1](https://arxiv.org/abs/2609.11028), §6.1; confidence medium — a figure might carry the number.) |
+
+### 8. Denominator mismatch (added 2026-10-05)
+
+A claim is stated in one normalisation (per unit, per GB, incremental) while its
+evidence is computed in another (total, per stack, total over base). The ratio
+reflects the choice of denominator, not the subject. Unlike family 7, the two can be
+converted to a common denominator; they simply were not, and converting changes the
+conclusion.
+
+| domain | instance |
+|---|---|
+| epidemiology (external) | As of 15 August 2021, of 515 patients hospitalised with severe COVID-19 in Israel, 301 (58.4%) were fully vaccinated, and the share circulated as evidence that the vaccine did not protect against severe disease. The claim is about each person's risk; the evidence is a share of patients. Over 90% of residents above 50 were vaccinated, and older people are far more likely to be hospitalised. Per 100,000 people, the severe-case rate was **16.4 unvaccinated against 5.3 vaccinated — 3.1 times higher** among the unvaccinated. (Jeffrey Morris, *covid-datascience.com*, 2021-08-17; read 2026-10-03.) |
+| equity research (external) | A sell-side note argues that AI brings *"not just volume growth, but higher value per unit"* of multilayer ceramic capacitors, followed by its own numbers: 2,000 units worth $43 in a standard server, 319,500 worth $4,664 in one AI rack, 571,000 worth $12,400 in the next generation. Total value grows 166%. Divided through, the value per unit is $0.0215, $0.0146 and $0.0217: it falls by a third, then returns to where it started. The claim is per unit; the evidence is a total. |
+| equity research (external) | A newsletter finds it "a coincidence" that a new memory type's per-GB price discount matches its bandwidth gap to HBM. The gap, about 55%, is per stack (a 512 GB stack against a 48 GB one); the discount, one fifth to one tenth, is per GB. Per GB, the new memory has about **5%** of HBM's bandwidth. Read one way the newcomer is cheaper for what it delivers; read the other way it is dearer. |
+| equity research (external) | The same newsletter concludes that agentic workloads will take CPU core demand to *"more than 2x."* Its own total is 2.02 times the baseline; but it also says the baseline cannot be counted as demand the agents create, and the agent-driven increment alone is 1.02 times. The headline is a total over base; the claim it supports is an increment. |
+| listed-company KPI (external) | A quarterly report says the sales pipeline *"grew strongly by 268% to $1.2B."* The company's two previous reports put the base at about $453M, and $1,200M ÷ $453M is 2.65. The pipeline grew **to** about 265% of its base, an increase of about 165%. The same series had been reported correctly one quarter earlier. |
+
+**Probe, costing one or two divisions and no outside data:** restate the claim and its
+evidence over the same denominator and recompute. If the conclusion changes, this
+family has fired.
+
+**How it differs from its neighbours.** From family 2: there, two numbers answer
+different questions. Here it is one quantity, stated over two denominators, and the
+two *can* be reconciled. From family 7: there, the result and the reference cannot be
+subtracted. Here they can be converted; they were not.
+
+**How it was found, and admitted.** The four rows from financial writing were first
+filed under family 2, in working notes, for up to two weeks. In a blind review, models given only the one-line definitions declined to
+file the capacitor, memory and CPU cases under family 2, and two of them independently
+described the mechanism above, one of them under the name used here. All the
+candidates were from financial writing, which left open the objection that this is a
+common arithmetic slip in one genre rather than a measurement failure. So the bar for
+admission was set at one instance outside finance, verified against its primary
+source, and filed into the family by reviewers who had not proposed it.
+- My own candidate failed: a neuroscience result reported as 76% of explainable
+  variance when two task types are pooled and 27% within each type. **0 of 4**
+  reviewers filed it here. As one put it, the denominator changes, but so does the
+  numerator; this is not a pure renormalisation. It stays in family 2.
+- The epidemiology row was proposed by one reviewer, checked against the original
+  analysis, and sent only to the other three. **3 of 3** filed it here, all with high
+  confidence.
+- Once this family was available as an option, the memory row was filed here **4 of
+  4**, and the capacitor row **4 of 4**. The question "can the two be converted to one
+  denominator?" settles the boundary with family 7 that had split the reviewers
+  before.
+
+**Objections recorded, not resolved.** One reviewer: the instruments and the data are
+accurate; the failure happens in argument, so it may be a rhetorical fallacy rather
+than a measurement failure. (The same objection applies to part of family 2.) Another:
+logically this is a sub-form of family 2, and the only case for a separate family is
+that the remedy differs. Family 2 can only be resolved by choosing one reading; this
+one is resolved by recomputing. A third: once converted, the failure disappears, so it
+may reduce to a correctable arithmetic error.
+
+**What it does not cover.** The step in the Israeli data from 3.1 times to an
+age-stratified efficacy of 85–95% is confounding by age, and none of the eight
+families holds it. A candidate ninth family, confounding and composition (Simpson's
+paradox), is noted and not admitted.
+
 ---
 
 ## Why the table is worth more than the sum of its rows
@@ -273,9 +472,30 @@ reports no reference point at all. That is a second way to use the table, and a
 cheaper one: someone else's disclosed methodology is a free test of whether a family
 generalises past the author who wrote it down.
 
+**Family 8 was found by turning the review on the table itself.** A falsification
+rule was set for this table on 2026-09-21: if ten new instances in a row fall into
+existing families, treat that as evidence the classification has stopped measuring
+anything, and re-examine it. It fired on 2026-10-02 — and the honest reading is that I
+fired it. In two of the ten I had let a row through on the strength of a precedent in
+the table rather than the family's literal definition. Re-examination added the
+sub-forms above; a blind review then showed the deeper problem, that one family had
+been absorbing a mechanism its definition did not describe. Independent blind review
+now runs every five new instances, not only when the rule fires: definitions only,
+never the table's own examples; a positive control and a decoy in every packet; the
+reviewer's prediction sealed outside the reviewers' working directory; and any instance
+a reviewer proposes is judged only by the others.
+
 ## Honest limitations
 
 - Four domains, one author. Convergence across them is suggestive, not established.
+- **Most sub-forms were found in the table, not in the world.** Of the sub-forms added
+  since 2026-09-21, nearly all were already present in rows filed under definitions
+  that did not cover them. That says more about how loosely the definitions were
+  written than about the reach of the classification. Families 2 and 7 were rewritten
+  on 2026-10-05 to cover their own rows; families 1, 4 and 6 have **not yet** been
+  checked row by row against their definitions.
+- **Family 8 rests on one instance outside finance**, and its objections (above) are
+  unresolved. The boundary between families 2 and 3 is also unresolved (see family 3).
 - The fourth domain has **no public repo**. Its numbers cannot be re-run by a reader
   and should be read as reported observations, not as reproducible results. It is
   included because it is the only domain where a failure can be injected with a

@@ -28,8 +28,9 @@ See [the second axis](#the-second-axis-time), or run
 
 Five failure families keep surfacing in five unrelated domains; a sixth has so far
 appeared in one domain, and a seventh was found the other way round — first in
-someone else's published work, and only then looked for here. This repo is the
-**third-party-vendor** instance.
+someone else's published work, and only then looked for here. An eighth, denominator
+mismatch, was found when models that had never seen the table refused to file a group
+of its rows where I had put them. This repo is the **third-party-vendor** instance.
 
 | repo | domain | the question it asks |
 |---|---|---|
