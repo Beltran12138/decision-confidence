@@ -92,7 +92,9 @@ class Templates(unittest.TestCase):
                   "n_total": 6, "total": 6, "material": 3, "cosmetic": 3,
                   "count": 20, "derivation": "configs=5 x windows=4 = 20",
                   "items": "runs made before logging was on", "n": 3,
-                  "source": "https://platform.openai.com/docs/models/gpt-4o"}
+                  "source": "https://platform.openai.com/docs/models/gpt-4o",
+                  "precision": "day", "picked": "2026-05-15", "months": 6.0,
+                  "t_bar": 3.85, "power_ratio": 0.22, "effective_trials": 4800}
         for key, entry in MESSAGES.items():
             need = fields(entry["en"])
             args = {k: sample[k] for k in need if k in sample}

@@ -706,3 +706,109 @@ MESSAGES.update({
               "{cosmetic} 表面），且结果完美分离。",
     },
 })
+
+# ---- track records (src/track_record.py, tools/record.py) ---------------
+# A leaderboard wallet, a vault or a factsheet. No model and no cutoff; the
+# split is at the day the record was picked.
+MESSAGES.update({
+    "record.verdict.underpowered": {
+        "en": "As shown, the record is shorter than this Sharpe needs at this bar. "
+              "It does not show skill and it does not show its absence; it is too "
+              "short to tell.",
+        "zh": "按原样读，这段战绩短于在该门槛下证明该 Sharpe 所需的长度。"
+              "它既不证明有本事，也不证明没本事——太短，分辨不出。",
+    },
+    "record.verdict.sufficient": {
+        "en": "As shown, the record reaches the length this Sharpe needs at this "
+              "bar. That removes the length constraint and nothing else: it says "
+              "nothing about whether your copy of it would earn the same.",
+        "zh": "按原样读，这段战绩达到了在该门槛下所需的长度。这只解除了「长度」一条限制："
+              "你跟单能否赚到同样的收益，它什么也没说。",
+    },
+    "record.verdict.no_holdout": {
+        "en": "As shown, the record is empty.",
+        "zh": "按原样读，战绩长度为零。",
+    },
+    "record.undeclared_universe": {
+        "en": "⚠ No count was given for how many records this one was chosen from, "
+              "so it is treated as the only one ever looked at. If it came off a "
+              "leaderboard, the count is every wallet the board ranked — including "
+              "the ones that blew up and dropped off — not 1.",
+        "zh": "⚠ 没有申报这段战绩是从多少个里挑出来的，按「只看过这一个」处理。"
+              "如果它来自排行榜，这个数应是榜单排过的全部钱包——包括爆仓后消失的那些——而不是 1。",
+    },
+    "record.no_pick": {
+        "en": "No pick date was given, so the whole record is the one that got it "
+              "chosen and there is no out-of-sample reading. Pass the date you "
+              "picked it to read what happened since.",
+        "zh": "没有给出选中日期，因此整段战绩都是「让它被选中」的那段，没有样本外读法。"
+              "给出选中日期，即可单独读选中之后的表现。",
+    },
+    "record.since.no_holdout": {
+        "en": "Since picked: nothing yet. Every month on the record is one that "
+              "was visible when the choice was made.",
+        "zh": "选中之后：还没有任何数据。记录上的每个月，在做选择时都已经看得见。",
+    },
+    "record.since.underpowered": {
+        "en": "Since picked: there is a clean segment, but it is too short to "
+              "support an inference at this Sharpe.",
+        "zh": "选中之后：有干净区间，但在该 Sharpe 下太短，不足以做推断。",
+    },
+    "record.since.sufficient": {
+        "en": "Since picked: the clean segment reaches the required length. That "
+              "removes the length constraint and nothing else.",
+        "zh": "选中之后：干净区间达到所需长度。这只解除了「长度」一条限制。",
+    },
+    "record.limits": {
+        "en": "The bar uses t ~ SR*sqrt(T) (Lo 2002), which assumes i.i.d. "
+              "returns, so the length shown is a floor. For trading books it is a "
+              "generous floor: profits on leveraged venues arrive in bursts, and a "
+              "market-making vault can earn a large share of its lifetime profit on "
+              "a few days, which no i.i.d. model allows for. Two more things this "
+              "does not see: the record is the trader's fills, not yours after "
+              "latency and slippage; and a visible position can be one leg of a "
+              "hedge held elsewhere.",
+        "zh": "阈值用 t ≈ SR·√T（Lo 2002），假设收益 i.i.d.，所以给出的长度是下限。"
+              "对交易账户来说，这个下限还偏宽：杠杆场所的盈利是成团出现的，"
+              "一个做市金库可能在少数几天里赚到一生利润的很大一部分，i.i.d. 模型完全没考虑这一点。"
+              "另外两件本工具看不到的事：战绩是对方的成交，不是你经过延迟和滑点后的成交；"
+              "看得见的仓位可能只是别处对冲组合的一条腿。",
+    },
+    "record.cli.header": {
+        "en": "Record {start} .. {end}  ·  {total_months:.1f} months ({precision} precision)",
+        "zh": "战绩 {start} .. {end}  ·  共 {total_months:.1f} 个月（精度：{precision}）",
+    },
+    "record.cli.picked": {
+        "en": "Picked {picked}",
+        "zh": "选中日期 {picked}",
+    },
+    "record.cli.target": {
+        "en": "Testing for Sharpe {target_sharpe:g} at t >= {t_threshold:g}",
+        "zh": "检验目标 Sharpe {target_sharpe:g}，门槛 t ≥ {t_threshold:g}",
+    },
+    "record.cli.as_shown": {
+        "en": "As shown (the record that got it picked)",
+        "zh": "按原样读（让它被选中的那段战绩）",
+    },
+    "record.cli.since_picked": {
+        "en": "Since picked (out of sample)",
+        "zh": "选中之后（样本外）",
+    },
+    "record.cli.row": {
+        "en": "  have {months:.1f} / need {months_required} months at t >= {t_bar:.2f}"
+              "  ({power_ratio:.0%})  ->  {verdict}",
+        "zh": "  实有 {months:.1f} / 需要 {months_required} 个月，门槛 t ≥ {t_bar:.2f}"
+              "（{power_ratio:.0%}）→ {verdict}",
+    },
+    "record.cli.screened": {
+        "en": "  chosen from {trials} (counted {effective_trials:g}): bar "
+              "{t_base:.2f} -> {t_adjusted:.2f}, need {months_base} -> {months_adjusted} months",
+        "zh": "  从 {trials} 个里挑出（计 {effective_trials:g} 个独立）：门槛 "
+              "{t_base:.2f} → {t_adjusted:.2f}，所需 {months_base} → {months_adjusted} 个月",
+    },
+    "record.cli.no_combined": {
+        "en": "The two readings are not combined. Quoting whichever one passes is "
+              "itself picking the better of two tests.",
+        "zh": "两种读法不合并。哪个过了就引用哪个，本身就是在两个检验里挑好看的那个。",
+    },
+})
