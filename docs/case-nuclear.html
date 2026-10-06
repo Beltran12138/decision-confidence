@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Case audit — what is a "22% chance of a nuclear detonation" worth as evidence?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230B0D10'/%3E%3Crect x='5' y='14' width='22' height='4' rx='1' fill='%23C9A24C'/%3E%3Crect x='5' y='21' width='9' height='4' rx='1' fill='%235E8C6A'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0B0D10;--panel:#101319;--ink:#E9E5DC;--dim:#8A9099;--dim2:#5E646C;--rule:#22262C;--gold:#C9A24C;--red:#D0574E;--grn:#6E9C7A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 'Segoe UI','Microsoft YaHei','PingFang SC',sans-serif}
+main{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+h1{font-family:Georgia,'Noto Serif SC',serif;font-size:clamp(24px,3.4vw,36px);line-height:1.3;margin:6px 0 10px}
+h2{font-family:Georgia,'Noto Serif SC',serif;font-size:20px;margin:44px 0 10px;border-top:1px solid var(--rule);padding-top:26px}
+.kick{font-family:Consolas,monospace;font-size:12px;letter-spacing:.24em;color:var(--gold)}
+.lang{float:right;font-family:Consolas,monospace;font-size:12px}
+.lang button{background:none;border:1px solid var(--rule);color:var(--dim);padding:5px 10px;cursor:pointer}
+.lang button.on{color:var(--ink);border-color:var(--gold)}
+.nums{display:flex;flex-wrap:wrap;gap:28px;margin:26px 0}
+.nums div{min-width:150px;max-width:190px}
+.nums b{display:block;font-family:Consolas,monospace;font-size:52px;line-height:1}
+.nums span{color:var(--dim);font-size:13px}
+.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-dim{color:var(--dim)}.c-grn{color:var(--grn)}
+.wrap{overflow-x:auto;border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:13.5px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.08em;color:var(--dim);background:var(--panel);font-weight:600}
+td.n{font-family:Consolas,monospace;text-align:right;white-space:nowrap}
+.v-no{color:var(--red);font-family:Consolas,monospace;font-size:12px}
+.v-under{color:var(--gold);font-family:Consolas,monospace;font-size:12px}
+.v-ok{color:var(--grn);font-family:Consolas,monospace;font-size:12px}
+a{color:var(--ink);text-decoration-color:var(--dim2)}
+ol li,ul li{margin:6px 0}
+.note{color:var(--dim);font-size:13.5px}
+.verdict{border:1px solid var(--rule);border-left:3px solid var(--gold);background:var(--panel);padding:16px 18px;margin:22px 0}
+.verdict p{margin:6px 0}
+code{font-family:Consolas,monospace;font-size:13px;background:var(--panel);padding:1px 5px}
+[data-l="en"] .zh,[data-l="zh"] .en{display:none}
+</style>
+</head>
+<body data-l="zh">
+<main>
+<div class="lang"><button data-k="en">EN</button> <button data-k="zh" class="on">中文</button></div>
+<div class="kick">EVIDENCE DEFLATOR · CASE AUDIT · PREDICTION-MARKET PRICE · 2026-10-06</div>
+<h1><span class="zh">「今年有 22% 的概率发生核爆」：这个价格作为证据值多少？</span><span class="en">"A 22% chance of a nuclear detonation this year": what is that price worth as evidence?</span></h1>
+<p class="note"><span class="zh">2026 年 3 月 4 日，Polymarket 下架「Nuclear weapon detonation by…?」，下架前全年合约报价约 22%。本页只用 Polymarket 公开接口的原始数据和一手来源，对这个数打五道折扣。不评价平台，也不评价下注的人。</span><span class="en">On 4 March 2026 Polymarket pulled "Nuclear weapon detonation by…?"; the full-year contract was quoting about 22%. This page applies five discounts to that number, using only raw data from Polymarket's public APIs and primary sources. No judgement of the platform or its traders.</span></p>
+
+<div class="nums">
+ <div><b class="c-gold">22%</b><span class="zh">下架前全年合约报价（日线 0.215）</span><span class="en">full-year contract before removal (daily close 0.215)</span></div>
+ <div><b>19%</b><span class="zh">1999–2025 年有核爆的年份占比（5/27，全部是核试验）</span><span class="en">share of years 1999–2025 with any detonation (5/27, all tests)</span></div>
+ <div><b class="c-red">$81k</b><span class="zh">该合约公开成交记录总额；当天仅约 $4.3k</span><span class="en">all public trades in that contract; about $4.3k on the day</span></div>
+ <div><b class="c-red">16</b><span class="zh">按成交集中度折算的有效独立钱包数（共 364 个）</span><span class="en">effective independent wallets by concentration (of 364)</span></div>
+ <div><b class="c-dim">0 / 9</b><span class="zh">此前同类合约结算为 Yes 的个数，覆盖约 3 年</span><span class="en">earlier contracts of this kind that resolved Yes, ~3 years covered</span></div>
+</div>
+
+<h2><span class="zh">一 · 五道折扣</span><span class="en">1 · Five discounts</span></h2>
+<div class="wrap"><table>
+<tr><th>#</th><th><span class="zh">问的问题</span><span class="en">QUESTION</span></th><th><span class="zh">查到的事实</span><span class="en">WHAT THE DATA SHOWS</span></th><th><span class="zh">对 22% 的影响</span><span class="en">EFFECT ON 22%</span></th><th><span class="zh">判决</span><span class="en">VERDICT</span></th></tr>
+<tr><td class="n">1</td>
+<td><span class="zh">合约问的，是不是你以为的那个问题？</span><span class="en">Is the contract asking the question you think it is?</span></td>
+<td><span class="zh">规则原文：任何核爆都算 Yes，<b>「includes offensive usages, nuclear tests, and accidental detonations」</b>。1998 年以后全球每一次核爆都是朝鲜核试验（2006、2009、2013、2016×2、2017），2018 年起为零。另：接口显示三个 2026 合约已于 3 月 11 日按 No 结算，其中两个尚未到期。</span><span class="en">Rules: any detonation counts, <b>"includes offensive usages, nuclear tests, and accidental detonations"</b>. Every detonation since 1998 has been a North Korean test (2006, 2009, 2013, 2016×2, 2017); none since 2018. The API also shows all three 2026 contracts settled No on 11 March, two of them before their deadline.</span></td>
+<td><span class="zh">这是「今年有没有核试验」的价格，不是核战概率。长期基准约 19%，近 8 年为 0</span><span class="en">A price on "any test this year", not on nuclear war. Long-run base rate ~19%, last 8 years 0</span></td>
+<td class="v-no">not_comparable<br><span class="note">for "nuclear war"</span></td></tr>
+<tr><td class="n">2</td>
+<td><span class="zh">价格能直接读成概率吗？</span><span class="en">Can the price be read as a probability?</span></td>
+<td><span class="zh">买 No 要付 0.785 并锁到年底（约 0.83 年）。按 4% 资金成本，报价折回约 18.9%。同一平台的研究：10 美分以下的买入平均每美元亏 19.3 美分（低价合约偏贵）；政治类价格长期被压向 50%。</span><span class="en">Buying No costs 0.785 locked to year-end (~0.83y). At a 4% cost of capital the quote carries back to ~18.9%. Polymarket studies: purchases under 10¢ lose 19.3¢ per dollar (longshots overpriced); political prices compress toward 50%.</span></td>
+<td><span class="zh">方向向下；资金成本只解释约 2.6 个百分点，偏差大小无法精确给出</span><span class="en">Downward; carry explains only ~2.6pp, the bias size cannot be pinned down</span></td>
+<td class="v-under">band_only</td></tr>
+<tr><td class="n">3</td>
+<td><span class="zh">这类盘有没有足够的结算记录证明它准？</span><span class="en">Is there enough settlement history to show it is calibrated?</span></td>
+<td><span class="zh">此前 9 个同类合约（2022-10 → 2025-12）全部 No，日均报价 3%–11%。期限互相重叠，独立观测约 3 年。若真实年概率为 15%，连续 3 年全 No 的机会是 61%；要靠全 No 记录在 5% 水平上推翻 15%，需要 19 年。</span><span class="en">All 9 earlier contracts (2022-10 → 2025-12) resolved No, average daily quotes 3%–11%. Windows overlap: about 3 independent years. If the true annual rate were 15%, three straight No years happen 61% of the time; rejecting 15% at the 5% level on an all-No record takes 19 years.</span></td>
+<td><span class="zh">「过去都是 No」既不能说明它高估，也不能说明它准</span><span class="en">"Always No so far" shows neither overpricing nor accuracy</span></td>
+<td class="v-under">underpowered</td></tr>
+<tr><td class="n">4</td>
+<td><span class="zh">这个价格是多少人定的？</span><span class="en">How many people set this price?</span></td>
+<td><span class="zh">全年合约公开成交 1,610 笔、约 $80.6k、364 个钱包；前 5 个占 50.4%，前 10 个占 63%。按集中度（HHI = 0.063）折算，相当于约 16 个同等体量的独立钱包。报出 22% 的 3 月 4 日，当天成交约 $4.3k。</span><span class="en">The full-year contract: 1,610 public trades, ~$80.6k, 364 wallets; top 5 hold 50.4% of notional, top 10 hold 63%. Concentration (HHI = 0.063) is equivalent to about 16 equal-sized independent wallets. On 4 March, the day of the 22% quote, about $4.3k traded.</span></td>
+<td><span class="zh">「市场共识」实际是十几个钱包的共识</span><span class="en">The "crowd" is a dozen or so wallets</span></td>
+<td class="v-under">thin</td></tr>
+<tr><td class="n">5</td>
+<td><span class="zh">下注的人能不能左右结果？</span><span class="en">Can traders influence the outcome?</span></td>
+<td><span class="zh">普通交易者无法引发一次核爆，这一条基本不成立。可能存在的是知情者（例如提前知道试验时间），那会让价格更有信息量，而不是更像激励。</span><span class="en">No ordinary trader can cause a detonation, so this largely does not apply. Informed insiders (e.g. advance knowledge of a test) are possible; that makes the price more informative, not an incentive.</span></td>
+<td><span class="zh">不打折</span><span class="en">No discount</span></td>
+<td class="v-ok">passes</td></tr>
+</table></div>
+
+<div class="verdict">
+<p><b><span class="zh">结论</span><span class="en">Verdict</span></b></p>
+<p><span class="zh">22% 是一个约 16 个有效钱包、几千美元日成交给出的「今年会不会有核试验或核爆」的价格。读成概率要向下修，修多少不确定；它和过去 27 年的核试验频率（19%）大致相当。拿它当「核战概率」，题目就错了；拿它当「这个盘准不准」的证据，样本也远远不够。</span><span class="en">22% is a price on "any test or detonation this year", set by about 16 effective wallets trading a few thousand dollars a day. Read as a probability it should be revised down, by an uncertain amount; it sits close to the 27-year test frequency (19%). As a "probability of nuclear war" it answers the wrong question; as evidence the market is calibrated, the record is far too short.</span></p>
+</div>
+
+<h2><span class="zh">二 · 此前 9 个已到期的同类合约</span><span class="en">2 · Nine earlier contracts of the same kind</span></h2>
+<div class="wrap"><table>
+<tr><th><span class="zh">合约</span><span class="en">CONTRACT</span></th><th><span class="zh">交易区间</span><span class="en">TRADED</span></th><th><span class="zh">日均报价</span><span class="en">MEAN DAILY QUOTE</span></th><th><span class="zh">成交额（平台口径）</span><span class="en">VOLUME (PLATFORM)</span></th><th><span class="zh">结算</span><span class="en">RESOLVED</span></th></tr>
+<tr><td><a href="https://polymarket.com/event/will-a-nuclear-weapon-be-detonated-before-2023">before 2023</a></td><td>2022-10-31 → 2022-12-31</td><td class="n">—</td><td class="n">$33,205</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/will-a-nuclear-weapon-detonate-by">by June 30, 2023</a></td><td>2023-01-31 → 2023-06-30</td><td class="n">5.0%</td><td class="n">$427,620</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/will-a-nuclear-weapon-detonate-by">by Dec 31, 2023</a></td><td>2023-05-23 → 2023-12-31</td><td class="n">7.9%</td><td class="n">$179,951</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/will-a-nuclear-weapon-detonate-by">by June 30, 2024</a></td><td>2023-12-29 → 2024-06-30</td><td class="n">11.4%</td><td class="n">$90,601</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/will-a-nuclear-weapon-detonate-in-2024">in 2024 (Jul–Dec)</a></td><td>2024-07-02 → 2024-12-31</td><td class="n">9.7%</td><td class="n">$4,742,982</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/nuclear-weapon-detonation-by">by Mar 31, 2025</a></td><td>2024-12-03 → 2025-03-31</td><td class="n">5.5%</td><td class="n">$827,456</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/nuclear-weapon-detonation-by">by June 30, 2025</a></td><td>2024-12-03 → 2025-06-30</td><td class="n">7.0%</td><td class="n">$883,595</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/nuclear-weapon-detonation-before-october">before Oct 2025</a></td><td>2025-07-03 → 2025-09-30</td><td class="n">3.1%</td><td class="n">$224,981</td><td class="v-no">No</td></tr>
+<tr><td><a href="https://polymarket.com/event/nuclear-weapon-detonation-in-2025">in 2025</a></td><td>2024-12-30 → 2025-12-31</td><td class="n">11.0%</td><td class="n">$2,903,760</td><td class="v-no">No</td></tr>
+</table></div>
+<p class="note"><span class="zh">日均报价为 Yes 合约日线收盘的简单平均，期限各不相同，不能横向直接比较。成交额为平台接口的 <code>volume</code> 字段，与第一节用公开成交记录（数量 × 价格）算出的口径不同。</span><span class="en">Mean daily quote is the simple average of daily Yes closes; horizons differ, so rows are not directly comparable. Volume is the platform API's <code>volume</code> field, a different measure from the size × price sum used in section 1.</span></p>
+
+<h2><span class="zh">三 · 换成 Evidence Deflator 的输入</span><span class="en">3 · As Evidence Deflator inputs</span></h2>
+<p class="note"><span class="zh">这五道折扣对应一组由调用方提供、工具不抓取的输入（草案，尚未实现）：</span><span class="en">The five discounts map to inputs supplied by the caller, never fetched by the tool (draft, not implemented):</span></p>
+<ul class="note">
+<li><code>resolution_text</code> + <code>your_question</code> — <span class="zh">合约规则原文和你真正要问的问题，逐条对照</span><span class="en">contract rules and the question you actually mean, compared clause by clause</span></li>
+<li><code>price</code>, <code>expiry</code>, <code>cost_of_capital</code> — <span class="zh">折回带资金成本的区间</span><span class="en">carry-adjusted band</span></li>
+<li><code>resolved_comparables</code> — <span class="zh">同类已结算合约数和独立年数</span><span class="en">count of resolved comparable contracts and independent periods</span></li>
+<li><code>wallet_notional</code> — <span class="zh">按钱包的成交额分布，用于算有效钱包数</span><span class="en">notional by wallet, for the effective-wallet count</span></li>
+<li><code>act_sensitive</code> + <code>source</code> — <span class="zh">能否被交易者左右，并写明依据</span><span class="en">whether traders can move the outcome, with the basis stated</span></li>
+</ul>
+
+<h2><span class="zh">前人工作</span><span class="en">Prior work</span></h2>
+<p class="note"><span class="zh"><a href="https://arxiv.org/abs/2602.19520">Decomposing Crowd Wisdom</a>（3.53 亿笔交易）：「a price's meaning depends on what, when and how much is traded」。<a href="https://arxiv.org/abs/2609.12878">The Favorite–Longshot Bias … Polymarket</a>（5.88 亿笔）发现：按合约等权时低价合约每美元亏 6.3 美分，先按母事件归组则变成赚 4.1 美分——相关合约是否算成独立样本，会翻转结论，这正是第三、四道折扣的问题。<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7355302">Chaos Contracts</a>（Jonker &amp; Victoria, 2026）给出第五道折扣的判据：交易能否改变结果。本页的增量更窄：把这些判据逐条套到一个具体价格上，每个数都可以从公开接口复现。</span><span class="en"><a href="https://arxiv.org/abs/2602.19520">Decomposing Crowd Wisdom</a> (353M trades): "a price's meaning depends on what, when and how much is traded". <a href="https://arxiv.org/abs/2609.12878">The Favorite–Longshot Bias … Polymarket</a> (588M trades): longshots lose 6.3¢ per dollar when contracts are weighted equally but gain 4.1¢ once related contracts are grouped by parent event — whether related contracts count as independent flips the answer, the issue behind discounts 3 and 4. <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7355302">Chaos Contracts</a> (Jonker &amp; Victoria, 2026) supplies the test for discount 5. What this page adds is narrower: the criteria applied one by one to a single price, every number reproducible from public endpoints.</span></p>
+
+<h2><span class="zh">做法与限定</span><span class="en">Method and limits</span></h2>
+<ul class="note">
+<li><span class="zh">数据于 2026-10-06 取自 Polymarket 公开接口：<code>gamma-api</code>（规则、结算、平台成交额）、<code>clob /prices-history</code>（日线）、<code>data-api /trades</code>（逐笔成交）。核试验年份取自 <a href="https://www.armscontrol.org/factsheets/nuclear-testing-tally">Arms Control Association 核试验统计表</a>。</span><span class="en">Data pulled 2026-10-06 from Polymarket's public endpoints: <code>gamma-api</code> (rules, settlement, platform volume), <code>clob /prices-history</code> (daily), <code>data-api /trades</code> (fills). Test years from the <a href="https://www.armscontrol.org/factsheets/nuclear-testing-tally">Arms Control Association tally</a>.</span></li>
+<li><span class="zh">媒体报道的 $65 万–$83.8 万是整个事件（三个期限合计）按平台口径的成交额，本页第一节只统计全年合约的公开成交记录，两者不可直接比较。中文报道中的「24%」在日线数据里没有找到，日线最高为 0.215（不含上市首日）。</span><span class="en">The $650k–$838k reported by media is event-level platform volume across three deadlines; section 1 counts only the full-year contract's public fills, so the two are not comparable. The "24%" in some Chinese reports does not appear in the daily data; the daily high was 0.215 (excluding listing day).</span></li>
+<li><span class="zh">「3 月 11 日按 No 结算」是接口字段（<code>outcomePrices = [0, 1]</code>，<code>closedTime</code>）显示的状态；平台是否另有退款安排，本页无法核实。</span><span class="en">"Settled No on 11 March" is what the API fields show (<code>outcomePrices = [0, 1]</code>, <code>closedTime</code>); whether the platform made other arrangements for holders cannot be checked here.</span></li>
+<li><span class="zh">4% 资金成本为假设值。低价合约偏差的数字来自全平台研究，这个盘属于哪一类、偏差多大，没有单独估计。有效钱包数按成交额而非持仓计算。</span><span class="en">The 4% cost of capital is an assumption. Longshot-bias figures are platform-wide; this market's category and bias were not estimated separately. Effective wallets are computed on traded notional, not positions.</span></li>
+<li><span class="zh">一人审计，欢迎指正。</span><span class="en">One auditor; corrections welcome.</span></li>
+</ul>
+<p class="note">decision-confidence · <a href="https://github.com/Beltran12138/decision-confidence">GitHub</a> · <a href="audit.html"><span class="zh">LLM 交易论文公开审计</span><span class="en">LLM trading paper audit</span></a></p>
+</main>
+<script>
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{document.body.dataset.l=b.dataset.k;
+ document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x===b));});
+</script>
+</body>
+</html>
