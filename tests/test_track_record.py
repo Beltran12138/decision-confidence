@@ -20,7 +20,7 @@ CLI = os.path.join(ROOT, "tools", "record.py")
 
 from messages import LANGS, text  # noqa: E402
 from textcompare import flat  # noqa: E402
-from track_record import track_record  # noqa: E402
+from track_record import effective_records, track_record  # noqa: E402
 
 
 class Arithmetic(unittest.TestCase):
@@ -121,3 +121,78 @@ class Cli(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Overlap(unittest.TestCase):
+    """effective_records: identical series collapse, unmeasured pairs buy nothing."""
+
+    def days(self, n):
+        return ["2026-09-%02d" % (i + 1) for i in range(n)]
+
+    def test_identical_series_count_once(self):
+        d = self.days(25)
+        xs = {k: float((i * 7) % 11) for i, k in enumerate(d)}
+        o = effective_records({"a": xs, "b": dict(xs)})
+        self.assertAlmostEqual(o.n_eff, 1.0)          # 2^2 / (2 + 2*1)
+        self.assertLess(o.n_eff_floor, 1.2)
+
+    def test_unmeasured_pair_buys_no_discount(self):
+        # Here a lower n_eff shrinks the screening charge, so an unmeasured
+        # pair is charged as independent: n_eff stays at n.
+        a = {k: float(i) for i, k in enumerate(self.days(25))}
+        b = {"2026-10-01": 1.0}
+        o = effective_records({"a": a, "b": b})
+        self.assertEqual(len(o.unmeasured), 1)
+        self.assertAlmostEqual(o.n_eff, 2.0)
+        self.assertAlmostEqual(o.n_eff_floor, 2.0)
+
+    def test_floor_correction_raises_n_eff_on_noise(self):
+        import random
+        rng = random.Random(7)
+        d = self.days(30)
+        series = {f"w{j}": {k: rng.gauss(0, 1) for k in d} for j in range(10)}
+        o = effective_records(series)
+        # Independent noise: raw |rho| still charges ~0.15 per pair.
+        self.assertLess(o.n_eff, o.n_eff_floor)
+        self.assertGreater(o.n_eff_floor, 7.0)
+
+    def test_mirror_images_are_two_chances(self):
+        # Long and short the same thing: one of them tops the board either way.
+        d = self.days(25)
+        xs = {k: float((i * 7) % 11) for i, k in enumerate(d)}
+        o = effective_records({"long": xs, "short": {k: -v for k, v in xs.items()}})
+        self.assertAlmostEqual(o.n_eff, 2.0)
+        self.assertAlmostEqual(o.mean_abs_rho, 1.0)
+
+    def test_universe_extrapolation_agrees_at_n(self):
+        d = self.days(25)
+        base = {k: float(i % 5) for i, k in enumerate(d)}
+        o = effective_records({"a": base, "b": {k: v + (i % 3) for i, (k, v)
+                                                in enumerate(base.items())}},
+                              universe=2)
+        self.assertAlmostEqual(o.universe_n_eff, o.n_eff_floor)
+
+    def test_universe_smaller_than_sample_rejected(self):
+        d = {k: float(i) for i, k in enumerate(self.days(25))}
+        with self.assertRaises(ValueError):
+            effective_records({"a": d, "b": d, "c": d}, universe=2)
+
+
+class HyperliquidAdapter(unittest.TestCase):
+
+    def test_deposit_is_not_a_return(self):
+        from adapters.hyperliquid import daily_returns
+        day = 86_400_000
+        t0 = 1_790_000_000_000 - 1_790_000_000_000 % day + 3_600_000
+        payload = [["perpMonth", {
+            # Account value doubles on day 2 from a deposit; PnL moves by 10.
+            "accountValueHistory": [[t0, "1000"], [t0 + day, "2010"], [t0 + 2 * day, "2030"]],
+            "pnlHistory": [[t0, "0"], [t0 + day, "10"], [t0 + 2 * day, "30"]],
+        }]]
+        r = list(daily_returns(payload).values())
+        self.assertAlmostEqual(r[0], 10 / 1000)       # not (2010-1000)/1000
+        self.assertAlmostEqual(r[1], 20 / 2010)
+
+    def test_missing_window_is_empty_not_an_error(self):
+        from adapters.hyperliquid import daily_returns
+        self.assertEqual(daily_returns([["day", {}]]), {})

@@ -47,7 +47,7 @@ from effective_window import (
 from messages import DEFAULT_LANG, resolve_lang, text
 from trial_count import TrialCount
 
-__all__ = ["Reading", "TrackRecord", "track_record"]
+__all__ = ["Reading", "RecordOverlap", "TrackRecord", "effective_records", "track_record"]
 
 # Average Gregorian month in days. Used only to express a day-precision length
 # in the same unit as ``months_for_power``.
@@ -199,4 +199,148 @@ def track_record(
         total_months=round(total, 1), target_sharpe=target_sharpe,
         t_threshold=t_threshold, as_shown=as_shown, since_picked=since,
         note=note, lang=lang,
+    )
+
+
+# ---- how many independent records was it chosen from? ------------------
+
+@dataclass
+class RecordOverlap:
+    """Kish n_eff over a set of return series, with the noise floor named.
+
+    Overlap is the **positive part** of rho, not |rho| as in ``tools/neff.py``.
+    There the question is whether two columns answer the same question, and a
+    mirror image does. Here it is how many chances the selector had, and two
+    wallets that are long and short the same thing are two chances — whichever
+    way the market goes, one of them tops the board. Counting -0.8 as overlap
+    would shrink the screening charge for exactly the pair that inflates it.
+
+    On short series even the positive part has a bias with a direction: for two
+    *independent* series it averages half of sqrt(2 / (pi * (T - 1))) — 0.075 on
+    30 days — so noise alone makes the records look alike, shrinks n_eff, and
+    shrinks the charge. ``n_eff_floor`` subtracts that expectation first, and is
+    the one to pass as ``effective_trials``. ``mean_abs_rho`` and ``null_floor``
+    are reported on the |rho| scale for comparison with ``neff.py``.
+
+    ``universe_n_eff`` extrapolates to the whole universe the records were
+    drawn from, *if* the measured mean |rho| held across it. It is not a
+    measurement, and the sample is usually the top of a leaderboard, whose
+    members are more alike than the board — so it errs low, the flattering way.
+    """
+    n: int
+    days: int               # median overlap per pair
+    mean_abs_rho: float
+    null_floor: float
+    n_eff: float
+    n_eff_floor: float
+    unmeasured: List[Tuple[str, str]]
+    universe: Optional[int] = None
+    universe_n_eff: Optional[float] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+def _ranks(xs: List[float]) -> List[float]:
+    order = sorted(range(len(xs)), key=lambda i: xs[i])
+    ranks = [0.0] * len(xs)
+    i = 0
+    while i < len(order):
+        j = i
+        while j + 1 < len(order) and xs[order[j + 1]] == xs[order[i]]:
+            j += 1
+        for k in range(i, j + 1):
+            ranks[order[k]] = (i + j) / 2.0
+        i = j + 1
+    return ranks
+
+
+def _spearman(xs: List[float], ys: List[float]) -> Optional[float]:
+    rx, ry = _ranks(xs), _ranks(ys)
+    n = len(rx)
+    mx, my = sum(rx) / n, sum(ry) / n
+    sxy = sum((a - mx) * (b - my) for a, b in zip(rx, ry))
+    sxx = sum((a - mx) ** 2 for a in rx)
+    syy = sum((b - my) ** 2 for b in ry)
+    if sxx == 0 or syy == 0:
+        return None
+    return sxy / (sxx * syy) ** 0.5
+
+
+def _kish(n: int, total_offdiag: float) -> float:
+    return (n * n) / (n + total_offdiag)
+
+
+def effective_records(
+    returns: Dict[str, Dict[str, float]],
+    *,
+    min_overlap: int = 20,
+    universe: Optional[int] = None,
+) -> RecordOverlap:
+    """Effective number of independent records among ``returns``.
+
+    ``returns`` maps a record's name to ``{date: return}``. Pairs are compared
+    on the dates both have; a pair with fewer than ``min_overlap`` shared dates
+    is not measured and is charged as **independent** (rho = 0).
+
+    That is the opposite of ``tools/neff.py``, and deliberately. There, n_eff
+    counts sources, a lower count is the cautious answer, and an unmeasured
+    pair is charged as identical. Here n_eff discounts a screening charge, a
+    lower count is the *flattering* answer, and charging an unmeasured pair as
+    identical would hand the record a discount nobody measured. Same rule —
+    an unmeasured pair must not buy a discount — opposite sign.
+    """
+    import math
+    from itertools import combinations
+
+    names = sorted(k for k, v in returns.items() if v)
+    if len(names) < 2:
+        raise ValueError("need at least two non-empty return series")
+    abs_rhos: List[float] = []
+    floors: List[float] = []
+    overlaps: List[int] = []
+    unmeasured: List[Tuple[str, str]] = []
+    raw_total = floor_total = 0.0
+    for a, b in combinations(names, 2):
+        shared = sorted(set(returns[a]) & set(returns[b]))
+        r = (_spearman([returns[a][d] for d in shared], [returns[b][d] for d in shared])
+             if len(shared) >= min_overlap else None)
+        if r is None:
+            unmeasured.append((a, b))
+            continue
+        null = math.sqrt(2.0 / (math.pi * (len(shared) - 1)))
+        abs_rhos.append(abs(r))
+        floors.append(null)
+        overlaps.append(len(shared))
+        pos = max(0.0, r)
+        raw_total += 2.0 * pos
+        # Subtract per pair, clip only the total. Clipping each pair at zero
+        # keeps the above-null half of the noise and drops the below-null half,
+        # which still reads noise as overlap: ten independent series came out
+        # at 6.7 effective that way.
+        floor_total += 2.0 * (pos - null / 2.0)
+    floor_total = max(0.0, floor_total)
+    n = len(names)
+    mean_abs = sum(abs_rhos) / len(abs_rhos) if abs_rhos else 0.0
+    null_floor = sum(floors) / len(floors) if floors else 0.0
+    n_eff_floor = _kish(n, floor_total)
+    uni = None
+    if universe is not None:
+        if universe < n:
+            raise ValueError(f"universe {universe} is smaller than the {n} records measured")
+        # Kish with a constant off-diagonal: N / (1 + (N - 1) * rho_bar), using
+        # the floor-corrected mean so it agrees with n_eff_floor at N = n.
+        rho_bar = (floor_total / (n * (n - 1)))
+        uni = universe / (1.0 + (universe - 1) * rho_bar)
+    overlaps.sort()
+    return RecordOverlap(
+        n=n,
+        days=overlaps[len(overlaps) // 2] if overlaps else 0,
+        mean_abs_rho=mean_abs,
+        null_floor=null_floor,
+        n_eff=_kish(n, raw_total),
+        n_eff_floor=n_eff_floor,
+        unmeasured=unmeasured,
+        universe=universe,
+        universe_n_eff=uni,
     )

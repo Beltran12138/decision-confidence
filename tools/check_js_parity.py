@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Do the browser and the library still agree?
 
-``docs/index.html`` reimplements ``src/effective_window.py`` and
-``src/counterfactual.py`` in JavaScript so the page can run with no backend.
+``docs/index.html`` reimplements ``src/effective_window.py``,
+``src/track_record.py`` and ``src/counterfactual.py`` in JavaScript so the page can run with no backend.
 Two implementations of one rule drift, and
 the drift is silent: nothing fails, the page just quietly answers a different
 question than the CLI. The footer states a checkable default for a human to
@@ -77,6 +77,7 @@ from effective_window import (  # noqa: E402
     effective_window, remedies, selection_penalty,
 )
 from messages import LANGS, MESSAGES  # noqa: E402
+from track_record import track_record  # noqa: E402
 
 T_TOL = 1e-4
 # The counterfactual side has no approximation in it — both implementations sum
@@ -122,6 +123,21 @@ CF_CASES = [
     (1, 1, 1, 0),
 ]
 CF_ALPHAS = [0.05, 0.01]
+
+# Track records: month and day precision, a pick on the first and last unit,
+# mixed precision (falls back to months), and the leaderboard case.
+RECORD_CASES = [
+    ("2026-03", "2026-08", None, 3.0, None),
+    ("2026-03", "2026-08", None, 3.0, 4800),
+    ("2026-01", "2026-12", "2026-06", 2.0, 4800),
+    ("2026-03", "2026-08", "2026-08", 1.0, None),
+    ("2026-03", "2026-08", "2026-03", 1.0, 20),
+    ("2026-03-01", "2026-09-30", "2026-06-30", 2.0, 4800),
+    ("2026-03-01", "2026-04-14", None, 2.0, None),
+    ("2024-02-29", "2026-02-28", "2025-02-28", 1.0, 50),
+    ("2026-03-01", "2026-04-14", "2026-03", 2.0, None),
+    ("2020-01", "2026-12", "2026-06", 1.0, None),
+]
 
 
 def extract_js() -> str:
@@ -226,6 +242,22 @@ console.log(JSON.stringify(out));
     return _node(harness)
 
 
+def run_node_record(core: str):
+    cases = json.dumps([list(c) for c in RECORD_CASES])
+    return _node(core + """
+const out = [];
+for (const [s, e, p, sr, tr] of %s) {
+  const r = evaluateRecord(s, e, p, sr, 2.0, tr, null, 'en');
+  out.push(r.error ? {error: r.error} : {
+    precision: r.precision,
+    shown: [r.asShown.months, r.asShown.monthsRequired, r.asShown.verdict],
+    since: r.sincePicked ? [r.sincePicked.months, r.sincePicked.monthsRequired,
+                            r.sincePicked.verdict] : null});
+}
+console.log(JSON.stringify(out));
+""" % cases)
+
+
 def close(a, b, tol):
     """None means "not computable" on both sides; it is not a number near zero."""
     if a is None or b is None:
@@ -305,6 +337,22 @@ def main() -> int:
                 or want != r["remedies"]):
             cf_bad.append((r, py, want))
 
+    rec_rows = run_node_record(core)
+    rec_bad = []
+    for case, js in zip(RECORD_CASES, rec_rows):
+        st, en, pk, sr, tr = case
+        py = track_record(st, en, picked=pk, target_sharpe=sr, trials=tr)
+        # Months to 0.051: Python rounds half-even to one decimal, JS is unrounded.
+        def same(read, got):
+            if read is None or got is None:
+                return read is None and got is None
+            return (abs(read.months - got[0]) <= 0.051
+                    and read.months_required == got[1] and read.verdict == got[2])
+        if ("error" in js or py.precision != js["precision"]
+                or not same(py.as_shown, js["shown"])
+                or not same(py.since_picked, js["since"])):
+            rec_bad.append((case, py, js))
+
     print()
     print(f"{len(rows)} 组数值组合  ·  月数不一致 {len(mismatches)}  ·  "
           f"t 最大偏差 {worst_t:.2e}（容差 {T_TOL:.0e}）")
@@ -312,6 +360,7 @@ def main() -> int:
     print(f"{len(rem_rows)} 组处方组合（含双语）  ·  逐字不一致 {len(rem_bad)}")
     print(f"{len(cf_rows)} 组扰动组合（含双语）  ·  判决/处方不一致 {len(cf_bad)}  ·  "
           f"p 最大偏差 {worst_p:.2e}（容差 {P_TOL:.0e}）")
+    print(f"{len(rec_rows)} 组战绩组合  ·  不一致 {len(rec_bad)}")
     if table_bad:
         print()
         print("文案表已漂移——页面的副本需要重新从 src/messages.py 生成：")
@@ -353,6 +402,14 @@ def main() -> int:
                 if a != b:
                     print(f"    PY: {a}")
                     print(f"    JS: {b}")
+        return 1
+    if rec_bad:
+        print()
+        print("docs/index.html 与 src/track_record.py 已漂移：")
+        for case, py, js in rec_bad:
+            print(f"  {case}")
+            print(f"    PY: {py.precision} {py.as_shown} {py.since_picked}")
+            print(f"    JS: {js}")
         return 1
     if mismatches:
         print()

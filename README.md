@@ -47,12 +47,13 @@ the time axis, worked through → [`docs/shorter-than-you-think.md`](./docs/shor
 
 ## The thirty-second version
 
-Three commands, no keys, no setup beyond Python ≥ 3.8:
+Four commands, no keys, no setup beyond Python ≥ 3.8:
 
 ```bash
 python examples/two_kinds_of_disagreement.py          # the whole argument
 python examples/live_multi_source.py --offline usdt   # three real vendors, replayed
 python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06   # the time axis
+python tools/record.py --start 2026-03 --end 2026-08 --sharpe 3 --trials 4800   # a leaderboard record
 ```
 
 The first prints these two blocks from the same engine:
@@ -425,6 +426,57 @@ disagreed with the provider's own page, and most of the rest used open-weight
 models that publish none. Where a provider publishes no cutoff, say so; do not
 estimate one.
 
+### A track record with no model behind it
+
+A copy-trading leaderboard, an on-chain whale, a vault's history: no model, no
+knowledge cutoff — but the same split, at a different date. **The day you picked
+it.** The record up to then is the one that got it picked; only what came after
+tests the choice. So `track_record` reads it two ways and does not combine them:
+
+```bash
+python tools/record.py --start 2026-03 --end 2026-08 --sharpe 3 --trials 4800
+#   as shown: have 6.0 / need 27 months at t >= 4.43  ->  underpowered
+python tools/record.py --start 2026-01 --end 2026-12 --picked 2026-06 --sharpe 2 --trials 4800
+#   as shown: have 6.0 / need 59 months   since picked: have 6.0 / need 12 months
+```
+
+*As shown* is charged for the board it was picked from — every wallet the board
+ranked, including the ones that blew up and dropped off. *Since picked* carries
+no charge, because nothing after the pick was used to make it. Quoting whichever
+one passes would be picking the better of two tests, so both are printed. Dates
+may carry a day (`YYYY-MM-DD`): a leaderboard record is often weeks long, and
+month resolution would floor 45 days to one month.
+
+The board-size charge assumes the wallets are independent tries, and they are
+not. `tools/record_neff.py` measures the discount from the wallets' daily returns
+(Hyperliquid `portfolio` payloads you fetch; the adapter is
+`src/adapters/hyperliquid.py`). Two things differ from `neff.py`, and both
+because **here a smaller count flatters the record** rather than penalising it:
+
+* overlap is the positive part of rho, not |rho| — a wallet long and one short
+  the same thing are two chances to top the board, not one;
+* an unmeasured pair is charged as independent, not identical.
+
+Short series bias the count low too: on 30 days, rho of two independent series
+averages ~0.075 on the positive side, so noise reads as overlap. The tool
+subtracts that expectation per pair before summing. On ten independent noise
+series the uncorrected count is ~5.8 and the corrected one ~9.4.
+
+Run on the 40 most profitable active wallets on Hyperliquid's board
+(2026-10-06; top 40 by 30-day PnL among accounts ≥ $100k with ≥ $1M 30-day
+volume; `perpMonth`, 31 days; 37 with data; payloads not committed, and the
+board moves daily, so a rerun will not match to the decimal): mean |rho| 0.46, effective
+count **4.4**, extrapolated to the full board of 47,419 as **4.8**. Passed as
+`--effective-trials 4.8`, six months at Sharpe 3 needs 9 months instead of 33.
+The extrapolation is not a measurement and it errs in the record's favour: the
+top of a board, in one month, is more alike than the board. Kish n_eff is a
+rough stand-in for the effective number of tests under a max; treat it as an
+order of magnitude.
+
+The i.i.d. floor is more generous here than anywhere else in the repo. Profits
+on leveraged venues arrive in bursts, and the record is the trader's fills, not
+yours after latency and slippage; both are printed with every result.
+
 ### The trial count does not survive the call stack
 
 Counting honestly still leaves a hole, and it is structural rather than moral.
@@ -573,10 +625,11 @@ look at the code.
 | **Decision-confidence (meta)** | Shipped | `build_report` / `group_by_construct` in `src/decision_confidence.py` |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
-| **MCP server** | Shipped (reference impl) | 4 tools in `src/mcp_server.py` — one per axis, plus a vendor lookup |
+| **MCP server** | Shipped (reference impl) | 5 tools in `src/mcp_server.py` — one per axis, a track-record variant of the time axis, and a vendor lookup |
 | **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window`; page `docs/index.html` |
 | **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit`; page `docs/index.html` |
 | **Trial-count provenance** | Shipped — derives the count instead of asking for it | `from_grid` / `from_runs` in `src/trial_count.py`; MCP arg `trial_grid`; page accepts `5x2x2` in the trials field |
+| **Track record (no model)** | Shipped — splits at the pick date; measures the board-size discount | `track_record` / `effective_records` in `src/track_record.py`; CLI `tools/record.py`, `tools/record_neff.py`; MCP tool `track_record`; page `docs/index.html#record` |
 | **Cutoff provenance** | Shipped — records who vouches for the cutoff; never verifies it | `cutoff_source` on `effective_window`; CLI `--cutoff-source`; MCP arg `cutoff_source`. Not yet on the page |
 | **Calibration** | Harness shipped; **run on 406 real labels, produced no usable threshold** | `tools/calibrate.py` — see below |
 
@@ -846,7 +899,7 @@ pip install -e ".[mcp]"
 python src/mcp_server.py          # stdio; or: decision-confidence-mcp
 ```
 
-Four tools — one per axis, plus a lookup:
+Five tools — one per axis, a track-record variant of the time axis, and a lookup:
 
 - `decision_confidence(subject, sources, weights?)` → the full report across
   **sources**: observations, per-construct groups, composite (or `null` with
@@ -857,6 +910,9 @@ Four tools — one per axis, plus a lookup:
   → the same discount across **time**: months open book, months of clean
   sample, months an inference needs, `verdict`, and `remedies` — concrete
   actions dispatched on what actually caused the failure.
+- `track_record(start, end, picked?, target_sharpe?, t_threshold?, trials?, effective_trials?)`
+  → the time axis for a record with **no model behind it** — a leaderboard
+  wallet, a vault, a fund. Two readings split at the pick date, never combined.
 - `counterfactual_audit(perturbations, alpha?, lang?)` → the same discount across
   **inputs**. You run the perturbations; it scores the table. Each entry is
   `{"kind": "material"|"cosmetic", "detail": str, "flipped": bool}`.

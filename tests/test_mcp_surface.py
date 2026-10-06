@@ -47,11 +47,11 @@ class ToolRegistration(unittest.TestCase):
     def tools(self):
         return {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
 
-    def test_all_four_tools_are_reachable(self):
+    def test_all_five_tools_are_reachable(self):
         self.assertEqual(
             set(self.tools()),
-            {"decision_confidence", "knowledge_window", "counterfactual_audit",
-             "list_supported_vendors"},
+            {"decision_confidence", "knowledge_window", "track_record",
+             "counterfactual_audit", "list_supported_vendors"},
         )
 
     def test_the_three_axes_do_not_leak_into_each_other(self):
@@ -68,6 +68,9 @@ class ToolRegistration(unittest.TestCase):
         self.assertFalse(props["knowledge_window"] & {"sources", "perturbations"})
         self.assertFalse(props["counterfactual_audit"] & {"sources", "cutoff",
                                                           "start", "end"})
+        # A track record has no model, so it must not ask for a cutoff.
+        self.assertFalse(props["track_record"] & {"cutoff", "cutoff_source",
+                                                  "sources", "perturbations"})
 
     def test_the_time_axis_is_its_own_tool(self):
         """Not folded into decision_confidence.
@@ -132,6 +135,34 @@ class ToolDescription(unittest.TestCase):
 
     def test_it_says_sufficient_is_not_evidence(self):
         self.assertIn("not* evidence the strategy works", self.description())
+
+
+@unittest.skipUnless(HAVE_MCP, "optional 'mcp' extra not installed")
+class TrackRecordToolDescription(unittest.TestCase):
+    """The lines that stop an agent quoting a leaderboard as evidence."""
+
+    def description(self):
+        tools = {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
+        return tools["track_record"].description or ""
+
+    def test_only_the_dates_are_required(self):
+        tools = {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
+        self.assertEqual(set(tools["track_record"].inputSchema.get("required", [])),
+                         {"start", "end"})
+
+    def test_it_says_the_board_size_is_not_1(self):
+        d = self.description()
+        self.assertIn("**not 1**", d)
+        self.assertIn("not a neutral default", d)
+
+    def test_it_asks_for_the_pick_date(self):
+        self.assertIn("Ask the user rather than omit it", self.description())
+
+    def test_it_forbids_quoting_whichever_reading_passes(self):
+        self.assertIn("Do not quote whichever reading passes", self.description())
+
+    def test_underpowered_is_not_no_skill(self):
+        self.assertIn('not as "the trader has no skill"', self.description())
 
 
 @unittest.skipUnless(HAVE_MCP, "optional 'mcp' extra not installed")

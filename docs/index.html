@@ -501,6 +501,62 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
 </div>
 </div><!-- /wout -->
 
+<div class="sec" id="record">
+  <div class="pill"><span data-lang="zh">战绩 &middot; 没有模型的那种</span><span data-lang="en">TRACK RECORD &middot; NO MODEL INVOLVED</span></div>
+  <h2 data-lang="zh">跟单榜上的钱包、金库、基金：分界点是你选中它的那天</h2>
+  <h2 data-lang="en">A leaderboard wallet, a vault, a fund: the split is the day you picked it</h2>
+  <div class="hint" style="margin-bottom:14px" data-lang="zh">
+    没有知识截止日，但有同样的分界：选中之前的战绩，是<b style="color:var(--ink)">让它被选中</b>的那段；
+    只有选中之后的才检验这个选择。日期写 <code>YYYY-MM</code> 或 <code>YYYY-MM-DD</code>，
+    全部带「日」才按天算。「从多少个里挑」对排行榜来说是<b style="color:var(--ink)">榜单排过的全部钱包，不是 1</b>。
+  </div>
+  <div class="hint" style="margin-bottom:14px" data-lang="en">
+    No knowledge cutoff, but the same split: the record up to the pick is the one that
+    <b style="color:var(--ink)">got it picked</b>; only what came after tests the choice.
+    Dates are <code>YYYY-MM</code> or <code>YYYY-MM-DD</code>, counted in days only when all
+    of them have a day. "Chosen from" for a leaderboard is
+    <b style="color:var(--ink)">every wallet the board ranked, not 1</b>.
+  </div>
+  <div class="panel">
+    <div class="row" style="margin-top:0;gap:20px">
+      <label class="hint"><span data-lang="zh">战绩起</span><span data-lang="en">Record start</span><br><input class="dt" id="rst" value="2026-03" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">战绩止</span><span data-lang="en">Record end</span><br><input class="dt" id="ren" value="2026-08" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">选中日期</span><span data-lang="en">Picked on</span><br><input class="dt" id="rpk" value="" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">目标 Sharpe</span><span data-lang="en">Target Sharpe</span><br>
+        <select class="dt" id="rsr">
+          <option value="3" selected>3.0</option><option value="2">2.0</option><option value="1">1.0</option><option value="0.5">0.5</option>
+        </select></label>
+      <label class="hint"><span data-lang="zh">t 门槛</span><span data-lang="en">t bar</span><br>
+        <select class="dt" id="rt">
+          <option value="2" selected>2.0</option><option value="3">3.0</option>
+        </select></label>
+      <label class="hint"><span data-lang="zh">从多少个里挑</span><span data-lang="en">Chosen from</span><br>
+        <input class="dt" id="rtr" value="4800" spellcheck="false"></label>
+      <label class="hint"><span data-lang="zh">其中独立几个</span><span data-lang="en">Of those, independent</span><br>
+        <input class="dt" id="ret" value="" spellcheck="false"></label>
+    </div>
+    <div class="hint" style="margin-top:12px" data-lang="zh">
+      「其中独立几个」<b style="color:var(--ink)">必须是量出来的</b>：<code>tools/record_neff.py</code> 用这些钱包的日收益算。
+      对冲的两面（一个做多、一个做空同一样东西）算<b style="color:var(--ink)">两次机会</b>，不算重复。
+    </div>
+    <div class="hint" style="margin-top:12px" data-lang="en">
+      "Of those, independent" <b style="color:var(--ink)">has to be measured</b>:
+      <code>tools/record_neff.py</code> computes it from the wallets' daily returns. Two wallets
+      long and short the same thing count as <b style="color:var(--ink)">two chances</b>, not one.
+    </div>
+    <div class="row">
+      <button class="btn" id="rgo"><span data-lang="zh">算一下</span><span data-lang="en">Compute</span></button>
+    </div>
+    <div class="err" id="rerr"></div>
+  </div>
+  <div id="rout" style="display:none;margin-top:16px">
+    <div class="panel">
+      <table id="rtab"><tbody></tbody></table>
+      <div id="rverdict" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
 <div class="hr"></div>
 
 <div class="kicker" id="perturb" style="margin-top:46px">DECISION-CONFIDENCE &middot; <span data-lang="zh">反事实扰动</span><span data-lang="en">COUNTERFACTUAL PERTURBATION</span></div>
@@ -1464,6 +1520,9 @@ const I18N = {
   "record.cli.since_picked": {en: "Since picked (out of sample)", zh: "选中之后（样本外）"},
   "record.cli.row": {en: "  have {months:.1f} / need {months_required} months at t >= {t_bar:.2f}  ({power_ratio:.0%})  ->  {verdict}", zh: "  实有 {months:.1f} / 需要 {months_required} 个月，门槛 t ≥ {t_bar:.2f}（{power_ratio:.0%}）→ {verdict}"},
   "record.cli.screened": {en: "  chosen from {trials} (counted {effective_trials:g}): bar {t_base:.2f} -> {t_adjusted:.2f}, need {months_base} -> {months_adjusted} months", zh: "  从 {trials} 个里挑出（计 {effective_trials:g} 个独立）：门槛 {t_base:.2f} → {t_adjusted:.2f}，所需 {months_base} → {months_adjusted} 个月"},
+  "record.web.err_dates": {en: "Dates must be written YYYY-MM or YYYY-MM-DD, and be real dates.", zh: "日期要写成 YYYY-MM 或 YYYY-MM-DD，且必须是真实存在的日期。"},
+  "record.web.err_range": {en: "The record ends before it starts.", zh: "战绩的结束日期早于开始日期。"},
+  "record.web.err_pick": {en: "The pick date has to fall inside the record.", zh: "选中日期必须落在战绩区间之内。"},
   "record.cli.no_combined": {en: "The two readings are not combined. Quoting whichever one passes is itself picking the better of two tests.", zh: "两种读法不合并。哪个过了就引用哪个，本身就是在两个检验里挑好看的那个。"},
 };
 
@@ -1741,6 +1800,64 @@ function parseTrialGrid(raw){
   return {count: factors.reduce(function(a, b){ return a * b; }, 1), factors: factors};
 }
 
+/* ============ 战绩：与 src/track_record.py 逐条对应 ============
+   钱包、金库、基金没有模型截止日，但有同样的分界：选中它的那天。
+   两种读法都返回，不合并——哪个过了引用哪个，本身就是在两个检验里挑。
+   精度规则与 Python 相同：所有日期都带「日」才按天算，否则按月。        */
+function recDate(s){
+  const m = /^(\d{4})-(\d{1,2})(?:-(\d{1,2}))?$/.exec(String(s).trim());
+  if(!m) return null;
+  const y = +m[1], mo = +m[2], d = m[3] === undefined ? null : +m[3];
+  if(mo < 1 || mo > 12) return null;
+  if(d !== null){
+    const t = new Date(Date.UTC(y, mo-1, d));
+    if(t.getUTCFullYear() !== y || t.getUTCMonth() !== mo-1 || t.getUTCDate() !== d) return null;
+  }
+  return {y: y, m: mo, d: d};
+}
+
+function evaluateRecord(stS, enS, pkS, sr, tb, trials, effTr, lang){
+  lang = txLang(lang || I18N_DEFAULT);
+  if (trials !== null && (!Number.isInteger(trials) || trials < 1))
+    return {error: tx('web.err_trials', lang)};
+  if (effTr !== null && trials === null)
+    return {error: tx('web.err_eff_without_trials', lang)};
+  if (effTr !== null && (!(effTr >= 1) || effTr > trials))
+    return {error: tx('web.err_eff_range', lang)};
+  const s = recDate(stS), e = recDate(enS);
+  const p = (pkS === null || pkS === '') ? null : recDate(pkS);
+  if (s === null || e === null || (pkS !== null && pkS !== '' && p === null))
+    return {error: tx('record.web.err_dates', lang)};
+  const ds = [s, e].concat(p ? [p] : []);
+  const day = ds.every(function(x){ return x.d !== null; });
+  const MONTH_DAYS = 365.2425 / 12;
+  const idx = day ? function(x){ return Date.UTC(x.y, x.m-1, x.d) / 86400000; }
+                  : function(x){ return x.y*12 + x.m - 1; };
+  const unit = day ? 1 / MONTH_DAYS : 1;
+  const si = idx(s), ei = idx(e);
+  if (ei < si) return {error: tx('record.web.err_range', lang)};
+  let shown = (ei - si + 1) * unit, after = null;
+  if (p){
+    const pi = idx(p);
+    if (pi < si || pi > ei) return {error: tx('record.web.err_pick', lang)};
+    shown = (pi - si + 1) * unit;
+    after = (ei - pi) * unit;
+  }
+  function verdict(m, req){ return m <= 0 ? 'no_holdout' : (m >= req ? 'sufficient' : 'underpowered'); }
+  const sel = trials === null ? null : selectionPenalty(trials, effTr, tb, sr);
+  const shownReq = sel === null ? monthsForPower(sr, tb) : sel.monthsAdj;
+  const plainReq = monthsForPower(sr, tb);
+  return {
+    precision: day ? 'day' : 'month',
+    totalMonths: (ei - si + 1) * unit, targetSharpe: sr, tBase: tb, lang: lang,
+    asShown: {months: shown, monthsRequired: shownReq, tBar: sel === null ? tb : sel.tAdj,
+              verdict: verdict(shown, shownReq), powerRatio: shown / shownReq, selection: sel},
+    sincePicked: p === null ? null :
+             {months: after, monthsRequired: plainReq, tBar: tb,
+              verdict: verdict(after, plainReq), powerRatio: after / plainReq, selection: null}
+  };
+}
+
 function runWindow(){
   const cutS = $('wcut').value, stS = $('wst').value, enS = $('wen').value;
   const sr = parseFloat($('wsr').value), tb = parseFloat($('wt').value);
@@ -1911,6 +2028,45 @@ function runWindow(){
    「确认一个持怀疑态度的人会给出同样的分类」—— 清单不在屏幕上，这句话就是空的。 */
 
 let PROWS = [];
+
+function runRecord(){
+  const L = uiLang();
+  const trRaw = $('rtr').value.trim(), etRaw = $('ret').value.trim();
+  const r = evaluateRecord($('rst').value, $('ren').value, $('rpk').value.trim(),
+                           parseFloat($('rsr').value), parseFloat($('rt').value),
+                           trRaw === '' ? null : Number(trRaw),
+                           etRaw === '' ? null : Number(etRaw), L);
+  $('rerr').textContent = '';
+  if (r.error){ $('rerr').textContent = r.error; $('rout').style.display = 'none'; return; }
+  const esc = function(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+  const TONE = {no_holdout: 'warn', underpowered: 'warn info', sufficient: 'warn ok'};
+  let rows = '';
+  [['record.cli.as_shown', r.asShown], ['record.cli.since_picked', r.sincePicked]].forEach(function(pair){
+    const x = pair[1];
+    if (!x) return;
+    rows += '<tr><td>' + esc(tx(pair[0], L)) + '</td><td class="mono">' +
+      esc(tx('record.cli.row', L, {months: x.months, months_required: x.monthsRequired,
+        t_bar: x.tBar, power_ratio: x.powerRatio, verdict: x.verdict}).trim()) + '</td></tr>';
+    if (x.selection && x.selection.trials > 1)
+      rows += '<tr><td></td><td class="mono">' + esc(tx('record.cli.screened', L, {
+        trials: x.selection.trials, effective_trials: x.selection.nEff, t_base: x.selection.tBase,
+        t_adjusted: x.selection.tAdj, months_base: x.selection.monthsBase,
+        months_adjusted: x.selection.monthsAdj}).trim()) + '</td></tr>';
+  });
+  $('rtab').querySelector('tbody').innerHTML = rows;
+  const parts = ['<div class="' + TONE[r.asShown.verdict] + '"><b class="mono">' +
+    r.asShown.verdict + '</b><br>' + esc(tx('record.verdict.' + r.asShown.verdict, L)) + '</div>'];
+  if (r.asShown.selection === null) parts.push('<p>' + esc(tx('record.undeclared_universe', L)) + '</p>');
+  if (r.sincePicked){
+    parts.push('<p>' + esc(tx('record.since.' + r.sincePicked.verdict, L)) + '</p>');
+    parts.push('<p>' + esc(tx('record.cli.no_combined', L)) + '</p>');
+  } else {
+    parts.push('<p>' + esc(tx('record.no_pick', L)) + '</p>');
+  }
+  parts.push('<p class="hint">' + esc(tx('record.limits', L)) + '</p>');
+  $('rverdict').innerHTML = parts.join('');
+  $('rout').style.display = 'block';
+}
 
 function renderRows(){
   const L = uiLang();
@@ -2105,6 +2261,7 @@ function setLang(lang){
   renderRows();                                   // 行内的下拉与勾选标签也要跟着换
   if ($('wout').style.display === 'block') runWindow();
   if ($('pout').style.display === 'block') runPerturb();
+  if ($('rout').style.display === 'block') runRecord();
   if ($('out').style.display === 'block') run();
   try { localStorage.setItem('dc-lang', lang); } catch (e) {}
 }
@@ -2121,6 +2278,12 @@ $('wgo').onclick = touchWindow;
   $(id).addEventListener('blur', touchWindow);
 });
 ['wsr','wt'].forEach(function(id){ $(id).onchange = touchWindow; });
+$('rgo').onclick = runRecord;
+['rst','ren','rpk','rtr','ret'].forEach(function(id){
+  $(id).addEventListener('keydown', function(ev){ if(ev.key === 'Enter') runRecord(); });
+  $(id).addEventListener('blur', runRecord);
+});
+['rsr','rt'].forEach(function(id){ $(id).onchange = runRecord; });
 
 $('wcopy').onclick = function(){
   const L = uiLang(), btn = $('wcopy');

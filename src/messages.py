@@ -806,6 +806,18 @@ MESSAGES.update({
         "zh": "  从 {trials} 个里挑出（计 {effective_trials:g} 个独立）：门槛 "
               "{t_base:.2f} → {t_adjusted:.2f}，所需 {months_base} → {months_adjusted} 个月",
     },
+    "record.web.err_dates": {
+        "en": "Dates must be written YYYY-MM or YYYY-MM-DD, and be real dates.",
+        "zh": "日期要写成 YYYY-MM 或 YYYY-MM-DD，且必须是真实存在的日期。",
+    },
+    "record.web.err_range": {
+        "en": "The record ends before it starts.",
+        "zh": "战绩的结束日期早于开始日期。",
+    },
+    "record.web.err_pick": {
+        "en": "The pick date has to fall inside the record.",
+        "zh": "选中日期必须落在战绩区间之内。",
+    },
     "record.cli.no_combined": {
         "en": "The two readings are not combined. Quoting whichever one passes is "
               "itself picking the better of two tests.",

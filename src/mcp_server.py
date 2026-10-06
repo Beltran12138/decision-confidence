@@ -8,7 +8,8 @@ from the underlying risk vendors — and everything that comes with it
 Three axes, and they are separate tools on purpose. ``decision_confidence``
 discounts evidence **across sources** and takes a subject plus vendor payloads.
 ``knowledge_window`` discounts it **across time** and takes three dates and a
-trial count. ``counterfactual_audit`` discounts it **across inputs** and takes a
+trial count; ``track_record`` does the same for a record with no model behind
+it, split at the day it was picked. ``counterfactual_audit`` discounts it **across inputs** and takes a
 list of perturbations. A subject, a backtest and an agent's responsiveness are
 three different objects, so folding any of them together would be exactly the
 category error this library exists to catch. An agent reads them separately;
@@ -43,6 +44,7 @@ from counterfactual import (  # noqa: E402
 )
 from counterfactual import remedies as cf_remedies  # noqa: E402
 from effective_window import effective_window, remedies  # noqa: E402
+from track_record import track_record as _track_record  # noqa: E402
 import trial_count  # noqa: E402
 
 try:
@@ -261,6 +263,80 @@ def knowledge_window(
     result["remedies"] = remedies(window)
     result["summary"] = window.summary()
     return result
+
+
+@mcp.tool()
+def track_record(
+    start: str,
+    end: str,
+    picked: Optional[str] = None,
+    target_sharpe: float = 1.0,
+    t_threshold: float = 2.0,
+    trials: Optional[int] = None,
+    effective_trials: Optional[float] = None,
+    lang: str = "en",
+) -> Dict[str, Any]:
+    """Check whether a track record is long enough to mean anything, before copying it.
+
+    Call this **before recommending, ranking or copying** a trader, wallet,
+    vault or fund on the strength of its past returns — a copy-trading
+    leaderboard, an on-chain whale, a vault's history, a factsheet. No model
+    and no knowledge cutoff are involved; use ``knowledge_window`` for
+    backtests run with a language model. Pure arithmetic on dates and a count.
+
+    The split is at **the day the record was picked**. Everything up to then
+    is the record that got it chosen; only what came after tests the choice.
+    So two readings come back, and they are not combined:
+
+    1. ``as_shown`` — the record that got it picked, charged for how many
+       records it was picked from. A wallet that tops a board of 4,800 is the
+       maximum of 4,800 draws: six months at Sharpe 3 needs 27 months instead
+       of 6.
+    2. ``since_picked`` — only what happened after ``picked``, at the plain
+       bar. Present only when ``picked`` is given.
+
+    Args:
+        start: First day or month of the record, ``YYYY-MM`` or ``YYYY-MM-DD``.
+        end: Last day or month, inclusive.
+        picked: When the record was chosen — when the user started copying,
+            or when the board ranked it. **Ask the user rather than omit it**;
+            without it there is no out-of-sample reading at all.
+        target_sharpe: The annualised Sharpe **being claimed**, not the one
+            the record printed.
+        t_threshold: The t bar. 2.0 by default.
+        trials: How many records this one was chosen from. For a leaderboard,
+            every wallet the board ranked — including ones that blew up and
+            dropped off — **not 1**. If you do not know, ask the user; omitting
+            it is not a neutral default, it asserts this was the only record
+            anyone looked at, and the result will say so.
+        effective_trials: How many of those were independent. Pass this only
+            when it has been **measured** (``tools/record_neff.py`` computes it
+            from the wallets' daily returns). Do not estimate it.
+        lang: ``en`` or ``zh`` for the prose in ``note``.
+
+    Returns:
+        ``as_shown`` and ``since_picked`` (or ``null``), each with ``months``,
+        ``months_required``, ``t_bar``, ``verdict`` and ``power_ratio``;
+        ``note`` with the caveats. Verdicts:
+
+        * ``underpowered`` — too short to tell. **Report this as "this record
+          cannot tell you", not as "the trader has no skill".**
+        * ``sufficient`` — length has stopped being the binding constraint. It
+          is *not* evidence the user's copy would earn the same: the record is
+          the trader's fills, not the user's after latency and slippage.
+        * ``no_holdout`` — nothing since the pick yet.
+
+        **Do not quote whichever reading passes.** Report both.
+
+    Raises:
+        ValueError: on malformed dates, an inverted range, a pick date outside
+        the record, or ``effective_trials`` without ``trials``.
+    """
+    return _track_record(
+        start, end, picked=picked, target_sharpe=target_sharpe,
+        t_threshold=t_threshold, trials=trials,
+        effective_trials=effective_trials, lang=lang,
+    ).to_dict()
 
 
 @mcp.tool()
