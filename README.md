@@ -233,9 +233,12 @@ useful check that the scale is not eccentric.
 parameter settings of one strategy are not fifty independent tests, any more
 than five vendors reading one on-chain field are five independent reads. Pass
 `effective_trials` to take that discount — but it must be **measured, not
-asserted**, and `tools/neff.py` is already the instrument: run it on the
-variants' return series and it returns the same Kish quantity. Omit it and the
-full count is charged, which over-penalises. That asymmetry is deliberate.
+asserted**: `tools/record_neff.py --table` takes the variants' return series
+as a CSV and returns the count. Not `tools/neff.py`, though both compute Kish's
+n_eff — see [the direction flips](#a-track-record-with-no-model-behind-it): a
+source counter errs toward fewer sources, which is cautious there and
+flattering here. Omit it and the full count is charged, which over-penalises.
+That asymmetry is deliberate.
 
 **And the part with no arithmetic in it.** Declaring no trials is not a neutral
 default — it is the strongest claim available, that the strategy was specified
@@ -450,7 +453,9 @@ month resolution would floor 45 days to one month.
 The board-size charge assumes the wallets are independent tries, and they are
 not. `tools/record_neff.py` measures the discount from the wallets' daily returns
 (Hyperliquid `portfolio` payloads you fetch; the adapter is
-`src/adapters/hyperliquid.py`). Two things differ from `neff.py`, and both
+`src/adapters/hyperliquid.py`), or from any wide CSV of return series with
+`--table` — which is also how to measure `effective_trials` for strategy variants
+in `window.py`, for the same reason. Two things differ from `neff.py`, and both
 because **here a smaller count flatters the record** rather than penalising it:
 
 * overlap is the positive part of rho, not |rho| — a wallet long and one short
@@ -1240,7 +1245,7 @@ nothing to enforce.
 - **Bonferroni assumes the trials are independent** and controls the
   family-wise error rate, which is stricter than controlling the false
   discovery rate. Correlated variants make it conservative — that is what
-  `effective_trials` is for, and it must be measured (`tools/neff.py`) rather
+  `effective_trials` is for, and it must be measured (`tools/record_neff.py --table`) rather
   than asserted, because a caller who may set it freely has been handed an
   escape hatch rather than a correction.
 - **A clean window is a necessary condition, not evidence of anything.**

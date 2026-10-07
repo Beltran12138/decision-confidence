@@ -178,6 +178,28 @@ select.dt{width:150px;cursor:pointer}
   .vh-cell{padding:18px 20px}
   .vh-cell .v{font-size:25px}
 }
+@media(max-width:480px){
+  .vh-cell{padding:14px 10px;min-width:0}
+  .vh-cell .k{letter-spacing:.08em}
+  .vh-cell .v{font-size:20px}
+  .vh-cell .v u{font-size:12px}
+  /* Phone width: tables shrink rather than push the page sideways. English
+     labels are the long ones ("where it came from"), so this is mostly theirs. */
+  td{padding-right:6px;overflow-wrap:break-word}
+  td.num,th.num{padding-right:8px;font-size:14px}
+  /* Label / number / long note: three columns cannot share 360px without
+     squeezing the note to one character. Stack them instead. */
+  #wsel td,#rtab td,#wreq td{display:block;padding:4px 0}
+  #wsel tr,#rtab tr,#wreq tr{display:block;padding:8px 0;border-bottom:1px solid var(--rule2)}
+  #wsel td.num,#wreq td.num{text-align:left}
+  .prow{flex-wrap:wrap}
+  .vh-stats{flex-wrap:wrap}
+  .vh-cell{flex:1 1 auto}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+  .panel{padding:18px 16px}
+  .big{font-size:60px}
+  .big small{font-size:22px}
+}
 #wout .bar{height:11px;border-radius:2px;overflow:hidden}
 #wbar{transition:width .7s cubic-bezier(.2,.8,.2,1)}
 #wout .big,#wout td,#wout th{font-variant-numeric:tabular-nums}
@@ -448,15 +470,17 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
     <div class="hint" style="margin-top:12px" data-lang="zh">
       「筛选过几个变体」＝这个策略是从多少个候选里挑出来的。<b style="color:var(--ink)">留空不是中性默认</b>，
       它断言你一次成型。「其中独立几次」是折扣，<b style="color:var(--ink)">必须是量出来的</b>——
-      用本页上半部分把那些变体的收益序列贴进去，算出的有效源数就是这个数。
+      用 <code>tools/record_neff.py --table</code> 对那些变体的收益序列量出来。
+      不要用本页上半部分：数有效源时把方向相反的变体当成重复是保守的，数挑选次数时却会让惩罚变小。
     </div>
     <div class="hint" style="margin-top:12px" data-lang="en">
       "Variants screened" is how many candidates this strategy was picked out of.
       <b style="color:var(--ink)">Leaving it blank is not a neutral default</b> &mdash;
       it asserts you got it right first time. "Of those, independent" is the discount,
-      and it <b style="color:var(--ink)">has to be measured</b>: paste those variants'
-      return series into the top half of this page, and the effective-source count it
-      returns is the number that belongs here.
+      and it <b style="color:var(--ink)">has to be measured</b>: run
+      <code>tools/record_neff.py --table</code> on those variants' return series. Not
+      the top half of this page: treating a mirror-image variant as a duplicate is
+      cautious when counting sources and flattering when counting tries.
     </div>
     <div class="row">
       <button class="btn" id="wgo"><span data-lang="zh">算一下</span><span data-lang="en">Compute</span></button>
@@ -800,8 +824,9 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
   申报一次不应该让所需长度动一个月。
   <br><br>
   <b>为什么是「独立试验数」而不是「试验数」</b>：同一个策略的 50 组参数不是 50 次独立检验，
-  就像五家供应商读同一个链上字段不是五份独立证据。这是本页上半部分在做的同一件事，
-  <b style="color:var(--gold)">所以「独立几次」应该用上半部分量出来</b>&mdash;&mdash;
+  就像五家供应商读同一个链上字段不是五份独立证据。这和本页上半部分是同一种折扣，
+  但方向相反：数源时少算是保守，数试验次数时少算是美化。
+  <b style="color:var(--gold)">所以「独立几次」要用 <code>tools/record_neff.py --table</code> 量</b>&mdash;&mdash;
   它是一个可自由填写的字段，如果凭感觉填，它就不是校正而是逃生舱。
   <br><br>
   <b>给 agent 用</b>：同一条轴有一个 MCP 工具 <code>knowledge_window</code>，
@@ -854,8 +879,10 @@ li{margin-bottom:9px;font-size:14.5px;line-height:1.7}
   <br><br>
   <b>Why independent trials and not just trials</b>: fifty parameter settings of one
   strategy are not fifty independent tests, any more than five vendors reading one
-  on-chain field are five independent reads. That is the same thing the top half of
-  this page does, <b style="color:var(--gold)">so the independent count should be measured up there</b>
+  on-chain field are five independent reads. It is the same discount as the top half
+  of this page, pointed the other way: undercounting sources is cautious, undercounting
+  tries is flattering. <b style="color:var(--gold)">So measure the independent count with
+  <code>tools/record_neff.py --table</code></b>
   &mdash; it is a free-text field, and a number filled in by feel is not a correction,
   it is an escape hatch.
   <br><br>
@@ -1408,7 +1435,7 @@ const I18N = {
   "remedy.extend": {en: "{need} months short: with the same model, the backtest would have to run to {ready} to be long enough.", zh: "还差 {need} 个月：同一个模型下，回测终点要推到 {ready} 才够。"},
   "remedy.earlier_model": {en: "Or use a model with an earlier knowledge cutoff: {latest} or earlier would be enough on this range.", zh: "或换知识截止更早的模型：截止 {latest} 及更早即够。"},
   "remedy.earlier_model_insufficient": {en: "An earlier model will not close the gap — the whole range is only {total_months} months, against {months_required} required.", zh: "换更早的模型不够——整段只有 {total_months} 个月，达不到 {months_required} 个月。"},
-  "remedy.measure_overlap": {en: "Measure how much those {trials} variants overlap: treat their return series as columns and compute Kish's effective sample size (the top half of docs/index.html takes a pasted table), then report it as effective_trials. Charged at the full {trials}, the penalty here is an upper bound. The discount has to be measured, not asserted.", zh: "量一下那 {trials} 个变体有多重合：把它们的收益序列当成列，算 Kish 有效源数（docs/index.html 上半部分可直接贴表），用 effective_trials 报实测值。现在按全额 {trials} 次计，惩罚是上界。折扣必须是量出来的，不是声明出来的。"},
+  "remedy.measure_overlap": {en: "Measure how much those {trials} variants overlap: put their return series in a CSV, one column each, and run tools/record_neff.py --table on it, then report the noise-corrected count as effective_trials. Not the source counter: it treats a mirror-image variant as a duplicate and reads noise as overlap, and both shrink this charge. Charged at the full {trials}, the penalty here is an upper bound. The discount has to be measured, not asserted.", zh: "量一下那 {trials} 个变体有多重合：把它们的收益序列放进 CSV，每个变体一列，用 tools/record_neff.py --table 跑一遍，把去掉噪声底后的数作为 effective_trials 报上来。不要用数有效源的那个工具：它把方向相反的变体当成重复，又把噪声读成重合，两者都会让这里的惩罚变小。现在按全额 {trials} 次计，惩罚是上界。折扣必须是量出来的，不是声明出来的。"},
   "remedy.already_discounted": {en: "Screening is already discounted to {n_eff:g} independent trials; going lower requires actually trying fewer things, not editing this number.", zh: "筛选已按 {n_eff:g} 次独立试验折算；再降只能靠真的少试，不能靠改这个数。"},
   "remedy.declare_trials": {en: "Declare how many variants were screened: everything above assumes you got it right first time. If you screened, the requirement only grows.", zh: "申报变体筛选次数：以上都假设你一次成型。若筛选过，所需长度只会更长。"},
   "remedy.claim_higher_sharpe": {en: "Or change the claim — {effective_months} months is only enough to demonstrate a Sharpe of {sharpe:.2f}. But that is a claim to commit to in advance, not a tier to pick after seeing the result.", zh: "或改声明——{effective_months} 个月只够证明 SR {sharpe:.2f} 的策略。但那是要先兑现的主张，不是事后挑的档位。"},
@@ -1471,7 +1498,7 @@ const I18N = {
   "web.sel_declared_note": {en: "the pool this one was picked out of", zh: "从这么多候选里挑出了当前这一个"},
   "web.sel_full_note": {en: "undiscounted, charged in full (the penalty is an upper bound)", zh: "未折扣，按全额计（惩罚是上界）"},
   "web.sel_discounted_note": {en: "measured discount applied", zh: "已按实测折扣"},
-  "web.sel_hint_full": {en: "If those {trials} variants are highly correlated, charging the full count is too heavy. Paste their return series into the top half of this page; the effective-source count it returns is what belongs in \"of those, independent\". The discount has to be measured, not asserted.", zh: "这 {trials} 个变体若彼此高度相关，全额计入就过重了。把它们的收益序列贴进本页上半部分，算出的有效源数就是「独立几次」该填的值。折扣必须是量出来的，不是声明出来的。"},
+  "web.sel_hint_full": {en: "If those {trials} variants are highly correlated, charging the full count is too heavy. Measure it with tools/record_neff.py --table on their return series. Not the top half of this page: it counts sources, treats a mirror-image variant as a duplicate and reads noise as overlap, which shrinks this charge. The discount has to be measured, not asserted.", zh: "这 {trials} 个变体若彼此高度相关，全额计入就过重了。用 tools/record_neff.py --table 对它们的收益序列量一下。不要用本页上半部分：那是数有效源的，会把方向相反的变体当成重复、把噪声读成重合，两者都会让这里的惩罚变小。折扣必须是量出来的，不是声明出来的。"},
   "web.sel_hint_discounted": {en: "Discounted to {n_eff:g} independent trials. Going lower requires actually trying fewer things, not editing this number.", zh: "已按 {n_eff:g} 次独立试验折算。再往下降只能靠真的少试，不能靠改这个数。"},
   "cf.verdict.no_control": {en: "Only one kind of perturbation was supplied, so nothing here is interpretable. Material changes alone cannot separate \"ignores its inputs\" from \"reacts to everything\"; cosmetic ones alone cannot show whether real changes register at all. Both are needed, for the same reason a control group is.", zh: "只提供了一类扰动，结果无法解读。只有实质扰动，分不开「不看输入」和「对什么都反应」；只有表面扰动，看不出真实变化到底能不能触发它。两类都要，理由和需要对照组是同一个。"},
   "cf.verdict.no_power": {en: "Even a perfect split — every material change flipping the conclusion and every cosmetic one leaving it alone — would not reach the significance bar with this many perturbations. The correct reading is not that the agent passed or failed, but that this audit cannot tell.", zh: "即便结果完美分离——每次实质扰动都翻转、每次表面扰动都不翻——以现在的扰动次数也达不到显著性门槛。正确结论不是「通过」或「没通过」，而是这次审计分辨不了。"},

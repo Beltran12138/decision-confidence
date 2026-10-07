@@ -261,14 +261,17 @@ MESSAGES: Dict[str, Dict[str, str]] = {
         "zh": "换更早的模型不够——整段只有 {total_months} 个月，达不到 {months_required} 个月。",
     },
     "remedy.measure_overlap": {
-        "en": "Measure how much those {trials} variants overlap: treat their return "
-              "series as columns and compute Kish's effective sample size (the top "
-              "half of docs/index.html takes a pasted table), then report it as "
-              "effective_trials. Charged at the full {trials}, the penalty here is an "
-              "upper bound. The discount has to be measured, not asserted.",
-        "zh": "量一下那 {trials} 个变体有多重合：把它们的收益序列当成列，"
-              "算 Kish 有效源数（docs/index.html 上半部分可直接贴表），"
-              "用 effective_trials 报实测值。现在按全额 {trials} 次计，惩罚是上界。"
+        "en": "Measure how much those {trials} variants overlap: put their return "
+              "series in a CSV, one column each, and run tools/record_neff.py --table "
+              "on it, then report the noise-corrected count as effective_trials. Not "
+              "the source counter: it treats a mirror-image variant as a duplicate and "
+              "reads noise as overlap, and both shrink this charge. Charged at the "
+              "full {trials}, the penalty here is an upper bound. The discount has to "
+              "be measured, not asserted.",
+        "zh": "量一下那 {trials} 个变体有多重合：把它们的收益序列放进 CSV，每个变体一列，"
+              "用 tools/record_neff.py --table 跑一遍，把去掉噪声底后的数作为 effective_trials 报上来。"
+              "不要用数有效源的那个工具：它把方向相反的变体当成重复，又把噪声读成重合，"
+              "两者都会让这里的惩罚变小。现在按全额 {trials} 次计，惩罚是上界。"
               "折扣必须是量出来的，不是声明出来的。",
     },
     "remedy.already_discounted": {
@@ -518,12 +521,15 @@ MESSAGES.update({
     "web.sel_discounted_note": {"en": "measured discount applied", "zh": "已按实测折扣"},
     "web.sel_hint_full": {
         "en": "If those {trials} variants are highly correlated, charging the full "
-              "count is too heavy. Paste their return series into the top half of "
-              "this page; the effective-source count it returns is what belongs in "
-              "\"of those, independent\". The discount has to be measured, not asserted.",
+              "count is too heavy. Measure it with tools/record_neff.py --table on "
+              "their return series. Not the top half of this page: it counts sources, "
+              "treats a mirror-image variant as a duplicate and reads noise as "
+              "overlap, which shrinks this charge. The discount has to be measured, "
+              "not asserted.",
         "zh": "这 {trials} 个变体若彼此高度相关，全额计入就过重了。"
-              "把它们的收益序列贴进本页上半部分，算出的有效源数就是「独立几次」该填的值。"
-              "折扣必须是量出来的，不是声明出来的。",
+              "用 tools/record_neff.py --table 对它们的收益序列量一下。"
+              "不要用本页上半部分：那是数有效源的，会把方向相反的变体当成重复、把噪声读成重合，"
+              "两者都会让这里的惩罚变小。折扣必须是量出来的，不是声明出来的。",
     },
     "web.sel_hint_discounted": {
         "en": "Discounted to {n_eff:g} independent trials. Going lower requires "

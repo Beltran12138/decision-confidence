@@ -200,8 +200,9 @@ def selection_penalty(
 
     ``effective_trials`` is the number of *independent* attempts among the
     ``trials``. Fifty parameter settings of one strategy are not fifty
-    independent tests. Pass a measured value (``tools/neff.py`` computes the
-    same Kish quantity on the variants' return series); omit it and the full
+    independent tests. Pass a measured value (``tools/record_neff.py --table``
+    computes it from the variants' return series — not ``tools/neff.py``, whose
+    |rho| and uncorrected noise both shrink this charge); omit it and the full
     count is used, which over-penalises. That asymmetry is deliberate: the
     common failure is not declaring trials at all, not declaring too many.
 

@@ -201,8 +201,10 @@ def knowledge_window(
             If the provider publishes no cutoff, do not invent one.
         effective_trials: How many of those trials were *independent*. Fifty
             parameter settings of one strategy are not fifty independent tests.
-            Pass this only when it has been **measured** — ``tools/neff.py``
-            computes it from the variants' return series. Do not estimate it,
+            Pass this only when it has been **measured** —
+            ``tools/record_neff.py --table`` computes it from the variants'
+            return series (not ``tools/neff.py``: it counts sources, and its
+            conventions shrink a screening charge). Do not estimate it,
             and do not let a user assert it without a measurement: a freely
             chosen discount is an escape hatch, not a correction. Omitted, the
             full count is charged, which over-penalises on purpose.

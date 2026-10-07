@@ -118,14 +118,17 @@ class RemedyDispatch(unittest.TestCase):
                                                   lang=lang), lang)), lang)
 
     def test_the_screening_remedy_points_at_something_that_can_do_the_job(self):
-        """Regression: it used to name tools/neff.py, which takes this repo's
-        JSONL corpus and cannot be fed an arbitrary set of return series. The
-        page's paste-a-table half can. Naming the wrong instrument is the same
-        failure as inviting a number."""
+        """Regression, twice. It first named tools/neff.py, which takes this
+        repo's JSONL corpus and cannot be fed arbitrary return series. It then
+        named the page's paste-a-table half, which can — but counts sources,
+        and a source counter's conventions (|rho|, no noise floor) both shrink
+        a screening charge. Naming an instrument that errs toward the claimant
+        is the same failure as inviting a number."""
         for lang in LANGS:
             r = remedies(run(*BASE, "--trials", "20", lang=lang), lang)
-            self.assertIn("docs/index.html", r, lang)
+            self.assertIn("tools/record_neff.py --table", r, lang)
             self.assertNotIn("tools/neff.py", r, lang)
+            self.assertNotIn("docs/index.html", r, lang)
 
     def test_an_already_discounted_count_is_not_told_to_discount_again(self):
         for lang in LANGS:

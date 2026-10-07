@@ -196,3 +196,32 @@ class HyperliquidAdapter(unittest.TestCase):
     def test_missing_window_is_empty_not_an_error(self):
         from adapters.hyperliquid import daily_returns
         self.assertEqual(daily_returns([["day", {}]]), {})
+
+
+class RecordNeffTable(unittest.TestCase):
+    """--table: identical columns collapse, a mirror column stays a separate try."""
+
+    def test_table_input(self):
+        import tempfile
+        rows = ["date,a,a_copy,a_short"]
+        for i in range(30):
+            x = ((i * 7) % 11) - 5.0
+            rows.append("2026-09-%02d,%g,%g,%g" % (i + 1, x, x, -x))
+        fd, path = tempfile.mkstemp(suffix=".csv")
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write("\n".join(rows) + "\n")
+        try:
+            p = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "record_neff.py"),
+                                "--table", path], capture_output=True, text=True,
+                               encoding="utf-8")
+        finally:
+            os.unlink(path)
+        self.assertEqual(p.returncode, 0, p.stderr)
+        self.assertIn("Series measured      3", p.stdout)
+        # a == a_copy (one try), a_short mirrors a (a second try): raw n_eff = 9/(3+2) = 1.8
+        self.assertIn("1.8", p.stdout)
+
+    def test_files_and_table_are_exclusive(self):
+        p = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "record_neff.py")],
+                           capture_output=True, text=True, encoding="utf-8")
+        self.assertNotEqual(p.returncode, 0)

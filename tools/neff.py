@@ -22,7 +22,7 @@ Reads a corpus and writes nothing. No network.
     python tools/neff.py .data/captured.jsonl
     python tools/neff.py corpus/okx-live.jsonl
 
-Two honest limits, printed with the result rather than buried here:
+Three honest limits, printed with the result rather than buried here:
 
 * A negative within-label rho *raises* n_eff above the number of sources. That
   is arithmetically correct — two anti-correlated estimators do carry more
@@ -31,11 +31,19 @@ Two honest limits, printed with the result rather than buried here:
 * Constructs on a coarse scale cannot reach a high rho, because most pairs are
   ties. Their independence is partly an artefact of resolution, and they are
   flagged the same way ``redundancy.py`` flags them.
+* Two independent columns do not show rho = 0: |rho| averages about
+  sqrt(2 / (pi * (m - 1))) on m observations, so noise reads as overlap and
+  n_eff comes out low — on this repo's corpus, 2.63 where 2.87 would be the
+  noise-free figure. That is the cautious direction for counting sources, so it
+  is printed, not subtracted. It is the *flattering* direction for discounting
+  a screening charge, which is why ``effective_trials`` is measured with
+  ``tools/record_neff.py`` instead.
 """
 
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import sys
 from itertools import combinations
@@ -203,6 +211,21 @@ def main() -> int:
     n = len(names)
     print("有效源数  (Kish n_eff)")
     print(f"  全部 {n} 个        n_eff = {total:.2f} / {n}      效率 {total / n * 100:.0f}%")
+    # Third limit, printed like the other two. Two independent columns do not
+    # show |rho| = 0 but about sqrt(2 / (pi * (m - 1))), so noise alone reads
+    # as overlap and n_eff comes out low. Here that errs the cautious way —
+    # fewer sources — so it is reported, not subtracted. The opposite use,
+    # discounting a screening charge, is tools/record_neff.py's job.
+    measured = [pair_n[key(a, b)] - len(labels) for a, b in combinations(names, 2)
+                if (a, b) not in unmeasured and pair_n[key(a, b)] - len(labels) > 1]
+    if measured:
+        m = sorted(measured)[len(measured) // 2]
+        floor = math.sqrt(2.0 / (math.pi * (m - 1)))
+        off = sum(abs(rho[key(a, b)]) - floor for a, b in combinations(names, 2)
+                  if (a, b) not in unmeasured)
+        corrected = (n * n) / (n + max(0.0, 2.0 * off))
+        print(f"  噪声底 |ρ| ≈ {floor:.3f}（每对约 {m} 个样本）；扣掉后 n_eff ≈ {corrected:.2f}。")
+        print("  这里偏低是保守方向，只报告不扣除。")
     print()
 
     # The one line that has to survive a projector. Rules rather than a box:
