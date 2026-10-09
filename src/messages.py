@@ -175,6 +175,77 @@ MESSAGES: Dict[str, Dict[str, str]] = {
         "zh": "{n} 条记录缺少所选字段，按各自独立计入而非剔除",
     },
 
+    # ---- agent traces ----------------------------------------------------
+    # The unit table has no total on purpose; these strings are where the
+    # spread across units, which is the actual finding, gets said out loud.
+    "trace.spread": {
+        "en": "Counts run from {lo} to {hi} (x{ratio}) depending on what one trial "
+              "is taken to be. The trace does not say which unit is right; choose "
+              "it before reading any result, and record the choice.",
+        "zh": "按「一次试验」的不同定义，次数从 {lo} 到 {hi}（{ratio} 倍）。"
+              "轨迹本身不说明哪个单位才对；请在看任何结果之前选定单位，并把选择记下来。",
+    },
+    "trace.spread_flat": {
+        "en": "Every unit gives {n}. Agreement across units is not proof the "
+              "count is complete; it is still a lower bound.",
+        "zh": "所有单位都给出 {n}。各单位一致不代表数全了，它仍是下限。",
+    },
+    "trace.spread_none": {
+        "en": "No unit matched anything. That is not zero trials: the patterns "
+              "may not describe this trace.",
+        "zh": "没有任何单位匹配到内容。这不等于零次试验：可能是模式没描述对这份轨迹。",
+    },
+    "trace.no_match": {
+        "en": "no match (not zero: check the pattern)",
+        "zh": "无匹配（不是零：请检查模式）",
+    },
+    "trace.blind_coverage": {
+        "en": "experiments run inside a script without a separate tool call, "
+              "anything outside this transcript, and work done before it began",
+        "zh": "在脚本内部完成、没有单独工具调用的实验，这份轨迹之外的一切，以及轨迹开始之前做过的事",
+    },
+    "trace.blind_skipped": {
+        "en": "{n} transcript lines that could not be parsed",
+        "zh": "{n} 行无法解析的轨迹",
+    },
+    "trace.blind_seal": {
+        "en": "Touches are found in the call, not its output, and not classified "
+              "as reads or writes. A script that opens the holdout without naming "
+              "it on the command line is invisible here.",
+        "zh": "「接触」只从调用里识别，不看返回内容，也不区分读和写。"
+              "脚本在内部打开封存数据、命令行里没出现路径的，这里看不见。",
+    },
+    "trace.seal.unsealed": {
+        "en": "No sealing event matched, so there is no plan to compare against; "
+              "{touches} touch(es) of the holdout found.",
+        "zh": "没有匹配到任何封存事件，无从比对；共发现 {touches} 次接触封存数据。",
+    },
+    "trace.seal.untouched": {
+        "en": "Sealed ({seals} event(s), last {last_seal}); the holdout is never "
+              "touched in this trace.",
+        "zh": "已封存（{seals} 次，最后一次 {last_seal}）；这份轨迹里封存数据从未被接触。",
+    },
+    "trace.seal.sealed_first": {
+        "en": "Sealed first: the plan was last changed at {last_seal}, and the "
+              "holdout was first touched at {first_touch}.",
+        "zh": "先封存后接触：计划最后一次改动在 {last_seal}，封存数据首次被接触在 {first_touch}。",
+    },
+    "trace.seal.touched_between": {
+        "en": "The plan was amended after the holdout was first touched: first "
+              "seal {first_seal}, first touch {first_touch}, last seal {last_seal}; "
+              "{early} touch(es) precede the final version. Check what those "
+              "touches could have shown before trusting the amendment.",
+        "zh": "封存数据被接触之后计划又改过：首次封存 {first_seal}，首次接触 {first_touch}，"
+              "最后一次封存 {last_seal}；有 {early} 次接触早于最终版本。"
+              "采信这次修改之前，先查那几次接触可能看到了什么。",
+    },
+    "trace.seal.touched_before_seal": {
+        "en": "The holdout was touched at {first_touch}, before any plan was "
+              "sealed (first seal {first_seal}). It is not a holdout for this plan.",
+        "zh": "封存数据在 {first_touch} 就被接触了，早于任何封存（首次封存 {first_seal}）。"
+              "对这份计划而言它已不算封存样本。",
+    },
+
     # ---- selection penalty ---------------------------------------------
     "penalty.single": {
         "en": "One attempt declared. That is a **claim**, not a neutral default: it "

@@ -412,6 +412,52 @@ already drifted once. The page carries the perturbation axis on the same terms:
 48 more combinations, and the p-values agree exactly rather than to a tolerance,
 because both sides sum integer binomials.
 
+### When the researcher is an agent, the log already exists
+
+A human keeps the abandoned variants in their head. An agent that runs a study
+for hours leaves every one of them in its transcript, as a tool call with a
+timestamp — so for agent research the `log` provenance is the normal case, not
+the rare one. `src/trace_audit.py` reads that transcript (Claude Code's JSONL
+today; another harness needs a parser that yields the same `Event`) for two
+things a summary of the study leaves out:
+
+```bash
+python tools/trace_audit.py SESSION.jsonl --since 2026-10-07T15:00 --until 2026-10-07T17:30 \
+  --unit 'runs:call:python [^ ]*(backtest|replication)[.]py' \
+  --unit 'verdicts:output:(=>|->) +[A-Z]{4,}' \
+  --unit 'stats:output:(rho|p=|AUC)' \
+  --seal '"file_path": "[^"]*PREREG|>>[^/]*/PREREG' --holdout 'captured-fresh'
+```
+
+**How many trials — and the answer is a table, not a number.** Run on this
+repository's own trace (a four-step study of whether field lineage predicts
+source redundancy, 2026-10-07), the command above counts 5 script runs, 7
+verdicts or 41 statistics depending on what one trial is taken to be —
+eight-fold, and the transcript does not say which unit is right. Even one unit
+is a choice: widen the statistics pattern to also catch the correlation-table
+rows and it reads 61. So the caller names each unit as a
+pattern, each comes back as its own lower-bound `TrialCount`, and the table has
+no `count` attribute: to get one number you pick a row by name, in code a
+reader can see.
+
+**Was the holdout touched before the plan was sealed.** An ordering of
+timestamps, so arithmetic rather than judgement. The verdict separates a plan
+amended after the holdout was first touched (`touched_between`) from one that
+did not exist yet (`touched_before_seal`). On the same trace it returns
+`touched_between` — an addendum was appended to the preregistration 36 seconds
+after the fresh-data capture was launched — and prints what that touch got
+back: *"Command running in background"*. Nothing had been fetched, so the
+addendum stands. The verdict could not have told you that; the attached output
+lets you settle it in seconds.
+
+`--gap-result/--gap-start` adds raw intervals between a result and the next new
+analysis — 17 seconds from *FALSIFY* to a new script in the same trace. No
+threshold is applied, because none has been measured.
+
+Blind spots, printed with every result: a script that opens the holdout without
+naming it on the command line; anything in tool output (touches are read from
+the call); reads versus writes.
+
 ### The cutoff needs a provenance too
 
 The trial count now says where it came from. The cutoff did not, and the verdict

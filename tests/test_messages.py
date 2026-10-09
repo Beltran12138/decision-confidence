@@ -94,7 +94,10 @@ class Templates(unittest.TestCase):
                   "items": "runs made before logging was on", "n": 3,
                   "source": "https://platform.openai.com/docs/models/gpt-4o",
                   "precision": "day", "picked": "2026-05-15", "months": 6.0,
-                  "t_bar": 3.85, "power_ratio": 0.22, "effective_trials": 4800}
+                  "t_bar": 3.85, "power_ratio": 0.22, "effective_trials": 4800,
+                  "lo": 5, "hi": 61, "seals": 2, "touches": 4,
+                  "first_seal": "2026-10-07 16:03:20", "last_seal": "2026-10-07 16:04:44",
+                  "first_touch": "2026-10-07 16:04:08", "early": 1}
         for key, entry in MESSAGES.items():
             need = fields(entry["en"])
             args = {k: sample[k] for k in need if k in sample}
