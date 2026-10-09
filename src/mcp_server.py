@@ -15,6 +15,10 @@ three different objects, so folding any of them together would be exactly the
 category error this library exists to catch. An agent reads them separately;
 no answer needs the others.
 
+``trace_audit`` is the one tool that reads a file: an agent transcript, named
+by path, read-only. A transcript runs to hundreds of megabytes, so passing it
+inline is not an option; nothing is written and nothing leaves the machine.
+
 Run directly::
 
     python src/mcp_server.py
@@ -46,6 +50,7 @@ from counterfactual import remedies as cf_remedies  # noqa: E402
 from effective_window import effective_window, remedies  # noqa: E402
 from track_record import track_record as _track_record  # noqa: E402
 import trial_count  # noqa: E402
+import trace_audit as _trace_audit  # noqa: E402
 
 try:
     from mcp.server.fastmcp import FastMCP
@@ -431,6 +436,98 @@ def counterfactual_audit(
     result["summary"] = report.summary()
     result["minimum_perturbations"] = minimum_perturbations(alpha)
     return result
+
+
+@mcp.tool()
+def trace_audit(
+    transcript_path: str,
+    units: Optional[List[Dict[str, str]]] = None,
+    seal: Optional[str] = None,
+    holdout: Optional[str] = None,
+    gap_result: Optional[str] = None,
+    gap_start: Optional[str] = None,
+    since: Optional[str] = None,
+    until: Optional[str] = None,
+    format: Optional[str] = None,
+    lang: str = "en",
+) -> Dict[str, Any]:
+    """Audit an agent's research transcript: how many trials, and was the holdout sealed?
+
+    Call this **before reporting a result from a study an agent ran** — yours
+    or another agent's: a backtest sweep, a signal search, a replication. The
+    transcript holds what the result does not: every variant tried before this
+    one, and whether the held-out data was opened before the plan was fixed.
+    Reads the file at ``transcript_path``; writes nothing. Formats: Claude Code
+    session JSONL and Codex CLI rollouts are detected; anything else must be
+    exported to the generic schema (one ``{"ts", "kind", "tool", "text",
+    "call_id"}`` object per line) and passed with ``format="events"``.
+
+    **Patterns are regexes you write for this study and this harness.** Tool
+    names and call JSON differ between formats, so read a few events first if
+    you are unsure what a call looks like. Decide the units **before** looking
+    at any result: choosing the unit after seeing which one gives the smallest
+    count is the selection this tool exists to expose.
+
+    Args:
+        transcript_path: Path to the transcript file.
+        units: Candidate definitions of one trial, each
+            ``{"name": ..., "kind": "call" | "output", "pattern": ...}``.
+            ``call`` counts distinct matching tool calls; ``output`` counts
+            distinct matching lines of tool output. Give several — runs,
+            verdicts, statistics — because the point is the spread.
+        seal: Regex for the calls that fix the plan (writing a
+            preregistration, committing an analysis spec). Pair with
+            ``holdout``.
+        holdout: Regex for calls that touch the held-out data.
+        gap_result: Regex for output lines that report a result. Pair with
+            ``gap_start``.
+        gap_start: Regex for calls that begin a new analysis.
+        since: ISO time; keep events at or after it (UTC if no offset).
+        until: ISO time; keep events at or before it.
+        format: ``claude_code``, ``codex`` or ``events``; detected if omitted.
+        lang: ``en`` or ``zh`` for the prose notes.
+
+    Returns:
+        ``units``: one row per unit, each with its own lower-bound trial count
+        (provenance ``log``) or ``null`` when nothing matched; ``spread``
+        ``[min, max]``. **Report the table and the unit you chose, never a
+        single total** — there is none, on purpose. A ``null`` row is a
+        pattern that did not match, **not zero trials**.
+
+        ``seal``: ``verdict`` is one of ``unsealed``, ``untouched``,
+        ``sealed_first``, ``touched_between`` (plan amended after the holdout
+        was first touched) or ``touched_before_seal``. Each touch carries the
+        ``output`` it got back. **Do not report ``touched_between`` as a
+        violation without reading those outputs**: a touch that only launched
+        a background job saw nothing. Equally, ``sealed_first`` is not proof of
+        a clean holdout — a script that opens the file without naming it on
+        the command line is invisible here; ``blind_to`` says so.
+
+        ``gaps``: raw seconds from each result to the next new analysis, and
+        ``human_between`` — whether a person spoke in between (``null`` when
+        the format does not record human turns). ``false`` with a short gap is
+        the agent changing direction on its own result. Use the flag, not the
+        seconds: no threshold is applied, and do not invent one.
+
+    Raises:
+        ValueError: on half a pattern pair, nothing to do, a bad regex, a bad
+        unit kind or an undetectable format.
+    """
+    def when(s):
+        if not s:
+            return None
+        from datetime import datetime, timezone
+        d = datetime.fromisoformat(s.replace("Z", "+00:00"))
+        return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+
+    unit_objs = [_trace_audit.Unit(u["name"], u["kind"], u["pattern"]) for u in (units or [])]
+    # Validate before opening what may be a very large file.
+    _trace_audit.audit(_trace_audit.Trace([]), units=unit_objs, seal=seal, holdout=holdout,
+                       gap_result=gap_result, gap_start=gap_start, lang=lang)
+    with open(transcript_path, encoding="utf-8") as fh:
+        trace = _trace_audit.window(_trace_audit.load_trace(fh, format), when(since), when(until))
+    return _trace_audit.audit(trace, units=unit_objs, seal=seal, holdout=holdout,
+                              gap_result=gap_result, gap_start=gap_start, lang=lang)
 
 
 @mcp.tool()

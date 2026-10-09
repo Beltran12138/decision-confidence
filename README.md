@@ -450,9 +450,18 @@ back: *"Command running in background"*. Nothing had been fetched, so the
 addendum stands. The verdict could not have told you that; the attached output
 lets you settle it in seconds.
 
-`--gap-result/--gap-start` adds raw intervals between a result and the next new
-analysis — 17 seconds from *FALSIFY* to a new script in the same trace. No
-threshold is applied, because none has been measured.
+`--gap-result/--gap-start` adds the interval between a result and the next new
+analysis, and whether a human spoke in between — 17 seconds from *FALSIFY* to a
+new script in the same trace, with no human turn: the agent changed direction on
+its own. That flag, not the seconds, is the signal. Across 807 such transitions
+in the author's transcripts (`tools/gap_survey.py`), gaps with no human turn had
+a median of 46 s and gaps with one 872 s, yet the best seconds threshold still
+misclassified 2.7 % against the flag — so no threshold is applied, because the
+fact it would guess at is already in the log.
+
+The same reader takes Codex CLI rollouts (detected automatically) and a plain
+one-event-per-line schema that any other harness can export; the MCP tool
+`trace_audit` returns exactly what `--json` prints.
 
 Blind spots, printed with every result: a script that opens the holdout without
 naming it on the command line; anything in tool output (touches are read from

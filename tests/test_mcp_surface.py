@@ -47,12 +47,19 @@ class ToolRegistration(unittest.TestCase):
     def tools(self):
         return {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
 
-    def test_all_five_tools_are_reachable(self):
+    def test_all_six_tools_are_reachable(self):
         self.assertEqual(
             set(self.tools()),
             {"decision_confidence", "knowledge_window", "track_record",
-             "counterfactual_audit", "list_supported_vendors"},
+             "counterfactual_audit", "trace_audit", "list_supported_vendors"},
         )
+
+    def test_the_trace_is_its_own_object(self):
+        """A transcript is not a subject, a backtest or a perturbation set."""
+        schema = self.tools()["trace_audit"].inputSchema
+        self.assertFalse(set(schema["properties"]) & {
+            "sources", "cutoff", "start", "end", "trials", "perturbations", "picked"})
+        self.assertEqual(set(schema.get("required", [])), {"transcript_path"})
 
     def test_the_three_axes_do_not_leak_into_each_other(self):
         """A subject, a backtest and an agent's responsiveness are three objects.
@@ -269,6 +276,68 @@ class ToolBehaviour(unittest.TestCase):
         with self.assertRaises(ValueError):
             mcp_server.knowledge_window("2024-10", "2020-01", "2025-06",
                                         trials=5, effective_trials=9)
+
+
+@unittest.skipUnless(HAVE_MCP, "optional 'mcp' extra not installed")
+class TraceAuditToolDescription(unittest.TestCase):
+    """The lines that stop an agent from quoting the smallest count."""
+
+    def description(self):
+        tools = {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
+        return tools["trace_audit"].description or ""
+
+    def test_it_forbids_a_single_total(self):
+        d = self.description()
+        self.assertIn("never a", d)
+        self.assertIn("single total", d)
+
+    def test_it_says_decide_the_unit_before_looking(self):
+        self.assertIn("**before** looking", self.description())
+
+    def test_null_is_not_zero(self):
+        self.assertIn("not zero trials", self.description())
+
+    def test_touched_between_needs_the_outputs_read_first(self):
+        d = self.description()
+        self.assertIn("without reading those outputs", d)
+        self.assertIn("is not proof of", d)
+
+    def test_no_invented_gap_threshold(self):
+        self.assertIn("do not invent one", self.description())
+
+
+@unittest.skipUnless(HAVE_MCP, "optional 'mcp' extra not installed")
+class TraceAuditToolBehaviour(unittest.TestCase):
+    def test_same_dict_as_the_library_and_validates_before_reading(self):
+        import json
+        import tempfile
+        import trace_audit as ta
+        rows = [
+            {"ts": "2026-10-07T16:01:00Z", "kind": "call", "tool": "shell",
+             "text": "write PREREG.md", "call_id": "1"},
+            {"ts": "2026-10-07T16:02:00Z", "kind": "call", "tool": "shell",
+             "text": "python a.py fresh.jsonl", "call_id": "2"},
+            {"ts": "2026-10-07T16:02:05Z", "kind": "output", "tool": "shell",
+             "text": "p=0.01", "call_id": "2"},
+        ]
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "trace.jsonl")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write("\n".join(json.dumps(r) for r in rows))
+            got = mcp_server.trace_audit(
+                path, units=[{"name": "runs", "kind": "call", "pattern": "python"}],
+                seal="PREREG", holdout="fresh")
+            with open(path, encoding="utf-8") as fh:
+                want = ta.audit(ta.load_trace(fh),
+                                units=[ta.Unit("runs", "call", "python")],
+                                seal="PREREG", holdout="fresh")
+        self.assertEqual(got, want)
+        self.assertEqual(got["format"], "events")
+        self.assertEqual(got["seal"]["verdict"], "sealed_first")
+        self.assertNotIn("count", got)
+        # Half a pair fails before the (missing) file is opened.
+        with self.assertRaises(ValueError):
+            mcp_server.trace_audit("does-not-exist.jsonl", seal="PREREG")
 
 
 if __name__ == "__main__":

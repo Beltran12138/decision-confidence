@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Audit an agent's research trace: how many trials, and was the holdout sealed?
 
-Reads a Claude Code session transcript (JSONL) and writes nothing.
+Reads an agent transcript and writes nothing. Claude Code session JSONL and
+Codex CLI rollouts are detected automatically; any other harness can export the
+generic one-event-per-line schema documented in ``src/trace_audit.py`` and pass
+``--format events``. Patterns are harness-specific: tool names and the JSON a
+call is serialised to differ between formats.
 
     python tools/trace_audit.py SESSION.jsonl \\
         --since 2026-10-07T15:00 --until 2026-10-07T17:30 \\
@@ -50,9 +54,8 @@ def _unit(s: str) -> ta.Unit:
         raise argparse.ArgumentTypeError(str(e))
 
 
-def _ev(e):
-    return None if e is None else {"ts": e.ts.isoformat(), "tool": e.tool,
-                                   "excerpt": e.excerpt(160)}
+def _hms(iso: str) -> str:
+    return iso[11:19]
 
 
 def main(argv=None) -> int:
@@ -65,75 +68,63 @@ def main(argv=None) -> int:
     ap.add_argument("--holdout")
     ap.add_argument("--gap-result")
     ap.add_argument("--gap-start")
+    ap.add_argument("--format", choices=ta.FORMATS,
+                    help="transcript format; detected from the first lines if omitted")
     ap.add_argument("--lang", choices=LANGS)
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
-    if bool(a.seal) != bool(a.holdout):
-        ap.error("--seal and --holdout go together")
-    if bool(a.gap_result) != bool(a.gap_start):
-        ap.error("--gap-result and --gap-start go together")
-    if not (a.unit or a.seal or a.gap_result):
-        ap.error("nothing to do: give --unit, --seal/--holdout or --gap-result/--gap-start")
     lang = resolve_lang(a.lang)
+    try:  # check the arguments before reading what may be a very large file
+        ta.audit(ta.Trace([]), units=a.unit, seal=a.seal, holdout=a.holdout,
+                 gap_result=a.gap_result, gap_start=a.gap_start, lang=lang)
+    except ValueError as e:
+        ap.error(str(e))
 
     with open(a.transcript, encoding="utf-8") as fh:
-        trace = ta.events_from_claude_code(fh)
-    ev = [e for e in trace.events
-          if (a.since is None or e.ts >= a.since) and (a.until is None or e.ts <= a.until)]
-    trace = ta.Trace(ev, trace.skipped_lines)
+        trace = ta.window(ta.load_trace(fh, a.format), a.since, a.until)
+    try:
+        out = ta.audit(trace, units=a.unit, seal=a.seal, holdout=a.holdout,
+                       gap_result=a.gap_result, gap_start=a.gap_start, lang=lang)
+    except ValueError as e:
+        ap.error(str(e))
+    if a.json:
+        print(json.dumps(out, ensure_ascii=False, indent=2))
+        return 0
 
-    out = {"events": len(ev), "skipped_lines": trace.skipped_lines}
-    lines = [f"{len(ev)} events" + (f", {trace.skipped_lines} unparsed lines"
-                                    if trace.skipped_lines else "")]
-
-    if a.unit:
-        tab = ta.count_units(trace, a.unit, lang=lang)
-        w = max(len(r.unit.name) for r in tab.rows)
+    # Text is rendered from the same dict --json prints, so the two cannot differ.
+    lines = [f"{out['format']}: {out['events']} events"
+             + (f", {out['human_turns']} human turns" if out["human_turns"] is not None else "")
+             + (f", {out['skipped_lines']} unparsed lines" if out["skipped_lines"] else "")]
+    if "units" in out:
+        w = max(len(u["name"]) for u in out["units"])
         lines.append("")
-        for r in tab.rows:
-            n = str(r.trials.count) if r.trials else text("trace.no_match", lang)
-            lines.append(f"  {r.unit.name:<{w}}  {n:>6}   /{r.unit.pattern}/ on {r.unit.kind}s")
+        for u in out["units"]:
+            n = str(u["trials"]["count"]) if u["trials"] else u["note"]
+            lines.append(f"  {u['name']:<{w}}  {n:>6}   /{u['pattern']}/ on {u['kind']}s")
         lines.append("")
-        lines.append(tab.note(lang))
-        first = next((r.trials for r in tab.rows if r.trials), None)
-        if first and first.blind_to:
-            lines.append(text("trials.blind_to", lang, items="; ".join(first.blind_to)))
-        out["units"] = [{"name": r.unit.name, "kind": r.unit.kind, "pattern": r.unit.pattern,
-                         "matches": r.matches,
-                         "trials": r.trials.to_dict() if r.trials else None}
-                        for r in tab.rows]
-        out["spread"] = tab.spread
-
-    if a.seal:
-        rep = ta.seal_check(trace, seal=a.seal, holdout=a.holdout, lang=lang)
+        lines.append(out["units_note"])
+        first = next((u["trials"] for u in out["units"] if u["trials"]), None)
+        if first and first["blind_to"]:
+            lines.append(text("trials.blind_to", lang, items="; ".join(first["blind_to"])))
+    if "seal" in out:
+        s = out["seal"]
         lines.append("")
-        lines.append(rep.note(lang))
-        marks = sorted([("seal ", e) for e in rep.seals] + [("touch", e) for e in rep.touches],
-                       key=lambda p: p[1].ts)
+        lines.append(s["note"])
+        marks = sorted([("seal ", e) for e in s["seals"]] + [("touch", e) for e in s["touches"]],
+                       key=lambda p: p[1]["ts"])
         for tag, e in marks:
-            lines.append(f"  {e.ts.strftime('%H:%M:%S')}  {tag}  {e.tool:<6} {e.excerpt(90)}")
-            o = rep.output_of(e) if tag == "touch" else None
-            if o is not None and e in rep.touches_before_last_seal:
-                lines.append(f"{'':>18}<- {o.excerpt(90)}")
-        lines.append(rep.blind_to[0])
-        out["seal"] = {"verdict": rep.verdict, "seals": [_ev(e) for e in rep.seals],
-                       "touches": [dict(_ev(e), output=_ev(rep.output_of(e)))
-                                   for e in rep.touches],
-                       "touches_before_last_seal": [_ev(e) for e in rep.touches_before_last_seal],
-                       "blind_to": rep.blind_to}
-
-    if a.gap_result:
-        gs = ta.gaps(trace, result=a.gap_result, start=a.gap_start)
+            lines.append(f"  {_hms(e['ts'])}  {tag}  {e['tool']:<6} {e['excerpt'][:90]}")
+            if tag == "touch" and e.get("before_last_seal") and e.get("output"):
+                lines.append(f"{'':>18}<- {e['output']['excerpt'][:90]}")
+        lines.append(s["blind_to"][0])
+    if "gaps" in out:
         lines.append("")
-        for g in gs:
-            s = "-" if g.seconds is None else f"{g.seconds:.0f}s"
-            nxt = g.next_call.excerpt(60) if g.next_call else "-"
-            lines.append(f"  {g.result.ts.strftime('%H:%M:%S')}  {s:>7}  {g.result_line[:50]}  ->  {nxt}")
-        out["gaps"] = [{"result": _ev(g.result), "line": g.result_line,
-                        "next_call": _ev(g.next_call), "seconds": g.seconds} for g in gs]
-
-    print(json.dumps(out, ensure_ascii=False, indent=2, default=str) if a.json
-          else "\n".join(lines))
+        for g in out["gaps"]:
+            sec = "-" if g["seconds"] is None else f"{g['seconds']:.0f}s"
+            nxt = g["next_call"]["excerpt"][:60] if g["next_call"] else "-"
+            who = {True: "human", False: "agent", None: "?"}[g["human_between"]]
+            lines.append(f"  {_hms(g['result']['ts'])}  {sec:>7}  {who:<5}  {g['line'][:50]}  ->  {nxt}")
+    print("\n".join(lines))
     return 0
 
 

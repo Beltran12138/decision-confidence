@@ -54,6 +54,78 @@ class TestParse(unittest.TestCase):
         self.assertEqual(t.skipped_lines, 0)
 
 
+def _codex(ts, kind, cid, **payload):
+    return json.dumps({"timestamp": ts, "type": "response_item",
+                       "payload": dict(payload, type=kind, call_id=cid)})
+
+
+class TestFormats(unittest.TestCase):
+    """Three transcript formats, one Event. Shapes taken from real files."""
+
+    def codex_lines(self):
+        return [
+            json.dumps({"timestamp": T % 0, "type": "session_meta", "payload": {"id": "x"}}),
+            _codex(T % 1, "function_call", "c1", name="exec_command",
+                   arguments=json.dumps({"cmd": "python run.py 数据.jsonl"})),   # ASCII-escaped
+            _codex(T % 2, "function_call_output", "c1",
+                   output=[{"type": "input_text", "text": "p=0.01"}]),
+            _codex(T % 3, "custom_tool_call", "c2", name="exec",
+                   input="await tools.shell_command({command: 'ls'})"),
+            _codex(T % 4, "custom_tool_call_output", "c2", output="done"),
+            json.dumps({"timestamp": T % 5, "type": "event_msg", "payload": {"type": "token_count"}}),
+        ]
+
+    def test_codex_calls_and_outputs_pair_by_call_id(self):
+        t = ta.events_from_codex(self.codex_lines())
+        self.assertEqual(t.format, "codex")
+        self.assertEqual([(e.kind, e.tool) for e in t.events],
+                         [("call", "exec_command"), ("output", "exec_command"),
+                          ("call", "exec"), ("output", "exec")])
+        self.assertEqual(t.events[1].text, "p=0.01")       # input_text blocks are read
+        # Arguments are re-serialised so a pattern for a non-ASCII path matches
+        # without knowing the source escaped it.
+        self.assertIn("数据.jsonl", t.events[0].text)
+
+    def test_generic_schema_and_its_required_fields(self):
+        lines = [json.dumps({"ts": T % 1, "kind": "call", "tool": "shell",
+                             "text": {"cmd": "python a.py"}, "call_id": "1"}),
+                 json.dumps({"ts": T % 2, "kind": "output", "text": "ok", "call_id": "1"}),
+                 json.dumps({"ts": T % 3, "kind": "call"}),           # no text
+                 json.dumps({"kind": "call", "text": "x"}),           # no ts
+                 json.dumps(["not", "an", "object"])]
+        t = ta.events_from_jsonl(lines)
+        self.assertEqual(len(t.events), 2)
+        self.assertEqual(t.skipped_lines, 3)
+        self.assertIn('"cmd"', t.events[0].text)
+
+    def test_load_trace_detects_each_format(self):
+        self.assertEqual(ta.load_trace(self.codex_lines()).format, "codex")
+        cc = [json.dumps({"type": "mode", "sessionId": "s"}),
+              _call(T % 1, "a", "Bash", command="x")]
+        t = ta.load_trace(cc)
+        self.assertEqual((t.format, len(t.events)), ("claude_code", 1))
+        ev = [json.dumps({"ts": T % 1, "kind": "call", "text": "x"})]
+        self.assertEqual(ta.load_trace(ev).format, "events")
+        with self.assertRaises(ValueError):
+            ta.load_trace(["{}", "[]"])
+        with self.assertRaises(ValueError):
+            ta.load_trace(cc, format="langchain")
+
+    def test_non_reading_tools_follow_the_format(self):
+        lines = [
+            _codex(T % 1, "custom_tool_call", "p", name="apply_patch",
+                   input="*** Add File: analyse.py\n+open('fresh.jsonl')"),
+            _codex(T % 2, "function_call", "s", name="exec_command",
+                   arguments=json.dumps({"cmd": "cat > PREREG.md"})),
+        ]
+        t = ta.events_from_codex(lines)
+        r = ta.seal_check(t, seal=r"PREREG", holdout=HOLD)
+        self.assertEqual(r.verdict, "untouched")             # apply_patch is not a read
+        g = ta.Trace(t.events, 0, "events")                   # generic: nothing assumed
+        self.assertEqual(ta.seal_check(g, seal=r"PREREG", holdout=HOLD).verdict,
+                         "touched_before_seal")
+
+
 class TestUnits(unittest.TestCase):
     def setUp(self):
         self.t = trace(
@@ -210,6 +282,97 @@ class TestGaps(unittest.TestCase):
         self.assertIn("FALSIFY", g[0].result_line)
         self.assertIsNone(g[1].next_call)
         self.assertIsNone(g[1].seconds)
+
+
+def _user(ts, content, **extra):
+    return json.dumps(dict({"type": "user", "timestamp": ts,
+                            "message": {"role": "user", "content": content}}, **extra))
+
+
+class TestHumanTurns(unittest.TestCase):
+    """Whether a person intervened is in the log; gaps read it instead of guessing."""
+
+    def test_claude_code_keeps_typed_turns_and_drops_injected_ones(self):
+        t = trace(
+            _user(T % 1, "可以开工"),
+            _user(T % 2, [{"type": "text", "text": "run it again"}]),
+            _user(T % 3, "<system-reminder>x</system-reminder>"),
+            _user(T % 4, "This session is being continued from a previous conversation"),
+            _user(T % 5, "meta", isMeta=True),
+            _user(T % 6, [{"type": "tool_result", "tool_use_id": "a", "content": "ok"}]),
+        )
+        prompts = [e.text for e in t.events if e.kind == "prompt"]
+        self.assertEqual(prompts, ["可以开工", "run it again"])
+
+    def test_codex_user_messages_are_prompts(self):
+        t = ta.events_from_codex([json.dumps({
+            "timestamp": T % 1, "type": "event_msg",
+            "payload": {"type": "user_message", "message": "try fdv"}})])
+        self.assertEqual([(e.kind, e.text) for e in t.events], [("prompt", "try fdv")])
+
+    def test_generic_records_prompts_only_if_it_has_any(self):
+        no = ta.events_from_jsonl([json.dumps({"ts": T % 1, "kind": "call", "text": "x"})])
+        yes = ta.events_from_jsonl([json.dumps({"ts": T % 1, "kind": "prompt", "text": "go"})])
+        self.assertFalse(no.records_prompts)
+        self.assertTrue(yes.records_prompts)
+
+    def test_gap_says_who_moved(self):
+        lines = [
+            _call(T % 1, "a", "Bash", command="python s.py"),
+            _out(T % 2, "a", "-> FALSIFY"),
+            _call(T % 3, "b", "Write", file_path="next.py", content=""),   # agent alone
+            _call(T % 4, "c", "Bash", command="python next.py"),
+            _out(T % 5, "c", "-> SUPPORT"),
+            _user(T % 6, "check fdv too"),
+            _call(T % 7, "d", "Write", file_path="fdv.py", content=""),    # after a human
+        ]
+        g = ta.gaps(trace(*lines), result=r"-> [A-Z]+", start=r'"file_path"')
+        self.assertEqual([x.human_between for x in g], [False, True])
+        # A format with no human turns cannot say; it must not say False.
+        generic = ta.Trace([e for e in trace(*lines).events if e.kind != "prompt"],
+                           0, "events", records_prompts=False)
+        g2 = ta.gaps(generic, result=r"-> [A-Z]+", start=r'"file_path"')
+        self.assertEqual([x.human_between for x in g2], [None, None])
+
+    def test_prompts_are_not_events_for_counting_or_sealing(self):
+        t = trace(_user(T % 1, "python backtest.py fresh.jsonl please"),
+                  _call(T % 2, "a", "Write", file_path="PREREG.md", content="x"))
+        tab = ta.count_units(t, [ta.Unit("runs", "call", "backtest")])
+        self.assertIsNone(tab.row("runs").trials)
+        self.assertEqual(ta.seal_check(t, seal=SEAL, holdout=HOLD).verdict, "untouched")
+        out = ta.audit(t, units=[ta.Unit("runs", "call", "backtest")])
+        self.assertEqual((out["events"], out["human_turns"]), (1, 1))
+
+
+class TestAuditAndWindow(unittest.TestCase):
+    def setUp(self):
+        self.t = trace(
+            _call(T % 1, "a", "Write", file_path="PREREG.md", content="x"),
+            _call(T % 2, "b", "Bash", command="python run.py fresh.jsonl"),
+            _out(T % 3, "b", "p=0.04 => SUPPORT"),
+            _call(T % 9, "c", "Bash", command="python run2.py"),
+        )
+
+    def test_window_is_inclusive_and_takes_naive_times_as_utc(self):
+        from datetime import datetime
+        w = ta.window(self.t, datetime(2026, 10, 7, 16, 2), datetime(2026, 10, 7, 16, 3))
+        self.assertEqual([e.call_id for e in w.events], ["b", "b"])
+        self.assertEqual(w.format, self.t.format)
+
+    def test_audit_is_json_safe_and_has_no_total(self):
+        out = ta.audit(self.t, units=[ta.Unit("runs", "call", "python")],
+                       seal=SEAL, holdout=HOLD,
+                       gap_result="SUPPORT", gap_start="python")
+        json.dumps(out)                                   # must not raise
+        self.assertNotIn("count", out)
+        self.assertEqual(out["spread"], [2, 2])
+        self.assertEqual(out["seal"]["verdict"], "sealed_first")
+        self.assertEqual(out["gaps"][0]["seconds"], 360.0)
+
+    def test_audit_rejects_half_pairs_and_empty_requests(self):
+        for kw in ({"seal": SEAL}, {"holdout": HOLD}, {"gap_result": "x"}, {}):
+            with self.assertRaises(ValueError):
+                ta.audit(self.t, **kw)
 
 
 if __name__ == "__main__":
