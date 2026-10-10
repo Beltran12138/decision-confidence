@@ -128,6 +128,29 @@ family: see [family 8](#8-denominator-mismatch-added-2026-10-05).)*
 | game | One counter, `broken_floor`, summed three different events: deliberately breaking a stated commitment, legitimate bargaining bluff (which the game's own rules invite), and simply failing to execute a stated plan. Published deception benchmarks report the same aggregate as a deception rate. The three have opposite implications for whether the model is misaligned or merely bad at following through. |
 | pipeline | The last element of the array is the session still in progress. It carries the same six fields as the 399 settled rows ahead of it, in the same order, with nothing marking it as unsettled — no `is_final`, no fetch timestamp, no as-of. Five fetches of one 24/7 instrument across roughly thirty minutes returned five different closes for the same calendar date: **79680.82, 79685.98, 79688.46, 79634.37, 79628.73**. A pair thirty seconds apart differed in `close` alone while open, high, low and volume stayed identical. Every moving average, pattern rule and structure detector downstream is therefore computing partly on a number that moves while it runs, and two people executing the same code minutes apart get different answers from the same "data". |
 
+#### Discriminating question for the first clause (added 2026-10-09)
+
+The definition has two clauses. Only the second one had a question attached, so an instance
+caught by the first clause hit the definition and passed every registered question — the
+exact asymmetry that the completeness rule below forbids. This is a question, not a new
+sub-form: four blind reviewers split two-two on whether the two-number case needs its own
+sub-form, and both camps agreed the first clause already covers it on its face.
+
+> **The label these two numbers share — is it defined differently in each of their own
+> sources?** If yes, the gap between them is a property of the two definitions, not of the
+> subject, and no number between them means anything.
+
+Worked instances already in the table above: the two vendor scores (69 vs 1), and two
+operations reports both headed *active users* — one defined as "logged in within 30 days",
+the other as "wrote something within 7 days" — plotted as a single monthly series and read
+as a cliff in June.
+
+**Completeness rule (added 2026-10-09, agreed 4/4 in blind review):** any instance caught
+by a family's main definition must hit at least one registered question for that family.
+"Main definition catches it, every question passes it" has to stay at zero. The mirror rule
+is faithfulness: any instance a question catches must also be caught by the main definition
+— a question that reaches past its own definition is frozen until it is rewritten.
+
 #### Sub-form: one number, the wrong name (added 2026-10-02)
 
 Here there is no second number to disagree with. A single score carries a name, and the
@@ -375,6 +398,24 @@ ceiling to compare against at all, sometimes after one was promised.
 | judge | The *"no human ceiling in this domain at all"* clause of the judge row above, refiled. |
 | game | The game row above, refiled: four citations, none supplying a rate to subtract from. |
 | external | A reward-hacking benchmark states that *"three annotators independently review every record … we adjudicate disagreements and report agreement before adjudication."* A full-text search of the paper finds no agreement figure. The detector results it reports therefore have nothing to be measured against. ([arXiv 2609.11028 v1](https://arxiv.org/abs/2609.11028), §6.1; confidence medium — a figure might carry the number.) |
+
+#### Near-miss negative controls (added 2026-10-09)
+
+A family that has never been shown rejecting anything has not been tested, however many
+instances it has absorbed. These two are the cases family 7 must refuse. Both came out of a
+blind extension test in which three reviewers judged five instances clause by clause; two of
+the three concluded the definition needs no change, and these are the boundaries that hold it.
+
+| must be rejected | why the definition refuses it |
+|---|---|
+| A paper reports accuracy **76.3%** on a four-way multiple-choice task and prints the random baseline **25%** in the same table, subtracting to **+51.3pp**. | The reference point is present, in the same units, measured for the same purpose, and the subtraction is the one the source itself performs. None of the three clauses fires. This is what a correct report looks like, not a degenerate member. |
+| The same two numbers as the founding instance — a 89.5% annotator agreement and an F1 of 0.633 — but the source's own table note reads *"agreement and F1 measure different constructs and cannot be subtracted; listed for completeness."* | The third clause ("same units, different purpose") fires on the **pair**, but the sub-form question asks whether the primary source presents them as subtractable. It does the opposite. Filing this would make the family punish disclosure. ⚠️ A reviewer proposed tightening the third clause to *"…and presented as subtractable"* to make the refusal textual rather than reasoned; recorded, not adopted — no instance yet requires it. |
+
+A second thing the test produced, worth keeping separate from the definition: **the family
+name is narrower than its own definition.** "in different units" misses the two cases where
+the units match (the founding pair are both dimensionless ratios) and the one where there is
+no second unit at all. The body is authoritative; the name is a label, and a reader who
+filters on the name alone will file by arithmetic shape instead of by mechanism.
 
 ### 8. Denominator mismatch (added 2026-10-05)
 
