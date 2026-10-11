@@ -240,6 +240,20 @@ source counter errs toward fewer sources, which is cautious there and
 flattering here. Omit it and the full count is charged, which over-penalises.
 That asymmetry is deliberate.
 
+**Votes take the same discount.** Calling one model several times gives you one
+source, however many votes it casts. The pattern is common wherever LLMs label
+data. A step is marked as "verified" because several proposer calls and several
+verifier calls agreed, and the vote is described as stricter than a plain
+majority. If every call goes to the same model at low temperature, the votes all
+share that model's blind spots. Their agreement then measures how consistent the
+model is with itself, not how often it is right. Train a smaller model on those
+labels, score it against the same labels, and it will beat every model that did
+not write them. That result measures agreement with the labeller, not accuracy.
+The only independent check is evidence the labeller did not produce: a benchmark
+labelled some other way, or a human agreement rate. The rule is the same as for
+trials: measure n_eff instead of asserting it, and count unmeasured calls to one
+model as one source.
+
 **And the part with no arithmetic in it.** Declaring no trials is not a neutral
 default — it is the strongest claim available, that the strategy was specified
 before anyone looked. So it is printed as such on every run that omits it:
