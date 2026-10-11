@@ -23,77 +23,77 @@ nav button{font-family:Consolas,monospace;font-size:12px;letter-spacing:.1em;col
 nav button.on{color:var(--ink);border-color:var(--rule)}
 footer{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;gap:18px;
        padding:0 42px;height:46px;border-top:1px solid var(--rule2);color:var(--dim2);
-       font-size:12px;font-family:Consolas,monospace;letter-spacing:.05em;background:rgba(11,13,16,.92)}
+       font-size:14px;font-family:Consolas,monospace;letter-spacing:.05em;background:rgba(11,13,16,.92)}
 footer .keys{margin-left:auto;letter-spacing:.12em}
 main{height:100%;padding:58px 0 46px;display:flex}
 .slide{display:none;flex:1;padding:0 max(42px,6vw);align-items:center;justify-content:center}
 .slide.on{display:flex;animation:rise .45s cubic-bezier(.2,.8,.25,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .cover{flex-direction:column;text-align:center;gap:4vh}
-.kick{font-family:Consolas,monospace;font-size:13px;letter-spacing:.3em;color:var(--gold)}
+.kick{font-family:Consolas,monospace;font-size:14px;letter-spacing:.3em;color:var(--gold)}
 .cover h1{font-family:'Noto Serif SC',serif;font-size:clamp(30px,4.2vw,52px);font-weight:600;line-height:1.3}
 .nums{display:flex;gap:5vw;justify-content:center;align-items:baseline}
 .nums div{text-align:center}
 .nums b{display:block;font-family:Consolas,monospace;font-weight:700;font-size:clamp(46px,7.5vw,104px);line-height:1}
 .nums span{display:block;margin-top:12px;font-size:14px;color:var(--dim);letter-spacing:.06em}
 .c-ink{color:var(--ink)}.c-dim{color:var(--dim)}
-.caveat{font-size:13px;color:var(--grn);margin-top:6px}
+.caveat{font-size:14px;color:var(--grn);margin-top:6px}
 [hidden]{display:none!important}.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-grn{color:var(--grn)}
 .sub{font-family:'Noto Serif SC',serif;font-size:clamp(17px,1.7vw,24px);color:var(--dim)}
 .sub b{color:var(--ink);font-weight:600}
 .scene{gap:max(46px,5vw)}
 .left{max-width:480px}
-.tagline{font-family:Consolas,monospace;font-size:12.5px;letter-spacing:.26em;color:var(--gold);margin-bottom:22px}
+.tagline{font-family:Consolas,monospace;font-size:14px;letter-spacing:.26em;color:var(--gold);margin-bottom:22px}
 .story{font-family:'Noto Serif SC',serif;font-size:clamp(23px,2.35vw,34px);font-weight:600;line-height:1.62}
 .story em{font-style:normal;color:var(--gold)}
 .story .r{color:var(--red)}.story .g{color:var(--grn)}
 .moral{margin-top:26px;font-size:15.5px;line-height:1.8;color:var(--dim);border-left:2px solid var(--rule);padding-left:16px}
 .card{width:min(520px,44vw);background:var(--panel);border:1px solid var(--rule);border-top:2px solid rgba(201,162,76,.55);
       padding:34px 38px;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 14px 34px rgba(0,0,0,.38)}
-.cap{font-family:Consolas,monospace;font-size:11.5px;letter-spacing:.2em;color:var(--dim);margin-bottom:18px}
+.cap{font-family:Consolas,monospace;font-size:14px;letter-spacing:.2em;color:var(--dim);margin-bottom:18px}
 .big{font-family:Consolas,monospace;font-weight:700;font-size:76px;line-height:1;font-variant-numeric:tabular-nums}
 .big small{font-size:27px;color:var(--dim);font-weight:400}
-.badge{display:inline-block;font-family:Consolas,monospace;font-size:13px;font-weight:700;letter-spacing:.14em;
+.badge{display:inline-block;font-family:Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.14em;
        padding:6px 15px;border-radius:2px;margin:18px 0 4px;transition:all .4s}
 .badge.warn{color:var(--gold);border:1px solid var(--gold);background:rgba(201,162,76,.09)}
 .badge.ok{color:var(--grn);border:1px solid var(--grn);background:rgba(94,140,106,.12)}
 .bar{height:11px;background:#20252C;border-radius:2px;overflow:hidden;margin:20px 0 8px}
 .bar i{display:block;height:100%;background:var(--red);transition:width .8s cubic-bezier(.2,.8,.2,1)}
-.bar-note{font-size:12.5px;color:var(--dim2)}
+.bar-note{font-size:14px;color:var(--dim2)}
 .rows{margin-top:20px;border-top:1px solid var(--rule2)}
 .rows div{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--rule2)}
 .rows dt{font-size:14px;color:var(--dim)}
 .rows dd{font-family:Consolas,monospace;font-size:16px;font-variant-numeric:tabular-nums}
 .rows .key dd{font-size:22px;color:var(--gold);font-weight:700}
-.toggle{margin-top:20px;display:flex;gap:8px;align-items:center;font-family:Consolas,monospace;font-size:12px;color:var(--dim)}
-.toggle button{font-family:Consolas,monospace;font-size:12px;letter-spacing:.08em;padding:7px 12px;cursor:pointer;
+.toggle{margin-top:20px;display:flex;gap:8px;align-items:center;font-family:Consolas,monospace;font-size:14px;color:var(--dim)}
+.toggle button{font-family:Consolas,monospace;font-size:14px;letter-spacing:.08em;padding:7px 12px;cursor:pointer;
        background:transparent;color:var(--dim);border:1px solid var(--rule);border-radius:2px}
 .toggle button.on{color:var(--ink);border-color:var(--gold)}
 /* two vendors */
 .vs{display:flex;gap:3vw;align-items:stretch}
 .vs>div{width:min(300px,24vw);background:var(--panel);border:1px solid var(--rule);padding:30px 28px}
 .vs b{display:block;font-family:Consolas,monospace;font-size:88px;line-height:1;font-weight:700}
-.vs h4{font-size:13px;color:var(--dim);letter-spacing:.14em;font-family:Consolas,monospace;margin-bottom:16px}
+.vs h4{font-size:14px;color:var(--dim);letter-spacing:.14em;font-family:Consolas,monospace;margin-bottom:16px}
 .vs p{margin-top:18px;font-size:16px;line-height:1.7}
 .avg{align-self:center;text-align:center;font-family:Consolas,monospace;color:var(--dim2)}
 .avg s{display:block;font-size:44px;color:var(--dim2)}
 /* grid of three */
 .three{display:flex;gap:2.4vw;justify-content:center}
 .three>div{width:min(310px,26vw);background:var(--panel);border:1px solid var(--rule);border-top:2px solid var(--gold);padding:28px 26px;text-align:left}
-.three i{font-family:Consolas,monospace;font-style:normal;font-size:13px;color:var(--gold);letter-spacing:.2em}
+.three i{font-family:Consolas,monospace;font-style:normal;font-size:14px;color:var(--gold);letter-spacing:.2em}
 .three h3{font-family:'Noto Serif SC',serif;font-size:21px;margin:10px 0 12px}
 .three p{font-size:15px;line-height:1.7;color:var(--dim)}
 .model{display:flex;gap:2vw;justify-content:center;margin-top:3vh}
 .model>div{border:1px solid var(--rule);padding:16px 22px;font-size:15px;line-height:1.6;min-width:260px;text-align:left}
-.model b{color:var(--gold);font-family:Consolas,monospace;letter-spacing:.1em;font-size:12px;display:block;margin-bottom:6px}
+.model b{color:var(--gold);font-family:Consolas,monospace;letter-spacing:.1em;font-size:14px;display:block;margin-bottom:6px}
 .honest{margin-top:2.5vh;font-size:14px;color:var(--dim2)}
 /* ask */
 .ask{display:flex;gap:5vw;align-items:center}
 .facts{list-style:none;font-size:18px;line-height:2.1;text-align:left}
 .facts li::before{content:'—  ';color:var(--gold)}
-.qr2{text-align:center;font-size:12px;color:var(--dim);font-family:Consolas,monospace}.qr2 svg{display:block;margin:0 auto 6px}
+.qr2{text-align:center;font-size:14px;color:var(--dim);font-family:Consolas,monospace}.qr2 svg{display:block;margin:0 auto 6px}
 .qr{width:200px;height:200px;border:1px dashed var(--dim2);display:flex;align-items:center;justify-content:center;
-    color:var(--dim2);font-family:Consolas,monospace;font-size:12px;text-align:center;padding:12px}
+    color:var(--dim2);font-family:Consolas,monospace;font-size:14px;text-align:center;padding:12px}
 [data-l="en"] .zh,[data-l="zh"] .en{display:none}
 </style>
 </head>
@@ -151,7 +151,7 @@ const S=[
   card('c3',SC.late,true)+'</div>'},
  {nav:'03',html:
   '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">三 · 试了 20 次</span><span class="en">03 · TWENTY TRIES</span></div>'+
-  '<div class="story"><span class="zh">他试过 20 组参数，只给你看最好的。<br><em>20 个荐股群，总有一个看起来最准</em>。</span><span class="en">Twenty parameter sets tried, the best one shown.<br><em>One of twenty tip groups always looks best.</em></span></div>'+
+  '<div class="story"><span class="zh">他试过 20 组参数，只给你看最好的。<br><em>几百个里挑出的第一名，看起来准是应该的</em>。</span><span class="en">Twenty parameter sets tried, the best one shown.<br><em>The best of hundreds is supposed to look accurate.</em></span></div>'+
   '<div class="moral"><span class="zh">算进挑选，门槛升到 112。哪怕 66 个月全部闭卷，也不够。</span><span class="en">Count the selection: the bar is 112. Even all 66 closed-book would fall short.</span></div></div>'+
   card('c2',SC.early20,false)+'</div>'},
  {nav:'04',html:
@@ -203,6 +203,10 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='l'||e.key==='L'){document.body.dataset.l=document.body.dataset.l==='zh'?'en':'zh';}
 });
 go(0);
+
+// 大屏自适应：版面按 1280×720 设计，按视口等比放大（只放大不缩小）
+function fit(){document.documentElement.style.zoom=Math.max(1,Math.min(innerWidth/1280,innerHeight/720)).toFixed(3)}
+addEventListener('resize',fit);fit();
 </script>
 </body>
 </html>
