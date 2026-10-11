@@ -156,9 +156,22 @@ is faithfulness: any instance a question catches must also be caught by the main
 Here there is no second number to disagree with. A single score carries a name, and the
 name claims a capability the score does not measure.
 
-> **Can this score move while the capability its name describes stays fixed?** If it
-> can — by doing less, by changing the evaluation path, by restraint — it is not
-> measuring that capability.
+> **Can this score move while the capability its name describes stays fixed — or stay
+> fixed while the capability moves?** If it can — by doing less, by changing the
+> evaluation path, by restraint, or by averaging over the cases where the capability
+> differs — it is not measuring that capability.
+
+*(Made two-way 2026-10-10. The original question only tested whether the score was too
+sensitive, so it let through the opposite failure: a score that cannot see a real
+difference. Two cases hit the main definition and passed the question that way. MiniMax
+reports that a hybrid-attention model "looked just as good as pure full attention" on
+benchmarks it calls saturated, and only at larger scale showed "clear deficits in complex,
+multi-hop reasoning" ([MiniMax, Hugging Face blog](https://huggingface.co/blog/MiniMax-AI/why-did-m2-end-up-as-a-full-attention-model),
+2025-10-30). A ByteDance Seed paper finds a compressed-cache model that "nearly matches its
+full-attention baseline in mean accuracy", while its worst position scores 9.9% against
+58.4% ([arXiv 2609.36322](https://arxiv.org/abs/2609.36322), 2026-09-28). The paper
+reports both numbers side by side, so it is the detector here, not an instance; it is cited
+for the shape of the failure. The definition itself is unchanged.)*
 
 | domain | instance |
 |---|---|
