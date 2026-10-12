@@ -5,9 +5,9 @@ requires = ["setuptools>=77.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "decision-confidence"
-version = "0.1.0"
-description = "Agent decision-confidence meta-layer. One discount on two axes: across sources, whether several vendors are answering the same question; across time, how much of a backtest a model had already read and whether the clean remainder can support an inference at all."
+name = "evidence-deflator"
+version = "0.2.0"
+description = "Evidence Deflator: how much of the evidence behind an AI trading result actually counts. Given a model's knowledge cutoff, a test window and the number of attempts, returns clean months, months needed and a verdict. Also separates factual from definitional disagreement between risk sources."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -19,6 +19,12 @@ license-files = ["LICENSE"]
 requires-python = ">=3.8"
 authors = [{ name = "Path B" }]
 keywords = [
+    "evidence-deflator",
+    "backtest",
+    "look-ahead",
+    "knowledge-cutoff",
+    "deflated-sharpe",
+    "leaderboard",
     "risk",
     "normalization",
     "decision-confidence",
@@ -44,9 +50,9 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://beltran12138.github.io/decision-confidence/"
-Repository = "https://github.com/Beltran12138/decision-confidence"
-Issues = "https://github.com/Beltran12138/decision-confidence/issues"
+Homepage = "https://beltran12138.github.io/evidence-deflator/"
+Repository = "https://github.com/Beltran12138/evidence-deflator"
+Issues = "https://github.com/Beltran12138/evidence-deflator/issues"
 
 [project.optional-dependencies]
 # Core stays dependency-free. The MCP server is opt-in.
@@ -54,9 +60,11 @@ mcp = ["mcp>=1.28"]
 dev = ["pytest>=7"]
 
 [project.scripts]
+evidence-deflator-mcp = "mcp_server:main"
+# Old name kept so existing MCP configs keep working.
 decision-confidence-mcp = "mcp_server:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-py-modules = ["normalize", "decision_confidence", "effective_window", "counterfactual", "messages", "trial_count", "mcp_server"]
+py-modules = ["normalize", "decision_confidence", "evidence_deflator", "effective_window", "counterfactual", "messages", "trial_count", "track_record", "trace_audit", "mcp_server"]
 packages = ["adapters"]

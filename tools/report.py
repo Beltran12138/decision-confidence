@@ -239,7 +239,7 @@ def build(corpus, title, draws, seed, stamp):
 
     A('<div class="ft">')
     A('<span>decision-confidence · MIT · '
-      '<span class="mn">github.com/Beltran12138/decision-confidence</span></span>')
+      '<span class="mn">github.com/Beltran12138/evidence-deflator</span></span>')
     A(f'<span class="mn">Kish n_eff · within-label Spearman · Fisher-z · '
       f'bootstrap seed {seed}</span>')
     A("</div></div>")

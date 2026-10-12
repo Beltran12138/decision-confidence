@@ -19,4 +19,4 @@ Rules every audit follows:
 | [004](004-tradingagents-backtest.md) | TradingAgents `run_backtest` | 2026-10-12 | Data-level look-ahead is handled carefully; weight-level look-ahead is not checked. A 2024–2026 run with the default model is 88% open-book. |
 | [005](005-nof1.md) | Nof1's "proto scaling law for financial intelligence" | 2026-10-12 | Cannot assess: the claim is public, the evidence is not. |
 
-Computed with [decision-confidence](../../README.md). Have a backtest or a claim you want checked? Open an issue with a link to it.
+Computed with [Evidence Deflator](../../README.md). Have a backtest or a claim you want checked? Open an issue with a link to it.

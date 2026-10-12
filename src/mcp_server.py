@@ -56,11 +56,11 @@ try:
     from mcp.server.fastmcp import FastMCP
 except ImportError as exc:  # pragma: no cover - dependency guard
     raise SystemExit(
-        "The MCP server needs the 'mcp' package: pip install -e \".[mcp]\""
+        "The MCP server needs the 'mcp' package: pip install \"evidence-deflator[mcp]\" (or pip install -e \".[mcp]\" from a checkout)"
     ) from exc
 
 
-mcp = FastMCP("decision-confidence")
+mcp = FastMCP("evidence-deflator")
 
 
 @mcp.tool()

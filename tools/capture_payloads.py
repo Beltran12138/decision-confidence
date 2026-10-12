@@ -45,7 +45,7 @@ import urllib.parse
 import urllib.request
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
-UA = "decision-confidence-calibration/0.2 (+https://github.com/Beltran12138/decision-confidence)"
+UA = "decision-confidence-calibration/0.2 (+https://github.com/Beltran12138/evidence-deflator)"
 TIMEOUT = 25
 
 # Dataset chain label → (GoPlus numeric chain id, DexScreener slug).

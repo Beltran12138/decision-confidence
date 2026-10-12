@@ -214,7 +214,7 @@ the bias went.**
 ---
 
 *Code, evidence table and the runs behind every figure:*
-[decision-confidence](https://github.com/Beltran12138/decision-confidence) ·
+[decision-confidence](https://github.com/Beltran12138/evidence-deflator) ·
 [assay](https://github.com/Beltran12138/assay) ·
 [prophetmap](https://github.com/Beltran12138/prophetmap)
 

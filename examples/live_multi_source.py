@@ -41,7 +41,7 @@ from adapters import observe_vendor  # noqa: E402
 from decision_confidence import DecisionReport, SourceObservation, build_report  # noqa: E402
 
 TIMEOUT = 20
-UA = "decision-confidence/0.2 (+https://github.com/Beltran12138/decision-confidence)"
+UA = "decision-confidence/0.2 (+https://github.com/Beltran12138/evidence-deflator)"
 
 FIXTURES = {
     "pepe": ("0x6982508145454ce325ddbe47a25d4ec3d2311933", "pepe"),

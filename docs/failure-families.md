@@ -29,7 +29,7 @@ already, in rows nobody had checked against the definition they were filed under
 
 | domain | repo | what it scores |
 |---|---|---|
-| third-party risk vendors | [decision-confidence](https://github.com/Beltran12138/decision-confidence) | contract/token risk from multiple paid and free APIs |
+| third-party risk vendors | [decision-confidence](https://github.com/Beltran12138/evidence-deflator) | contract/token risk from multiple paid and free APIs |
 | LLM-as-judge | [assay](https://github.com/Beltran12138/assay) | answer quality from an LLM evaluator |
 | self-built equity scoring | [prophetmap](https://github.com/Beltran12138/prophetmap) | a hand-rolled 5-dimension screen over ~87 tickers |
 | multi-agent game testbed | `ai-game-bench` — **local experiment, no public repo** | whether an LLM negotiator defected, from rule-based classification of game logs |

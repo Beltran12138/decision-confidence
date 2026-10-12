@@ -244,7 +244,7 @@ the reflex to leave it out is the thing worth resisting.
 Nothing below performs network I/O or reads a price series.
 
 **In the browser** — no backend, no build, works offline, nothing leaves the
-page: **[the knowledge-window calculator](https://beltran12138.github.io/decision-confidence/)**
+page: **[the knowledge-window calculator](https://beltran12138.github.io/evidence-deflator/)**
 (second half of the page; the first half is the source-side version of the same
 discount).
 
@@ -302,7 +302,7 @@ being true.
 
 ---
 
-*Part of [decision-confidence](https://github.com/Beltran12138/decision-confidence)
+*Part of [decision-confidence](https://github.com/Beltran12138/evidence-deflator)
 — one discount on two axes. Across sources: are these vendors answering the same
 question? Across time: how much of this had the model already read? MIT, pure
 standard library, no network.*

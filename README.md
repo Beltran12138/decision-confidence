@@ -1,4 +1,4 @@
-# decision-confidence
+# Evidence Deflator
 
 **Evidence Deflator** — how many months of an AI backtest actually count?
 
@@ -51,7 +51,7 @@ of its rows where I had put them. This repo is the **third-party-vendor** instan
 
 | repo | domain | the question it asks |
 |---|---|---|
-| **decision-confidence** ← you are here | third-party risk vendors | do these vendors answer the same question? |
+| **Evidence Deflator** (this repo) ← you are here | third-party risk vendors | do these vendors answer the same question? |
 | [assay](https://github.com/Beltran12138/assay) | LLM-as-judge | does this metric measure what its name claims? |
 | [prophetmap](https://github.com/Beltran12138/prophetmap) | self-built equity scoring | does my own score survive my own rule? |
 | `ai-game-bench` *(local, not published)* | multi-agent game testbed | can this metric detect a failure I injected on purpose? |
@@ -987,7 +987,7 @@ rather than averaged away.
 
 ```bash
 pip install -e ".[mcp]"
-python src/mcp_server.py          # stdio; or: decision-confidence-mcp
+python src/mcp_server.py          # stdio; or: evidence-deflator-mcp (old name decision-confidence-mcp still works)
 ```
 
 Five tools — one per axis, a track-record variant of the time axis, and a lookup:
