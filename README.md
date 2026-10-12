@@ -14,7 +14,7 @@ python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
 ```
 
 Looking at an AI trading project? Send the three numbers and get a one-page
-evidence report back.
+evidence report back. Published audits: [docs/audits](docs/audits/README.md).
 
 The same engine also separates **factual** from **definitional** disagreement
 between risk sources (two vendors can differ by 68 points and both be right),
