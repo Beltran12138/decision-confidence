@@ -1,9 +1,24 @@
 # decision-confidence
 
-**Agent Decision Confidence** — a small, dependency-free framework that turns
-**heterogeneous risk signals from multiple external sources** into **comparable
-scores**, separates **disagreement that is factual** from **disagreement that is
-definitional**, and returns a **confidence** label with an **audit trail**.
+**Evidence Deflator** — how many months of an AI backtest actually count?
+
+A backtest that ran mostly before the model's knowledge cutoff is an open-book
+exam: for those months, we cannot rule out that the model has already read the
+answers. Give three things — the model's knowledge cutoff, the backtest's start
+and end months, and how many variants were tried — and get back how many clean
+months remain, how many a result of that strength needs, and a verdict.
+
+```
+python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
+# 66 months, 58 cannot be ruled out as seen, 8 clean; Sharpe 1 needs ~48
+```
+
+Looking at an AI trading project? Send the three numbers and get a one-page
+evidence report back.
+
+The same engine also separates **factual** from **definitional** disagreement
+between risk sources (two vendors can differ by 68 points and both be right),
+and returns a confidence label with an audit trail — see below.
 
 > Read-only. Pure Python standard library. No network, no on-chain reads, no
 > execution. Fetching is the caller's job; the value is a *repeatable,
