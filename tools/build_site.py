@@ -4,8 +4,9 @@
 
 Writes: index.html (home), leaderboard/index.html, method/index.html,
 audits/index.html + one page per audits/NNN-*.md, api/index.html, 404.html.
-The calculator at check/index.html is hand-maintained (it carries a JS port of
-the library that tools/check_js_parity.py diffs) and is not touched here.
+Hand-maintained pages (HAND_PAGES: the calculator, which carries a JS port of
+the library that tools/check_js_parity.py diffs, and three older pages) only get
+their marked head, header and footer blocks refreshed.
 Needs the `markdown` package for the audit pages; nothing at runtime.
 """
 import html, json, os, re
@@ -169,6 +170,7 @@ def build_audits():
 </div>
 <div class="container" style="padding-bottom:72px">
  <div class="rows">{items}
+ <a class="row" href="/case-nuclear.html"><span class="row-date">Case audit · 2026-10-06</span><span><span class="row-title">A “22% chance of a nuclear detonation” on Polymarket</span><span class="row-sub" style="display:block">Five discounts on one prediction-market price: about 16 effective wallets, and a contract that also counts tests.</span></span><span class="tag tag-amber">Wrong question</span></a>
  <a class="row" href="/audit.html"><span class="row-date">Paper audit · 2026-10-05</span><span><span class="row-title">17 published LLM trading papers</span><span class="row-sub" style="display:block">Of the 9 with a documented cutoff, none reaches 48 clean months.</span></span><span class="tag tag-red">0 of 9 reach 48 months</span></a>
  </div>
  <div class="callout" style="margin-top:40px"><h3 style="margin-bottom:8px">Rules every audit follows</h3>
@@ -487,24 +489,34 @@ def build_404():
     write("404.html", page)
 
 
-def build_check():
-    """Refresh the shared head links, header and footer inside the hand-maintained calculator."""
-    p = os.path.join(DOCS, "check", "index.html")
-    with open(p, encoding="utf-8") as f:
-        s = f.read()
-    links = "\n".join([
-        f'<link rel="icon" href="{FAVICON}">',
-        f'<link rel="canonical" href="{SITE}/check/">',
-        '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
-        '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">',
-        '<link rel="stylesheet" href="/assets/chrome.css">'])
+HAND_PAGES = [  # hand-maintained pages that only receive the shared head links, header and footer
+    ("check/index.html", "check", "/check/"),
+    ("audit.html", "audits", "/audit.html"),
+    ("case-nuclear.html", "audits", "/case-nuclear.html"),
+    ("how-many-decisions.html", "check", "/how-many-decisions.html"),
+]
+
+
+def inject_chrome():
+    """Refresh the marked head/header/footer blocks inside the hand-maintained pages."""
     foot = "<footer" + footer().split("<footer", 1)[1].rsplit("</body>", 1)[0]
-    for name, body in (("site-head", links), ("site-header", header("check")), ("site-footer", foot)):
-        s = re.sub(rf"<!-- {name} -->.*?<!-- /{name} -->",
-                   lambda m, name=name, body=body: f"<!-- {name} -->\n{body}\n<!-- /{name} -->", s, count=1, flags=re.S)
-    with open(p, "w", encoding="utf-8", newline="\n") as f:
-        f.write(s)
-    print("refreshed check/index.html")
+    for rel, active, path in HAND_PAGES:
+        p = os.path.join(DOCS, rel)
+        with open(p, encoding="utf-8") as f:
+            s = f.read()
+        links = "\n".join([
+            f'<link rel="icon" href="{FAVICON}">',
+            f'<link rel="canonical" href="{SITE}{path}">',
+            '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">',
+            '<link rel="stylesheet" href="/assets/chrome.css">'])
+        for name, body in (("site-head", links), ("site-header", header(active)), ("site-footer", foot)):
+            s, n = re.subn(rf"<!-- {name} -->.*?<!-- /{name} -->",
+                           lambda m, name=name, body=body: f"<!-- {name} -->\n{body}\n<!-- /{name} -->", s, count=1, flags=re.S)
+            assert n == 1, (rel, name)
+        with open(p, "w", encoding="utf-8", newline="\n") as f:
+            f.write(s)
+        print("refreshed", rel)
 
 
 def main():
@@ -516,7 +528,7 @@ def main():
     build_method()
     build_api()
     build_404()
-    build_check()
+    inject_chrome()
 
 
 if __name__ == "__main__":

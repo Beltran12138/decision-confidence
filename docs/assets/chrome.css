@@ -59,3 +59,7 @@ a:hover{text-decoration-color:var(--ink)}
 
 @media (max-width:900px){.foot-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){:root{--pad:18px}.site-header .container{gap:12px}.gh span{display:none}}
+/* Hand-maintained pages carry their own global link rules; keep the chrome immune. */
+.site-header a,.site-footer a{border-bottom:0}
+.site-header .brand,.site-footer .brand{color:var(--ink)}
+.site-header .gh{color:var(--ink-2)}
