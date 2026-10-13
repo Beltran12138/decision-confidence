@@ -15,7 +15,7 @@ python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
 
 Looking at an AI trading project? Send the three numbers and get a one-page
 evidence report back. Published audits: [docs/audits](docs/audits/README.md). Monthly
-[evidence-adjusted leaderboard](docs/leaderboard/2026-10.md): public AI trading
+[evidence-adjusted leaderboard](https://beltran12138.github.io/evidence-deflator/leaderboard/): public AI trading
 boards, rescored by how much each ranking can tell.
 
 The same engine also separates **factual** from **definitional** disagreement

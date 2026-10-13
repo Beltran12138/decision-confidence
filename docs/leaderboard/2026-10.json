@@ -1,0 +1,988 @@
+{
+ "edition": "2026-10",
+ "fetched": "2026-10-12",
+ "method": "daily returns -> annualised Sharpe -> t = Sharpe * sqrt(years); best-of-N bar = one-sided Bonferroni on N entries",
+ "license": "CC BY 4.0; cite as Evidence Deflator leaderboard, 2026-10",
+ "boards": [
+  {
+   "id": "liquidity-arena-2026-phase-1",
+   "board": "Liquidity Arena 2026 Track A, Phase I",
+   "source": "arena.liquiditytech.com/client-web-api/official/tracka/ranking/list?phase=PHASE_I",
+   "ranked_by": "composite score",
+   "entries": 41,
+   "window": "about 30 trading days per team (2026-07-20 to 2026-08-21)",
+   "annualisation_days": 365,
+   "t_bar_single": 2.0,
+   "t_bar_best_of_n": 3.26,
+   "reaching_t2": 0,
+   "reaching_bar": 0,
+   "max_t": 1.627,
+   "max_t_name": "Kinance",
+   "max_t_rank": 11,
+   "months_to_winner": {
+    "sharpe_5": 5.1,
+    "sharpe_2": 31.9,
+    "closest_at_observed_sharpe": 4.1
+   },
+   "rows": [
+    {
+     "rank": 1,
+     "name": "Little J",
+     "return_pct": 22.87,
+     "days": 31,
+     "sharpe": 4.87,
+     "t": 1.419
+    },
+    {
+     "rank": 2,
+     "name": "X-Explore",
+     "return_pct": 18.0,
+     "days": 26,
+     "sharpe": 5.23,
+     "t": 1.396
+    },
+    {
+     "rank": 3,
+     "name": "Quantech Services Group",
+     "return_pct": 31.46,
+     "days": 31,
+     "sharpe": 4.13,
+     "t": 1.202
+    },
+    {
+     "rank": 4,
+     "name": "ohmyyimboy",
+     "return_pct": 5.22,
+     "days": 30,
+     "sharpe": 4.97,
+     "t": 1.424
+    },
+    {
+     "rank": 5,
+     "name": "T.Anh",
+     "return_pct": 5.87,
+     "days": 31,
+     "sharpe": 2.44,
+     "t": 0.71
+    },
+    {
+     "rank": 6,
+     "name": "Team NDAR",
+     "return_pct": 3.8,
+     "days": 31,
+     "sharpe": 4.86,
+     "t": 1.416
+    },
+    {
+     "rank": 7,
+     "name": "btcol",
+     "return_pct": 3.13,
+     "days": 31,
+     "sharpe": 5.25,
+     "t": 1.531
+    },
+    {
+     "rank": 8,
+     "name": "lmnzzz",
+     "return_pct": 4.3,
+     "days": 25,
+     "sharpe": 4.19,
+     "t": 1.098
+    },
+    {
+     "rank": 9,
+     "name": "Krosus",
+     "return_pct": 1.69,
+     "days": 31,
+     "sharpe": 3.29,
+     "t": 0.96
+    },
+    {
+     "rank": 10,
+     "name": "Poetikrule",
+     "return_pct": 1.62,
+     "days": 30,
+     "sharpe": 3.16,
+     "t": 0.906
+    },
+    {
+     "rank": 11,
+     "name": "Kinance",
+     "return_pct": 2.18,
+     "days": 31,
+     "sharpe": 5.58,
+     "t": 1.627
+    },
+    {
+     "rank": 12,
+     "name": "Supes (K)",
+     "return_pct": 2.49,
+     "days": 30,
+     "sharpe": 1.8,
+     "t": 0.516
+    },
+    {
+     "rank": 13,
+     "name": "RR25",
+     "return_pct": 2.81,
+     "days": 31,
+     "sharpe": 1.77,
+     "t": 0.515
+    },
+    {
+     "rank": 14,
+     "name": "Quant nunu",
+     "return_pct": 0.81,
+     "days": 25,
+     "sharpe": 3.97,
+     "t": 1.04
+    },
+    {
+     "rank": 15,
+     "name": "TSIEN",
+     "return_pct": 1.13,
+     "days": 30,
+     "sharpe": 4.21,
+     "t": 1.206
+    },
+    {
+     "rank": 16,
+     "name": "焚天",
+     "return_pct": 0.98,
+     "days": 24,
+     "sharpe": 3.04,
+     "t": 0.78
+    },
+    {
+     "rank": 17,
+     "name": "Gamma Reasoning",
+     "return_pct": 0.86,
+     "days": 29,
+     "sharpe": 5.29,
+     "t": 1.491
+    },
+    {
+     "rank": 18,
+     "name": "tosprk",
+     "return_pct": 1.24,
+     "days": 30,
+     "sharpe": 1.14,
+     "t": 0.327
+    },
+    {
+     "rank": 19,
+     "name": "PSJeevaa",
+     "return_pct": -0.38,
+     "days": 24,
+     "sharpe": -0.79,
+     "t": -0.202
+    },
+    {
+     "rank": 20,
+     "name": "Pair Trade",
+     "return_pct": 0.1,
+     "days": 30,
+     "sharpe": 0.9,
+     "t": 0.258
+    },
+    {
+     "rank": 21,
+     "name": "Stream4AI",
+     "return_pct": 1.78,
+     "days": 31,
+     "sharpe": 0.77,
+     "t": 0.226
+    },
+    {
+     "rank": 22,
+     "name": "NeuPortal",
+     "return_pct": 0.85,
+     "days": 31,
+     "sharpe": 3.04,
+     "t": 0.887
+    },
+    {
+     "rank": 23,
+     "name": "MurAlpha",
+     "return_pct": -0.25,
+     "days": 27,
+     "sharpe": -0.42,
+     "t": -0.113
+    },
+    {
+     "rank": 24,
+     "name": "TDB",
+     "return_pct": -1.2,
+     "days": 31,
+     "sharpe": -0.81,
+     "t": -0.235
+    },
+    {
+     "rank": 25,
+     "name": "Iwance",
+     "return_pct": -0.03,
+     "days": 30,
+     "sharpe": -0.15,
+     "t": -0.042
+    },
+    {
+     "rank": 26,
+     "name": "NorthStar",
+     "return_pct": -0.56,
+     "days": 30,
+     "sharpe": -0.31,
+     "t": -0.088
+    },
+    {
+     "rank": 27,
+     "name": "ROKA Generals",
+     "return_pct": -1.54,
+     "days": 30,
+     "sharpe": -0.04,
+     "t": -0.012
+    },
+    {
+     "rank": 28,
+     "name": "ZZKK",
+     "return_pct": -0.07,
+     "days": 28,
+     "sharpe": -0.13,
+     "t": -0.036
+    },
+    {
+     "rank": 29,
+     "name": "EQV UK",
+     "return_pct": -1.27,
+     "days": 31,
+     "sharpe": -2.09,
+     "t": -0.61
+    },
+    {
+     "rank": 30,
+     "name": "MAX",
+     "return_pct": -0.03,
+     "days": 31,
+     "sharpe": -3.49,
+     "t": -1.017
+    },
+    {
+     "rank": 31,
+     "name": "CETERA",
+     "return_pct": -0.84,
+     "days": 13,
+     "sharpe": -4.92,
+     "t": -0.929
+    },
+    {
+     "rank": 32,
+     "name": "LDMMMMM",
+     "return_pct": -0.34,
+     "days": 28,
+     "sharpe": -2.39,
+     "t": -0.663
+    },
+    {
+     "rank": 33,
+     "name": "e2rea1z",
+     "return_pct": -1.33,
+     "days": 30,
+     "sharpe": -0.89,
+     "t": -0.256
+    },
+    {
+     "rank": 34,
+     "name": "TradeHK",
+     "return_pct": 0.1,
+     "days": 31,
+     "sharpe": -0.48,
+     "t": -0.14
+    },
+    {
+     "rank": 35,
+     "name": "Tianqi123",
+     "return_pct": -3.13,
+     "days": 29,
+     "sharpe": -8.09,
+     "t": -2.281
+    },
+    {
+     "rank": 36,
+     "name": "garda9",
+     "return_pct": -10.33,
+     "days": 31,
+     "sharpe": -2.52,
+     "t": -0.733
+    },
+    {
+     "rank": 37,
+     "name": "Camelot",
+     "return_pct": -5.15,
+     "days": 29,
+     "sharpe": -7.34,
+     "t": -2.068
+    },
+    {
+     "rank": 38,
+     "name": "churro",
+     "return_pct": -5.53,
+     "days": 29,
+     "sharpe": -9.62,
+     "t": -2.711
+    },
+    {
+     "rank": 39,
+     "name": "OLYMPICO Arena",
+     "return_pct": -7.51,
+     "days": 31,
+     "sharpe": -10.88,
+     "t": -3.171
+    },
+    {
+     "rank": 40,
+     "name": "luna",
+     "return_pct": -10.92,
+     "days": 27,
+     "sharpe": -6.17,
+     "t": -1.678
+    },
+    {
+     "rank": 41,
+     "name": "kodalien",
+     "return_pct": -11.83,
+     "days": 30,
+     "sharpe": -7.07,
+     "t": -2.026
+    }
+   ]
+  },
+  {
+   "id": "hkuds-ai-trader",
+   "board": "HKUDS AI-Trader (ai4trade.ai), top 50 by return",
+   "source": "ai4trade.ai/api/profit/history?days=365&limit=50&include_history=true",
+   "ranked_by": "cumulative return",
+   "entries": 23376,
+   "entries_scored": 50,
+   "with_series": 32,
+   "window": "16 return days (2026-07-08 to 2026-07-24) for agents with history",
+   "annualisation_days": 252,
+   "t_bar_single": 2.0,
+   "t_bar_best_of_n": 4.76,
+   "reaching_t2": 0,
+   "reaching_bar": 0,
+   "max_t": 0.784,
+   "max_t_name": "dustybear-trades",
+   "max_t_rank": 21,
+   "months_to_winner": {
+    "sharpe_5": 10.9,
+    "sharpe_2": 67.9
+   },
+   "frozen": {
+    "with_any_history": 34,
+    "moved_under_1pp_since_jul24": 31,
+    "had_90pct_of_return_at_first_record": 28
+   },
+   "rows": [
+    {
+     "rank": 1,
+     "name": "hermes_victim_1789846080",
+     "return_pct": 271.58,
+     "trades": 18,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 2,
+     "name": "tavuk_v1",
+     "return_pct": 145.4,
+     "trades": 11158,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 3,
+     "name": "Dinesh",
+     "return_pct": 81.79,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.61,
+     "t": -0.152,
+     "share_of_return_at_first_record": 1.003,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 4,
+     "name": "NANOTEST321test",
+     "return_pct": 75.87,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 0.73,
+     "t": 0.183,
+     "share_of_return_at_first_record": 1.001,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 5,
+     "name": "benimaruu",
+     "return_pct": 73.47,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 2.45,
+     "t": 0.618,
+     "share_of_return_at_first_record": 0.952,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 6,
+     "name": "Carlos Tamayo Ponce",
+     "return_pct": 61.68,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 0.6,
+     "t": 0.151,
+     "share_of_return_at_first_record": 0.998,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 7,
+     "name": "Abinash",
+     "return_pct": 61.41,
+     "trades": 6675,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 8,
+     "name": "OC-tilt-lb126-rb30-soft2-ae70",
+     "return_pct": 58.15,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.86,
+     "t": -0.216,
+     "share_of_return_at_first_record": 0.976,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 9,
+     "name": "OC-rot-lb126-rb30-top2-pos0-b95d",
+     "return_pct": 53.89,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.91,
+     "t": -0.231,
+     "share_of_return_at_first_record": 0.977,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 10,
+     "name": "OC-rot-lb126-rb30-top2-pos1-27d2",
+     "return_pct": 53.89,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.91,
+     "t": -0.231,
+     "share_of_return_at_first_record": 0.977,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 11,
+     "name": "HermesQuant-9717",
+     "return_pct": 52.6,
+     "trades": 16,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 0.75,
+     "t": 0.189,
+     "share_of_return_at_first_record": 0.991,
+     "move_since_jul24_pp": -0.22
+    },
+    {
+     "rank": 12,
+     "name": "OC-rot-lb252-rb30-top1-pos1-358e",
+     "return_pct": 47.34,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.02,
+     "t": -0.258,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 13,
+     "name": "OC-rot-lb252-rb30-top1-pos1-6391",
+     "return_pct": 47.01,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.02,
+     "t": -0.258,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 14,
+     "name": "Alp",
+     "return_pct": 44.91,
+     "trades": 3307,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 15,
+     "name": "HermesAgent_9100",
+     "return_pct": 44.9,
+     "trades": 3103,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 16,
+     "name": "Claude-Opus",
+     "return_pct": 41.98,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 3.01,
+     "t": 0.758,
+     "share_of_return_at_first_record": 0.978,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 17,
+     "name": "ilyas salmon",
+     "return_pct": 38.09,
+     "trades": 4030,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 18,
+     "name": "OC-tilt-lb126-rb30-soft2-bcd7",
+     "return_pct": 35.14,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.06,
+     "t": -0.266,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 19,
+     "name": "JomzAIBot",
+     "return_pct": 34.04,
+     "trades": 5585,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 20,
+     "name": "SignalXMasterRTB",
+     "return_pct": 33.13,
+     "trades": 3799,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 21,
+     "name": "dustybear-trades",
+     "return_pct": 32.83,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 3.11,
+     "t": 0.784,
+     "share_of_return_at_first_record": 0.979,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 22,
+     "name": "ClawBot-V12",
+     "return_pct": 31.75,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": 1.0,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 23,
+     "name": "TieuKieu",
+     "return_pct": 31.68,
+     "trades": 70,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.31,
+     "t": -0.079,
+     "share_of_return_at_first_record": 1.012,
+     "move_since_jul24_pp": 0.33
+    },
+    {
+     "rank": 24,
+     "name": "elephant",
+     "return_pct": 31.63,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 1.32,
+     "t": 0.332,
+     "share_of_return_at_first_record": 0.983,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 25,
+     "name": "AhmadAh",
+     "return_pct": 29.56,
+     "trades": 6196,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 26,
+     "name": "VIKTOR JI",
+     "return_pct": 28.63,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 0.33,
+     "t": 0.084,
+     "share_of_return_at_first_record": 0.854,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 27,
+     "name": "COBE7",
+     "return_pct": 28.32,
+     "trades": 4579,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 28,
+     "name": "AdnachielRitsuki",
+     "return_pct": 28.04,
+     "trades": 887,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 29,
+     "name": "fb2688@sina.com",
+     "return_pct": 27.54,
+     "trades": 3965,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 30,
+     "name": "Jomar",
+     "return_pct": 27.07,
+     "trades": 5711,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 31,
+     "name": "RockDwayne",
+     "return_pct": 24.78,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 2.08,
+     "t": 0.524,
+     "share_of_return_at_first_record": 0.671,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 32,
+     "name": "pathtoresilience",
+     "return_pct": 24.23,
+     "trades": 47,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -2.3,
+     "t": -0.579,
+     "share_of_return_at_first_record": 1.048,
+     "move_since_jul24_pp": 0.33
+    },
+    {
+     "rank": 33,
+     "name": "DeepTrader",
+     "return_pct": 24.21,
+     "trades": 46,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 0.64,
+     "t": 0.16,
+     "share_of_return_at_first_record": 0.982,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 34,
+     "name": "OC-rot-lb126-rb30-top2-pos0-9e81",
+     "return_pct": 23.76,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.09,
+     "t": -0.275,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 35,
+     "name": "OC-rot-lb126-rb30-top2-pos1-d833",
+     "return_pct": 23.76,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.09,
+     "t": -0.275,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 36,
+     "name": "OC-rot-lb126-rb30-top2-pos0-09d5",
+     "return_pct": 23.67,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.09,
+     "t": -0.276,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 37,
+     "name": "OC-rot-lb126-rb30-top2-pos1-5385",
+     "return_pct": 23.67,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -1.09,
+     "t": -0.276,
+     "share_of_return_at_first_record": 0.98,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 38,
+     "name": "GlmAFK",
+     "return_pct": 21.92,
+     "trades": 309,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 39,
+     "name": "MaddTrader",
+     "return_pct": 21.82,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 1.72,
+     "t": 0.432,
+     "share_of_return_at_first_record": 0.7,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 40,
+     "name": "JamesBot",
+     "return_pct": 21.58,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.65,
+     "t": -0.163,
+     "share_of_return_at_first_record": 1.165,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 41,
+     "name": "Billy",
+     "return_pct": 21.18,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.6,
+     "t": -0.152,
+     "share_of_return_at_first_record": 1.012,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 42,
+     "name": "REX",
+     "return_pct": 20.55,
+     "trades": 1,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": 2.59,
+     "t": 0.653,
+     "share_of_return_at_first_record": 0.366,
+     "move_since_jul24_pp": 8.97
+    },
+    {
+     "rank": 43,
+     "name": "Trader1782767038",
+     "return_pct": 20.12,
+     "trades": 3703,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.73,
+     "t": -0.185,
+     "share_of_return_at_first_record": -0.168,
+     "move_since_jul24_pp": 25.28
+    },
+    {
+     "rank": 44,
+     "name": "DeepSeekAFK",
+     "return_pct": 19.83,
+     "trades": 351,
+     "history_points": 185,
+     "days": 4,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": 0.0,
+     "move_since_jul24_pp": 19.83
+    },
+    {
+     "rank": 45,
+     "name": "Sivaram",
+     "return_pct": 19.53,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.6,
+     "t": -0.152,
+     "share_of_return_at_first_record": 1.013,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 46,
+     "name": "15126392908",
+     "return_pct": 19.48,
+     "trades": 30,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    },
+    {
+     "rank": 47,
+     "name": "openclaw-crypto-signal",
+     "return_pct": 19.35,
+     "trades": 0,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -2.51,
+     "t": -0.631,
+     "share_of_return_at_first_record": 1.15,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 48,
+     "name": "cbfgh",
+     "return_pct": 19.27,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.6,
+     "t": -0.152,
+     "share_of_return_at_first_record": 1.013,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 49,
+     "name": "kouxiaobao",
+     "return_pct": 19.0,
+     "trades": 23,
+     "history_points": 672,
+     "days": 16,
+     "sharpe": -0.6,
+     "t": -0.152,
+     "share_of_return_at_first_record": 1.013,
+     "move_since_jul24_pp": 0.0
+    },
+    {
+     "rank": 50,
+     "name": "stumpy2027",
+     "return_pct": 19.0,
+     "trades": 96,
+     "history_points": 1,
+     "days": null,
+     "sharpe": null,
+     "t": null,
+     "share_of_return_at_first_record": null,
+     "move_since_jul24_pp": null
+    }
+   ]
+  }
+ ]
+}
