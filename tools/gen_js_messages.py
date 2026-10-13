@@ -4,7 +4,7 @@
     python tools/gen_js_messages.py            # rewrite the table in place
     python tools/gen_js_messages.py --check    # exit 1 if it is stale
 
-``docs/index.html`` has to run with no build step, so it carries its own copy of
+``docs/check/index.html`` has to run with no build step, so it carries its own copy of
 every user-facing string. Transcribing ninety of them by hand is a typo with a
 delivery date, so the copy is generated — by this.
 
@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 from messages import DEFAULT_LANG, LANGS, MESSAGES  # noqa: E402
 
-PAGE = os.path.join(ROOT, "docs", "index.html")
+PAGE = os.path.join(ROOT, "docs", "check", "index.html")
 HEADER = "const I18N = {"
 
 
@@ -56,7 +56,7 @@ def main() -> int:
 
     found = re.search(r"const I18N = \{.*?\n\};\n", page, re.S)
     if not found:
-        print("no I18N table found in docs/index.html", file=sys.stderr)
+        print("no I18N table found in docs/check/index.html", file=sys.stderr)
         return 2
 
     fresh = render_table()
@@ -65,7 +65,7 @@ def main() -> int:
         return 0
 
     if args.check:
-        print("STALE: docs/index.html does not match src/messages.py.\n"
+        print("STALE: docs/check/index.html does not match src/messages.py.\n"
               "Run: python tools/gen_js_messages.py", file=sys.stderr)
         return 1
 

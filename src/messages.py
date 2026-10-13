@@ -5,7 +5,7 @@ Chinese, which meant an English reader who followed the README hit a wall of
 characters on the first run. English is now the default and Chinese is opt-in.
 
 **Why a table rather than gettext.** This is a dependency-free standard-library
-project, and the browser copy in ``docs/index.html`` has to carry the same
+project, and the browser copy in ``docs/check/index.html`` has to carry the same
 strings with no build step. A plain dict is the only form both can hold, and
 ``tools/check_js_parity.py`` diffs the two — in **both** languages, because a
 second language is a second place for them to drift. The page's copy is written

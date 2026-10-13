@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit 004 · TradingAgents run_backtest · Evidence Deflator</title>
+<meta name="description" content="Data-level look-ahead is handled carefully; weight-level look-ahead is not checked. A 2024–2026 run with the default model is 88% open-book.">
+<link rel="canonical" href="https://evidencedeflator.com/audits/004-tradingagents-backtest.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="Audit 004 · TradingAgents run_backtest · Evidence Deflator">
+<meta property="og:description" content="Data-level look-ahead is handled carefully; weight-level look-ahead is not checked. A 2024–2026 run with the default model is 88% open-book.">
+<meta property="og:url" content="https://evidencedeflator.com/audits/004-tradingagents-backtest.html">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="Main"><a href="/leaderboard/">Leaderboard</a><a href="/audits/" aria-current="page">Audits</a><a href="/check/">Check a backtest</a><a href="/method/">Method</a><a href="/api/">API</a></nav>
+<div class="header-cta"><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><a href="/audits/" style="text-decoration:none">Audits</a> / 004</div>
+<h1 style="margin-top:16px">TradingAgents <code>run_backtest</code></h1>
+<div class="meta"><span class="tag tag-red">88% open-book</span><span class="mono">2026-10-12</span><span>Sources public, fetched on the stated date</span></div>
+<div class="callout" style="margin-top:0"><div class="eyebrow" style="margin-bottom:10px">Finding</div>Data-level look-ahead is handled carefully; weight-level look-ahead is not checked. A 2024–2026 run with the default model is 88% open-book.</div>
+<p>The subject is an open-source framework's backtest feature, not a performance claim.</p>
+<h2>Subject</h2>
+<p><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a>, a multi-agent LLM trading framework (110,766 stars on 2026-10-12). Since v0.5.0 it ships <code>run_backtest</code>; the README example is <code>tradingagents backtest NVDA,AAPL --start 2026-06-01 --end 2026-08-01 --every 7</code>. Default models: GPT-6 Sol (deep tier) and GPT-6 Luna (quick tier).</p>
+<h2>What it already does well</h2>
+<ul>
+<li>v0.4.0 to v0.5.2 fixed a whole set of <strong>data-level</strong> look-ahead paths: FRED, sentiment, and SEC EDGAR are served as published at the time, and backtests "see only data published by each analysis date" (CHANGELOG and README).</li>
+<li>The README states plainly that LLM runs are non-deterministic.</li>
+</ul>
+<h2>What it does not check</h2>
+<ul>
+<li><strong>Look-ahead in the weights.</strong> <code>tradingagents/backtest.py</code> and <code>graph/trading_graph.py</code> contain no knowledge-cutoff check. The word "cutoff" appears only for data dates and for prompts that state the current date (#836).</li>
+<li><strong>Number of attempts.</strong> <code>summarize()</code> reports hit rate and mean alpha per rating. It does not report how many grid cells or configurations were evaluated, and runs no significance test.</li>
+</ul>
+<p>The maintainers already track model-level leakage in <a href="https://github.com/TauricResearch/TradingAgents/issues/805">#805</a> and note that no code change can eliminate it. This audit is about labelling it.</p>
+<h2>Three inputs, two typical uses</h2>
+<p>Published knowledge cutoffs (OpenAI model pages, fetched 2026-10-12): GPT-6 Sol <strong>2026-04-20</strong>, GPT-6 Luna <strong>2026-05-18</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Months</th>
+<th>Cannot rule out as seen</th>
+<th>Clean</th>
+<th>Needed at Sharpe 1</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>README example, 2026-06 to 2026-08</td>
+<td>3</td>
+<td>0</td>
+<td>3</td>
+<td>48</td>
+<td>too short (6% of what is needed)</td>
+</tr>
+<tr>
+<td>A typical 2024-01 to 2026-08 run</td>
+<td>32</td>
+<td>28</td>
+<td>4</td>
+<td>48</td>
+<td>underpowered, 88% open-book</td>
+</tr>
+</tbody>
+</table>
+<p>(<code>tools/window.py --cutoff 2026-04</code>; the cutoff month counts as seen, which is conservative.)</p>
+<h2>Finding</h2>
+<p><strong>The framework is careful; the risk is in how it is used.</strong> The README window happens to fall after the cutoff, so it is closed-book, but only three months long. Move the start back to 2024 and nearly nine in ten months may already be known to the default model, and nothing in the output says so.</p>
+<h2>Suggestion (posted to #805)</h2>
+<p>Before the grid runs, compare each cell's date with the configured models' published cutoffs and mark cells on or before them; in <code>BacktestSummary</code>, report how many cells were evaluated. Both are small changes.</p>
+</article>
+<aside class="aside">
+ <div class="box"><h4>Three inputs</h4><ul><li>The model’s knowledge cutoff</li><li>The test window</li><li>How many attempts the result was picked from</li></ul></div>
+ <div class="box"><h4>Rules</h4><ul><li>Numbers recomputed, not copied</li><li>A missing input is a finding, not a verdict</li><li>No judgement of intent</li></ul></div>
+ <div class="box"><h4>More audits</h4><ul><li><a href="/audits/003-liquidity-arena-phase-1.html">← 003 · Liquidity Arena 2026 Track A, Phase I (41 teams)</a></li><li><a href="/audits/005-nof1.html">005 · Nof1&#x27;s &quot;proto scaling law for financial intelligence&quot; →</a></li><li><a href="/audits/">All audits</a></li></ul></div>
+ <a class="btn btn-secondary" href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a>
+</aside>
+</div></main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
+ <div><h4>Product</h4><ul><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+ <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a></li></ul></div>
+</div>
+<div class="foot-note"><span>Open source · MIT · v0.2.0</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+</body>
+</html>

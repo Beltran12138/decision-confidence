@@ -43,7 +43,7 @@ class FisherArithmetic(unittest.TestCase):
         self.assertAlmostEqual(fisher_one_sided(3, 0, 0, 3), 0.05, places=12)
 
     def test_the_page_and_the_cli_quote_a_checkable_default(self):
-        """``docs/index.html`` loads 1/4 material and 0/4 cosmetic on arrival and
+        """``docs/check/index.html`` loads 1/4 material and 0/4 cosmetic on arrival and
         its footer states the answer, the same way the window half states
         58/8/48. A published number with nothing pinning it drifts on the next
         edit and is then wrong in two places at once — the footer and the CLI's

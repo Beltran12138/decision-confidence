@@ -5,170 +5,113 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Evidence-adjusted leaderboard · AI trading · October 2026</title>
 <meta name="description" content="Public AI trading leaderboards rank by return. We rescore them by how much each ranking can tell: 0 of 41 competition teams and 0 of 32 public agents reach even t = 2.">
+<link rel="canonical" href="https://evidencedeflator.com/leaderboard/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="0 of 41 AI trading teams reach t = 2. When could a leaderboard first name a winner?">
-<meta property="og:description" content="Evidence-adjusted leaderboard No. 1: Liquidity Arena Phase I and HKUDS AI-Trader, rescored by statistical evidence instead of return.">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="Evidence-adjusted leaderboard · AI trading · October 2026">
+<meta property="og:description" content="Public AI trading leaderboards rank by return. We rescore them by how much each ranking can tell: 0 of 41 competition teams and 0 of 32 public agents reach even t = 2.">
 <meta property="og:url" content="https://evidencedeflator.com/leaderboard/">
 <meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230B0D10'/%3E%3Crect x='5' y='14' width='22' height='4' fill='%23C9A24C'/%3E%3C/svg%3E">
-<style>
-:root{--bg:#0B0D10;--panel:#101319;--ink:#E9E5DC;--dim:#8A9099;--dim2:#5E646C;--rule:#22262C;--gold:#C9A24C;--red:#D0574E;--grn:#6E9C7A}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 'Segoe UI',system-ui,sans-serif}
-main{max-width:1080px;margin:0 auto;padding:36px 20px 80px}
-nav.top{display:flex;flex-wrap:wrap;gap:18px;font-family:Consolas,monospace;font-size:12px;letter-spacing:.08em;margin-bottom:28px}
-nav.top a{color:var(--dim);text-decoration:none}nav.top a:hover,nav.top a.on{color:var(--ink)}
-nav.top .brand{color:var(--gold);margin-right:auto}
-h1{font-family:Georgia,serif;font-size:clamp(26px,3.6vw,40px);line-height:1.25;margin:6px 0 12px;font-weight:normal}
-h2{font-family:Georgia,serif;font-size:22px;font-weight:normal;margin:52px 0 8px;border-top:1px solid var(--rule);padding-top:28px}
-h3{font-size:15px;margin:26px 0 6px}
-.kick{font-family:Consolas,monospace;font-size:12px;letter-spacing:.22em;color:var(--gold)}
-.lede{font-size:17px;color:#CFCBC2;max-width:760px}
-.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:30px 0 8px}
-.nums div{background:var(--bg);padding:18px 18px 16px}
-.nums b{display:block;font-family:Consolas,monospace;font-size:44px;line-height:1.05;font-weight:normal}
-.nums span{color:var(--dim);font-size:13px;display:block;margin-top:6px}
-.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-dim{color:var(--dim)}.c-grn{color:var(--grn)}
-.wrap{overflow-x:auto;border:1px solid var(--rule)}
-table{border-collapse:collapse;width:100%;font-size:13.5px}
-th,td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;white-space:nowrap}
-th{font-family:Consolas,monospace;font-size:11px;letter-spacing:.08em;color:var(--dim);background:var(--panel);font-weight:600}
-#summary td{white-space:normal}
-.more{background:none;border:1px solid var(--rule);color:var(--dim);padding:7px 14px;margin-top:10px;cursor:pointer;font-family:Consolas,monospace;font-size:12px}
-td.n,th.n{font-family:Consolas,monospace;text-align:right}
-tr.hl td{background:#15130d}
-.bar{display:inline-block;height:8px;background:var(--dim2);vertical-align:middle}
-.bar.pos{background:var(--gold)}
-a{color:var(--ink);text-decoration-color:var(--dim2)}
-.note{color:var(--dim);font-size:13.5px}
-.seg{display:inline-flex;border:1px solid var(--rule);margin:14px 0 10px;font-family:Consolas,monospace;font-size:12px}
-.seg button{background:none;border:0;color:var(--dim);padding:6px 12px;cursor:pointer}
-.seg button.on{background:var(--panel);color:var(--ink);box-shadow:inset 0 -2px 0 var(--gold)}
-.strip{border:1px solid var(--rule);background:var(--panel);padding:10px 8px 4px;margin:14px 0}
-.strip svg{width:100%;height:auto;display:block}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:16px 0}
-.card{border:1px solid var(--rule);padding:16px 18px;background:var(--panel)}
-.card b{font-family:Consolas,monospace;font-size:28px;font-weight:normal;display:block}
-code{font-family:Consolas,monospace;font-size:13px;background:var(--panel);padding:1px 5px}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
-.cta a{border:1px solid var(--gold);color:var(--ink);padding:9px 16px;text-decoration:none;font-size:14px}
-.cta a.sec{border-color:var(--rule);color:var(--dim)}
-footer{margin-top:60px;border-top:1px solid var(--rule);padding-top:18px;color:var(--dim2);font-size:12.5px;font-family:Consolas,monospace}
-</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="Main"><a href="/leaderboard/" aria-current="page">Leaderboard</a><a href="/audits/">Audits</a><a href="/check/">Check a backtest</a><a href="/method/">Method</a><a href="/api/">API</a></nav>
+<div class="header-cta"><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
 <main>
-<nav class="top">
- <a class="brand" href="../">EVIDENCE DEFLATOR</a>
- <a class="on" href="./">LEADERBOARD</a>
- <a href="methodology.html">METHOD</a>
- <a href="../audit.html">AUDITS</a>
- <a href="https://github.com/Beltran12138/evidence-deflator">GITHUB</a>
-</nav>
-
-<div class="kick">EVIDENCE-ADJUSTED LEADERBOARD · No. 1 · OCTOBER 2026</div>
-<h1>Public AI trading leaderboards rank by return. None of them can yet name a winner.</h1>
-<p class="lede">We take the equity history each board publishes and ask a different question of the same data: how much can the ranking tell you, and how long until it could first show that the top entry is skilled rather than lucky?</p>
-
-<div class="nums" id="headline"></div>
-<p class="note">t = annualised Sharpe × √years. One result needs t ≥ 2. Picking the best of N entries raises the bar: best of 41 needs about 3.26, best of 23,376 about 4.76. <a href="methodology.html">How this is computed</a>.</p>
-
-<h2>Summary</h2>
-<div class="wrap"><table id="summary"></table></div>
-<p class="note">* Months of clean, forward history the top entry would need to clear the best-of-N bar, if its true Sharpe were the value shown. Counting every entry as an independent attempt overstates the charge when entries are correlated; the true Sharpe of any entry is unknown. Both cut in opposite directions.</p>
-
-<div id="boards"></div>
-
-<h2>What would bring the date forward</h2>
-<div class="cards">
- <div class="card"><b>Longer windows</b>A month of live trading is too short for any realistic Sharpe. Carrying Phase I records into Phase II doubles each team's evidence for free.</div>
- <div class="card"><b>Publish the history</b>Rank only entries with a full equity curve. A single snapshot supports no Sharpe, no drawdown and no test.</div>
- <div class="card"><b>Group the variants</b>Parameter sweeps from one owner are one attempt with many tries. Show them as a family with one bar, not as separate winners.</div>
+<div class="container page-head">
+ <div class="eyebrow"><span class="dot"></span>Evidence-adjusted leaderboard · No. 1 · October 2026</div>
+ <h1>Public AI trading leaderboards rank by return. None of them can yet name a winner.</h1>
+ <p class="lede">We take the equity history each board publishes and ask a different question of the same data: how much can the ranking tell you, and how long until it could show that the top entry is skilled rather than lucky?</p>
+ <div class="stats" style="margin-top:36px">
+  <div><b class="c-accent">0 / 41</b><span>competition teams reach t = 2 (Liquidity Arena)</span></div>
+  <div><b class="c-accent">0 / 32</b><span>top public agents with history reach t = 2 (AI-Trader)</span></div>
+  <div><b>~5 mo</b><span>earliest the arena could name a winner, if the best team’s true Sharpe were 5</span></div>
+  <div><b>5.7 yr</b><span>for AI-Trader at a true Sharpe of 2, against 23,376 entries</span></div>
+ </div>
+ <p class="muted small" style="margin-top:14px">t = annualised Sharpe × √years. One result needs t ≥ 2; the best of N needs more. <a href="/method/#leaderboards">How this is computed</a>.</p>
+</div>
+<div class="container" style="padding-bottom:56px">
+ <div class="table-wrap"><table class="data"><thead><tr><th>Board</th><th class="r">Entries</th><th>Window</th><th class="r">t ≥ 2</th><th class="r">Highest t</th><th class="r">Best-of-N bar</th><th>Earliest winner*</th></tr></thead><tbody><tr><td><a href="#liquidity-arena-2026-phase-1">Liquidity Arena 2026 Track A, Phase I</a></td><td class="r">41</td><td class="wrap">about 30 trading days per team (2026-07-20 to 2026-08-21)</td><td class="r c-accent">0</td><td class="r">1.63</td><td class="r">3.26</td><td class="wrap">5 months at Sharpe 5 · 2.7 years at Sharpe 2</td></tr><tr><td><a href="#hkuds-ai-trader">HKUDS AI-Trader (ai4trade.ai), top 50 by return</a></td><td class="r">23,376</td><td class="wrap">16 return days (2026-07-08 to 2026-07-24) for agents with history</td><td class="r c-accent">0</td><td class="r">0.78</td><td class="r">4.76</td><td class="wrap">11 months at Sharpe 5 · 5.7 years at Sharpe 2</td></tr></tbody></table></div>
+ <p class="muted small" style="margin-top:10px">* Months of clean, forward history the top entry would need to clear the best-of-N bar, if its true Sharpe were the value shown. Counting every entry as independent overstates the charge when entries are correlated; the true Sharpe is unknown. The two cut in opposite directions.</p>
 </div>
 
-<h2>Use the data</h2>
-<p>Every number above comes from <a href="2026-10.json">2026-10.json</a> (per-entry return, days, Sharpe, t), built by <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/tools/build_leaderboard.py"><code>tools/build_leaderboard.py</code></a> from the boards' own public endpoints, fetched 2026-10-12. CC BY 4.0: reuse it, cite the edition.</p>
-<div class="cta">
- <a href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Leaderboard%20to%20rescore%3A%20&labels=leaderboard">Suggest a board to rescore</a>
- <a class="sec" href="../audit.html">Audit a single backtest</a>
- <a class="sec" href="https://github.com/Beltran12138/evidence-deflator/blob/main/docs/leaderboard/2026-10.md">Text version</a>
+<section id="liquidity-arena-2026-phase-1"><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">41 entries · ranked by composite score</div><h2 style="margin-top:12px">Liquidity Arena 2026 Track A, Phase I</h2></div>
+ <span class="muted small mono">about 30 trading days per team (2026-07-20 to 2026-08-21)</span></div>
+ <p class="muted">Live sandbox trading, so the model could not have seen the test period: closed-book by construction. The gap is length and selection. <a href="/audits/003-liquidity-arena-phase-1.html">Audit 003</a>.</p>
+<div class="stats" style="margin:22px 0 26px">
+ <div><b class="c-accent">0 / 41</b><span>teams reach t = 2</span></div>
+ <div><b>1.63</b><span>closest: Kinance, rank 11 by return. At its observed Sharpe, about 4.1 months of forward record would clear the bar.</span></div>
+ <div><b>11 · 7 · 17</b><span>return ranks of the top three by evidence. The return leader is fifth by t.</span></div>
 </div>
-<p class="note">Run on a board you operate and think we got wrong? Open an issue; corrections are published with the next edition. Next: TradeRank and Liquidity Arena Phase II.</p>
-
-<footer>Evidence Deflator · open source, MIT · <code>pip install evidence-deflator</code> · edition 2026-10, fetched 2026-10-12</footer>
+ <div class="chart" data-strip="liquidity-arena-2026-phase-1"></div>
+ <p class="muted small" style="margin-top:8px">Source: <code>arena.liquiditytech.com/client-web-api/official/tracka/ranking/list?phase=PHASE_I</code>, fetched 2026-10-12.</p>
+ <div class="toolbar"><div class="seg" data-b="liquidity-arena-2026-phase-1"><button data-by="rank" class="on">Rank by return</button><button data-by="t">Rank by evidence</button></div>
+ <button class="linkbtn" data-more="liquidity-arena-2026-phase-1">Show all 41 rows</button></div>
+ <div class="table-wrap"><table class="data" id="t-liquidity-arena-2026-phase-1"></table></div>
+</div></section>
+<section id="hkuds-ai-trader"><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">23,376 entries · ranked by cumulative return</div><h2 style="margin-top:12px">HKUDS AI-Trader (ai4trade.ai), top 50 by return</h2></div>
+ <span class="muted small mono">16 return days (2026-07-08 to 2026-07-24) for agents with history</span></div>
+ <div class="stats" style="margin:22px 0 26px">
+ <div><b class="c-accent">31 / 34</b><span>agents with history moved under 1 point between 24 July and 12 October. A third-party report (<a href="https://github.com/HKUDS/AI-Trader/issues/311">#311</a>, unconfirmed) finds the price feed stuck at about 24 July.</span></div>
+ <div><b>+271.6%</b><span>the #1 agent, with no history published. So is #2 (+145.4%): no Sharpe or drawdown can be computed.</span></div>
+ <div><b>10 / 100</b><span>of the top 100 are one parameter grid (<code>OC-rot-lb126-rb30-…</code>), ranked as separate winners.</span></div>
+</div>
+<p class="muted small">History is July only, then one live snapshot, so annualisation is rough. 28 of 34 already had ≥ 90% of their return when the history begins. 46 of the top 100 show zero trades alongside non-zero returns; reported as published.</p>
+ <div class="chart" data-strip="hkuds-ai-trader"></div>
+ <p class="muted small" style="margin-top:8px">Source: <code>ai4trade.ai/api/profit/history?days=365&amp;limit=50&amp;include_history=true</code>, fetched 2026-10-12.</p>
+ <div class="toolbar"><div class="seg" data-b="hkuds-ai-trader"><button data-by="rank" class="on">Rank by return</button><button data-by="t">Rank by evidence</button></div>
+ <button class="linkbtn" data-more="hkuds-ai-trader">Show all 50 rows</button></div>
+ <div class="table-wrap"><table class="data" id="t-hkuds-ai-trader"></table></div>
+</div></section>
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">For operators</div><h2 style="margin-top:12px">What would bring the date forward</h2></div></div>
+ <div class="triad">
+  <div><span class="k">LONGER WINDOWS</span><h3>Carry records across phases</h3><p>A month of live trading is too short for any realistic Sharpe. Carrying Phase I into Phase II doubles each team’s evidence at no cost.</p></div>
+  <div><span class="k">PUBLISH THE HISTORY</span><h3>Rank only full equity curves</h3><p>A single snapshot supports no Sharpe, no drawdown and no test. An entry with no history should not sit at the top.</p></div>
+  <div><span class="k">GROUP THE VARIANTS</span><h3>One owner, one family</h3><p>Parameter sweeps are one attempt with many tries. Show them as a family against one bar, not as separate winners.</p></div>
+ </div>
+</div></section>
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Data</div><h2 style="margin-top:12px">Use the numbers</h2>
+ <p>Per-entry return, days, Sharpe and t, built by <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/tools/build_leaderboard.py"><code>tools/build_leaderboard.py</code></a> from each board’s public endpoint. CC BY 4.0.</p></div></div>
+ <div class="btns"><a class="btn btn-primary" href="/leaderboard/2026-10.json">Download 2026-10.json</a><a class="btn btn-secondary" href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Leaderboard%20to%20rescore%3A%20">Suggest a board to rescore</a><a class="btn btn-secondary" href="https://github.com/Beltran12138/evidence-deflator/blob/main/docs/leaderboard/2026-10.md">Text version</a></div>
+ <p class="muted small" style="margin-top:18px">Operate one of these boards and think a number is wrong? Open an issue; corrections are published in the next edition. Next: TradeRank seasons 1–6 and Liquidity Arena Phase II.</p>
+</div></section>
 </main>
-
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
+ <div><h4>Product</h4><ul><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+ <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a></li></ul></div>
+</div>
+<div class="foot-note"><span>Open source · MIT · v0.2.0</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+<script src="/assets/lb.js"></script>
 <script>
-const fmt=(x,d=2)=>x==null?'—':Number(x).toFixed(d);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const yrs=m=>m>=24?(m/12).toFixed(1)+' years':Math.round(m)+' months';
-
-function strip(b){
-  const pts=b.rows.filter(r=>r.t!=null), W=1000,H=136,L=30,R=20;
-  const lo=Math.min(-1,...pts.map(r=>r.t)), hi=Math.max(b.t_bar_best_of_n+0.4,...pts.map(r=>r.t));
-  const x=v=>L+(v-lo)/(hi-lo)*(W-L-R);
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="t-statistic of each entry against the single-test and best-of-N bars">`;
-  for(let v=Math.ceil(lo);v<=hi;v++) s+=`<line x1="${x(v)}" x2="${x(v)}" y1="40" y2="${H-24}" stroke="#22262C"/><text x="${x(v)}" y="${H-8}" fill="#5E646C" font-size="12" text-anchor="middle" font-family="Consolas,monospace">${v}</text>`;
-  s+=`<line x1="${x(2)}" x2="${x(2)}" y1="6" y2="${H-24}" stroke="#8A9099" stroke-dasharray="4 4"/><text x="${x(2)-5}" y="16" text-anchor="end" fill="#8A9099" font-size="12" font-family="Consolas,monospace">t = 2 (one test)</text>`;
-  s+=`<line x1="${x(b.t_bar_best_of_n)}" x2="${x(b.t_bar_best_of_n)}" y1="22" y2="${H-24}" stroke="#D0574E"/><text x="${x(b.t_bar_best_of_n)-5}" y="34" fill="#D0574E" font-size="12" text-anchor="end" font-family="Consolas,monospace">best of ${b.entries.toLocaleString('en')}: ${fmt(b.t_bar_best_of_n)}</text>`;
-  pts.forEach((r,i)=>{const y=50+((i*37)%52);s+=`<circle cx="${x(r.t)}" cy="${y}" r="5" fill="${r.rank===b.max_t_rank?'#C9A24C':'#E9E5DC'}" fill-opacity="${r.rank===b.max_t_rank?1:.55}"><title>#${r.rank} ${esc(r.name)}: t = ${fmt(r.t)}</title></circle>`});
-  return s+'</svg>';
-}
-
-function table(b,by,all){
-  let rows=[...b.rows].sort(by==='t'?(p,q)=>(q.t??-99)-(p.t??-99):(p,q)=>p.rank-q.rank);
-  if(!all) rows=rows.slice(0,15);
-  const tmax=Math.max(...b.rows.map(r=>Math.abs(r.t||0)),b.t_bar_best_of_n);
-  let h='<tr><th class="n">RANK BY RETURN</th><th>ENTRY</th><th class="n">RETURN</th><th class="n">DAYS</th><th class="n">SHARPE</th><th class="n">t</th><th>t AGAINST THE BEST-OF-N BAR</th></tr>';
-  rows.forEach(r=>{
-    const w=r.t==null?0:Math.abs(r.t)/tmax*160;
-    h+=`<tr${r.rank===b.max_t_rank?' class="hl"':''}><td class="n">${r.rank}</td><td>${esc(r.name)}</td><td class="n">${fmt(r.return_pct,1)}%</td><td class="n">${r.days??'—'}</td><td class="n">${fmt(r.sharpe)}</td><td class="n">${fmt(r.t)}</td><td>${r.t==null?'<span class="c-dim">no history published</span>':`<span class="bar ${r.t>0?'pos':''}" style="width:${w.toFixed(0)}px"></span> <span class="c-dim">${(r.t/b.t_bar_best_of_n*100).toFixed(0)}%</span>`}</td></tr>`;
-  });
-  return h;
-}
-
-const EXTRA={
- 'liquidity-arena-2026-phase-1':b=>`<p>Live sandbox trading, so the model could not have seen the test period: closed-book by construction. The gap is length and selection. <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/docs/audits/003-liquidity-arena-phase-1.md">Audit 003</a>.</p>
- <div class="cards"><div class="card"><span class="c-dim">Closest to the bar</span><b class="c-gold">${esc(b.max_t_name)} · t = ${fmt(b.max_t)}</b>Rank ${b.max_t_rank} by return. If its observed Sharpe held, about ${b.months_to_winner.closest_at_observed_sharpe} months of forward record would clear the best-of-41 bar. One bad month would undo that.</div>
- <div class="card"><span class="c-dim">Ranked by evidence</span><b>11 · 7 · 17</b>The top three by t are ranks 11, 7 and 17 by return. The return leader is fifth by t, and the gaps between them are far smaller than their noise.</div></div>`,
- 'hkuds-ai-trader':b=>`<div class="cards"><div class="card"><span class="c-dim">The top of the board is frozen</span><b class="c-gold">${b.frozen.moved_under_1pp_since_jul24} of ${b.frozen.with_any_history}</b>agents with history moved less than 1 percentage point between 24 July and 12 October; ${b.frozen.had_90pct_of_return_at_first_record} already had ≥ 90% of their return when the published history begins. A likely cause of the freeze is on the platform side: a third-party report (<a href="https://github.com/HKUDS/AI-Trader/issues/311">issue #311</a>, unconfirmed by the maintainers) finds the price feed stuck at about 24 July, so positions have not been re-marked since.</div>
- <div class="card"><span class="c-dim">The top two publish no history</span><b class="c-red">+271.6% · +145.4%</b>A single snapshot each. No Sharpe or drawdown can be computed; the board's drawdown field reads 0.0 for both.</div>
- <div class="card"><span class="c-dim">The trial count is in the names</span><b>10 of top 100</b>are one parameter grid (<code>OC-rot-lb126-rb30-top2-pos0</code>, <code>OC-tilt-lb126-rb30-soft2</code> …), ranked side by side with single entries.</div></div>
- <p class="note">History is July only, then one live snapshot, so annualisation is rough. 46 of the top 100 show zero trades alongside non-zero returns; reported as published, not interpreted.</p>`
-};
-
-fetch('2026-10.json').then(r=>r.json()).then(d=>{
-  const [la,ai]=d.boards;
-  document.getElementById('headline').innerHTML=
-   `<div><b class="c-red">0 / ${la.entries}</b><span>competition teams reach t = 2 (Liquidity Arena, Phase I)</span></div>
-    <div><b class="c-red">0 / ${ai.with_series}</b><span>top public agents with history reach t = 2 (AI-Trader)</span></div>
-    <div><b class="c-gold">${Math.round(la.months_to_winner.sharpe_5)} mo</b><span>earliest the arena could name a winner, if the best team's true Sharpe were 5</span></div>
-    <div><b class="c-dim">${(ai.months_to_winner.sharpe_2/12).toFixed(1)} yr</b><span>for AI-Trader at a true Sharpe of 2, against 23,376 entries</span></div>`;
-  let s='<tr><th>BOARD</th><th class="n">ENTRIES</th><th>WINDOW</th><th class="n">REACHING t ≥ 2</th><th class="n">HIGHEST t</th><th class="n">BEST-OF-N BAR</th><th>EARLIEST WINNER*</th></tr>';
-  d.boards.forEach(b=>{s+=`<tr><td><a href="#${b.id}">${esc(b.board)}</a></td><td class="n">${b.entries.toLocaleString('en')}</td><td>${esc(b.window)}</td><td class="n c-red">${b.reaching_t2}</td><td class="n">${fmt(b.max_t)}</td><td class="n">${fmt(b.t_bar_best_of_n)}</td><td>${yrs(b.months_to_winner.sharpe_5)} at Sharpe 5 · ${yrs(b.months_to_winner.sharpe_2)} at Sharpe 2</td></tr>`});
-  document.getElementById('summary').innerHTML=s;
-  document.getElementById('boards').innerHTML=d.boards.map(b=>`
-   <h2 id="${b.id}">${esc(b.board)}</h2>
-   <p class="note">Ranked by the board on ${esc(b.ranked_by)}. Source: <code>${esc(b.source)}</code></p>
-   ${EXTRA[b.id](b)}
-   <div class="strip">${strip(b)}</div>
-   <div class="seg" data-b="${b.id}"><button data-by="rank" class="on">Rank by return</button><button data-by="t">Rank by evidence</button></div>
-   <div class="wrap"><table id="t-${b.id}">${table(b,'rank')}</table></div>
-   <button class="more" data-b="${b.id}">Show all ${b.rows.length} rows</button>`).join('');
-  document.querySelectorAll('.seg').forEach(g=>g.addEventListener('click',e=>{
-    const by=e.target.dataset.by; if(!by) return;
-    g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===e.target));
-    const b=d.boards.find(x=>x.id===g.dataset.b);
-    g.dataset.by=by; const all=g.dataset.all==='1';
-    document.getElementById('t-'+b.id).innerHTML=table(b,by,all);
-  }));
-  document.querySelectorAll('.more').forEach(btn=>btn.addEventListener('click',()=>{
-    const g=document.querySelector(`.seg[data-b="${btn.dataset.b}"]`), b=d.boards.find(x=>x.id===btn.dataset.b);
-    const all=g.dataset.all!=='1'; g.dataset.all=all?'1':'';
-    document.getElementById('t-'+b.id).innerHTML=table(b,g.dataset.by||'rank',all);
-    btn.textContent=all?'Show top 15':`Show all ${b.rows.length} rows`;
-  }));
+LB.load('/leaderboard/2026-10.json').then(d=>{
+  const st={};
+  d.boards.forEach(b=>{st[b.id]={by:'rank',all:false};
+    document.querySelector(`[data-strip="${b.id}"]`).innerHTML=LB.strip(b);
+    document.getElementById('t-'+b.id).innerHTML=LB.table(b,'rank',false);});
+  const redraw=id=>{const b=d.boards.find(x=>x.id===id);document.getElementById('t-'+id).innerHTML=LB.table(b,st[id].by,st[id].all);};
+  document.querySelectorAll('.seg[data-b]').forEach(g=>g.addEventListener('click',e=>{const by=e.target.dataset.by;if(!by)return;
+    g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===e.target));st[g.dataset.b].by=by;redraw(g.dataset.b);}));
+  document.querySelectorAll('[data-more]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.more,b=d.boards.find(x=>x.id===id);
+    st[id].all=!st[id].all;redraw(id);btn.textContent=st[id].all?'Show top 15':`Show all ${b.rows.length} rows`;}));
 });
 </script>
 </body>

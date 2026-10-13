@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Do the browser and the library still agree?
 
-``docs/index.html`` reimplements ``src/effective_window.py``,
+``docs/check/index.html`` reimplements ``src/effective_window.py``,
 ``src/track_record.py`` and ``src/counterfactual.py`` in JavaScript so the page can run with no backend.
 Two implementations of one rule drift, and
 the drift is silent: nothing fails, the page just quietly answers a different
@@ -142,18 +142,18 @@ RECORD_CASES = [
 
 def extract_js() -> str:
     """The pure functions from the page, up to the first DOM-touching one."""
-    page = os.path.join(ROOT, "docs", "index.html")
+    page = os.path.join(ROOT, "docs", "check", "index.html")
     with open(page, encoding="utf-8") as fh:
         html = fh.read()
     script = re.search(r"<script>(.*)</script>", html, re.S)
     if script is None:
-        raise SystemExit("no <script> block in docs/index.html")
+        raise SystemExit("no <script> block in docs/check/index.html")
     js = script.group(1)
     try:
         return js[js.index("const I18N_LANGS"):js.index("function runWindow")]
     except ValueError:
         raise SystemExit(
-            "docs/index.html no longer contains I18N_LANGS..runWindow — "
+            "docs/check/index.html no longer contains I18N_LANGS..runWindow — "
             "this extractor is pinned to that layout and needs updating"
         )
 
@@ -386,7 +386,7 @@ def main() -> int:
         return 1
     if cf_bad:
         print()
-        print("docs/index.html 与 src/counterfactual.py 已漂移：")
+        print("docs/check/index.html 与 src/counterfactual.py 已漂移：")
         for r, py, want in cf_bad:
             print(f'  material {r["mf"]}/{r["nm"]}  cosmetic {r["cf"]}/{r["nc"]}  '
                   f'alpha={r["alpha"]} lang={r["lang"]}')
@@ -405,7 +405,7 @@ def main() -> int:
         return 1
     if rec_bad:
         print()
-        print("docs/index.html 与 src/track_record.py 已漂移：")
+        print("docs/check/index.html 与 src/track_record.py 已漂移：")
         for case, py, js in rec_bad:
             print(f"  {case}")
             print(f"    PY: {py.precision} {py.as_shown} {py.since_picked}")
@@ -413,7 +413,7 @@ def main() -> int:
         return 1
     if mismatches:
         print()
-        print("docs/index.html 与 src/effective_window.py 数值已漂移：")
+        print("docs/check/index.html 与 src/effective_window.py 数值已漂移：")
         for r, p, dt in mismatches:
             print(f'  trials={r["n"]} n_eff={r["k"]} t_bar={r["tb"]}: '
                   f'JS {r["months"]} 个月 / t={r["t"]:.6f}  vs  '
