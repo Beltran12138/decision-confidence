@@ -1,5 +1,19 @@
 # Evidence Deflator
 
+**Is that trading record skill, or could it be luck?** Check any Hyperliquid
+wallet at **[evidencedeflator.com/wallet](https://evidencedeflator.com/wallet/)**:
+weekly returns from public data, scored once you allow for having picked the
+wallet off a board of ~47,000. Of the all-time PnL top 100, none clears that bar.
+
+```bash
+pip install "git+https://github.com/Beltran12138/evidence-deflator"
+python -m hl_wallet 0xADDRESS --picked-from 47000
+```
+
+For agents: the MCP tool `hyperliquid_wallet`, or copy
+[`skills/evidence-deflator/`](skills/evidence-deflator/SKILL.md) into your skills
+folder (Claude Code `~/.claude/skills/`, or the shared `~/.agents/skills/`).
+
 **Evidence Deflator** — how many months of an AI backtest actually count?
 
 A backtest that ran mostly before the model's knowledge cutoff is an open-book
@@ -22,9 +36,10 @@ The same engine also separates **factual** from **definitional** disagreement
 between risk sources (two vendors can differ by 68 points and both be right),
 and returns a confidence label with an audit trail — see below.
 
-> Read-only. Pure Python standard library. No network, no on-chain reads, no
-> execution. Fetching is the caller's job; the value is a *repeatable,
-> comparable basis* — not data freshness.
+> Read-only. Pure Python standard library. No execution. One module makes a
+> network call: `hl_wallet` reads a wallet's public history from Hyperliquid's
+> info API (no key). Everything else is a pure transform of what the caller
+> supplies; the value is a *repeatable, comparable basis* — not data freshness.
 
 ### One question, five domains
 
@@ -716,7 +731,8 @@ look at the code.
 | **Decision-confidence (meta)** | Shipped | `build_report` / `group_by_construct` in `src/decision_confidence.py` |
 | **Library (token instance)** | Shipped | `score_token` / `TokenInputs` in `src/normalize.py` |
 | **Real vendor adapters** | Shipped — 4 registered, 8 observations, no API keys | `src/adapters/` |
-| **MCP server** | Shipped (reference impl) | 5 tools in `src/mcp_server.py` — one per axis, a track-record variant of the time axis, and a vendor lookup |
+| **MCP server** | Shipped (reference impl) | 7 tools in `src/mcp_server.py` — one per axis, a track-record variant of the time axis, a transcript audit, a Hyperliquid wallet check, and a vendor lookup |
+| **Hyperliquid wallet** | Shipped — the only module that fetches | `check` in `src/hl_wallet.py`; `python -m hl_wallet`; MCP tool `hyperliquid_wallet`; page `docs/wallet/`; browser port `docs/assets/hl.js` |
 | **Knowledge window (time axis)** | Shipped — needs no labels and no price series | `effective_window` in `src/effective_window.py`; CLI `tools/window.py`; MCP tool `knowledge_window`; page `docs/index.html` |
 | **Counterfactual audit (input axis)** | Shipped | `perturbation_audit` in `src/counterfactual.py`; CLI `tools/perturb.py`; MCP tool `counterfactual_audit`; page `docs/index.html` |
 | **Trial-count provenance** | Shipped — derives the count instead of asking for it | `from_grid` / `from_runs` in `src/trial_count.py`; MCP arg `trial_grid`; page accepts `5x2x2` in the trials field |
@@ -990,7 +1006,11 @@ pip install -e ".[mcp]"
 python src/mcp_server.py          # stdio; or: evidence-deflator-mcp (old name decision-confidence-mcp still works)
 ```
 
-Five tools — one per axis, a track-record variant of the time axis, and a lookup:
+Seven tools — one per axis, a track-record variant of the time axis, a transcript audit, a Hyperliquid wallet check, and a lookup:
+
+- `hyperliquid_wallet(address, picked_from?)` → weekly-return evidence for a
+  Hyperliquid wallet from its public history: `t` (adjusted for record length),
+  `verdict`, the bar, months more to clear it, and flags for what t cannot see.
 
 - `decision_confidence(subject, sources, weights?)` → the full report across
   **sources**: observations, per-construct groups, composite (or `null` with

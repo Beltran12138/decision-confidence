@@ -30,7 +30,9 @@ jobs:
         run: |
           git config user.name "hl-daily"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/hl/latest.json docs/wallet/index.html docs/index.html
+          git add docs/data/hl/latest.json docs/wallet/index.html docs/index.html docs/sitemap.xml
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: Hyperliquid board $(date -u +%Y-%m-%d)"
           git push
+          sleep 90  # let Pages deploy before the engines come to look
+          python tools/indexnow.py / /wallet/ || echo "IndexNow ping failed (not fatal)"

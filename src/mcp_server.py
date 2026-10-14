@@ -19,6 +19,10 @@ no answer needs the others.
 by path, read-only. A transcript runs to hundreds of megabytes, so passing it
 inline is not an option; nothing is written and nothing leaves the machine.
 
+``hyperliquid_wallet`` is the one tool that makes a network call: it reads a
+wallet's public portfolio history from Hyperliquid's info API (no key, nothing
+sent but the address) and scores it the way evidencedeflator.com/wallet/ does.
+
 Run directly::
 
     python src/mcp_server.py
@@ -51,6 +55,7 @@ from effective_window import effective_window, remedies  # noqa: E402
 from track_record import track_record as _track_record  # noqa: E402
 import trial_count  # noqa: E402
 import trace_audit as _trace_audit  # noqa: E402
+import hl_wallet  # noqa: E402
 
 try:
     from mcp.server.fastmcp import FastMCP
@@ -528,6 +533,53 @@ def trace_audit(
         trace = _trace_audit.window(_trace_audit.load_trace(fh, format), when(since), when(until))
     return _trace_audit.audit(trace, units=unit_objs, seal=seal, holdout=holdout,
                               gap_result=gap_result, gap_start=gap_start, lang=lang)
+
+
+@mcp.tool()
+def hyperliquid_wallet(address: str, picked_from: Optional[int] = None) -> Dict[str, Any]:
+    """Is this Hyperliquid wallet's record skill, or could it be luck?
+
+    Call this **before recommending, ranking or copying** a Hyperliquid
+    trader, or when someone cites a wallet's PnL or leaderboard rank as
+    evidence. It fetches the wallet's public portfolio history from
+    Hyperliquid (no key) and scores the weekly returns, computed from PnL so
+    deposits and withdrawals do not count as returns.
+
+    Args:
+        address: The wallet, ``0x`` followed by 40 hex characters.
+        picked_from: How many wallets this one was chosen from. If it was found
+            by sorting a leaderboard, pass the size of the board (Hyperliquid's
+            ranks about 47,000 accounts; the current count is ``ranked_from``
+            in https://evidencedeflator.com/data/hl/latest.json). **Ask the
+            user how they found the wallet rather than omit it**: omitting it
+            asserts the wallet was the only one anyone looked at, and the bar
+            drops from about 4.9 to 2.
+
+    Returns:
+        ``t`` (on the normal scale, adjusted for record length), ``t_student``,
+        ``dof``, ``sharpe`` (annualised), ``weeks``, ``verdict``, ``bar``,
+        ``months_more_to_clear`` (at the observed Sharpe), ``flags`` and the
+        history dates. Verdicts:
+
+        * ``too_short`` — fewer than 8 measurable weeks. Say "this record
+          cannot tell you yet", not "no skill".
+        * ``luck`` — cannot be told apart from luck at this length.
+        * ``clears_single`` — passes the bar for one wallet picked blind, but
+          not the leaderboard bar when ``picked_from`` was given.
+        * ``clears_board`` — passes the best-of-``picked_from`` bar.
+        * ``loses`` — t at or below -2: losing, and not by chance.
+
+        Flags name what t cannot see: ``no_losing_week`` (consistent with
+        selling tail risk), ``one_week_majority`` (one week made most of the
+        gains), ``pnl_outside_record`` (most PnL was booked while the account
+        held under $1,000, so it cannot be turned into a return). **Report the
+        flags with the verdict.** A past record is not the user's future
+        returns after fees, latency and slippage.
+    """
+    if not (isinstance(address, str) and address.startswith("0x") and len(address) == 42):
+        raise ValueError("address must be 0x followed by 40 hex characters")
+    int(address[2:], 16)
+    return hl_wallet.check(address.lower(), picked_from=picked_from)
 
 
 @mcp.tool()

@@ -47,11 +47,12 @@ class ToolRegistration(unittest.TestCase):
     def tools(self):
         return {t.name: t for t in asyncio.run(mcp_server.mcp.list_tools())}
 
-    def test_all_six_tools_are_reachable(self):
+    def test_all_seven_tools_are_reachable(self):
         self.assertEqual(
             set(self.tools()),
             {"decision_confidence", "knowledge_window", "track_record",
-             "counterfactual_audit", "trace_audit", "list_supported_vendors"},
+             "counterfactual_audit", "trace_audit", "hyperliquid_wallet",
+             "list_supported_vendors"},
         )
 
     def test_the_trace_is_its_own_object(self):

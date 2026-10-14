@@ -50,7 +50,7 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://beltran12138.github.io/evidence-deflator/"
+Homepage = "https://evidencedeflator.com/"
 Repository = "https://github.com/Beltran12138/evidence-deflator"
 Issues = "https://github.com/Beltran12138/evidence-deflator/issues"
 
@@ -66,5 +66,5 @@ decision-confidence-mcp = "mcp_server:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-py-modules = ["normalize", "decision_confidence", "evidence_deflator", "effective_window", "counterfactual", "messages", "trial_count", "track_record", "trace_audit", "mcp_server"]
+py-modules = ["normalize", "decision_confidence", "evidence_deflator", "effective_window", "counterfactual", "messages", "trial_count", "track_record", "trace_audit", "hl_wallet", "mcp_server"]
 packages = ["adapters"]

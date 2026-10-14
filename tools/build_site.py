@@ -696,6 +696,35 @@ def inject_chrome():
         print("refreshed", rel)
 
 
+# IndexNow (Bing, Yandex, Seznam, Naver...): the key is public by design; the
+# file at /<key>.txt proves we own the host. tools/indexnow.py submits URLs.
+INDEXNOW_KEY = "b756502a8abaf3fb7bf6e69716e37269"
+NOT_IN_SITEMAP = {"404.html", "macau.html", "pitch.html"}  # error page and live decks
+
+
+def build_crawl_files():
+    """robots.txt, sitemap.xml and the IndexNow key file, from the pages on disk."""
+    with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
+        fresh = json.load(f)["fetched"][:10]
+    urls = []
+    for root, _, files in os.walk(DOCS):
+        for name in files:
+            rel = os.path.relpath(os.path.join(root, name), DOCS).replace(os.sep, "/")
+            if not name.endswith(".html") or rel in NOT_IN_SITEMAP:
+                continue
+            urls.append("/" + (rel[: -len("index.html")] if name == "index.html" else rel))
+    urls.sort(key=lambda u: (u.count("/"), u))
+    daily = {"/", "/wallet/"}  # rebuilt from the daily Hyperliquid data
+    body = "".join(f"  <url><loc>{SITE}{u}</loc>" + (f"<lastmod>{fresh}</lastmod>" if u in daily else "") + "</url>\n"
+                   for u in urls)
+    write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + "</urlset>\n")
+    # Everything is public and meant to be read and cited, by search and answer engines alike.
+    write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
+    write(f"{INDEXNOW_KEY}.txt", INDEXNOW_KEY)
+    return urls
+
+
 def main():
     with open(os.path.join(DOCS, "leaderboard", "2026-10.json"), encoding="utf-8") as f:
         lb = json.load(f)
@@ -707,6 +736,7 @@ def main():
     build_wallet()
     build_404()
     inject_chrome()
+    build_crawl_files()
 
 
 if __name__ == "__main__":
