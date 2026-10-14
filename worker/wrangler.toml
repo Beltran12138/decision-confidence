@@ -11,3 +11,7 @@ routes = [
 # No request logs are kept (see /privacy/).
 [observability]
 enabled = false
+
+# OpenAI plugin directory domain check (public token, see src/worker.js).
+[vars]
+OPENAI_APPS_CHALLENGE = "tVWy7nci9XELrgj1WuNIy15HlyVq6bXstWeT3jhoarM"

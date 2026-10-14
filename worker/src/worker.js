@@ -63,7 +63,7 @@ const TOOL = {
     },
     required: ['address'],
   },
-  annotations: {readOnlyHint: true, openWorldHint: true},
+  annotations: {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true},
 };
 
 const CORS = {
