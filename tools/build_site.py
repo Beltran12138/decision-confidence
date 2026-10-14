@@ -2,7 +2,7 @@
 
     python tools/build_site.py
 
-Writes: index.html (home), leaderboard/index.html, method/index.html,
+Writes: index.html (home), wallet/index.html (from data/hl/latest.json), leaderboard/index.html, method/index.html,
 audits/index.html + one page per audits/NNN-*.md, api/index.html, 404.html.
 Hand-maintained pages (HAND_PAGES: the calculator, which carries a JS port of
 the library that tools/check_js_parity.py diffs, and three older pages) only get
@@ -28,7 +28,7 @@ FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
            "%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E"
            "%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E")
 
-NAV = [("leaderboard", "Leaderboard", "/leaderboard/"), ("audits", "Audits", "/audits/"),
+NAV = [("wallet", "Check a wallet", "/wallet/"), ("leaderboard", "Leaderboard", "/leaderboard/"), ("audits", "Audits", "/audits/"),
        ("check", "Check a backtest", "/check/"), ("method", "Method", "/method/"), ("api", "API", "/api/")]
 
 COPY_ICON = '<span class="cp">copy</span><span class="ok">copied</span>'
@@ -76,7 +76,7 @@ def footer(scripts=""):
 <div class="foot-grid">
  <div><a class="brand" href="/">{MARK}Evidence Deflator</a>
   <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
- <div><h4>Product</h4><ul><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+ <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
  <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
  <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li></ul></div>
 </div>
@@ -185,6 +185,11 @@ def build_audits():
 # ---------------------------------------------------------------- home
 
 def build_home(rows, lb):
+    with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
+        hp = json.load(f)["boards"]["pnl"]
+    k = hp["n_t_ge_bar"]
+    hl_line = (f"Of the all-time PnL top 100, {'none' if not k else k} clear{'s' if k <= 1 else ''} the bar for being picked "
+               f"from {hp['ranked_from']:,} accounts.")
     la, ai = lb["boards"]
     feed = [
         ("2026-10-13", "Leaderboard No. 1", "Liquidity Arena and HKUDS AI-Trader, rescored by evidence instead of return.", "/leaderboard/", "Leaderboard"),
@@ -207,6 +212,7 @@ def build_home(rows, lb):
                 "Open-source checks for AI trading backtests and public leaderboards: months the model may have seen, clean months a claim needs, and the bar after selection.", "/") + header("home") + f"""
 <main>
 <div class="container hero">
+ <a class="callout wnew" href="/wallet/"><span class="tag tag-red">New</span> <b>Check any Hyperliquid wallet.</b> {hl_line} <span class="arr">→</span></a>
  <div class="eyebrow"><span class="dot"></span>Evidence checks for AI trading</div>
  <h1 class="display">How much of an AI trading result actually counts?</h1>
  <p class="lede">AI agents now write, backtest and rank strategies in minutes. Two things almost nobody reports: what the model may already have seen, and how many attempts the winner was picked from. Evidence Deflator turns both into numbers.</p>
@@ -481,6 +487,169 @@ python tools/record.py --start 2026-03 --end 2026-08 --sharpe 3 --trials 4800</p
     write("api/index.html", page)
 
 
+# ---------------------------------------------------------------- wallet check
+
+def build_wallet():
+    p = os.path.join(DOCS, "data", "hl", "latest.json")
+    with open(p, encoding="utf-8") as f:
+        hl = json.load(f)
+    pnl, roi = hl["boards"]["pnl"], hl["boards"]["roi30"]
+    scored = sorted((r for r in pnl["rows"] if r["t"] is not None), key=lambda r: -r["t"])
+    examples = [("Highest t in the PnL top 100", scored[0]["address"]),
+                ("Median of the PnL top 100", scored[len(scored) // 2]["address"]),
+                ("#1 by 30-day ROI", roi["rows"][0]["address"])]
+    ex = "".join(f'<button class="linkbtn" data-ex="{a}">{html.escape(t)}</button>' for t, a in examples)
+
+    def short(a):
+        return a[:6] + "…" + a[-4:]
+
+    def money(x):
+        x = float(x)
+        return f"${x/1e6:,.1f}M" if abs(x) >= 1e6 else f"${x/1e3:,.0f}k"
+
+    rows = ""
+    for r in pnl["rows"][:15]:
+        t = "—" if r["t"] is None else f"{r['t']:.2f}"
+        w = 0 if r["t"] is None else min(abs(r["t"]) / pnl["t_bar_best_of_n"], 1) * 100
+        neg = " neg" if (r["t"] or 0) < 0 else ""
+        dag = "<sup>†</sup>" if "pnl_outside_record" in r["flags"] else ""
+        rows += (f'<tr><td class="r">{r["rank"]}</td><td><a class="mono" href="/wallet/?a={r["address"]}">{short(r["address"])}</a>'
+                 f'{" · " + html.escape(r["display"]) if r.get("display") else ""}</td><td class="r">{money(r["pnl_all_time"])}</td>'
+                 f'<td class="r">{r["weeks"] if r["weeks"] else "—"}</td><td class="r">{t}{dag}</td>'
+                 f'<td><span class="mbar"><span class="track"><span class="fill{neg}" style="width:{w:.1f}%"></span>'
+                 f'<span class="t2" style="left:{2 / pnl["t_bar_best_of_n"] * 100:.1f}%"></span></span></span></td></tr>')
+
+    c = hl.get("cohort")
+    cohort_html = ""
+    if c:
+        if c["scored"]:
+            reading = (f'<div><b class="c-accent">{c["n_t_ge_2"]} / {c["scored"]}</b><span>reach t = 2 on the record since the freeze</span></div>')
+        else:
+            reading = f'<div><b>{c["first_readings"]}</b><span>first readings: a wallet needs 8 weeks of record after the freeze before it gets a t</span></div>'
+        cohort_html = f"""
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Forward record · frozen {c['frozen_at'][:10]}</div><h2 style="margin-top:12px">The same {c['members']} wallets, scored only on what they do from now on.</h2>
+ <p>A record found by looking back is a record chosen after the fact. So on {c['frozen_at'][:10]} we froze today’s two top-100 lists and publish, every day, how each wallet does after that moment. Nothing before the freeze counts, and the list cannot be edited: its hash is below and its history is in git.</p></div></div>
+ <div class="stats" style="margin:8px 0 18px">
+  <div><b>{c['members']}</b><span>wallets frozen at {c['frozen_at'].replace('T', ' ').replace('Z', ' UTC')}</span></div>
+  {reading}
+  <div><b>daily</b><span>refreshed from the public API by a scheduled job in the repository</span></div>
+ </div>
+ <p class="muted small mono" style="overflow-wrap:anywhere">{html.escape(c['file'])} · sha256 {c['sha256']}</p>
+ <div class="btns" style="margin-top:12px"><a class="btn btn-secondary" href="/data/hl/{html.escape(c['file'])}">Frozen list</a><a class="btn btn-secondary" href="/data/hl/latest.json">Daily scores (JSON)</a></div>
+</div></section>
+"""
+
+    page = head("Check a Hyperliquid wallet · Evidence Deflator",
+                "Paste any Hyperliquid address. See whether its record can be told apart from luck, and how many more months it would need.",
+                "/wallet/") + header("wallet") + f"""
+<main>
+<div class="container page-head">
+ <div class="eyebrow"><span class="dot"></span>Hyperliquid · wallet check · public data, computed in your browser</div>
+ <h1>Paste a Hyperliquid address. See how much of its record counts.</h1>
+ <p class="lede">A leaderboard shows who made the most. It does not show whether that could have been luck. This reads the wallet’s public PnL history and answers one question: how strong is the evidence, and how long until it could be strong enough?</p>
+ <form class="wcheck" id="wform" autocomplete="off">
+  <input id="waddr" name="a" placeholder="0x… Hyperliquid address" spellcheck="false" aria-label="Hyperliquid address">
+  <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
+ </form>
+ <div class="wex muted small">Try: {ex}</div>
+</div>
+
+<div class="container" id="wout" hidden>
+ <div class="instrument wres">
+  <div class="instrument-head"><span class="t mono" id="wid"></span><span id="wtag"></span></div>
+  <div class="instrument-body"><h2 id="whead" style="margin:18px 4px 6px"></h2><p id="wsub" class="muted" style="margin:0 4px 10px"></p>
+   <div class="chart" id="wmeter"></div></div>
+  <div class="instrument-foot">
+   <div><b id="wt">—</b><span>t = Sharpe × √years</span></div>
+   <div><b id="ws">—</b><span>annualised Sharpe, weekly</span></div>
+   <div><b id="ww">—</b><span>weeks of record above $1k</span></div>
+   <div><b id="wm">—</b><span id="wml">months of record to clear the leaderboard bar, at this Sharpe</span></div>
+  </div>
+ </div>
+ <ul class="wflags" id="wflags"></ul>
+ <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">Copy link to this result</span><span class="ok">Copied</span></button>
+  <a class="btn btn-secondary" id="whl" href="#" rel="noopener">Open on Hyperliquid</a></div>
+ <p class="muted small" id="wnote"></p>
+</div>
+
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Hyperliquid’s own leaderboard, rescored · {hl['fetched'][:10]}</div><h2 style="margin-top:12px">The top of the board is ranked by profit. None of it clears the bar for being picked from {pnl['ranked_from']:,}.</h2></div></div>
+ <div class="stats" style="margin:8px 0 26px">
+  <div><b class="c-accent">{pnl['n_t_ge_bar']} / {pnl['scored']}</b><span>of the all-time PnL top 100 clear the best-of-{pnl['ranked_from']:,} bar (t ≥ {pnl['t_bar_best_of_n']:.2f})</span></div>
+  <div><b>{pnl['n_t_ge_2']} / {pnl['scored']}</b><span>would pass a single test (t ≥ 2) if you had picked them blind</span></div>
+  <div><b class="c-accent">{roi['n_t_ge_bar']} / {roi['scored']}</b><span>of the 30-day ROI top 100 (account ≥ $10k) clear the bar. {roi['n_t_ge_2']} pass a single test.</span></div>
+ </div>
+ <div class="table-wrap"><table class="data"><thead><tr><th class="r">PnL rank</th><th>Wallet</th><th class="r">All-time PnL</th><th class="r">Weeks</th><th class="r">t</th><th>Share of the bar</th></tr></thead><tbody>{rows}</tbody></table></div>
+ <p class="muted small" style="margin-top:10px">Bar: one result needs t ≥ 2. A wallet found by scanning a board of N accounts needs the best-of-N bar, {pnl['t_bar_best_of_n']:.2f} here. † Most of this wallet’s PnL was booked while the account held under $1,000, so it cannot be turned into a return; t covers only the weeks that can be measured. All {pnl['shown']} + {roi['shown']} rows: <a href="/data/hl/latest.json">latest.json</a> (built by <a href="{REPO}/blob/main/tools/build_hl_board.py"><code>tools/build_hl_board.py</code></a>).</p>
+</div></section>
+{cohort_html}
+<section><div class="container narrow prose">
+ <h2>How it reads a wallet</h2>
+ <p><strong>Returns come from PnL, not account value.</strong> Account value moves when the owner deposits or withdraws; PnL does not. Each week’s return is the change in cumulative PnL divided by the account value at the start of the week. Weeks that start below $1,000 are skipped.</p>
+ <p><strong>Weekly, because the history is.</strong> Hyperliquid keeps older history about a week apart and recent history minutes apart. Everything is put on one weekly grid; a week with no new data point is merged into the next one, not counted as a zero.</p>
+ <p><strong>Two bars.</strong> If you came to this wallet with no prior selection, t ≥ 2 is the usual bar. If you found it by sorting a leaderboard, you picked the best of many, and the bar rises with the number you picked from (Bonferroni on {pnl['ranked_from']:,} accounts: {pnl['t_bar_best_of_n']:.2f}). Most people find wallets on leaderboards.</p>
+ <p><strong>What t cannot see.</strong> Tail risk that has not happened yet. A strategy that sells insurance can show no losing week for a long time. Where the record has no losing week, or one week made most of the gains, the page says so.</p>
+ <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser; nothing is sent to us. Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
+</div></section>
+</main>
+""" + footer("""<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>
+<script>
+(() => {
+ const N = """ + str(pnl["ranked_from"]) + """, $ = id => document.getElementById(id), f = (x, d=2) => x == null ? '—' : Number(x).toFixed(d);
+ const say = {
+  loses: ['Losing, and not by chance', 'tag-red', 't is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain.'],
+  luck: ['Cannot be told apart from luck', 'tag-red', 't is below 2: a record like this turns up by chance often enough that it says little about skill.'],
+  clears_single: ['Passes one test, not the leaderboard bar', 'tag-amber', 'Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ BAR.'],
+  clears_board: ['Clears the leaderboard bar', 'tag-green', 'The record is strong enough even allowing for having been picked from N accounts.'],
+  too_short: ['Too short to say', 'tag-grey', 'Fewer than 8 weeks of history with at least $1,000 in the account.']
+ };
+ function meter(t, bar) {
+  const lo = Math.min(-1, Math.floor(t ?? 0)), hi = Math.max(Math.ceil(bar + .5), Math.ceil(t ?? 0)), W = 1000, H = 92, L = 14, R = 14;
+  const x = v => L + (v - lo) / (hi - lo) * (W - L - R);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="t against the two bars">`;
+  s += `<rect class="zone" x="${x(bar)}" y="22" width="${W - R - x(bar)}" height="40"/>`;
+  for (let v = lo; v <= hi; v++) s += `<line class="ax" x1="${x(v)}" x2="${x(v)}" y1="22" y2="62"/><text class="lab" x="${x(v)}" y="84" text-anchor="middle">${v}</text>`;
+  s += `<line class="t2" x1="${x(2)}" x2="${x(2)}" y1="8" y2="62"/><text class="t2lab" x="${x(2) - 6}" y="16" text-anchor="end">t = 2 · one test</text>`;
+  s += `<line class="bar" x1="${x(bar)}" x2="${x(bar)}" y1="8" y2="62"/><text class="barlab" x="${x(bar) - 6}" y="16" text-anchor="end" dy="${x(bar) - x(2) < 230 ? 14 : 0}">best of ${N.toLocaleString('en')} · ${f(bar)}</text>`;
+  if (t != null) s += `<circle class="pt best" cx="${x(Math.max(lo, Math.min(hi, t)))}" cy="42" r="7"/>`;
+  return s + '</svg>';
+ }
+ async function run(a) {
+  a = a.trim().toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = 'That is not a Hyperliquid address'; $('wsub').textContent = 'Expected 0x followed by 40 hex characters.'; return; }
+  history.replaceState(null, '', '/wallet/?a=' + a);
+  $('wout').hidden = false; $('whead').textContent = 'Reading the public record…'; $('wsub').textContent = ''; $('wflags').innerHTML = '';
+  $('wid').textContent = a; $('whl').href = 'https://app.hyperliquid.xyz/explorer/address/' + a;
+  let pf;
+  try { pf = await HL.fetchPortfolio(a); } catch (e) { $('whead').textContent = 'Could not reach Hyperliquid'; $('wsub').textContent = String(e.message || e); return; }
+  if (!Array.isArray(pf) || !pf.length) { $('whead').textContent = 'No history for this address'; return; }
+  const {rets, start, counted} = HL.weeklyReturns(pf), sc = HL.score(rets), v = HL.verdict(sc, N), fl = HL.flags(pf, rets, counted);
+  const [title, tag, sub] = say[v.key];
+  $('whead').textContent = title; $('wtag').innerHTML = `<span class="tag ${tag}">${v.key.replace('_', ' ')}</span>`;
+  $('wsub').textContent = sub.replace('BAR', f(v.bar)).replace('N accounts', N.toLocaleString('en') + ' accounts');
+  $('wmeter').innerHTML = meter(sc.t, v.bar);
+  $('wt').textContent = f(sc.t); $('ws').textContent = f(sc.sharpe); $('ww').textContent = sc.weeks ?? '—';
+  const need = HL.monthsToClear(v.bar, sc.sharpe), have = (sc.weeks || 0) / 4.345;
+  if (need == null) { $('wm').textContent = 'never'; $('wml').textContent = 'at a Sharpe of zero or below, no length of record clears the bar'; }
+  else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = 'more months needed: the record already clears the leaderboard bar'; }
+  else { const m = need - have; $('wm').textContent = m >= 24 ? (m / 12).toFixed(1) + ' yr' : Math.round(m) + ' mo'; $('wml').textContent = 'more record needed to clear the leaderboard bar, if the Sharpe held'; }
+  const notes = {no_losing_week: 'No losing week in the record. Consistent with market making, funding carry or selling tail risk; t measures consistency, not the size of a loss that has not happened yet.',
+                 one_week_majority: 'One week produced more than half of all the gains. The record rests mostly on that week.',
+                 pnl_outside_record: 'Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured.'};
+  $('wflags').innerHTML = fl.map(k => `<li>${notes[k]}</li>`).join('');
+  $('wcopy').dataset.copy = location.href;
+  $('wnote').textContent = start ? `History from ${new Date(start).toISOString().slice(0, 10)}. Read ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC from api.hyperliquid.xyz.` : '';
+ }
+ $('wform').addEventListener('submit', e => { e.preventDefault(); run($('waddr').value); });
+ document.querySelectorAll('[data-ex]').forEach(b => b.addEventListener('click', () => { $('waddr').value = b.dataset.ex; run(b.dataset.ex); }));
+ const q = new URLSearchParams(location.search).get('a'); if (q) { $('waddr').value = q; run(q); }
+})();
+</script>
+""")
+    write("wallet/index.html", page)
+
+
 def build_404():
     page = head("Not found · Evidence Deflator", "Page not found.", "/404.html") + header("") + """
 <main class="container page-head" style="min-height:50vh"><div class="eyebrow"><span class="dot"></span>404</div>
@@ -527,6 +696,7 @@ def main():
     build_leaderboard(lb)
     build_method()
     build_api()
+    build_wallet()
     build_404()
     inject_chrome()
 

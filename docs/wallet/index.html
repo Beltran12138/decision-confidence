@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Check a Hyperliquid wallet · Evidence Deflator</title>
+<meta name="description" content="Paste any Hyperliquid address. See whether its record can be told apart from luck, and how many more months it would need.">
+<link rel="canonical" href="https://evidencedeflator.com/wallet/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="Check a Hyperliquid wallet · Evidence Deflator">
+<meta property="og:description" content="Paste any Hyperliquid address. See whether its record can be told apart from luck, and how many more months it would need.">
+<meta property="og:url" content="https://evidencedeflator.com/wallet/">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="Main"><a href="/wallet/" aria-current="page">Check a wallet</a><a href="/leaderboard/">Leaderboard</a><a href="/audits/">Audits</a><a href="/check/">Check a backtest</a><a href="/method/">Method</a><a href="/api/">API</a></nav>
+<div class="header-cta"><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main>
+<div class="container page-head">
+ <div class="eyebrow"><span class="dot"></span>Hyperliquid · wallet check · public data, computed in your browser</div>
+ <h1>Paste a Hyperliquid address. See how much of its record counts.</h1>
+ <p class="lede">A leaderboard shows who made the most. It does not show whether that could have been luck. This reads the wallet’s public PnL history and answers one question: how strong is the evidence, and how long until it could be strong enough?</p>
+ <form class="wcheck" id="wform" autocomplete="off">
+  <input id="waddr" name="a" placeholder="0x… Hyperliquid address" spellcheck="false" aria-label="Hyperliquid address">
+  <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
+ </form>
+ <div class="wex muted small">Try: <button class="linkbtn" data-ex="0xdfc24b077bc1425ad1dea75bcb6f8158e10df303">Highest t in the PnL top 100</button><button class="linkbtn" data-ex="0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05">Median of the PnL top 100</button><button class="linkbtn" data-ex="0x4d21e561c54302a4e6646fa9051aae68960d10fe">#1 by 30-day ROI</button></div>
+</div>
+
+<div class="container" id="wout" hidden>
+ <div class="instrument wres">
+  <div class="instrument-head"><span class="t mono" id="wid"></span><span id="wtag"></span></div>
+  <div class="instrument-body"><h2 id="whead" style="margin:18px 4px 6px"></h2><p id="wsub" class="muted" style="margin:0 4px 10px"></p>
+   <div class="chart" id="wmeter"></div></div>
+  <div class="instrument-foot">
+   <div><b id="wt">—</b><span>t = Sharpe × √years</span></div>
+   <div><b id="ws">—</b><span>annualised Sharpe, weekly</span></div>
+   <div><b id="ww">—</b><span>weeks of record above $1k</span></div>
+   <div><b id="wm">—</b><span id="wml">months of record to clear the leaderboard bar, at this Sharpe</span></div>
+  </div>
+ </div>
+ <ul class="wflags" id="wflags"></ul>
+ <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">Copy link to this result</span><span class="ok">Copied</span></button>
+  <a class="btn btn-secondary" id="whl" href="#" rel="noopener">Open on Hyperliquid</a></div>
+ <p class="muted small" id="wnote"></p>
+</div>
+
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Hyperliquid’s own leaderboard, rescored · 2026-10-14</div><h2 style="margin-top:12px">The top of the board is ranked by profit. None of it clears the bar for being picked from 47,254.</h2></div></div>
+ <div class="stats" style="margin:8px 0 26px">
+  <div><b class="c-accent">0 / 99</b><span>of the all-time PnL top 100 clear the best-of-47,254 bar (t ≥ 4.90)</span></div>
+  <div><b>10 / 99</b><span>would pass a single test (t ≥ 2) if you had picked them blind</span></div>
+  <div><b class="c-accent">0 / 81</b><span>of the 30-day ROI top 100 (account ≥ $10k) clear the bar. 8 pass a single test.</span></div>
+ </div>
+ <div class="table-wrap"><table class="data"><thead><tr><th class="r">PnL rank</th><th>Wallet</th><th class="r">All-time PnL</th><th class="r">Weeks</th><th class="r">t</th><th>Share of the bar</th></tr></thead><tbody><tr><td class="r">1</td><td><a class="mono" href="/wallet/?a=0x4ec8fe22a531a96c8a846aaf5cbef73202649a80">0x4ec8…9a80</a></td><td class="r">$445.0M</td><td class="r">28.9</td><td class="r">-2.82<sup>†</sup></td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:57.6%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">2</td><td><a class="mono" href="/wallet/?a=0x393d0b87ed38fc779fd9611144ae649ba6082109">0x393d…2109</a></td><td class="r">$402.6M</td><td class="r">64.9</td><td class="r">1.02</td><td><span class="mbar"><span class="track"><span class="fill" style="width:20.8%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">3</td><td><a class="mono" href="/wallet/?a=0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00">0xecb6…2b00</a></td><td class="r">$206.8M</td><td class="r">141.9</td><td class="r">1.69</td><td><span class="mbar"><span class="track"><span class="fill" style="width:34.4%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">4</td><td><a class="mono" href="/wallet/?a=0x8d68efbf06fb8cf932518bcb53705e674c4852dc">0x8d68…52dc</a></td><td class="r">$196.6M</td><td class="r">25.9</td><td class="r">0.32<sup>†</sup></td><td><span class="mbar"><span class="track"><span class="fill" style="width:6.6%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">5</td><td><a class="mono" href="/wallet/?a=0x488d2a9b70cc18ef66057a48ab3d59da1c59fe08">0x488d…fe08</a></td><td class="r">$146.7M</td><td class="r">44.9</td><td class="r">1.31</td><td><span class="mbar"><span class="track"><span class="fill" style="width:26.7%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">6</td><td><a class="mono" href="/wallet/?a=0x5b5d51203a0f9079f8aeb098a6523a13f298c060">0x5b5d…c060</a></td><td class="r">$144.7M</td><td class="r">73.9</td><td class="r">0.46</td><td><span class="mbar"><span class="track"><span class="fill" style="width:9.5%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">7</td><td><a class="mono" href="/wallet/?a=0x9794bbbc222b6b93c1417d01aa1ff06d42e5333b">0x9794…333b</a></td><td class="r">$144.1M</td><td class="r">103.9</td><td class="r">1.15</td><td><span class="mbar"><span class="track"><span class="fill" style="width:23.4%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">8</td><td><a class="mono" href="/wallet/?a=0xdfc24b077bc1425ad1dea75bcb6f8158e10df303">0xdfc2…f303</a></td><td class="r">$138.7M</td><td class="r">178.9</td><td class="r">3.57</td><td><span class="mbar"><span class="track"><span class="fill" style="width:72.8%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">9</td><td><a class="mono" href="/wallet/?a=0x7fdafde5cfb5465924316eced2d3715494c517d1">0x7fda…17d1</a> · BobbyBigSize</td><td class="r">$137.5M</td><td class="r">105.9</td><td class="r">-1.21</td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:24.7%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">10</td><td><a class="mono" href="/wallet/?a=0x20c2d95a3dfdca9e9ad12794d5fa6fad99da44f5">0x20c2…44f5</a></td><td class="r">$122.5M</td><td class="r">86.0</td><td class="r">0.96</td><td><span class="mbar"><span class="track"><span class="fill" style="width:19.6%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">11</td><td><a class="mono" href="/wallet/?a=0x880ac484a1743862989a441d6d867238c7aa311c">0x880a…311c</a> · x.com/SilkBtc</td><td class="r">$120.6M</td><td class="r">102.9</td><td class="r">-0.83</td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:16.9%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">12</td><td><a class="mono" href="/wallet/?a=0x493db0ed7514c975e9abcc110bd40c473b6763e3">0x493d…63e3</a></td><td class="r">$118.9M</td><td class="r">96.9</td><td class="r">1.15</td><td><span class="mbar"><span class="track"><span class="fill" style="width:23.4%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">13</td><td><a class="mono" href="/wallet/?a=0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50">0xbdfa…5c50</a></td><td class="r">$116.0M</td><td class="r">156.9</td><td class="r">1.25</td><td><span class="mbar"><span class="track"><span class="fill" style="width:25.4%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">14</td><td><a class="mono" href="/wallet/?a=0x4e14fc11f58b64740e66e4b1aa188a4b007c0eab">0x4e14…0eab</a></td><td class="r">$112.4M</td><td class="r">162.9</td><td class="r">1.63</td><td><span class="mbar"><span class="track"><span class="fill" style="width:33.2%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">15</td><td><a class="mono" href="/wallet/?a=0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36">0xb83d…6e36</a></td><td class="r">$110.9M</td><td class="r">84.9</td><td class="r">-0.95</td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:19.3%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr></tbody></table></div>
+ <p class="muted small" style="margin-top:10px">Bar: one result needs t ≥ 2. A wallet found by scanning a board of N accounts needs the best-of-N bar, 4.90 here. † Most of this wallet’s PnL was booked while the account held under $1,000, so it cannot be turned into a return; t covers only the weeks that can be measured. All 100 + 100 rows: <a href="/data/hl/latest.json">latest.json</a> (built by <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/tools/build_hl_board.py"><code>tools/build_hl_board.py</code></a>).</p>
+</div></section>
+
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Forward record · frozen 2026-10-14</div><h2 style="margin-top:12px">The same 200 wallets, scored only on what they do from now on.</h2>
+ <p>A record found by looking back is a record chosen after the fact. So on 2026-10-14 we froze today’s two top-100 lists and publish, every day, how each wallet does after that moment. Nothing before the freeze counts, and the list cannot be edited: its hash is below and its history is in git.</p></div></div>
+ <div class="stats" style="margin:8px 0 18px">
+  <div><b>200</b><span>wallets frozen at 2026-10-14 09:48 UTC</span></div>
+  <div><b>2026-12-09</b><span>first readings: a wallet needs 8 weeks of record after the freeze before it gets a t</span></div>
+  <div><b>daily</b><span>refreshed from the public API by a scheduled job in the repository</span></div>
+ </div>
+ <p class="muted small mono" style="overflow-wrap:anywhere">cohort-2026-10-14.json · sha256 aacda553127fcc213669fc9ca05fd0dfe9de25a1b11d67a63974e867f3f36609</p>
+ <div class="btns" style="margin-top:12px"><a class="btn btn-secondary" href="/data/hl/cohort-2026-10-14.json">Frozen list</a><a class="btn btn-secondary" href="/data/hl/latest.json">Daily scores (JSON)</a></div>
+</div></section>
+
+<section><div class="container narrow prose">
+ <h2>How it reads a wallet</h2>
+ <p><strong>Returns come from PnL, not account value.</strong> Account value moves when the owner deposits or withdraws; PnL does not. Each week’s return is the change in cumulative PnL divided by the account value at the start of the week. Weeks that start below $1,000 are skipped.</p>
+ <p><strong>Weekly, because the history is.</strong> Hyperliquid keeps older history about a week apart and recent history minutes apart. Everything is put on one weekly grid; a week with no new data point is merged into the next one, not counted as a zero.</p>
+ <p><strong>Two bars.</strong> If you came to this wallet with no prior selection, t ≥ 2 is the usual bar. If you found it by sorting a leaderboard, you picked the best of many, and the bar rises with the number you picked from (Bonferroni on 47,254 accounts: 4.90). Most people find wallets on leaderboards.</p>
+ <p><strong>What t cannot see.</strong> Tail risk that has not happened yet. A strategy that sells insurance can show no losing week for a long time. Where the record has no losing week, or one week made most of the gains, the page says so.</p>
+ <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser; nothing is sent to us. Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
+</div></section>
+</main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
+ <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+ <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a></li></ul></div>
+</div>
+<div class="foot-note"><span>Open source · MIT · v0.2.0</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>
+<script>
+(() => {
+ const N = 47254, $ = id => document.getElementById(id), f = (x, d=2) => x == null ? '—' : Number(x).toFixed(d);
+ const say = {
+  loses: ['Losing, and not by chance', 'tag-red', 't is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain.'],
+  luck: ['Cannot be told apart from luck', 'tag-red', 't is below 2: a record like this turns up by chance often enough that it says little about skill.'],
+  clears_single: ['Passes one test, not the leaderboard bar', 'tag-amber', 'Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ BAR.'],
+  clears_board: ['Clears the leaderboard bar', 'tag-green', 'The record is strong enough even allowing for having been picked from N accounts.'],
+  too_short: ['Too short to say', 'tag-grey', 'Fewer than 8 weeks of history with at least $1,000 in the account.']
+ };
+ function meter(t, bar) {
+  const lo = Math.min(-1, Math.floor(t ?? 0)), hi = Math.max(Math.ceil(bar + .5), Math.ceil(t ?? 0)), W = 1000, H = 92, L = 14, R = 14;
+  const x = v => L + (v - lo) / (hi - lo) * (W - L - R);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="t against the two bars">`;
+  s += `<rect class="zone" x="${x(bar)}" y="22" width="${W - R - x(bar)}" height="40"/>`;
+  for (let v = lo; v <= hi; v++) s += `<line class="ax" x1="${x(v)}" x2="${x(v)}" y1="22" y2="62"/><text class="lab" x="${x(v)}" y="84" text-anchor="middle">${v}</text>`;
+  s += `<line class="t2" x1="${x(2)}" x2="${x(2)}" y1="8" y2="62"/><text class="t2lab" x="${x(2) - 6}" y="16" text-anchor="end">t = 2 · one test</text>`;
+  s += `<line class="bar" x1="${x(bar)}" x2="${x(bar)}" y1="8" y2="62"/><text class="barlab" x="${x(bar) - 6}" y="16" text-anchor="end" dy="${x(bar) - x(2) < 230 ? 14 : 0}">best of ${N.toLocaleString('en')} · ${f(bar)}</text>`;
+  if (t != null) s += `<circle class="pt best" cx="${x(Math.max(lo, Math.min(hi, t)))}" cy="42" r="7"/>`;
+  return s + '</svg>';
+ }
+ async function run(a) {
+  a = a.trim().toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = 'That is not a Hyperliquid address'; $('wsub').textContent = 'Expected 0x followed by 40 hex characters.'; return; }
+  history.replaceState(null, '', '/wallet/?a=' + a);
+  $('wout').hidden = false; $('whead').textContent = 'Reading the public record…'; $('wsub').textContent = ''; $('wflags').innerHTML = '';
+  $('wid').textContent = a; $('whl').href = 'https://app.hyperliquid.xyz/explorer/address/' + a;
+  let pf;
+  try { pf = await HL.fetchPortfolio(a); } catch (e) { $('whead').textContent = 'Could not reach Hyperliquid'; $('wsub').textContent = String(e.message || e); return; }
+  if (!Array.isArray(pf) || !pf.length) { $('whead').textContent = 'No history for this address'; return; }
+  const {rets, start, counted} = HL.weeklyReturns(pf), sc = HL.score(rets), v = HL.verdict(sc, N), fl = HL.flags(pf, rets, counted);
+  const [title, tag, sub] = say[v.key];
+  $('whead').textContent = title; $('wtag').innerHTML = `<span class="tag ${tag}">${v.key.replace('_', ' ')}</span>`;
+  $('wsub').textContent = sub.replace('BAR', f(v.bar)).replace('N accounts', N.toLocaleString('en') + ' accounts');
+  $('wmeter').innerHTML = meter(sc.t, v.bar);
+  $('wt').textContent = f(sc.t); $('ws').textContent = f(sc.sharpe); $('ww').textContent = sc.weeks ?? '—';
+  const need = HL.monthsToClear(v.bar, sc.sharpe), have = (sc.weeks || 0) / 4.345;
+  if (need == null) { $('wm').textContent = 'never'; $('wml').textContent = 'at a Sharpe of zero or below, no length of record clears the bar'; }
+  else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = 'more months needed: the record already clears the leaderboard bar'; }
+  else { const m = need - have; $('wm').textContent = m >= 24 ? (m / 12).toFixed(1) + ' yr' : Math.round(m) + ' mo'; $('wml').textContent = 'more record needed to clear the leaderboard bar, if the Sharpe held'; }
+  const notes = {no_losing_week: 'No losing week in the record. Consistent with market making, funding carry or selling tail risk; t measures consistency, not the size of a loss that has not happened yet.',
+                 one_week_majority: 'One week produced more than half of all the gains. The record rests mostly on that week.',
+                 pnl_outside_record: 'Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured.'};
+  $('wflags').innerHTML = fl.map(k => `<li>${notes[k]}</li>`).join('');
+  $('wcopy').dataset.copy = location.href;
+  $('wnote').textContent = start ? `History from ${new Date(start).toISOString().slice(0, 10)}. Read ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC from api.hyperliquid.xyz.` : '';
+ }
+ $('wform').addEventListener('submit', e => { e.preventDefault(); run($('waddr').value); });
+ document.querySelectorAll('[data-ex]').forEach(b => b.addEventListener('click', () => { $('waddr').value = b.dataset.ex; run(b.dataset.ex); }));
+ const q = new URLSearchParams(location.search).get('a'); if (q) { $('waddr').value = q; run(q); }
+})();
+</script>
+</body>
+</html>

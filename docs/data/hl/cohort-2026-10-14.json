@@ -1,0 +1,1408 @@
+{
+ "frozen_at_ms": 1791971285196,
+ "frozen_at": "2026-10-14T09:48Z",
+ "rule": "every address in today's two top-100 boards; scored only on PnL after frozen_at",
+ "method": "tools/build_hl_board.py weekly_returns(since=frozen_at_ms) + score(); min 8 weeks",
+ "members": [
+  {
+   "address": "0x4ec8fe22a531a96c8a846aaf5cbef73202649a80",
+   "board": "pnl",
+   "rank": 1,
+   "t_before": -2.821,
+   "pnl_all_time_before": 445038902.43
+  },
+  {
+   "address": "0x393d0b87ed38fc779fd9611144ae649ba6082109",
+   "board": "pnl",
+   "rank": 2,
+   "t_before": 1.021,
+   "pnl_all_time_before": 402630432.97
+  },
+  {
+   "address": "0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00",
+   "board": "pnl",
+   "rank": 3,
+   "t_before": 1.687,
+   "pnl_all_time_before": 206798241.53
+  },
+  {
+   "address": "0x8d68efbf06fb8cf932518bcb53705e674c4852dc",
+   "board": "pnl",
+   "rank": 4,
+   "t_before": 0.323,
+   "pnl_all_time_before": 196573945.44
+  },
+  {
+   "address": "0x488d2a9b70cc18ef66057a48ab3d59da1c59fe08",
+   "board": "pnl",
+   "rank": 5,
+   "t_before": 1.306,
+   "pnl_all_time_before": 146696293.04
+  },
+  {
+   "address": "0x5b5d51203a0f9079f8aeb098a6523a13f298c060",
+   "board": "pnl",
+   "rank": 6,
+   "t_before": 0.464,
+   "pnl_all_time_before": 144743033.98
+  },
+  {
+   "address": "0x9794bbbc222b6b93c1417d01aa1ff06d42e5333b",
+   "board": "pnl",
+   "rank": 7,
+   "t_before": 1.148,
+   "pnl_all_time_before": 144136664.92
+  },
+  {
+   "address": "0xdfc24b077bc1425ad1dea75bcb6f8158e10df303",
+   "board": "pnl",
+   "rank": 8,
+   "t_before": 3.566,
+   "pnl_all_time_before": 138657626.01
+  },
+  {
+   "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+   "board": "pnl",
+   "rank": 9,
+   "t_before": -1.209,
+   "pnl_all_time_before": 137455387.02
+  },
+  {
+   "address": "0x20c2d95a3dfdca9e9ad12794d5fa6fad99da44f5",
+   "board": "pnl",
+   "rank": 10,
+   "t_before": 0.961,
+   "pnl_all_time_before": 122544572.96
+  },
+  {
+   "address": "0x880ac484a1743862989a441d6d867238c7aa311c",
+   "board": "pnl",
+   "rank": 11,
+   "t_before": -0.829,
+   "pnl_all_time_before": 120633143.18
+  },
+  {
+   "address": "0x493db0ed7514c975e9abcc110bd40c473b6763e3",
+   "board": "pnl",
+   "rank": 12,
+   "t_before": 1.146,
+   "pnl_all_time_before": 118902119.11
+  },
+  {
+   "address": "0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50",
+   "board": "pnl",
+   "rank": 13,
+   "t_before": 1.246,
+   "pnl_all_time_before": 115974524.05
+  },
+  {
+   "address": "0x4e14fc11f58b64740e66e4b1aa188a4b007c0eab",
+   "board": "pnl",
+   "rank": 14,
+   "t_before": 1.628,
+   "pnl_all_time_before": 112393314.77
+  },
+  {
+   "address": "0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36",
+   "board": "pnl",
+   "rank": 15,
+   "t_before": -0.948,
+   "pnl_all_time_before": 110876956.13
+  },
+  {
+   "address": "0x4eb8d907136189a34c9b087950211b6a566f7819",
+   "board": "pnl",
+   "rank": 16,
+   "t_before": 1.332,
+   "pnl_all_time_before": 106786636.96
+  },
+  {
+   "address": "0x2ea18c23f72a4b6172c55b411823cdc5335923f4",
+   "board": "pnl",
+   "rank": 17,
+   "t_before": null,
+   "pnl_all_time_before": 106341324.52
+  },
+  {
+   "address": "0x05cafe987297448f21a3c7ae0ae815fddecac655",
+   "board": "pnl",
+   "rank": 18,
+   "t_before": 1.213,
+   "pnl_all_time_before": 102424057.95
+  },
+  {
+   "address": "0xbde2ddc49a2e6827300faa6afc93d572114a60b1",
+   "board": "pnl",
+   "rank": 19,
+   "t_before": 1.07,
+   "pnl_all_time_before": 97508580.88
+  },
+  {
+   "address": "0xa312114b5795dff9b8db50474dd57701aa78ad1e",
+   "board": "pnl",
+   "rank": 20,
+   "t_before": 1.423,
+   "pnl_all_time_before": 93730791.08
+  },
+  {
+   "address": "0x2e3d94f0562703b25c83308a05046ddaf9a8dd14",
+   "board": "pnl",
+   "rank": 21,
+   "t_before": 1.162,
+   "pnl_all_time_before": 84715878.28
+  },
+  {
+   "address": "0x03b9a189e2480d1e4c3007080b29f362282130fa",
+   "board": "pnl",
+   "rank": 22,
+   "t_before": 1.895,
+   "pnl_all_time_before": 83438114.51
+  },
+  {
+   "address": "0x13c50dcdee4bbcba71baf578b345cdd35c7928be",
+   "board": "pnl",
+   "rank": 23,
+   "t_before": 1.569,
+   "pnl_all_time_before": 82550139.53
+  },
+  {
+   "address": "0x85530f0ff6496c72a619f37a60f3c1a59077737f",
+   "board": "pnl",
+   "rank": 24,
+   "t_before": 1.206,
+   "pnl_all_time_before": 82542316.66
+  },
+  {
+   "address": "0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05",
+   "board": "pnl",
+   "rank": 25,
+   "t_before": 1.26,
+   "pnl_all_time_before": 77746656.93
+  },
+  {
+   "address": "0xcfdb74a8c080bb7b4360ed6fe21f895c653efff4",
+   "board": "pnl",
+   "rank": 26,
+   "t_before": 0.98,
+   "pnl_all_time_before": 74503123.94
+  },
+  {
+   "address": "0x51156f7002c4f74f4956c9e0f2b7bfb6e9dbfac2",
+   "board": "pnl",
+   "rank": 27,
+   "t_before": 1.171,
+   "pnl_all_time_before": 71831005.04
+  },
+  {
+   "address": "0x0d446c3372a9ba9cddef0eef7a1afab6dc0e8c0b",
+   "board": "pnl",
+   "rank": 28,
+   "t_before": 1.289,
+   "pnl_all_time_before": 69703368.38
+  },
+  {
+   "address": "0x5d2f4460ac3514ada79f5d9838916e508ab39bb7",
+   "board": "pnl",
+   "rank": 29,
+   "t_before": 1.84,
+   "pnl_all_time_before": 65736616.76
+  },
+  {
+   "address": "0xd47587702a91731dc1089b5db0932cf820151a91",
+   "board": "pnl",
+   "rank": 30,
+   "t_before": -0.521,
+   "pnl_all_time_before": 65528980.81
+  },
+  {
+   "address": "0xe867fbdad3291530e41530301ecb77693850c78e",
+   "board": "pnl",
+   "rank": 31,
+   "t_before": 2.24,
+   "pnl_all_time_before": 64579790.58
+  },
+  {
+   "address": "0x7dacca323e44f168494c779bb5e7483c468ef410",
+   "board": "pnl",
+   "rank": 32,
+   "t_before": 0.837,
+   "pnl_all_time_before": 64515644.64
+  },
+  {
+   "address": "0x1419e75330c71ce463102e6a1eb62fe80b412d5f",
+   "board": "pnl",
+   "rank": 33,
+   "t_before": 1.503,
+   "pnl_all_time_before": 62954312.77
+  },
+  {
+   "address": "0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9",
+   "board": "pnl",
+   "rank": 34,
+   "t_before": 2.317,
+   "pnl_all_time_before": 59473320.93
+  },
+  {
+   "address": "0x35d1151ef1aab579cbb3109e69fa82f94ff5acb1",
+   "board": "pnl",
+   "rank": 35,
+   "t_before": 1.171,
+   "pnl_all_time_before": 59088891.51
+  },
+  {
+   "address": "0x77375a8c9d13bf79afb2a87f1b0ac1dfd5f5bf66",
+   "board": "pnl",
+   "rank": 36,
+   "t_before": 1.157,
+   "pnl_all_time_before": 58950750.24
+  },
+  {
+   "address": "0x87f9cd15f5050a9283b8896300f7c8cf69ece2cf",
+   "board": "pnl",
+   "rank": 37,
+   "t_before": 0.962,
+   "pnl_all_time_before": 56805953.56
+  },
+  {
+   "address": "0x45d26f28196d226497130c4bac709d808fed4029",
+   "board": "pnl",
+   "rank": 38,
+   "t_before": 0.137,
+   "pnl_all_time_before": 56514468.03
+  },
+  {
+   "address": "0x3258e4e06929b746854c989de764efd015db3943",
+   "board": "pnl",
+   "rank": 39,
+   "t_before": 1.215,
+   "pnl_all_time_before": 56268775.6
+  },
+  {
+   "address": "0x656c8da58d738295e03550796dd83900aa7c6525",
+   "board": "pnl",
+   "rank": 40,
+   "t_before": -0.86,
+   "pnl_all_time_before": 56047378.8
+  },
+  {
+   "address": "0x2ee6bef5b7b63aeefc9059f1436dabe259c34d1c",
+   "board": "pnl",
+   "rank": 41,
+   "t_before": 1.068,
+   "pnl_all_time_before": 54955054.5
+  },
+  {
+   "address": "0x023a3d058020fb76cca98f01b3c48c8938a22355",
+   "board": "pnl",
+   "rank": 42,
+   "t_before": 1.535,
+   "pnl_all_time_before": 53795150.2
+  },
+  {
+   "address": "0x7aa14144f5811aab1ba4a07f014a592f8c9d864c",
+   "board": "pnl",
+   "rank": 43,
+   "t_before": 1.305,
+   "pnl_all_time_before": 53469983.83
+  },
+  {
+   "address": "0x62bc1fe6009388219dd84f9dca37930f6fb6fa22",
+   "board": "pnl",
+   "rank": 44,
+   "t_before": 1.797,
+   "pnl_all_time_before": 52485860.25
+  },
+  {
+   "address": "0xbee95bb47bc4e28bb1fd489a2d0f873fe59172ad",
+   "board": "pnl",
+   "rank": 45,
+   "t_before": 1.167,
+   "pnl_all_time_before": 52213466.71
+  },
+  {
+   "address": "0xf8e3128c778a828f079049eefb89a9041cb4af4d",
+   "board": "pnl",
+   "rank": 46,
+   "t_before": 1.444,
+   "pnl_all_time_before": 51481005.12
+  },
+  {
+   "address": "0x082e843a431aef031264dc232693dd710aedca88",
+   "board": "pnl",
+   "rank": 47,
+   "t_before": 1.654,
+   "pnl_all_time_before": 50711941.04
+  },
+  {
+   "address": "0x939f95036d2e7b6d7419ec072bf9d967352204d2",
+   "board": "pnl",
+   "rank": 48,
+   "t_before": 1.438,
+   "pnl_all_time_before": 49906711.64
+  },
+  {
+   "address": "0xfec495e7432264678175bea68c4d7678944f6635",
+   "board": "pnl",
+   "rank": 49,
+   "t_before": 1.207,
+   "pnl_all_time_before": 48788874.95
+  },
+  {
+   "address": "0x856c35038594767646266bc7fd68dc26480e910d",
+   "board": "pnl",
+   "rank": 50,
+   "t_before": 2.041,
+   "pnl_all_time_before": 48055140.92
+  },
+  {
+   "address": "0x03b3e2069830dd3bd1a5b5e45dad60a770227ed7",
+   "board": "pnl",
+   "rank": 51,
+   "t_before": 1.085,
+   "pnl_all_time_before": 46496350.57
+  },
+  {
+   "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+   "board": "pnl",
+   "rank": 52,
+   "t_before": 1.268,
+   "pnl_all_time_before": 46148745.48
+  },
+  {
+   "address": "0xef406d8e729b6de82852912289f8b70bbdc49956",
+   "board": "pnl",
+   "rank": 53,
+   "t_before": 1.366,
+   "pnl_all_time_before": 45553741.82
+  },
+  {
+   "address": "0x0e8bf301805df4e6ba7151297e5f7dfedc1eaab9",
+   "board": "pnl",
+   "rank": 54,
+   "t_before": 1.191,
+   "pnl_all_time_before": 44344510.19
+  },
+  {
+   "address": "0xe44bd27c9f10fa2f89fdb3ab4b4f0e460da29ea8",
+   "board": "pnl",
+   "rank": 55,
+   "t_before": -0.904,
+   "pnl_all_time_before": 43838373.12
+  },
+  {
+   "address": "0xda3cdff67ce27fa68ba5600a7c95efd8153d9f15",
+   "board": "pnl",
+   "rank": 56,
+   "t_before": 1.092,
+   "pnl_all_time_before": 43348850.95
+  },
+  {
+   "address": "0x4f7634c03ec4e87e14725c84913ade523c6fad5a",
+   "board": "pnl",
+   "rank": 57,
+   "t_before": 0.022,
+   "pnl_all_time_before": 43147533.17
+  },
+  {
+   "address": "0x162cc7c861ebd0c06b3d72319201150482518185",
+   "board": "pnl",
+   "rank": 58,
+   "t_before": 2.287,
+   "pnl_all_time_before": 42806378.21
+  },
+  {
+   "address": "0x8196e0648cb16e9151c2920618a58605706b5836",
+   "board": "pnl",
+   "rank": 59,
+   "t_before": 2.145,
+   "pnl_all_time_before": 42635942.86
+  },
+  {
+   "address": "0x71f0019cc7fa79e4f42587fb7b9a817d8d2429ec",
+   "board": "pnl",
+   "rank": 60,
+   "t_before": 1.656,
+   "pnl_all_time_before": 42013065.55
+  },
+  {
+   "address": "0xd0e2842e830f2107f151ec0bd307c5871a3b4018",
+   "board": "pnl",
+   "rank": 61,
+   "t_before": 1.209,
+   "pnl_all_time_before": 41891556.85
+  },
+  {
+   "address": "0xf02021e26e0bbfef8ffa2cc9cb64305a8ae465b4",
+   "board": "pnl",
+   "rank": 62,
+   "t_before": -0.081,
+   "pnl_all_time_before": 41743343.02
+  },
+  {
+   "address": "0xa87a233e8a7d8951ff790a2e39738086cb5f71b7",
+   "board": "pnl",
+   "rank": 63,
+   "t_before": 1.272,
+   "pnl_all_time_before": 41116374.97
+  },
+  {
+   "address": "0xf992aa323ec183733213f874b6322b8bd1aad625",
+   "board": "pnl",
+   "rank": 64,
+   "t_before": 0.724,
+   "pnl_all_time_before": 40847402.34
+  },
+  {
+   "address": "0x0f991873aab3e14191978946d48f30f624ae9867",
+   "board": "pnl",
+   "rank": 65,
+   "t_before": 1.343,
+   "pnl_all_time_before": 39558029.45
+  },
+  {
+   "address": "0x56498e5f90c14060499b62b6f459b3e3fb9280c5",
+   "board": "pnl",
+   "rank": 66,
+   "t_before": 0.986,
+   "pnl_all_time_before": 39184852.53
+  },
+  {
+   "address": "0xa5b0edf6b55128e0ddae8e51ac538c3188401d41",
+   "board": "pnl",
+   "rank": 67,
+   "t_before": 0.109,
+   "pnl_all_time_before": 37676007.63
+  },
+  {
+   "address": "0xe787dd1347a29e6807d164c4fa43105b64048556",
+   "board": "pnl",
+   "rank": 68,
+   "t_before": 1.108,
+   "pnl_all_time_before": 37549292.56
+  },
+  {
+   "address": "0x0d0707963952f2fba59dd06f2b425ace40b492fe",
+   "board": "pnl",
+   "rank": 69,
+   "t_before": 1.615,
+   "pnl_all_time_before": 37360445.54
+  },
+  {
+   "address": "0xf9693821d9235a3c08b1c5abfd8dd6d908ee9e12",
+   "board": "pnl",
+   "rank": 70,
+   "t_before": 1.215,
+   "pnl_all_time_before": 37014073.9
+  },
+  {
+   "address": "0x31ca8395cf837de08b24da3f660e77761dfb974b",
+   "board": "pnl",
+   "rank": 71,
+   "t_before": -0.564,
+   "pnl_all_time_before": 36377301.24
+  },
+  {
+   "address": "0x156115e100141e9330620c253225cc5ee598a31a",
+   "board": "pnl",
+   "rank": 72,
+   "t_before": 1.89,
+   "pnl_all_time_before": 35627754.52
+  },
+  {
+   "address": "0x4a207d289fd49e60502451099771127bcf35b961",
+   "board": "pnl",
+   "rank": 73,
+   "t_before": 0.755,
+   "pnl_all_time_before": 35154177.88
+  },
+  {
+   "address": "0xc59498175d6d317642aeb97f895a7ce1aa992191",
+   "board": "pnl",
+   "rank": 74,
+   "t_before": 0.629,
+   "pnl_all_time_before": 34908393.78
+  },
+  {
+   "address": "0x0a8494f70031623c9c0043aff4d40f334b458b11",
+   "board": "pnl",
+   "rank": 75,
+   "t_before": 1.58,
+   "pnl_all_time_before": 34905675.94
+  },
+  {
+   "address": "0x418aa6bf98a2b2bc93779f810330d88cde488888",
+   "board": "pnl",
+   "rank": 76,
+   "t_before": 2.123,
+   "pnl_all_time_before": 34157500.34
+  },
+  {
+   "address": "0x0aadc54a9e78cfe2e971aa8edcedea9c6df01f46",
+   "board": "pnl",
+   "rank": 77,
+   "t_before": 1.784,
+   "pnl_all_time_before": 33942079.86
+  },
+  {
+   "address": "0x807a2e2e469df84b299da5f90f15dda4380daca1",
+   "board": "pnl",
+   "rank": 78,
+   "t_before": 1.465,
+   "pnl_all_time_before": 33849384.69
+  },
+  {
+   "address": "0x82d8dc80190e6bc1d92b048f9fc7e85e5e1e32ff",
+   "board": "pnl",
+   "rank": 79,
+   "t_before": 1.103,
+   "pnl_all_time_before": 33111244.97
+  },
+  {
+   "address": "0xbf49647d017805fcc576ac10f33a788e636f4258",
+   "board": "pnl",
+   "rank": 80,
+   "t_before": 1.646,
+   "pnl_all_time_before": 31929161.17
+  },
+  {
+   "address": "0x4f8613500222a4b6e7f570c23ec59c7d936977f1",
+   "board": "pnl",
+   "rank": 81,
+   "t_before": 1.298,
+   "pnl_all_time_before": 31749775.98
+  },
+  {
+   "address": "0xa464abbf049fb75585484addcbc00169062e813a",
+   "board": "pnl",
+   "rank": 82,
+   "t_before": 1.256,
+   "pnl_all_time_before": 31663805.06
+  },
+  {
+   "address": "0x1ab185be5ff61f7b678d6a871d439307cd0752e3",
+   "board": "pnl",
+   "rank": 83,
+   "t_before": 0.773,
+   "pnl_all_time_before": 31657958.05
+  },
+  {
+   "address": "0x1da722cfa8b0dfda57cf8d787689039c7a63f049",
+   "board": "pnl",
+   "rank": 84,
+   "t_before": 1.912,
+   "pnl_all_time_before": 31544526.52
+  },
+  {
+   "address": "0x8607a7d180de23645db594d90621d837749408d5",
+   "board": "pnl",
+   "rank": 85,
+   "t_before": 0.589,
+   "pnl_all_time_before": 31256740.58
+  },
+  {
+   "address": "0xb0a55f13d22f66e6d495ac98113841b2326e9540",
+   "board": "pnl",
+   "rank": 86,
+   "t_before": 1.553,
+   "pnl_all_time_before": 30822755.31
+  },
+  {
+   "address": "0xbbbc35dfac3a00a03a8fde3540eca4f0e15c5e64",
+   "board": "pnl",
+   "rank": 87,
+   "t_before": 2.705,
+   "pnl_all_time_before": 30082924.36
+  },
+  {
+   "address": "0x5c28f772c43b12d5e4bcddfca52d8ea663d46ca6",
+   "board": "pnl",
+   "rank": 88,
+   "t_before": 1.306,
+   "pnl_all_time_before": 29962829.79
+  },
+  {
+   "address": "0xb6a498c99e2a9a3bfed7d5d7499329f79bb91d47",
+   "board": "pnl",
+   "rank": 89,
+   "t_before": 1.306,
+   "pnl_all_time_before": 29941281.07
+  },
+  {
+   "address": "0x931dee7d984fdf3a6984937a153580a0bd5492c5",
+   "board": "pnl",
+   "rank": 90,
+   "t_before": 1.306,
+   "pnl_all_time_before": 29920348.75
+  },
+  {
+   "address": "0xf517639a8872e756ac98d3c65507d2ebc25cc032",
+   "board": "pnl",
+   "rank": 91,
+   "t_before": 2.026,
+   "pnl_all_time_before": 29774769.67
+  },
+  {
+   "address": "0x17a4ce9320bec0ac79420f0af19848044a469d8d",
+   "board": "pnl",
+   "rank": 92,
+   "t_before": 1.917,
+   "pnl_all_time_before": 29709520.78
+  },
+  {
+   "address": "0xff4cd3826ecee12acd4329aada4a2d3419fc463c",
+   "board": "pnl",
+   "rank": 93,
+   "t_before": 2.874,
+   "pnl_all_time_before": 29540181.24
+  },
+  {
+   "address": "0x88806a71d74ad0a510b350545c9ae490912f0888",
+   "board": "pnl",
+   "rank": 94,
+   "t_before": 1.098,
+   "pnl_all_time_before": 29490573.09
+  },
+  {
+   "address": "0x0c46eb73fae2816f219fcf11f50d6d3c59b5819e",
+   "board": "pnl",
+   "rank": 95,
+   "t_before": 1.822,
+   "pnl_all_time_before": 29306181.34
+  },
+  {
+   "address": "0x423d7f725ae7056f03f7ef57f9d0303f91c62e06",
+   "board": "pnl",
+   "rank": 96,
+   "t_before": 1.62,
+   "pnl_all_time_before": 29056879.46
+  },
+  {
+   "address": "0x8bff50aad8b4e06c5e148eaeb9d7aef69e26cdc3",
+   "board": "pnl",
+   "rank": 97,
+   "t_before": 1.66,
+   "pnl_all_time_before": 28681082.49
+  },
+  {
+   "address": "0xf47aad93dbdd5cfae218fe02ede7fe6e503cb942",
+   "board": "pnl",
+   "rank": 98,
+   "t_before": 1.235,
+   "pnl_all_time_before": 28568127.87
+  },
+  {
+   "address": "0x15a4f009bb324a3fb9e36137136b201e3fe0dfdb",
+   "board": "pnl",
+   "rank": 99,
+   "t_before": 1.742,
+   "pnl_all_time_before": 28479729.91
+  },
+  {
+   "address": "0xdc94648b243ba2b3e627d7984018b72d96ffb55f",
+   "board": "pnl",
+   "rank": 100,
+   "t_before": 1.298,
+   "pnl_all_time_before": 28403899.66
+  },
+  {
+   "address": "0x4d21e561c54302a4e6646fa9051aae68960d10fe",
+   "board": "roi30",
+   "rank": 1,
+   "t_before": null,
+   "pnl_all_time_before": 3762876.77
+  },
+  {
+   "address": "0x83ffcfb1f2ad843c474b2e28df86c721cb869d3a",
+   "board": "roi30",
+   "rank": 2,
+   "t_before": null,
+   "pnl_all_time_before": 1915352.46
+  },
+  {
+   "address": "0x25cd302e37a69d70a6ef645daea5a7de38c66e2a",
+   "board": "roi30",
+   "rank": 3,
+   "t_before": 1.59,
+   "pnl_all_time_before": 9185554.48
+  },
+  {
+   "address": "0xc2476b7554efa984b296ecc9a0d4a16d3abe7213",
+   "board": "roi30",
+   "rank": 4,
+   "t_before": 0.736,
+   "pnl_all_time_before": 60744.83
+  },
+  {
+   "address": "0x58e1b0e63c905d5982324fcd9108582623b8132e",
+   "board": "roi30",
+   "rank": 5,
+   "t_before": 4.852,
+   "pnl_all_time_before": 999309.37
+  },
+  {
+   "address": "0x0a2020c0b421ba2f5be5ec8e58ac6418f4b1bd38",
+   "board": "roi30",
+   "rank": 6,
+   "t_before": 1.071,
+   "pnl_all_time_before": -9398.43
+  },
+  {
+   "address": "0xeff250ac099ed2e83d2ce0a145bf1bd1587461c8",
+   "board": "roi30",
+   "rank": 7,
+   "t_before": 2.048,
+   "pnl_all_time_before": 43872.96
+  },
+  {
+   "address": "0x54c3bbda87e624e460d4ac44ee28cffdd92c17d0",
+   "board": "roi30",
+   "rank": 8,
+   "t_before": 3.488,
+   "pnl_all_time_before": 93976.99
+  },
+  {
+   "address": "0x399e227e94814c14b1e38bb12915e0441a3a4415",
+   "board": "roi30",
+   "rank": 9,
+   "t_before": -1.082,
+   "pnl_all_time_before": 59723.12
+  },
+  {
+   "address": "0xe8bd076660290659e53c5a773b10585d72bfe27a",
+   "board": "roi30",
+   "rank": 10,
+   "t_before": 1.379,
+   "pnl_all_time_before": 22019.82
+  },
+  {
+   "address": "0xf4f7cebbd2c7b6dee34ab29fa55a116eff25239f",
+   "board": "roi30",
+   "rank": 11,
+   "t_before": 0.983,
+   "pnl_all_time_before": 2793008.8
+  },
+  {
+   "address": "0x973d40863283d2ba3f209a4dde9c68b580bf486d",
+   "board": "roi30",
+   "rank": 12,
+   "t_before": 1.575,
+   "pnl_all_time_before": 25878.07
+  },
+  {
+   "address": "0x91f564e80ed5e98eb22fde0857e1a87047f2df13",
+   "board": "roi30",
+   "rank": 13,
+   "t_before": 1.288,
+   "pnl_all_time_before": 3656963.71
+  },
+  {
+   "address": "0x7548f42d3c235f970ea235d592047085a6d65788",
+   "board": "roi30",
+   "rank": 14,
+   "t_before": 3.166,
+   "pnl_all_time_before": 24043.68
+  },
+  {
+   "address": "0xb4a3349619ff3da514b42bd7a124947aaf2b9210",
+   "board": "roi30",
+   "rank": 15,
+   "t_before": 1.314,
+   "pnl_all_time_before": 580524.77
+  },
+  {
+   "address": "0xbf1e78fcd3b89a8a3375e68a11a2e7412f24f2af",
+   "board": "roi30",
+   "rank": 16,
+   "t_before": -1.039,
+   "pnl_all_time_before": -471404.34
+  },
+  {
+   "address": "0xe0f1a1f26fab8d5fa2939f27cc78b5d52319fd05",
+   "board": "roi30",
+   "rank": 17,
+   "t_before": -1.003,
+   "pnl_all_time_before": -74783.04
+  },
+  {
+   "address": "0x6e8fa9304880f4a428bfbc35166c7e2825574364",
+   "board": "roi30",
+   "rank": 18,
+   "t_before": null,
+   "pnl_all_time_before": 595744.15
+  },
+  {
+   "address": "0x35c1336f6ad5fc55d4400733f964073a34d5269b",
+   "board": "roi30",
+   "rank": 19,
+   "t_before": null,
+   "pnl_all_time_before": 111318.24
+  },
+  {
+   "address": "0xe8190864576e868e11b67ba82c9b91b7d4de3d1c",
+   "board": "roi30",
+   "rank": 20,
+   "t_before": 0.694,
+   "pnl_all_time_before": -73556.13
+  },
+  {
+   "address": "0xbd697846b0911baeba002a56bdc16f1f332d45fb",
+   "board": "roi30",
+   "rank": 21,
+   "t_before": -1.51,
+   "pnl_all_time_before": -1046756.51
+  },
+  {
+   "address": "0xcdc02dfe3ec02e50d2ca84d6d45f0b497649d0a1",
+   "board": "roi30",
+   "rank": 22,
+   "t_before": 1.788,
+   "pnl_all_time_before": 191818.76
+  },
+  {
+   "address": "0x19fa2804b4c7396c05c3fd6baab6730d133cfd3c",
+   "board": "roi30",
+   "rank": 23,
+   "t_before": -1.027,
+   "pnl_all_time_before": -170850.6
+  },
+  {
+   "address": "0xaf69b1587b87c78409e5a20c3fd5f1ca386fd350",
+   "board": "roi30",
+   "rank": 24,
+   "t_before": 1.327,
+   "pnl_all_time_before": 60283.95
+  },
+  {
+   "address": "0xb981a0c739dddb86a40c576aa1fd75f491184e0e",
+   "board": "roi30",
+   "rank": 25,
+   "t_before": 1.381,
+   "pnl_all_time_before": 541132.87
+  },
+  {
+   "address": "0xd908ba17f4b51f89af9421dc3e9e135bdf58d6b5",
+   "board": "roi30",
+   "rank": 26,
+   "t_before": 1.713,
+   "pnl_all_time_before": 29194.03
+  },
+  {
+   "address": "0xc41ea8305ed5ff3a08828d40c0b151d6bbdacaae",
+   "board": "roi30",
+   "rank": 27,
+   "t_before": 1.204,
+   "pnl_all_time_before": 77298.84
+  },
+  {
+   "address": "0xd60e149a795e83ff52639e3ba708521ee708d74d",
+   "board": "roi30",
+   "rank": 28,
+   "t_before": 0.477,
+   "pnl_all_time_before": 32595.06
+  },
+  {
+   "address": "0x1183adc3227530215726fb25211bf1375ed91c74",
+   "board": "roi30",
+   "rank": 29,
+   "t_before": 0.887,
+   "pnl_all_time_before": 141274.09
+  },
+  {
+   "address": "0x03dc025c93ee7579cfc033ba1d2658e4d167d4a5",
+   "board": "roi30",
+   "rank": 30,
+   "t_before": -1.05,
+   "pnl_all_time_before": -63167.62
+  },
+  {
+   "address": "0x0752075607ff962ceac6802f11d89334076d9254",
+   "board": "roi30",
+   "rank": 31,
+   "t_before": null,
+   "pnl_all_time_before": 267842.94
+  },
+  {
+   "address": "0xb85bf31a9540e631461f295fbe1a3c3d9b8800fd",
+   "board": "roi30",
+   "rank": 32,
+   "t_before": null,
+   "pnl_all_time_before": 297941.24
+  },
+  {
+   "address": "0x28280399d9afd68a3555c65ca6a75a1bd55693a0",
+   "board": "roi30",
+   "rank": 33,
+   "t_before": 2.101,
+   "pnl_all_time_before": 716897.74
+  },
+  {
+   "address": "0xc5e72476bbb60af85f1d806663a8ddee3f3262cb",
+   "board": "roi30",
+   "rank": 34,
+   "t_before": 0.98,
+   "pnl_all_time_before": 341623.1
+  },
+  {
+   "address": "0xd6d7d3473e874d21fa6078663e000dc7a89a84a1",
+   "board": "roi30",
+   "rank": 35,
+   "t_before": 0.318,
+   "pnl_all_time_before": 133492.49
+  },
+  {
+   "address": "0x28da817ca55b1d5eea1386151321b1b1e9c1f2b5",
+   "board": "roi30",
+   "rank": 36,
+   "t_before": -0.306,
+   "pnl_all_time_before": -17252.12
+  },
+  {
+   "address": "0xac8145cb77fbf932dda945a7a248cfd815f3a322",
+   "board": "roi30",
+   "rank": 37,
+   "t_before": 0.966,
+   "pnl_all_time_before": -28096.0
+  },
+  {
+   "address": "0x8455193b0490ad091819000b01cd9bb833ac974b",
+   "board": "roi30",
+   "rank": 38,
+   "t_before": 1.484,
+   "pnl_all_time_before": -408812.89
+  },
+  {
+   "address": "0x455fd6cd59e1587b362f229b7ecbe015240931fb",
+   "board": "roi30",
+   "rank": 39,
+   "t_before": 1.42,
+   "pnl_all_time_before": 17704.24
+  },
+  {
+   "address": "0xf9faba57a81d1575d3e506dd3eafe7db6f2a3275",
+   "board": "roi30",
+   "rank": 40,
+   "t_before": 1.225,
+   "pnl_all_time_before": 1862259.91
+  },
+  {
+   "address": "0x1f82ef5d1d93cb4cdadacc3870465b0175bad1c8",
+   "board": "roi30",
+   "rank": 41,
+   "t_before": 0.306,
+   "pnl_all_time_before": 8785.16
+  },
+  {
+   "address": "0x30a68666b5f91348e7fc78785802e0769d86e62b",
+   "board": "roi30",
+   "rank": 42,
+   "t_before": 1.392,
+   "pnl_all_time_before": 49150.82
+  },
+  {
+   "address": "0xe4f678ee76d26ad2c83e64ed015f62865e06d570",
+   "board": "roi30",
+   "rank": 43,
+   "t_before": 0.145,
+   "pnl_all_time_before": 72042.84
+  },
+  {
+   "address": "0x4b67337795c5e1ca1aaea307f57b79419c632c88",
+   "board": "roi30",
+   "rank": 44,
+   "t_before": 1.0,
+   "pnl_all_time_before": 360881.57
+  },
+  {
+   "address": "0x9974899d1f7d3fcacd16c016fab8ddfc4131959c",
+   "board": "roi30",
+   "rank": 45,
+   "t_before": 0.286,
+   "pnl_all_time_before": 49718.98
+  },
+  {
+   "address": "0xdb2d48c8a74a0c5ede614710394048a0fba989b5",
+   "board": "roi30",
+   "rank": 46,
+   "t_before": 1.037,
+   "pnl_all_time_before": 470473.69
+  },
+  {
+   "address": "0x005a09b498f2a28b54652a70d7812e63414161fe",
+   "board": "roi30",
+   "rank": 47,
+   "t_before": null,
+   "pnl_all_time_before": 1868649.68
+  },
+  {
+   "address": "0x7927f49a74a5ea0f7d94414c92ce66c6a3be271b",
+   "board": "roi30",
+   "rank": 48,
+   "t_before": 2.017,
+   "pnl_all_time_before": 285118.14
+  },
+  {
+   "address": "0x0fe100b259a7a5b23555b2a934410608b116ebee",
+   "board": "roi30",
+   "rank": 49,
+   "t_before": null,
+   "pnl_all_time_before": 25200.32
+  },
+  {
+   "address": "0xc67d98ecac74cc4a6ae952c1921c3d7f10794e34",
+   "board": "roi30",
+   "rank": 50,
+   "t_before": null,
+   "pnl_all_time_before": 88586.3
+  },
+  {
+   "address": "0x620ec0080fc2b4638a623745eb2a566d23962d6d",
+   "board": "roi30",
+   "rank": 51,
+   "t_before": -1.058,
+   "pnl_all_time_before": -68108.68
+  },
+  {
+   "address": "0x02ff33e10a6f6590ce9e1efb56fdfa0ba6b82929",
+   "board": "roi30",
+   "rank": 52,
+   "t_before": 0.765,
+   "pnl_all_time_before": 150479.33
+  },
+  {
+   "address": "0xf47c3fe3af62670a1496390e5fe3cfe115aae847",
+   "board": "roi30",
+   "rank": 53,
+   "t_before": null,
+   "pnl_all_time_before": 64196.83
+  },
+  {
+   "address": "0x225743040114e0597cb96fe5a361a134c86ea360",
+   "board": "roi30",
+   "rank": 54,
+   "t_before": 1.275,
+   "pnl_all_time_before": 12927.34
+  },
+  {
+   "address": "0x8128f1338d1ca22d4f17258e3171f0e36d859e19",
+   "board": "roi30",
+   "rank": 55,
+   "t_before": -0.219,
+   "pnl_all_time_before": -34078.25
+  },
+  {
+   "address": "0x93efac18204e9df9b6914131736062b3e4832c29",
+   "board": "roi30",
+   "rank": 56,
+   "t_before": 0.818,
+   "pnl_all_time_before": -44215.14
+  },
+  {
+   "address": "0xe1059d78209df28676c18d1cd21ec113c0ea6a47",
+   "board": "roi30",
+   "rank": 57,
+   "t_before": 0.664,
+   "pnl_all_time_before": 104685.82
+  },
+  {
+   "address": "0xf36270c2124829fce84d9aa5d7a7c7a674f29ab1",
+   "board": "roi30",
+   "rank": 58,
+   "t_before": 0.762,
+   "pnl_all_time_before": 8492.24
+  },
+  {
+   "address": "0x02867e83eb85a3721422b4cddb8f4f64440eee0b",
+   "board": "roi30",
+   "rank": 59,
+   "t_before": 0.263,
+   "pnl_all_time_before": 447683.09
+  },
+  {
+   "address": "0x6218ec179ffb01b1b75ec0f8efd5029577d8bae1",
+   "board": "roi30",
+   "rank": 60,
+   "t_before": 0.483,
+   "pnl_all_time_before": -629.81
+  },
+  {
+   "address": "0xf5996cfefd48a664904d5e1f4729227b600e7a8e",
+   "board": "roi30",
+   "rank": 61,
+   "t_before": 1.602,
+   "pnl_all_time_before": 34731.77
+  },
+  {
+   "address": "0x4969500d093c0c25b6499c72ad4669f56477f5d4",
+   "board": "roi30",
+   "rank": 62,
+   "t_before": -0.748,
+   "pnl_all_time_before": -55237.82
+  },
+  {
+   "address": "0x13202749cc33ecdb3a5e161f434f31c09ba35806",
+   "board": "roi30",
+   "rank": 63,
+   "t_before": -0.569,
+   "pnl_all_time_before": -94036.07
+  },
+  {
+   "address": "0x807ef896a60b063aa02b919cc7248f84ac134cc8",
+   "board": "roi30",
+   "rank": 64,
+   "t_before": null,
+   "pnl_all_time_before": 77004.97
+  },
+  {
+   "address": "0x599d75c7e9dc0d8e9006d60a54c3ddcb12e62d09",
+   "board": "roi30",
+   "rank": 65,
+   "t_before": 1.501,
+   "pnl_all_time_before": 122862.86
+  },
+  {
+   "address": "0x6664201bfaa2c8a9eba60d02ee3932318f3d6293",
+   "board": "roi30",
+   "rank": 66,
+   "t_before": -0.043,
+   "pnl_all_time_before": -88827.41
+  },
+  {
+   "address": "0x7c6670c191c787f2aaa59effe455d11cdb04bb40",
+   "board": "roi30",
+   "rank": 67,
+   "t_before": 1.722,
+   "pnl_all_time_before": 90419.18
+  },
+  {
+   "address": "0x86ede4a38a16ca736319fa63b202a08449f21996",
+   "board": "roi30",
+   "rank": 68,
+   "t_before": 0.552,
+   "pnl_all_time_before": 57349.74
+  },
+  {
+   "address": "0x146a1127dd5466d04eeca64f50990c0f386e3404",
+   "board": "roi30",
+   "rank": 69,
+   "t_before": null,
+   "pnl_all_time_before": 382455.59
+  },
+  {
+   "address": "0xc42cebb3f484048795b573aa7c12c3017c0125ff",
+   "board": "roi30",
+   "rank": 70,
+   "t_before": 0.875,
+   "pnl_all_time_before": 55741.73
+  },
+  {
+   "address": "0x842bd733511625e0f0bf34a4718f8319203487eb",
+   "board": "roi30",
+   "rank": 71,
+   "t_before": null,
+   "pnl_all_time_before": 62483.49
+  },
+  {
+   "address": "0xc09ced457a3a26e3366cdd7b0b1502603043cd1e",
+   "board": "roi30",
+   "rank": 72,
+   "t_before": null,
+   "pnl_all_time_before": 86397.74
+  },
+  {
+   "address": "0x90f15e09b8fb5bc080b968170c638920db3a3446",
+   "board": "roi30",
+   "rank": 73,
+   "t_before": 1.639,
+   "pnl_all_time_before": 709967.1
+  },
+  {
+   "address": "0x050c4131b47337ded9fba62a3dc5af28feec7540",
+   "board": "roi30",
+   "rank": 74,
+   "t_before": 1.092,
+   "pnl_all_time_before": -53911.9
+  },
+  {
+   "address": "0xd18820ff81eda9e80c5437e7f31ae1ffc09707ee",
+   "board": "roi30",
+   "rank": 75,
+   "t_before": -2.659,
+   "pnl_all_time_before": -406854.47
+  },
+  {
+   "address": "0xb67c4c91728e6865b216e11d54b50c75bbd3fd5f",
+   "board": "roi30",
+   "rank": 76,
+   "t_before": 1.228,
+   "pnl_all_time_before": 144945.04
+  },
+  {
+   "address": "0x0f375ac7e46ce5660ac898a2ed5be9a6f2d03d3a",
+   "board": "roi30",
+   "rank": 77,
+   "t_before": 0.515,
+   "pnl_all_time_before": 12951.41
+  },
+  {
+   "address": "0xc04f39444b44716fd98f3782efad400fe2711b3d",
+   "board": "roi30",
+   "rank": 78,
+   "t_before": 0.158,
+   "pnl_all_time_before": 122020.03
+  },
+  {
+   "address": "0xedab6e3998ffddcb354094ffe8ca2a3cff8d3370",
+   "board": "roi30",
+   "rank": 79,
+   "t_before": 2.04,
+   "pnl_all_time_before": 501240.66
+  },
+  {
+   "address": "0xf208b13968cf79db8ed788907e70c288a3169c0b",
+   "board": "roi30",
+   "rank": 80,
+   "t_before": 1.432,
+   "pnl_all_time_before": 230071.78
+  },
+  {
+   "address": "0x7c0816200ce76b1308cf7ca8e177177909b8bf1a",
+   "board": "roi30",
+   "rank": 81,
+   "t_before": -1.286,
+   "pnl_all_time_before": 231264.76
+  },
+  {
+   "address": "0xa96bb03241b4359aab743020a6a254210decb4bc",
+   "board": "roi30",
+   "rank": 82,
+   "t_before": 1.687,
+   "pnl_all_time_before": 77938.01
+  },
+  {
+   "address": "0xa2e366c4e2d453cab49cc9c64f0670fd2fd060a3",
+   "board": "roi30",
+   "rank": 83,
+   "t_before": 0.617,
+   "pnl_all_time_before": 87851.44
+  },
+  {
+   "address": "0xfdf891f2b214a4c9374d26595ec6d4080262e381",
+   "board": "roi30",
+   "rank": 84,
+   "t_before": -0.556,
+   "pnl_all_time_before": 5170665.33
+  },
+  {
+   "address": "0x0ea4bd3817be71e53de8c12bfccd533a3c84d30f",
+   "board": "roi30",
+   "rank": 85,
+   "t_before": null,
+   "pnl_all_time_before": 84982.4
+  },
+  {
+   "address": "0x9a88d3872f5f5aefec3892073a17ea87c49a4bdf",
+   "board": "roi30",
+   "rank": 86,
+   "t_before": 1.151,
+   "pnl_all_time_before": 27606.55
+  },
+  {
+   "address": "0x53969485d7422b35c7fe5a4025498f9b69268b79",
+   "board": "roi30",
+   "rank": 87,
+   "t_before": 1.332,
+   "pnl_all_time_before": 3877166.68
+  },
+  {
+   "address": "0x1fd2978ac57fb2f459ef1ab7812b58f29ab437ba",
+   "board": "roi30",
+   "rank": 88,
+   "t_before": 0.779,
+   "pnl_all_time_before": 47524.83
+  },
+  {
+   "address": "0xc58f63a478169713fd77e3eef1b27929f5445535",
+   "board": "roi30",
+   "rank": 89,
+   "t_before": null,
+   "pnl_all_time_before": 88456.7
+  },
+  {
+   "address": "0x75d415edcb3c3782e5952470821e983f9053a209",
+   "board": "roi30",
+   "rank": 90,
+   "t_before": -0.789,
+   "pnl_all_time_before": -709532.37
+  },
+  {
+   "address": "0x7b3d8e939ee08b52d06ab5e6f85791a6007e8d61",
+   "board": "roi30",
+   "rank": 91,
+   "t_before": null,
+   "pnl_all_time_before": 123492.29
+  },
+  {
+   "address": "0x57aefc5848d9e19cc9bec95a3457dd0eb529ac70",
+   "board": "roi30",
+   "rank": 92,
+   "t_before": -0.701,
+   "pnl_all_time_before": -15738.2
+  },
+  {
+   "address": "0xa2be55e4c9e66042a60f248782074d41f4971499",
+   "board": "roi30",
+   "rank": 93,
+   "t_before": 1.382,
+   "pnl_all_time_before": -11227.93
+  },
+  {
+   "address": "0x2e4a4d6736ae0487b85ada66210e3d889b3e02fa",
+   "board": "roi30",
+   "rank": 94,
+   "t_before": -2.694,
+   "pnl_all_time_before": -869433.19
+  },
+  {
+   "address": "0x977ef97d7cb472ae24f1d6b9d12e36132baba3a0",
+   "board": "roi30",
+   "rank": 95,
+   "t_before": null,
+   "pnl_all_time_before": 91684.48
+  },
+  {
+   "address": "0x1541cf0767948d92f084f602ceac2053fef27ce9",
+   "board": "roi30",
+   "rank": 96,
+   "t_before": 1.258,
+   "pnl_all_time_before": 83074.6
+  },
+  {
+   "address": "0x3eb8cab176835007e7b0081dda02aef11e3be9d9",
+   "board": "roi30",
+   "rank": 97,
+   "t_before": 2.461,
+   "pnl_all_time_before": 137765.68
+  },
+  {
+   "address": "0x77841739db92d9df089293cdaf22503e3261dfb4",
+   "board": "roi30",
+   "rank": 98,
+   "t_before": null,
+   "pnl_all_time_before": 74320.28
+  },
+  {
+   "address": "0x70b180035ce5982449966f539e63863fa4f23107",
+   "board": "roi30",
+   "rank": 99,
+   "t_before": 1.639,
+   "pnl_all_time_before": 88515.09
+  },
+  {
+   "address": "0x3fc5bf3fc91a341b7d1366197e3675d5c92742a8",
+   "board": "roi30",
+   "rank": 100,
+   "t_before": -0.292,
+   "pnl_all_time_before": 4808.82
+  }
+ ]
+}

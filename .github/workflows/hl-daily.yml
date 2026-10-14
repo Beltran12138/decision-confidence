@@ -1,0 +1,36 @@
+# Daily refresh of the Hyperliquid wallet board and the frozen cohort's forward record.
+# Writes docs/data/hl/latest.json and docs/wallet/index.html, commits only if they changed.
+name: hl-daily
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hl-daily
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install markdown
+      - name: Build board and cohort
+        run: |
+          python tools/build_hl_board.py --cache .hlcache --refresh \
+            --out docs/data/hl/latest.json --cohort docs/data/hl/cohort-2026-10-14.json
+          python tools/check_hl_parity.py --cache .hlcache
+          python tools/build_site.py
+      - name: Commit if changed
+        run: |
+          git config user.name "hl-daily"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/hl/latest.json docs/wallet/index.html docs/index.html
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: Hyperliquid board $(date -u +%Y-%m-%d)"
+          git push

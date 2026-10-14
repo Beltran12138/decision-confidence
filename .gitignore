@@ -50,3 +50,6 @@ out/
 # Hand-kept backups of earlier demo pages. The tracked file supersedes them
 # and git already holds its history, so these stay local.
 *.bak
+
+# Hyperliquid board cache (CI)
+.hlcache/
