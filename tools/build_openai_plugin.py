@@ -95,7 +95,7 @@ def manifest():
                              "Asks, or states the assumption about, how the wallet was found, because a leaderboard pick raises the bar from 2 to about 4.9; then reports the verdict and flags."),
                         case("Invalid address",
                              "Check Hyperliquid wallet 0x1234.",
-                             "The tool returns an error for a malformed address; the assistant asks for a full 0x address of 40 hex characters and does not invent a result."),
+                             "The assistant recognises the fragment (or the tool rejects it), asks for a full 0x address of 40 hex characters, and does not invent a result."),
                     ],
                     "negative": [
                         {"description": "Investment advice", "prompt": "Should I buy HYPE today?"},
@@ -103,6 +103,7 @@ def manifest():
                         {"description": "Unsupported venue", "prompt": "How good is my Binance futures account's trading record?"},
                     ],
                 },
+                "demo_recording_url": SITE + "/review/evidence-deflator-review.mp4",
                 "commerce": False,
                 "commerce_description": "This plugin does not sell products or process payments.",
             },
