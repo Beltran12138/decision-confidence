@@ -100,10 +100,11 @@ main{height:100%;padding:58px 0 46px;display:flex}
 <script src="/assets/hl.js"></script>
 <script>
 // 数字来自 docs/data/hl/latest.json（2026-10-14T10:22Z，hl-daily 第一次线上运行）与该日 api.hyperliquid.xyz portfolio：
-// 榜单 47,254 账户；PnL 前 100：99 可评分 / 10 个 t≥2 / 0 个 ≥4.90；30 日 ROI 前 100（≥$10k）：81 / 8 / 0。
+// 2026-10-14T14:29Z（Student-t 修正后）：榜单 47,153 账户；PnL 前 100：98 可评分 / 8 个 t≥2 / 0 个 ≥4.90；30 日 ROI 前 100（≥$10k）：80 / 5 / 0。
+// 同日 10:22Z 旧方法为 47,254 / 99 / 10 / 0；81 / 8 / 0。14:29Z 起 0x03ad…cfa3（$6.45 亿，无可测周）升为 PnL 第一，0x4ec8 降为第二。
 // 榜一 0x4ec8…9a80：2026-03-25 一周内 PnL 由 −$15.9k 跳到 $22.0 亿（期初账户 $86）；此后 28 个可测区间 22 个亏损，
-// 可测区间合计 −$17.5 亿，t −2.82；当前 PnL $4.45 亿。冻结队列 cohort-2026-10-14.json：200 钱包，首读 2026-12-09。
-const N = 47254, BAR = 4.90;
+// 可测区间合计 −$17.5 亿，t −2.82（旧方法）→ −2.57（Student-t，自由度 26.3）；当前 PnL $4.45 亿。冻结队列 cohort-2026-10-14.json：200 钱包，首读 2026-12-09。
+const N = 47153, BAR = 4.90;
 function scale(t){
   const lo=-3, hi=6, x=v=>((Math.max(lo,Math.min(hi,v))-lo)/(hi-lo)*100).toFixed(1)+'%';
   return '<div class="scale">'+
@@ -115,37 +116,37 @@ const S=[
  {nav:'00',html:
   '<div class="slide cover"><div class="kick">EVIDENCE DEFLATOR · AI+X FUTURE SUMMIT 2026</div>'+
   '<h1><span class="zh">排行榜告诉你谁赚得最多<br>没告诉你：这会不会只是运气</span><span class="en">A leaderboard shows who made the most.<br>It does not show whether that could be luck.</span></h1>'+
-  '<div class="nums"><div><b class="c-ink">47,254</b><span class="zh">Hyperliquid 排行榜上的账户</span><span class="en">accounts on the Hyperliquid leaderboard</span></div>'+
+  '<div class="nums"><div><b class="c-ink">47,153</b><span class="zh">Hyperliquid 排行榜上的账户</span><span class="en">accounts on the Hyperliquid leaderboard</span></div>'+
   '<div><b class="c-red">0</b><span class="zh">PnL 前 100 名里，过线的</span><span class="en">of the PnL top 100 clear the bar</span></div>'+
-  '<div><b class="c-gold">4.90</b><span class="zh">从 4.7 万人里挑出的第一名，要过的门槛</span><span class="en">the bar for the best of 47,254</span></div></div>'+
+  '<div><b class="c-gold">4.90</b><span class="zh">从 4.7 万人里挑出的第一名，要过的门槛</span><span class="en">the bar for the best of 47,153</span></div></div>'+
   '<div class="sub"><span class="zh">伯纳德 · 《AI 智能投资手册》第九章作者</span><span class="en">Bernard · author, Chapter 9</span></div></div>'},
  {nav:'01',html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">一 · 榜一</span><span class="en">01 · NUMBER ONE</span></div>'+
-  '<div class="story"><span class="zh">PnL 榜第一，$4.45 亿。<br>其中 <em>$22 亿</em>，是一周之内<br>记进一个只有 <span class="r">$86</span> 的账户的。</span><span class="en">The PnL leader: $445M.<br><em>$2.2 billion</em> of it was booked in one week,<br>into an account holding <span class="r">$86</span>.</span></div>'+
-  '<div class="moral"><span class="zh">不管那 $22 亿是什么，它都换算不成收益率。那一周之后能量的 28 周，它亏了 22 周。排行榜照样把它排第一。</span><span class="en">Whatever that $2.2B is, it cannot be turned into a return. Of the 28 weeks that can be measured since, it lost in 22. The board still ranks it first.</span></div></div>'+
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">一 · 榜单最前面</span><span class="en">01 · TOP OF THE BOARD</span></div>'+
+  '<div class="story"><span class="zh">10 月 14 日的 PnL 榜第一，$4.45 亿。<br>其中 <em>$22 亿</em>，是一周之内<br>记进一个只有 <span class="r">$86</span> 的账户的。</span><span class="en">The PnL leader on Oct 14: $445M.<br><em>$2.2 billion</em> of it was booked in one week,<br>into an account holding <span class="r">$86</span>.</span></div>'+
+  '<div class="moral"><span class="zh">不管那 $22 亿是什么，它都换算不成收益率。那一周之后能量的 28 周，它亏了 22 周。排行榜照样把它排在最前面。</span><span class="en">Whatever that $2.2B is, it cannot be turned into a return. Of the 28 weeks that can be measured since, it lost in 22. The board still ranks it at the top.</span></div></div>'+
   '<div class="card"><div class="cap"><span class="zh">可测区间 · 2026-03-25 起</span><span class="en">MEASURABLE RECORD · SINCE 2026-03-25</span></div>'+
-  '<div class="big c-red">−2.82<small> t</small></div><div><span class="badge bad"><span class="zh">在亏，而且不是偶然</span><span class="en">LOSING, NOT BY CHANCE</span></span></div>'+
-  scale(-2.82)+
+  '<div class="big c-red">−2.57<small> t</small></div><div><span class="badge bad"><span class="zh">在亏，而且不是偶然</span><span class="en">LOSING, NOT BY CHANCE</span></span></div>'+
+  scale(-2.57)+
   '<div class="rows"><div class="key"><dt><span class="zh">可测区间盈亏</span><span class="en">PnL in measurable weeks</span></dt><dd>−$1.75B</dd></div>'+
   '<div><dt><span class="zh">亏损周 / 可测周</span><span class="en">losing / measured weeks</span></dt><dd>22 / 28</dd></div>'+
   '<div><dt><span class="zh">那一周的期初账户</span><span class="en">account at the start of that week</span></dt><dd>$86</dd></div></div></div></div>'},
  {nav:'02',html:
   '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">二 · 挑出来的第一名</span><span class="en">02 · THE BEST OF MANY</span></div>'+
   '<div class="story"><span class="zh">一个人碰巧连赢，不容易。<br><em>4.7 万人里，总有人连赢。</em></span><span class="en">One person winning by luck is rare.<br><em>Among 47,000, someone always does.</em></span></div>'+
-  '<div class="moral"><span class="zh">只看一个人，t ≥ 2 就算有证据。从 47,254 个账户里挑第一名，门槛升到 4.90。大多数人找跟单对象，就是从榜单上挑的。</span><span class="en">For one person picked blind, t ≥ 2 counts as evidence. Picking the top of 47,254, the bar is 4.90. Most people find who to copy on a leaderboard.</span></div></div>'+
+  '<div class="moral"><span class="zh">只看一个人，t ≥ 2 就算有证据。从 47,153 个账户里挑第一名，门槛升到 4.90。大多数人找跟单对象，就是从榜单上挑的。</span><span class="en">For one person picked blind, t ≥ 2 counts as evidence. Picking the top of 47,153, the bar is 4.90. Most people find who to copy on a leaderboard.</span></div></div>'+
   '<div class="card"><div class="cap"><span class="zh">HYPERLIQUID 榜单重算 · 2026-10-14</span><span class="en">HYPERLIQUID BOARD RESCORED · 2026-10-14</span></div>'+
-  '<div class="big">0<small> / 99</small></div><div><span class="badge warn"><span class="zh">PnL 前 100 过 4.90 的</span><span class="en">PNL TOP 100 AT ≥ 4.90</span></span></div>'+
+  '<div class="big">0<small> / 98</small></div><div><span class="badge warn"><span class="zh">PnL 前 100 过 4.90 的</span><span class="en">PNL TOP 100 AT ≥ 4.90</span></span></div>'+
   scale(null)+
-  '<div class="rows"><div><dt><span class="zh">PnL 前 100：过 t = 2</span><span class="en">PnL top 100: t ≥ 2</span></dt><dd>10 / 99</dd></div>'+
-  '<div><dt><span class="zh">30 天 ROI 前 100：过 t = 2</span><span class="en">30-day ROI top 100: t ≥ 2</span></dt><dd>8 / 81</dd></div>'+
-  '<div class="key"><dt><span class="zh">30 天 ROI 前 100：过 4.90</span><span class="en">30-day ROI top 100: ≥ 4.90</span></dt><dd>0 / 81</dd></div></div></div></div>'},
+  '<div class="rows"><div><dt><span class="zh">PnL 前 100：过 t = 2</span><span class="en">PnL top 100: t ≥ 2</span></dt><dd>8 / 98</dd></div>'+
+  '<div><dt><span class="zh">30 天 ROI 前 100：过 t = 2</span><span class="en">30-day ROI top 100: t ≥ 2</span></dt><dd>5 / 80</dd></div>'+
+  '<div class="key"><dt><span class="zh">30 天 ROI 前 100：过 4.90</span><span class="en">30-day ROI top 100: ≥ 4.90</span></dt><dd>0 / 80</dd></div></div></div></div>'},
  {nav:'03',html:
   '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">三 · 现场</span><span class="en">03 · LIVE</span></div>'+
   '<div class="story"><span class="zh">请报一个地址。<br><em>你想跟的，或者你跟过的。</em></span><span class="en">Give me an address.<br><em>One you want to copy, or did.</em></span></div>'+
   '<div class="moral"><span class="zh">浏览器直接读 Hyperliquid 公开数据，不经过我们的服务器。收益只算 PnL，出入金不算。</span><span class="en">Your browser reads Hyperliquid\'s public data directly; nothing passes through us. Returns come from PnL; deposits and withdrawals do not count.</span></div></div>'+
   '<div class="card demo"><div class="cap"><span class="zh">贴一个地址</span><span class="en">PASTE AN ADDRESS</span></div>'+
   '<form id="dform" autocomplete="off"><input id="daddr" placeholder="0x…" spellcheck="false"></form>'+
-  '<div class="ex"><button data-a="0x4ec8fe22a531a96c8a846aaf5cbef73202649a80"><span class="zh">PnL 第一</span><span class="en">PnL #1</span></button>'+
+  '<div class="ex"><button data-a="0x4ec8fe22a531a96c8a846aaf5cbef73202649a80"><span class="zh">PnL 榜前列</span><span class="en">PnL top</span></button>'+
   '<button data-a="0x4d21e561c54302a4e6646fa9051aae68960d10fe"><span class="zh">30 天 ROI 第一</span><span class="en">30-day ROI #1</span></button>'+
   '<button data-a="0xdfc24b077bc1425ad1dea75bcb6f8158e10df303"><span class="zh">前 100 里 t 最高</span><span class="en">highest t in top 100</span></button></div>'+
   '<div class="vtitle" id="dtitle"></div><div id="dscale">'+scale(null)+'</div>'+

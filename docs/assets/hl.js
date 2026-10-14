@@ -26,6 +26,46 @@ const HL = (() => {
   const bar = n => inv(1 - ALPHA / n);
   const monthsToClear = (b, s) => (s && s > 0) ? (b / s) ** 2 * 12 : null;
 
+  // Student's t tail via the regularized incomplete beta, as in the Python builder.
+  function lgamma(x) {  // Lanczos, g = 7
+    const g = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059,
+      12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (x < 0.5) return Math.log(Math.PI / Math.abs(Math.sin(Math.PI * x))) - lgamma(1 - x);
+    x -= 1;
+    let a = g[0];
+    const t = x + 7.5;
+    for (let i = 1; i < 9; i++) a += g[i] / (x + i);
+    return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+  }
+  function betacf(a, b, x) {
+    const tiny = 1e-300, qab = a + b, qap = a + 1, qam = a - 1;
+    let c = 1, d = 1 - qab * x / qap;
+    d = 1 / (Math.abs(d) > tiny ? d : tiny);
+    let h = d;
+    for (let m = 1; m < 300; m++) {
+      const m2 = 2 * m;
+      for (const aa of [m * (b - m) * x / ((qam + m2) * (a + m2)), -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2))]) {
+        d = 1 + aa * d; d = 1 / (Math.abs(d) > tiny ? d : tiny);
+        c = 1 + aa / c; c = Math.abs(c) > tiny ? c : tiny;
+        h *= d * c;
+      }
+      if (Math.abs(d * c - 1) < 1e-15) break;
+    }
+    return h;
+  }
+  function betai(a, b, x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    const bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+    return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b;
+  }
+  // Normal score with the same tail probability as Student's t with `dof` degrees of freedom.
+  function tToZ(t, dof) {
+    if (t === 0) return 0;
+    const p = 0.5 * betai(dof / 2, 0.5, dof / (dof + t * t));
+    return Math.sign(t) * -inv(Math.max(p, 1e-300));
+  }
+
   // Same grid and merging rule as the Python builder.
   function weeklyReturns(pf) {
     const at = Object.fromEntries(pf), all = at.allTime;
@@ -57,11 +97,15 @@ const HL = (() => {
     let R = 0, W = 0;
     for (const [r, w] of rets) { R += r; W += w; }
     const mu = R / W;
-    let ss = 0;
-    for (const [r, w] of rets) ss += (r - mu * w) ** 2;
-    if (ss === 0 || W <= 0) return {weeks: n, sharpe: null, t: null};
-    const sharpe = mu / Math.sqrt(ss / W) * Math.sqrt(52);
-    return {weeks: Math.round(W * 10) / 10, intervals: n, sharpe: Math.round(sharpe * 1000) / 1000, t: Math.round(R / Math.sqrt(ss) * 1000) / 1000};
+    let ss = 0, s2 = 0, s3 = 0;
+    for (const [r, w] of rets) { ss += (r - mu * w) ** 2; s2 += w * w; s3 += w ** 3; }
+    const eff = W - s2 / W;  // n - 1 correction for unequal intervals
+    if (ss === 0 || W <= 0 || eff <= 0) return {weeks: n, sharpe: null, t: null};
+    const sigma = Math.sqrt(ss / eff), sharpe = mu / sigma * Math.sqrt(52), tStudent = R / (sigma * Math.sqrt(W));
+    const dof = eff ** 2 / (s2 - 2 * s3 / W + s2 * s2 / W ** 2);  // Satterthwaite
+    const r3 = x => Math.round(x * 1000) / 1000;
+    return {weeks: Math.round(W * 10) / 10, intervals: n, sharpe: r3(sharpe), t_student: r3(tStudent),
+            dof: Math.round(dof * 10) / 10, t: r3(tToZ(tStudent, dof))};
   }
 
   // Things t cannot see, reported next to it. Same rules as flags() in the Python builder.
@@ -94,6 +138,6 @@ const HL = (() => {
     return r.json();
   }
 
-  return {WEEK_MS, MIN_WEEKS, bar, monthsToClear, weeklyReturns, score, flags, verdict, fetchPortfolio, cdf, inv};
+  return {WEEK_MS, MIN_WEEKS, bar, monthsToClear, weeklyReturns, score, flags, verdict, fetchPortfolio, cdf, inv, tToZ};
 })();
 if (typeof module !== 'undefined') module.exports = HL;

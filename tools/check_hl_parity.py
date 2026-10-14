@@ -46,7 +46,7 @@ def main():
             pf = dict(json.load(fh))
         rets, _, _, counted = py.weekly_returns(pf)
         p, j = dict(py.score(rets), flags=py.flags(pf, rets, counted)), js[f]
-        for k in ("weeks", "sharpe", "t", "flags"):
+        for k in ("weeks", "sharpe", "t_student", "dof", "t", "flags"):
             if p.get(k) != j.get(k):
                 bad += 1
                 print("MISMATCH", os.path.basename(f), k, p.get(k), j.get(k))

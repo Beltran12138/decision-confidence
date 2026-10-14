@@ -45,6 +45,51 @@ def months_to_clear(b, sharpe):
     return (b / sharpe) ** 2 * 12 if sharpe and sharpe > 0 else None
 
 
+def _betacf(a, b, x):
+    """Continued fraction for the incomplete beta function (Lentz)."""
+    tiny, qab, qap, qam = 1e-300, a + b, a + 1, a - 1
+    c, d = 1.0, 1 - qab * x / qap
+    d = 1 / (d if abs(d) > tiny else tiny)
+    h = d
+    for m in range(1, 300):
+        m2 = 2 * m
+        for aa in (m * (b - m) * x / ((qam + m2) * (a + m2)),
+                   -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2))):
+            d = 1 + aa * d
+            d = 1 / (d if abs(d) > tiny else tiny)
+            c = 1 + aa / c
+            c = c if abs(c) > tiny else tiny
+            h *= d * c
+        if abs(d * c - 1) < 1e-15:
+            break
+    return h
+
+
+def _betai(a, b, x):
+    """Regularized incomplete beta I_x(a, b)."""
+    if x <= 0:
+        return 0.0
+    if x >= 1:
+        return 1.0
+    bt = math.exp(math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + a * math.log(x) + b * math.log(1 - x))
+    if x < (a + 1) / (a + b + 2):
+        return bt * _betacf(a, b, x) / a
+    return 1 - bt * _betacf(b, a, 1 - x) / b
+
+
+def t_to_z(t, dof):
+    """The normal score with the same tail probability as Student's t with `dof` degrees of freedom.
+
+    A t computed from a few intervals has fat tails: with 8 intervals and no skill,
+    t >= 2 turns up about twice as often as the normal bar of 2 assumes. Putting t on
+    the normal scale keeps the bars (2 and best-of-N) the same for every record length.
+    """
+    if t == 0:
+        return 0.0
+    p = 0.5 * _betai(dof / 2, 0.5, dof / (dof + t * t))  # P(T > |t|)
+    return math.copysign(-N.inv_cdf(max(p, 1e-300)), t)
+
+
 def curl(args):
     env = {k: v for k, v in os.environ.items() if k.lower() not in ("https_proxy", "http_proxy", "all_proxy")}
     out = subprocess.run(["curl", "-s", "-m", "60", "--fail"] + args, capture_output=True, env=env)
@@ -141,10 +186,16 @@ def flags(pf, rets, counted):
 
 
 def score(rets):
-    """t for returns over unequal intervals: t = sum r / sqrt(sum (r - mu*dt)^2).
+    """Evidence in returns over unequal intervals.
 
-    mu is the drift per week (sum r / sum dt). With equal intervals this is the
-    usual mean/sd*sqrt(n); it equals Sharpe * sqrt(years).
+    mu is the drift per week (sum r / sum dt); the variance per week divides the
+    squared residuals by W - sum(dt^2)/W rather than W, which is the n - 1 correction
+    for unequal intervals (it is n - 1 when all intervals are one week). Then
+    t_student = Sharpe * sqrt(years), and `t` is that value put on the normal scale
+    (t_to_z), so short records are not over-read. Degrees of freedom are
+    Satterthwaite's for these residuals, (tr A)^2 / tr(A^2), which in power sums
+    S_k = sum dt^k is (W - S2/W)^2 / (S2 - 2 S3/W + S2^2/W^2): n - 1 for equal
+    intervals, fewer when a few long intervals carry most of the record.
     """
     n = len(rets)
     if n < MIN_WEEKS:
@@ -153,12 +204,17 @@ def score(rets):
     tot_w = sum(w for _, w in rets)
     mu = tot_r / tot_w
     ss = sum((r - mu * w) ** 2 for r, w in rets)
-    if ss == 0 or tot_w <= 0:
+    s2 = sum(w * w for _, w in rets)
+    s3 = sum(w ** 3 for _, w in rets)
+    eff = tot_w - s2 / tot_w
+    if ss == 0 or tot_w <= 0 or eff <= 0:
         return {"weeks": n, "sharpe": None, "t": None}
-    sigma_w = math.sqrt(ss / tot_w)  # per sqrt(week)
+    sigma_w = math.sqrt(ss / eff)  # per sqrt(week)
     sharpe = mu / sigma_w * math.sqrt(52)
+    t_student = tot_r / (sigma_w * math.sqrt(tot_w))
+    dof = eff ** 2 / (s2 - 2 * s3 / tot_w + s2 * s2 / tot_w ** 2)
     return {"weeks": round(tot_w, 1), "intervals": n, "sharpe": round(sharpe, 3),
-            "t": round(tot_r / math.sqrt(ss), 3)}
+            "t_student": round(t_student, 3), "dof": round(dof, 1), "t": round(t_to_z(t_student, dof), 3)}
 
 
 def main():
