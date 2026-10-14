@@ -84,7 +84,7 @@ def footer(scripts=""):
   <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
  <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
  <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/q/hyperliquid-trader-skill-or-luck/">Skill or luck?</a></li><li><a href="/q/how-many-months-of-backtest/">How many months?</a></li><li><a href="/q/why-leaderboard-winner-is-not-evidence/">Why #1 is not evidence</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
- <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></div>
 </div>
 <div class="foot-note"><span>Open source · MIT · v{VERSION}</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
 </div></footer>
@@ -798,6 +798,52 @@ def build_questions():
         write(f"q/{slug}/index.html", page)
 
 
+# ---------------------------------------------------------------- privacy, terms
+
+LEGAL_UPDATED = "2026-10-14"
+
+
+def build_legal():
+    issues = REPO + "/issues"
+    pages = {
+        "privacy": ("Privacy", "What Evidence Deflator collects: no accounts, no cookies, no stored wallet addresses.", f"""
+<p class="lede" style="margin-top:14px">No accounts, no cookies, no stored wallet addresses. Last updated {LEGAL_UPDATED}.</p>
+<h2>The website (evidencedeflator.com)</h2>
+<p>Static pages hosted on GitHub Pages. We count page views with Cloudflare Web Analytics, which sets no cookies and does not identify you. When you check a wallet on the site, your browser asks Hyperliquid’s public API for that wallet’s history directly; the address is not sent to us.</p>
+<h2>The API and MCP server (api.evidencedeflator.com)</h2>
+<p>When you or your AI assistant call the API or the MCP tool, the request carries a wallet address and, optionally, a number. Our server, a Cloudflare Worker, forwards the address to Hyperliquid’s public info API to fetch that wallet’s history, scores it, and returns the result. We do not store the address or the result, and we have not turned on request logging for the Worker. Cloudflare, which runs the Worker, processes requests (including your IP address) under its own privacy policy. Hyperliquid receives the address under its own terms.</p>
+<p>A wallet address on a public blockchain is public data. Do not send anything else; the tool does not need it.</p>
+<h2>The Python package, Claude Code plugin and skill</h2>
+<p>They run on your machine. The plugin’s backtest counter keeps a small log of matching shell commands in your local plugin data folder; it is never sent anywhere. The package and plugin contact Hyperliquid (and our API, if you use the hosted MCP tool) only when you check a wallet.</p>
+<h2>Changes and contact</h2>
+<p>If this changes, this page and its date change with it, and the history is public in the <a href="{REPO}">repository</a>. Questions: <a href="{issues}">GitHub issues</a>.</p>"""),
+        "terms": ("Terms", "Terms for using Evidence Deflator's website, API, MCP server and open-source code.", f"""
+<p class="lede" style="margin-top:14px">Free to use, open source, no warranty, not investment advice. Last updated {LEGAL_UPDATED}.</p>
+<h2>What this is</h2>
+<p>Evidence Deflator computes statistical estimates from public data: how strong a trading record is once you allow for its length and for how it was picked. The estimates rest on stated assumptions (listed on the <a href="/method/">method page</a>) and can be wrong. A record that passes is not a recommendation, and a past record is not your future return after fees, latency and slippage.</p>
+<h2>Not advice</h2>
+<p>Nothing here is investment, financial, legal or tax advice, or an offer to buy or sell anything. Do not use it as the only basis for a decision.</p>
+<h2>Use of the API and MCP server</h2>
+<p>You may call the hosted API and MCP server for free. Do not use them to overload the service or Hyperliquid’s API. We may rate-limit, change or stop the hosted service at any time; the code stays available.</p>
+<h2>Code and data</h2>
+<p>The code is MIT-licensed; see the <a href="{REPO}">repository</a>. Wallet data comes from Hyperliquid’s public API and belongs to its sources.</p>
+<h2>No warranty</h2>
+<p>The website, API, MCP server and code are provided “as is”, without warranty of any kind, and to the extent the law allows we are not liable for any loss arising from their use.</p>
+<h2>Contact</h2>
+<p><a href="{issues}">GitHub issues</a>.</p>"""),
+    }
+    for slug, (title, desc, body) in pages.items():
+        page = head(f"{title} · Evidence Deflator", desc, f"/{slug}/") + header("") + f"""
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><span class="dot"></span>{title}</div>
+<h1 style="margin-top:16px">{title}</h1>
+{body}
+</article></div></main>
+""" + footer()
+        write(f"{slug}/index.html", page)
+
+
 # IndexNow (Bing, Yandex, Seznam, Naver...): the key is public by design; the
 # file at /<key>.txt proves we own the host. tools/indexnow.py submits URLs.
 INDEXNOW_KEY = "b756502a8abaf3fb7bf6e69716e37269"
@@ -838,6 +884,7 @@ def main():
     build_wallet()
     build_404()
     build_questions()
+    build_legal()
     inject_chrome()
     build_crawl_files()
 

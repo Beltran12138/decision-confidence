@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import urllib.error
 import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -35,8 +36,11 @@ def main():
     body = json.dumps({"host": SITE.split("//", 1)[1], "key": INDEXNOW_KEY,
                        "keyLocation": f"{SITE}/{INDEXNOW_KEY}.txt", "urlList": urls}).encode()
     req = urllib.request.Request(ENDPOINT, data=body, headers={"Content-Type": "application/json; charset=utf-8"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        print(r.status, len(urls), "URLs")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            print(r.status, len(urls), "URLs")
+    except urllib.error.HTTPError as e:
+        sys.exit(f"{e.code} {e.read()[:300]!r} for {len(urls)} URLs")
 
 
 if __name__ == "__main__":

@@ -97,9 +97,14 @@ async function rpc(msg) {
   return err(-32601, 'method not found: ' + method);
 }
 
-async function handle(request) {
+async function handle(request, env = {}) {
   const url = new URL(request.url);
   if (request.method === 'OPTIONS') return new Response(null, {status: 204, headers: CORS});
+
+  // OpenAI plugin directory domain check: serve exactly the token the portal issued (a plain var, not a secret).
+  if (url.pathname === '/.well-known/openai-apps-challenge') {
+    return env.OPENAI_APPS_CHALLENGE ? new Response(env.OPENAI_APPS_CHALLENGE, {headers: {'Content-Type': 'text/plain'}}) : json({error: 'not found'}, 404);
+  }
 
   if (url.pathname === '/api/wallet' && request.method === 'GET') {
     const pf = url.searchParams.get('picked_from');
