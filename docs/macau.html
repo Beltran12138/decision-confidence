@@ -35,18 +35,17 @@ main{height:100%;padding:58px 0 46px;display:flex}
 .nums{display:flex;gap:5vw;justify-content:center;align-items:baseline}
 .nums div{text-align:center}
 .nums b{display:block;font-family:Consolas,monospace;font-weight:700;font-size:clamp(46px,7.5vw,104px);line-height:1}
-.nums span{display:block;margin-top:12px;font-size:14px;color:var(--dim);letter-spacing:.06em}
+.nums span{display:block;margin-top:12px;font-size:14px;color:var(--dim);letter-spacing:.06em;max-width:220px}
 .c-ink{color:var(--ink)}.c-dim{color:var(--dim)}
-.caveat{font-size:14px;color:var(--grn);margin-top:6px}
 [hidden]{display:none!important}.c-red{color:var(--red)}.c-gold{color:var(--gold)}.c-grn{color:var(--grn)}
-.sub{font-family:'Noto Serif SC',serif;font-size:clamp(17px,1.7vw,24px);color:var(--dim)}
+.sub{font-family:'Noto Serif SC',serif;font-size:clamp(17px,1.7vw,24px);color:var(--dim);max-width:980px}
 .sub b{color:var(--ink);font-weight:600}
 .scene{gap:max(46px,5vw)}
-.left{max-width:480px}
+.left{max-width:500px}
 .tagline{font-family:Consolas,monospace;font-size:14px;letter-spacing:.26em;color:var(--gold);margin-bottom:22px}
 .story{font-family:'Noto Serif SC',serif;font-size:clamp(23px,2.35vw,34px);font-weight:600;line-height:1.62}
 .story em{font-style:normal;color:var(--gold)}
-.story .r{color:var(--red)}.story .g{color:var(--grn)}
+.story .r{color:var(--red)}
 .moral{margin-top:26px;font-size:15.5px;line-height:1.8;color:var(--dim);border-left:2px solid var(--rule);padding-left:16px}
 .card{width:min(520px,44vw);background:var(--panel);border:1px solid var(--rule);border-top:2px solid rgba(201,162,76,.55);
       padding:34px 38px;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 14px 34px rgba(0,0,0,.38)}
@@ -54,46 +53,36 @@ main{height:100%;padding:58px 0 46px;display:flex}
 .big{font-family:Consolas,monospace;font-weight:700;font-size:76px;line-height:1;font-variant-numeric:tabular-nums}
 .big small{font-size:27px;color:var(--dim);font-weight:400}
 .badge{display:inline-block;font-family:Consolas,monospace;font-size:14px;font-weight:700;letter-spacing:.14em;
-       padding:6px 15px;border-radius:2px;margin:18px 0 4px;transition:all .4s}
+       padding:6px 15px;border-radius:2px;margin:18px 0 4px}
 .badge.warn{color:var(--gold);border:1px solid var(--gold);background:rgba(201,162,76,.09)}
+.badge.bad{color:var(--red);border:1px solid var(--red);background:rgba(196,69,60,.10)}
 .badge.ok{color:var(--grn);border:1px solid var(--grn);background:rgba(94,140,106,.12)}
-.bar{height:11px;background:#20252C;border-radius:2px;overflow:hidden;margin:20px 0 8px}
-.bar i{display:block;height:100%;background:var(--red);transition:width .8s cubic-bezier(.2,.8,.2,1)}
-.bar-note{font-size:14px;color:var(--dim2)}
+.badge.dim{color:var(--dim);border:1px solid var(--rule)}
 .rows{margin-top:20px;border-top:1px solid var(--rule2)}
 .rows div{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--rule2)}
 .rows dt{font-size:14px;color:var(--dim)}
 .rows dd{font-family:Consolas,monospace;font-size:16px;font-variant-numeric:tabular-nums}
 .rows .key dd{font-size:22px;color:var(--gold);font-weight:700}
-.toggle{margin-top:20px;display:flex;gap:8px;align-items:center;font-family:Consolas,monospace;font-size:14px;color:var(--dim)}
-.toggle button{font-family:Consolas,monospace;font-size:14px;letter-spacing:.08em;padding:7px 12px;cursor:pointer;
-       background:transparent;color:var(--dim);border:1px solid var(--rule);border-radius:2px}
-.toggle button.on{color:var(--ink);border-color:var(--gold)}
-/* two vendors */
-.vs{display:flex;gap:3vw;align-items:stretch}
-.vs>div{width:min(300px,24vw);background:var(--panel);border:1px solid var(--rule);padding:30px 28px}
-.vs b{display:block;font-family:Consolas,monospace;font-size:88px;line-height:1;font-weight:700}
-.vs h4{font-size:14px;color:var(--dim);letter-spacing:.14em;font-family:Consolas,monospace;margin-bottom:16px}
-.vs p{margin-top:18px;font-size:16px;line-height:1.7}
-.avg{align-self:center;text-align:center;font-family:Consolas,monospace;color:var(--dim2)}
-.avg s{display:block;font-size:44px;color:var(--dim2)}
-/* grid of three */
-.three{display:flex;gap:2.4vw;justify-content:center}
-.three>div{width:min(310px,26vw);background:var(--panel);border:1px solid var(--rule);border-top:2px solid var(--gold);padding:28px 26px;text-align:left}
-.three i{font-family:Consolas,monospace;font-style:normal;font-size:14px;color:var(--gold);letter-spacing:.2em}
-.three h3{font-family:'Noto Serif SC',serif;font-size:21px;margin:10px 0 12px}
-.three p{font-size:15px;line-height:1.7;color:var(--dim)}
-.model{display:flex;gap:2vw;justify-content:center;margin-top:3vh}
-.model>div{border:1px solid var(--rule);padding:16px 22px;font-size:15px;line-height:1.6;min-width:260px;text-align:left}
-.model b{color:var(--gold);font-family:Consolas,monospace;letter-spacing:.1em;font-size:14px;display:block;margin-bottom:6px}
-.honest{margin-top:2.5vh;font-size:14px;color:var(--dim2)}
+/* bar scale: t against the two bars */
+.scale{position:relative;height:56px;margin:26px 0 6px;border-bottom:1px solid var(--rule)}
+.scale .ln{position:absolute;bottom:0;width:2px;height:44px}
+.scale .ln span{position:absolute;bottom:50px;transform:translateX(-50%);white-space:nowrap;font:13px Consolas,monospace}
+.scale .t2{background:var(--dim)}.scale .t2 span{color:var(--dim)}
+.scale .bn{background:var(--red)}.scale .bn span{color:var(--red)}
+.scale .pt{position:absolute;bottom:14px;width:14px;height:14px;border-radius:50%;background:var(--ink);transform:translateX(-50%)}
+/* live demo */
+.demo input{width:100%;font:16px Consolas,monospace;padding:13px 14px;background:#0B0D10;color:var(--ink);border:1px solid var(--rule);border-radius:2px}
+.demo input:focus{outline:none;border-color:var(--gold)}
+.ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ex button{font:13px Consolas,monospace;padding:7px 10px;background:transparent;color:var(--dim);border:1px solid var(--rule);border-radius:2px;cursor:pointer}
+.ex button:hover{color:var(--ink);border-color:var(--gold)}
+.vtitle{font-family:'Noto Serif SC',serif;font-size:26px;font-weight:600;margin-top:22px;min-height:1.4em}
+.vnote{font-size:14px;color:var(--dim);margin-top:8px;line-height:1.6;min-height:3.2em}
 /* ask */
 .ask{display:flex;gap:5vw;align-items:center}
 .facts{list-style:none;font-size:18px;line-height:2.1;text-align:left}
 .facts li::before{content:'—  ';color:var(--gold)}
 .qr2{text-align:center;font-size:14px;color:var(--dim);font-family:Consolas,monospace}.qr2 svg{display:block;margin:0 auto 6px}
-.qr{width:200px;height:200px;border:1px dashed var(--dim2);display:flex;align-items:center;justify-content:center;
-    color:var(--dim2);font-family:Consolas,monospace;font-size:14px;text-align:center;padding:12px}
 [data-l="en"] .zh,[data-l="zh"] .en{display:none}
 </style>
 </head>
@@ -104,103 +93,126 @@ main{height:100%;padding:58px 0 46px;display:flex}
 </header>
 <main id="stage"></main>
 <footer>
-  <span><span class="zh">每个数字都可在开源引擎里复算</span><span class="en">Every number here can be recomputed with the open-source engine</span> · pip install evidence-deflator</span>
-  <span class="keys">← → · T <span class="zh">切换模型</span><span class="en">switch model</span> · L 中/EN</span>
+  <span><span class="zh">每个数字都可复算</span><span class="en">Every number here can be recomputed</span> · evidencedeflator.com/wallet · <span class="zh">数据 2026-10-14</span><span class="en">data 2026-10-14</span></span>
+  <span class="keys">← → · L 中/EN</span>
 </footer>
 
+<script src="/assets/hl.js"></script>
 <script>
-// 数字均为 tools/window.py 现跑结果（2026-10-05）：区间 2020-01→2025-06，目标夏普 1，t=2
-const SC={
-  late:{cut:'2024-10',clean:8,open:58,share:87.9,need:48,ok:false},
-  early:{cut:'2021-06',clean:48,open:18,share:27.3,need:48,ok:true},
-  early20:{cut:'2021-06',clean:48,open:18,share:27.3,need:112,ok:false}
-};
-function card(id,s,toggle){
-  return '<div class="card" id="'+id+'"><div class="cap"><span class="zh">干净区间 · 可用于检验</span><span class="en">CLEAN MONTHS · USABLE FOR TESTING</span></div>'+
-  '<div class="big"><span class="v-clean">'+s.clean+'</span><small> / 66 <span class="zh">个月</span><span class="en">months</span></small></div>'+
-  '<div><span class="badge '+(s.ok?'ok':'warn')+'">'+(s.ok?'SUFFICIENT':'UNDERPOWERED')+'</span></div>'+
-  '<div class="caveat"'+(s.ok?'':' hidden')+'><span class="zh">只解除「长度」这一条限制，不构成策略有效的证据</span><span class="en">clears length only — not evidence the strategy works</span></div>'+
-  '<div class="bar"><i style="width:0%" data-w="'+s.share+'"></i></div>'+
-  '<div class="bar-note"><span class="zh">红色 = 无法排除模型训练时已读过的月份</span><span class="en">red = months the model may already have read</span></div>'+
-  '<div class="rows">'+
-   '<div class="key"><dt><span class="zh">所需长度</span><span class="en">required</span></dt><dd><span class="v-need">'+s.need+'</span></dd></div>'+
-   '<div><dt><span class="zh">实有干净区间</span><span class="en">clean available</span></dt><dd class="v-clean2">'+s.clean+'</dd></div>'+
-   '<div><dt><span class="zh">模型训练截止</span><span class="en">model knowledge cutoff</span></dt><dd class="v-cut">'+s.cut+'</dd></div>'+
-  '</div>'+
-  (toggle?'<div class="toggle"><span class="zh">模型截止</span><span class="en">cutoff</span><button data-k="late" class="on">2024-10</button><button data-k="early">2021-06</button></div>':'')+
-  '</div>';
+// 数字来自 docs/data/hl/latest.json（2026-10-14T10:22Z，hl-daily 第一次线上运行）与该日 api.hyperliquid.xyz portfolio：
+// 榜单 47,254 账户；PnL 前 100：99 可评分 / 10 个 t≥2 / 0 个 ≥4.90；30 日 ROI 前 100（≥$10k）：81 / 8 / 0。
+// 榜一 0x4ec8…9a80：2026-03-25 一周内 PnL 由 −$15.9k 跳到 $22.0 亿（期初账户 $86）；此后 28 个可测区间 22 个亏损，
+// 可测区间合计 −$17.5 亿，t −2.82；当前 PnL $4.45 亿。冻结队列 cohort-2026-10-14.json：200 钱包，首读 2026-12-09。
+const N = 47254, BAR = 4.90;
+function scale(t){
+  const lo=-3, hi=6, x=v=>((Math.max(lo,Math.min(hi,v))-lo)/(hi-lo)*100).toFixed(1)+'%';
+  return '<div class="scale">'+
+   '<div class="ln t2" style="left:'+x(2)+'"><span>t = 2</span></div>'+
+   '<div class="ln bn" style="left:'+x(BAR)+'"><span>4.90</span></div>'+
+   (t==null?'':'<div class="pt" style="left:'+x(t)+'"></div>')+'</div>';
 }
 const S=[
  {nav:'00',html:
   '<div class="slide cover"><div class="kick">EVIDENCE DEFLATOR · AI+X FUTURE SUMMIT 2026</div>'+
-  '<h1><span class="zh">AI 让每个数都有了出处<br>出处之后的那一步：这份证据值多少？</span><span class="en">AI can now cite every number.<br>The next question: what is that evidence worth?</span></h1>'+
-  '<div class="nums"><div><b class="c-ink">66</b><span class="zh">回测月数</span><span class="en">months backtested</span></div>'+
-  '<div><b class="c-red">8</b><span class="zh">闭卷的</span><span class="en">closed-book</span></div>'+
-  '<div><b class="c-gold">48</b><span class="zh">下结论需要的</span><span class="en">needed to conclude</span></div>'+
-  '<div><b class="c-gold">112</b><span class="zh">试过 20 组之后</span><span class="en">after 20 tries</span></div></div>'+
+  '<h1><span class="zh">排行榜告诉你谁赚得最多<br>没告诉你：这会不会只是运气</span><span class="en">A leaderboard shows who made the most.<br>It does not show whether that could be luck.</span></h1>'+
+  '<div class="nums"><div><b class="c-ink">47,254</b><span class="zh">Hyperliquid 排行榜上的账户</span><span class="en">accounts on the Hyperliquid leaderboard</span></div>'+
+  '<div><b class="c-red">0</b><span class="zh">PnL 前 100 名里，过线的</span><span class="en">of the PnL top 100 clear the bar</span></div>'+
+  '<div><b class="c-gold">4.90</b><span class="zh">从 4.7 万人里挑出的第一名，要过的门槛</span><span class="en">the bar for the best of 47,254</span></div></div>'+
   '<div class="sub"><span class="zh">伯纳德 · 《AI 智能投资手册》第九章作者</span><span class="en">Bernard · author, Chapter 9</span></div></div>'},
  {nav:'01',html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">一 · 开卷考试</span><span class="en">01 · OPEN-BOOK EXAM</span></div>'+
-  '<div class="story"><span class="zh">回测 66 个月，曲线很漂亮。<br>其中 58 个月，<em>无法排除模型读过</em>。</span><span class="en">66 months, a beautiful curve.<br><em>58 of them the model may already have read.</em></span></div>'+
-  '<div class="moral"><span class="zh">闭卷的只有 8 个月。夏普为 1 的策略，要站住约需 48 个月干净数据。</span><span class="en">Only 8 are closed-book. A Sharpe-1 claim needs about 48.</span></div></div>'+
-  card('c1',SC.late,false)+'</div>'},
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">一 · 榜一</span><span class="en">01 · NUMBER ONE</span></div>'+
+  '<div class="story"><span class="zh">PnL 榜第一，$4.45 亿。<br>其中 <em>$22 亿</em>，是一周之内<br>记进一个只有 <span class="r">$86</span> 的账户的。</span><span class="en">The PnL leader: $445M.<br><em>$2.2 billion</em> of it was booked in one week,<br>into an account holding <span class="r">$86</span>.</span></div>'+
+  '<div class="moral"><span class="zh">不管那 $22 亿是什么，它都换算不成收益率。那一周之后能量的 28 周，它亏了 22 周。排行榜照样把它排第一。</span><span class="en">Whatever that $2.2B is, it cannot be turned into a return. Of the 28 weeks that can be measured since, it lost in 22. The board still ranks it first.</span></div></div>'+
+  '<div class="card"><div class="cap"><span class="zh">可测区间 · 2026-03-25 起</span><span class="en">MEASURABLE RECORD · SINCE 2026-03-25</span></div>'+
+  '<div class="big c-red">−2.82<small> t</small></div><div><span class="badge bad"><span class="zh">在亏，而且不是偶然</span><span class="en">LOSING, NOT BY CHANCE</span></span></div>'+
+  scale(-2.82)+
+  '<div class="rows"><div class="key"><dt><span class="zh">可测区间盈亏</span><span class="en">PnL in measurable weeks</span></dt><dd>−$1.75B</dd></div>'+
+  '<div><dt><span class="zh">亏损周 / 可测周</span><span class="en">losing / measured weeks</span></dt><dd>22 / 28</dd></div>'+
+  '<div><dt><span class="zh">那一周的期初账户</span><span class="en">account at the start of that week</span></dt><dd>$86</dd></div></div></div></div>'},
  {nav:'02',html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">二 · 换一个模型</span><span class="en">02 · AN EARLIER MODEL</span></div>'+
-  '<div class="story"><span class="zh">换一个训练截止更早的模型，<br>闭卷变成 48 个月，<em>刚好够长</em>。</span><span class="en">An earlier cutoff:<br>48 closed-book months, <em>just long enough</em>.</span></div>'+
-  '<div class="moral"><span class="zh">这只说明样本有资格被检验，不说明策略好。按 T 切换。</span><span class="en">Long enough to be tested — not proof it works. Press T.</span></div></div>'+
-  card('c3',SC.late,true)+'</div>'},
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">二 · 挑出来的第一名</span><span class="en">02 · THE BEST OF MANY</span></div>'+
+  '<div class="story"><span class="zh">一个人碰巧连赢，不容易。<br><em>4.7 万人里，总有人连赢。</em></span><span class="en">One person winning by luck is rare.<br><em>Among 47,000, someone always does.</em></span></div>'+
+  '<div class="moral"><span class="zh">只看一个人，t ≥ 2 就算有证据。从 47,254 个账户里挑第一名，门槛升到 4.90。大多数人找跟单对象，就是从榜单上挑的。</span><span class="en">For one person picked blind, t ≥ 2 counts as evidence. Picking the top of 47,254, the bar is 4.90. Most people find who to copy on a leaderboard.</span></div></div>'+
+  '<div class="card"><div class="cap"><span class="zh">HYPERLIQUID 榜单重算 · 2026-10-14</span><span class="en">HYPERLIQUID BOARD RESCORED · 2026-10-14</span></div>'+
+  '<div class="big">0<small> / 99</small></div><div><span class="badge warn"><span class="zh">PnL 前 100 过 4.90 的</span><span class="en">PNL TOP 100 AT ≥ 4.90</span></span></div>'+
+  scale(null)+
+  '<div class="rows"><div><dt><span class="zh">PnL 前 100：过 t = 2</span><span class="en">PnL top 100: t ≥ 2</span></dt><dd>10 / 99</dd></div>'+
+  '<div><dt><span class="zh">30 天 ROI 前 100：过 t = 2</span><span class="en">30-day ROI top 100: t ≥ 2</span></dt><dd>8 / 81</dd></div>'+
+  '<div class="key"><dt><span class="zh">30 天 ROI 前 100：过 4.90</span><span class="en">30-day ROI top 100: ≥ 4.90</span></dt><dd>0 / 81</dd></div></div></div></div>'},
  {nav:'03',html:
-  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">三 · 试了 20 次</span><span class="en">03 · TWENTY TRIES</span></div>'+
-  '<div class="story"><span class="zh">他试过 20 组参数，只给你看最好的。<br><em>几百个里挑出的第一名，看起来准是应该的</em>。</span><span class="en">Twenty parameter sets tried, the best one shown.<br><em>The best of hundreds is supposed to look accurate.</em></span></div>'+
-  '<div class="moral"><span class="zh">算进挑选，门槛升到 112。哪怕 66 个月全部闭卷，也不够。</span><span class="en">Count the selection: the bar is 112. Even all 66 closed-book would fall short.</span></div></div>'+
-  card('c2',SC.early20,false)+'</div>'},
+  '<div class="slide scene"><div class="left"><div class="tagline"><span class="zh">三 · 现场</span><span class="en">03 · LIVE</span></div>'+
+  '<div class="story"><span class="zh">请报一个地址。<br><em>你想跟的，或者你跟过的。</em></span><span class="en">Give me an address.<br><em>One you want to copy, or did.</em></span></div>'+
+  '<div class="moral"><span class="zh">浏览器直接读 Hyperliquid 公开数据，不经过我们的服务器。收益只算 PnL，出入金不算。</span><span class="en">Your browser reads Hyperliquid\'s public data directly; nothing passes through us. Returns come from PnL; deposits and withdrawals do not count.</span></div></div>'+
+  '<div class="card demo"><div class="cap"><span class="zh">贴一个地址</span><span class="en">PASTE AN ADDRESS</span></div>'+
+  '<form id="dform" autocomplete="off"><input id="daddr" placeholder="0x…" spellcheck="false"></form>'+
+  '<div class="ex"><button data-a="0x4ec8fe22a531a96c8a846aaf5cbef73202649a80"><span class="zh">PnL 第一</span><span class="en">PnL #1</span></button>'+
+  '<button data-a="0x4d21e561c54302a4e6646fa9051aae68960d10fe"><span class="zh">30 天 ROI 第一</span><span class="en">30-day ROI #1</span></button>'+
+  '<button data-a="0xdfc24b077bc1425ad1dea75bcb6f8158e10df303"><span class="zh">前 100 里 t 最高</span><span class="en">highest t in top 100</span></button></div>'+
+  '<div class="vtitle" id="dtitle"></div><div id="dscale">'+scale(null)+'</div>'+
+  '<div class="rows"><div class="key"><dt>t</dt><dd id="dt">—</dd></div>'+
+  '<div><dt><span class="zh">可测周数</span><span class="en">weeks measured</span></dt><dd id="dw">—</dd></div>'+
+  '<div><dt><span class="zh">离 4.90 还差</span><span class="en">more record to reach 4.90</span></dt><dd id="dm">—</dd></div></div>'+
+  '<div class="vnote" id="dnote"></div></div></div>'},
  {nav:'04',html:
-  '<div class="slide cover"><div class="kick"><span class="zh">公开审计 · 17 篇 LLM 交易论文 · 截止日只认模型方官方文档</span><span class="en">PUBLIC AUDIT · 17 LLM TRADING PAPERS · CUTOFFS FROM PROVIDER DOCS ONLY</span></div>'+
-  '<div class="nums"><div><b class="c-ink">9</b><span class="zh">查得到截止日</span><span class="en">with a documented cutoff</span></div>'+
-  '<div><b class="c-red">0</b><span class="zh">干净样本 ≥ 48 个月</span><span class="en">reach 48 clean months</span></div>'+
-  '<div><b class="c-gold">4</b><span class="zh">测试期大半在截止日前</span><span class="en">tested mostly before cutoff</span></div>'+
-  '<div><b class="c-dim">8</b><span class="zh">无从判断</span><span class="en">cannot be assessed</span></div></div>'+
-  '<div class="sub"><span class="zh">多数无从判断，是因为模型<b>根本没有公布</b>训练截止日。新论文已多在截止日之后测试：<b>问题正从「开卷」变成「太短」</b>。</span><span class="en">Most of those cannot be assessed because the model <b>never published</b> a cutoff. Newer papers test after the cutoff: <b>the problem is moving from open-book to too short</b>.</span></div></div>'},
+  '<div class="slide cover"><div class="kick"><span class="zh">四 · 护城河是时间</span><span class="en">04 · THE MOAT IS TIME</span></div>'+
+  '<h1 style="font-size:clamp(26px,3.3vw,44px)"><span class="zh">回头找到的记录，是事后挑出来的记录。<br>所以今天冻结 200 个钱包，只看它们今后做什么。</span><span class="en">A record found by looking back was chosen after the fact.<br>So today we froze 200 wallets, and score only what they do from now on.</span></h1>'+
+  '<div class="nums"><div><b class="c-ink">200</b><span class="zh">冻结的钱包（两个前 100 榜）</span><span class="en">wallets frozen (both top-100 boards)</span></div>'+
+  '<div><b class="c-gold">12-09</b><span class="zh">第一批读数：冻结后满 8 周</span><span class="en">first readings: 8 weeks after the freeze</span></div>'+
+  '<div><b class="c-ink">daily</b><span class="zh">每天自动重算、公开</span><span class="en">recomputed and published every day</span></div></div>'+
+  '<div class="sub"><span class="zh">名单的哈希已公开，历史在 git 里，改不了。<b>公式谁都能抄，这条时间线抄不了。</b></span><span class="en">The list is hashed and its history is in git; it cannot be edited. <b>Anyone can copy the formula. Nobody can copy the timeline.</b></span></div></div>'},
  {nav:'05',html:
-  '<div class="slide cover"><div class="kick"><span class="zh">第二条轴 · 出处都对，问题不同</span><span class="en">SECOND AXIS · SOURCES RIGHT, QUESTIONS DIFFERENT</span></div>'+
-  '<div class="vs"><div><h4><span class="zh">GoPlus · 合约权限</span><span class="en">GoPlus · CONTRACT RIGHTS</span></h4><b class="c-red">69</b><p><span class="zh">可增发、暂停、拉黑 · dc 折算</span><span class="en">reports mint, pause, blacklist; scored by dc</span></p></div>'+
-  '<div class="avg"><s>35</s><span class="zh">平均数没有意义</span><span class="en">the average means nothing</span></div>'+
-  '<div><h4><span class="zh">Honeypot.is · 风险等级</span><span class="en">Honeypot.is · RISK LEVEL</span></h4><b class="c-grn">1</b><p><span class="zh">模拟买卖：现在能不能交易</span><span class="en">simulates a buy and sell: can it trade now</span></p></div></div>'+
-  '<div class="sub"><span class="zh">同一个 USDT，两家都没算错，<b>出处都清清楚楚，问的却是两个问题</b>。（2026-10-11 现取）</span><span class="en">Same token (USDT), both correct, <b>both cited — answering different questions</b>. (fetched 2026-10-11)</span></div></div>'},
+  '<div class="slide cover"><div class="kick"><span class="zh">出身 · 同一把尺子，先量了 AI 交易论文</span><span class="en">ORIGIN · THE SAME RULER, FIRST USED ON AI TRADING PAPERS</span></div>'+
+  '<div class="nums"><div><b class="c-ink">17</b><span class="zh">篇 LLM 交易论文</span><span class="en">LLM trading papers</span></div>'+
+  '<div><b class="c-red">0</b><span class="zh">干净样本够 48 个月</span><span class="en">reach 48 clean months</span></div>'+
+  '<div><b class="c-gold">58 / 66</b><span class="zh">一个典型回测里，模型可能已经读过的月份</span><span class="en">months of a typical backtest the model may have read</span></div></div>'+
+  '<div class="sub"><span class="zh">AI 一分钟能试 50 组参数、生成 50 张漂亮的曲线。<b>生成越便宜，分辨真假越值钱。</b></span><span class="en">An agent can try fifty variants a minute and draw fifty good curves. <b>The cheaper generation gets, the more telling them apart is worth.</b></span></div></div>'},
  {nav:'06',html:
-  '<div class="slide cover"><div class="kick"><span class="zh">不需要你的策略 · 只要三样东西</span><span class="en">NO STRATEGY NEEDED · JUST THREE THINGS</span></div>'+
+  '<div class="slide cover"><div class="kick"><span class="zh">我们的赌注 · 验证增加成交</span><span class="en">OUR BET · VERIFICATION INCREASES VOLUME</span></div>'+
+  '<h1 style="font-size:clamp(26px,3.3vw,44px)"><span class="zh">跟单的人不敢下重注，是因为分不清本事和运气。<br>分得清，才敢投。</span><span class="en">Copiers hold back because they cannot tell skill from luck.<br>When they can, they commit.</span></h1>'+
   '<div class="ask"><ul class="facts">'+
-   '<li><span class="zh">模型训练截止日</span><span class="en">the model\'s knowledge cutoff</span></li>'+
-   '<li><span class="zh">回测起止月份</span><span class="en">backtest start and end month</span></li>'+
-   '<li><span class="zh">试了几组参数</span><span class="en">how many variants were tried</span></li>'+
-  '</ul><div class="qr2"><svg width="195" height="195" class="segno"><g transform="scale(5)"><path fill="#e9e5dc" d="M0 0h39v39h-39z"/><path class="qrline" stroke="#0b0d10" d="M3 3.5h7m5 0h2m2 0h6m1 0h1m2 0h7m-33 1h1m5 0h1m2 0h2m2 0h4m1 0h1m2 0h1m2 0h1m1 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m1 0h3m1 0h1m3 0h6m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h1m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m3 0h5m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h1m1 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m1 0h3m1 0h2m4 0h3m-23 1h1m1 0h5m3 0h1m2 0h1m1 0h1m1 0h1m4 0h2m2 0h5m-31 1h1m1 0h2m3 0h4m1 0h1m3 0h1m1 0h2m1 0h1m1 0h1m2 0h2m1 0h2m1 0h1m-28 1h2m1 0h1m2 0h2m2 0h1m5 0h2m1 0h2m2 0h1m1 0h2m-32 1h3m1 0h1m3 0h4m2 0h1m1 0h1m1 0h1m2 0h1m3 0h1m2 0h3m1 0h1m-33 1h1m1 0h2m1 0h3m3 0h2m4 0h3m2 0h1m1 0h1m2 0h3m1 0h1m-32 1h1m3 0h1m3 0h1m1 0h2m1 0h3m1 0h4m2 0h1m2 0h1m4 0h2m-31 1h2m1 0h2m1 0h1m3 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h3m1 0h4m-30 1h4m1 0h2m1 0h1m4 0h2m3 0h2m1 0h1m1 0h3m1 0h2m-30 1h1m4 0h1m3 0h3m4 0h1m2 0h1m4 0h1m1 0h2m3 0h1m-31 1h1m1 0h2m2 0h1m8 0h1m1 0h1m2 0h2m2 0h2m1 0h4m-33 1h2m1 0h2m1 0h3m1 0h3m2 0h1m1 0h1m2 0h1m1 0h1m1 0h5m1 0h2m-32 1h4m3 0h1m2 0h1m1 0h3m3 0h2m1 0h2m2 0h1m1 0h5m-32 1h1m1 0h3m1 0h2m1 0h1m1 0h5m1 0h1m2 0h1m1 0h4m1 0h3m1 0h1m-32 1h3m2 0h1m1 0h1m2 0h1m5 0h1m1 0h6m2 0h1m2 0h2m1 0h1m-33 1h1m2 0h5m1 0h1m2 0h1m2 0h2m3 0h2m5 0h2m1 0h2m-32 1h1m3 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m2 0h2m3 0h1m1 0h5m-33 1h1m4 0h3m1 0h2m1 0h3m2 0h1m2 0h1m3 0h5m3 0h1m-25 1h1m1 0h1m1 0h1m3 0h4m1 0h2m1 0h1m3 0h1m1 0h1m1 0h1m-33 1h7m5 0h5m1 0h1m1 0h1m2 0h2m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h1m3 0h5m1 0h1m2 0h1m1 0h2m3 0h5m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h1m1 0h1m6 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m4 0h2m1 0h3m1 0h3m2 0h5m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1m2 0h1m1 0h1m2 0h2m1 0h2m1 0h2m-31 1h1m5 0h1m4 0h2m1 0h3m1 0h4m3 0h1m2 0h3m-31 1h7m1 0h2m3 0h1m1 0h3m1 0h2m2 0h2m2 0h1m3 0h1"/></g></svg><div><span class="zh">公开审计表</span><span class="en">public audit</span></div></div></div>'+
-  '<h1 style="font-size:clamp(24px,3vw,40px)"><span class="zh">您正在看的 AI 交易项目，<br>把回测页或 deck 发给我，48 小时内免费回您一页报告</span><span class="en">Looking at an AI trading project?<br>Send me its backtest page or deck: a one-page report back within 48 hours, free</span></h1>'+
-  '<div class="sub"><span class="zh">三样东西我自己提；对方不公布回测，这本身也是一条发现</span><span class="en">I extract the three numbers myself; no published backtest is a finding too</span></div>'+
-  '<div class="sub" style="margin-top:.4em">pip install evidence-deflator · <span class="zh">方法见本书第九章</span><span class="en">method in Chapter 9</span></div></div>'}
+   '<li><span class="zh">跟单 / vault / 交易平台：把证据分嵌进你的榜单</span><span class="en">Copy-trading, vaults, venues: put the evidence score on your board</span></li>'+
+   '<li><span class="zh">投资人：手上有想看的地址或 AI 交易项目，会后发我</span><span class="en">Investors: send me an address or an AI trading project you are looking at</span></li>'+
+   '<li><span class="zh">不收被评方的钱；方法公开，任何人可复算</span><span class="en">Never paid by the rated; open method, anyone can recompute</span></li>'+
+  '</ul><div class="qr2"><svg width="175" height="175" class="segno"><g transform="scale(5)"><path fill="#e9e5dc" d="M0 0h35v35h-35z"/><path class="qrline" stroke="#0b0d10" d="M3 3.5h7m2 0h1m2 0h1m2 0h1m1 0h4m1 0h7m-29 1h1m5 0h1m2 0h3m3 0h3m4 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m5 0h1m3 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m3 0h1m4 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m5 0h2m1 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m1 0h1m2 0h3m1 0h2m1 0h1m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-21 1h6m1 0h2m1 0h1m-19 1h1m1 0h5m3 0h1m1 0h1m1 0h5m3 0h5m-25 1h1m2 0h1m2 0h1m3 0h1m3 0h9m3 0h1m-29 1h4m2 0h2m2 0h2m3 0h3m6 0h1m-24 1h2m1 0h2m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h1m2 0h3m1 0h1m-28 1h2m1 0h2m1 0h2m7 0h1m1 0h1m1 0h1m5 0h2m-26 1h1m2 0h1m2 0h1m4 0h3m1 0h1m1 0h7m3 0h1m-29 1h2m4 0h4m1 0h5m1 0h2m3 0h5m-23 1h1m2 0h1m3 0h1m1 0h1m1 0h2m2 0h4m4 0h1m-24 1h1m1 0h3m2 0h2m1 0h1m2 0h1m7 0h2m-27 1h2m3 0h1m2 0h3m5 0h9m1 0h1m1 0h1m-29 1h1m2 0h4m1 0h2m2 0h1m2 0h1m1 0h1m2 0h2m4 0h1m-27 1h1m1 0h1m1 0h1m2 0h3m1 0h1m2 0h3m3 0h1m1 0h3m2 0h1m-28 1h1m1 0h2m1 0h3m1 0h1m2 0h1m4 0h1m2 0h5m1 0h3m-21 1h1m1 0h2m1 0h2m1 0h3m1 0h1m3 0h5m-29 1h7m4 0h1m1 0h4m2 0h2m1 0h1m1 0h3m-27 1h1m5 0h1m1 0h2m1 0h3m1 0h1m3 0h2m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m1 0h5m1 0h2m1 0h2m1 0h5m1 0h1m-27 1h1m1 0h3m1 0h1m1 0h1m1 0h1m5 0h3m4 0h1m1 0h4m-29 1h1m1 0h3m1 0h1m1 0h4m1 0h5m1 0h1m1 0h7m-28 1h1m5 0h1m2 0h2m2 0h2m1 0h1m3 0h1m2 0h3m1 0h1m-28 1h7m1 0h5m1 0h4m1 0h1m3 0h2m1 0h1"/></g></svg><div>evidencedeflator.com/wallet</div></div></div></div>'}
 ];
 const stage=document.getElementById('stage'),nav=document.getElementById('nav');
 S.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.nav;b.onclick=()=>go(i);nav.appendChild(b);
   const t=document.createElement('div');t.innerHTML=s.html;stage.appendChild(t.firstChild);});
-function animBar(el){const bar=el.querySelector('.bar i');if(bar){bar.style.width='0%';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.width=bar.dataset.w+'%';}));}}
-function setScene(c,k){const s=SC[k];
-  c.querySelector('.v-clean').textContent=s.clean;c.querySelector('.v-clean2').textContent=s.clean;
-  c.querySelector('.v-need').textContent=s.need;c.querySelector('.v-cut').textContent=s.cut;
-  const bd=c.querySelector('.badge');bd.className='badge '+(s.ok?'ok':'warn');bd.textContent=s.ok?'SUFFICIENT':'UNDERPOWERED';c.querySelector('.caveat').hidden=!s.ok;
-  const bar=c.querySelector('.bar i');bar.dataset.w=s.share;bar.style.width=s.share+'%';
-  c.querySelectorAll('.toggle button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));}
-document.querySelectorAll('.toggle button').forEach(b=>b.onclick=()=>setScene(b.closest('.card'),b.dataset.k));
+
+// live demo: same engine as /wallet/ (docs/assets/hl.js)
+const $=id=>document.getElementById(id), L=()=>document.body.dataset.l;
+const SAY={loses:['在亏，而且不是偶然','Losing, not by chance'],luck:['分不清是不是运气','Cannot be told apart from luck'],
+  clears_single:['过了单次检验，没过榜单门槛','Passes one test, not the leaderboard bar'],clears_board:['过了榜单门槛','Clears the leaderboard bar'],
+  too_short:['记录太短，下不了结论','Too short to say']};
+const NOTE={pnl_outside_record:['大部分 PnL 记在账户不足 $1,000 的时段，换算不成收益率。','Most of the PnL was booked while the account held under $1,000; it cannot be turned into a return.'],
+  no_losing_week:['从没亏过一周：像做市或卖尾部风险，t 看不见还没发生的大亏。','No losing week: consistent with market making or selling tail risk.'],
+  one_week_majority:['一周贡献了一半以上的收益。','One week produced more than half of the gains.']};
+async function demo(a){
+  a=a.trim().toLowerCase(); $('daddr').value=a;
+  if(!/^0x[0-9a-f]{40}$/.test(a)){$('dtitle').textContent=L()==='zh'?'地址格式不对':'Not an address';return;}
+  $('dtitle').textContent=L()==='zh'?'读取中…':'Reading…'; $('dnote').textContent='';
+  let pf; try{pf=await HL.fetchPortfolio(a);}catch(e){$('dtitle').textContent=L()==='zh'?'连不上 Hyperliquid':'Cannot reach Hyperliquid';return;}
+  const w=HL.weeklyReturns(pf), sc=HL.score(w.rets), v=HL.verdict(sc,N), fl=HL.flags(pf,w.rets,w.counted), k=L()==='zh'?0:1;
+  $('dtitle').textContent=SAY[v.key][k]; $('dtitle').className='vtitle '+({loses:'c-red',luck:'c-red',clears_single:'c-gold',clears_board:'c-grn',too_short:'c-dim'}[v.key]);
+  $('dscale').innerHTML=scale(sc.t); $('dt').textContent=sc.t==null?'—':sc.t.toFixed(2); $('dw').textContent=sc.weeks??'—';
+  const need=HL.monthsToClear(v.bar,sc.sharpe), have=(sc.weeks||0)/4.345;
+  $('dm').textContent=sc.sharpe==null?'—':need==null?(k?'never':'永远不够'):need<=have?'0':((need-have)>=24?((need-have)/12).toFixed(1)+(k?' yr':' 年'):Math.round(need-have)+(k?' mo':' 个月'));
+  $('dnote').textContent=fl.map(f=>NOTE[f][k]).join(' ');
+}
+$('dform').addEventListener('submit',e=>{e.preventDefault();demo($('daddr').value);});
+document.querySelectorAll('.ex button').forEach(b=>b.onclick=()=>demo(b.dataset.a));
+
 let cur=-1;
 function go(i){if(i<0||i>=S.length||i===cur)return;cur=i;
-  [...stage.children].forEach((el,k)=>{el.classList.toggle('on',k===i);if(k===i){
-    const c=el.querySelector('#c3');if(c)setScene(c,'late');animBar(el);}});
-  [...nav.children].forEach((el,k)=>el.classList.toggle('on',k===i));}
+  [...stage.children].forEach((el,k)=>el.classList.toggle('on',k===i));
+  [...nav.children].forEach((el,k)=>el.classList.toggle('on',k===i));
+  if(i===3)setTimeout(()=>$('daddr').focus(),300);}
 document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
+  if(document.activeElement===$('daddr')&&e.key!=='Escape')return;
+  if(e.key==='Escape')document.activeElement.blur();
+  else if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')go(cur+1);
   else if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
   else if(/^[0-6]$/.test(e.key))go(+e.key);
-  else if(e.key==='t'||e.key==='T'){const c=document.querySelector('.slide.on #c3');
-    if(c){const on=c.querySelector('.toggle button.on').dataset.k;setScene(c,on==='late'?'early':'late');}}
   else if(e.key==='l'||e.key==='L'){document.body.dataset.l=document.body.dataset.l==='zh'?'en':'zh';}
 });
 go(0);
