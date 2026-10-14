@@ -10,9 +10,21 @@ pip install "git+https://github.com/Beltran12138/evidence-deflator"
 python -m hl_wallet 0xADDRESS --picked-from 47000
 ```
 
-For agents: the MCP tool `hyperliquid_wallet`, or copy
-[`skills/evidence-deflator/`](skills/evidence-deflator/SKILL.md) into your skills
-folder (Claude Code `~/.claude/skills/`, or the shared `~/.agents/skills/`).
+For agents, no install: remote MCP at `https://api.evidencedeflator.com/mcp`
+(tool `hyperliquid_wallet`), or JSON at
+`https://api.evidencedeflator.com/api/wallet?a=0xADDRESS&picked_from=47000`.
+
+Claude Code plugin (the MCP tool, a skill, and a hook that counts every backtest
+the agent runs so the result it reports has to clear the best-of-N bar):
+
+```
+/plugin install evidence-deflator --marketplace Beltran12138/evidence-deflator
+```
+
+Older Claude Code: `/plugin marketplace add Beltran12138/evidence-deflator`, then
+`/plugin install evidence-deflator@evidence-deflator`. Other agents: copy
+[`plugins/evidence-deflator/skills/evidence-deflator/`](plugins/evidence-deflator/skills/evidence-deflator/SKILL.md)
+into their skills folder.
 
 **Evidence Deflator** — how many months of an AI backtest actually count?
 

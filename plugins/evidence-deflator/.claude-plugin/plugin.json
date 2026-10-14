@@ -1,0 +1,33 @@
+{
+  "name": "evidence-deflator",
+  "version": "0.3.0",
+  "description": "Is that trading record skill, or luck? Adds the hosted hyperliquid_wallet MCP tool, a skill that checks wallets, backtests and track records, and a hook that counts every backtest the agent runs so the one it reports has to clear the best-of-N bar.",
+  "author": {
+    "name": "Evidence Deflator",
+    "url": "https://evidencedeflator.com"
+  },
+  "homepage": "https://evidencedeflator.com",
+  "repository": "https://github.com/Beltran12138/evidence-deflator",
+  "license": "MIT",
+  "keywords": [
+    "backtesting",
+    "trading",
+    "hyperliquid",
+    "statistics",
+    "overfitting"
+  ],
+  "userConfig": {
+    "backtest_pattern": {
+      "type": "string",
+      "title": "Backtest command pattern",
+      "description": "Regular expression (case-insensitive) for shell commands that count as one backtest run. Leave empty for the built-in list (backtest, backtrader, vectorbt, zipline, freqtrade backtesting, lean backtest, qlib, optuna...).",
+      "default": ""
+    }
+  },
+  "mcpServers": {
+    "evidence-deflator": {
+      "type": "http",
+      "url": "https://api.evidencedeflator.com/mcp"
+    }
+  }
+}

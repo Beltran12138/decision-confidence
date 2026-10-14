@@ -1,0 +1,9 @@
+# Evidence Deflator API: remote MCP + JSON. Build first: python tools/build_worker.py
+name = "evidence-deflator-api"
+main = "dist/worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = false  # only the custom domain is public
+
+routes = [
+  { pattern = "api.evidencedeflator.com", custom_domain = true }
+]

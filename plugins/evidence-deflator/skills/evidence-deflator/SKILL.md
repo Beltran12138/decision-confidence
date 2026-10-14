@@ -11,13 +11,14 @@ A leaderboard ranks by profit. Among tens of thousands of accounts, someone is a
 
 Use the first route that works.
 
-1. **MCP tool** `hyperliquid_wallet(address, picked_from)`, if the `evidence-deflator` MCP server is installed.
-2. **Command line**, no key needed:
+1. **MCP tool** `hyperliquid_wallet(address, picked_from)`: comes with this plugin (hosted at `https://api.evidencedeflator.com/mcp`), or from the local `evidence-deflator-mcp` server.
+2. **HTTP**, no key: `GET https://api.evidencedeflator.com/api/wallet?a=0xADDRESS&picked_from=47000` returns the same JSON.
+3. **Command line**, no key needed:
    ```bash
    pip install "git+https://github.com/Beltran12138/evidence-deflator"
    python -m hl_wallet 0xADDRESS --picked-from 47000
    ```
-3. **Web**: send the user to `https://evidencedeflator.com/wallet/?a=0xADDRESS`. The page computes the same score in their browser.
+4. **Web**: send the user to `https://evidencedeflator.com/wallet/?a=0xADDRESS`. The page computes the same score in their browser.
 
 ### Before you call it
 

@@ -83,7 +83,7 @@ def footer(scripts=""):
  <div><a class="brand" href="/">{MARK}Evidence Deflator</a>
   <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
  <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
- <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
+ <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/q/hyperliquid-trader-skill-or-luck/">Skill or luck?</a></li><li><a href="/q/how-many-months-of-backtest/">How many months?</a></li><li><a href="/q/why-leaderboard-winner-is-not-evidence/">Why #1 is not evidence</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
  <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li></ul></div>
 </div>
 <div class="foot-note"><span>Open source · MIT · v{VERSION}</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
@@ -447,6 +447,15 @@ def build_api():
 <p class="lede" style="margin-top:14px">The engine is pure Python standard library: no keys, no network, no execution. Fetching data is the caller’s job.</p>
 <div class="btns" style="margin:22px 0 8px"><button class="copy" data-copy="pip install evidence-deflator">$ pip install evidence-deflator {COPY_ICON}</button><span class="muted small">Python ≥ 3.8 · MIT</span></div>
 
+<h2 id="remote">Hosted: wallet check over HTTP and MCP</h2>
+<p>For a Hyperliquid wallet there is nothing to install. The hosted endpoint fetches the public history and scores it with the same code the <a href="/wallet/">wallet page</a> runs in your browser.</p>
+<pre class="code solo">curl <span class="s">"https://api.evidencedeflator.com/api/wallet?a=0xADDRESS&amp;picked_from=47153"</span></pre>
+<p>Remote MCP (Streamable HTTP, no key): add <code>https://api.evidencedeflator.com/mcp</code> as a connector in Claude, ChatGPT, Cursor or any MCP client. It exposes one tool, <code>hyperliquid_wallet(address, picked_from)</code>. In Claude Code:</p>
+<pre class="code solo">claude mcp add --transport http evidence-deflator https://api.evidencedeflator.com/mcp</pre>
+<p>Or install the Claude Code plugin, which adds the same tool, a skill that tells the agent how to report the verdict, and a hook that counts every backtest it runs:</p>
+<pre class="code solo">/plugin marketplace add Beltran12138/evidence-deflator
+/plugin install evidence-deflator@evidence-deflator</pre>
+
 <h2 id="python">Python</h2>
 <pre class="code solo"><span class="k">from</span> evidence_deflator <span class="k">import</span> effective_window, selection_penalty, months_for_power
 
@@ -696,6 +705,99 @@ def inject_chrome():
         print("refreshed", rel)
 
 
+# ---------------------------------------------------------------- questions
+# One page per question people actually ask, answered in the first paragraph with
+# today's numbers. Answer engines cite pages whose headings match the question.
+
+import sys as _sys
+_sys.path.insert(0, os.path.join(ROOT, "src"))
+from hl_wallet import bar as _bar  # noqa: E402
+
+# Set once the Worker answers at this host (worker/README.md); empty keeps it off the pages.
+API_HOST = "https://api.evidencedeflator.com"
+API_LINE = (f', or <code>GET {API_HOST}/api/wallet?a=0x…</code>' if API_HOST else "")
+
+QUESTIONS = [
+    ("hyperliquid-trader-skill-or-luck", "Is this Hyperliquid trader skilled or just lucky?"),
+    ("how-many-months-of-backtest", "How many months of backtest or track record are enough?"),
+    ("why-leaderboard-winner-is-not-evidence", "Why isn't the #1 trader on a leaderboard evidence of skill?"),
+]
+
+
+def _months(t, sharpe):
+    m = (t / sharpe) ** 2 * 12
+    return f"{m:.0f} months" if m < 36 else f"{m / 12:.1f} years"
+
+
+def build_questions():
+    with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
+        hl = json.load(f)
+    pnl, roi = hl["boards"]["pnl"], hl["boards"]["roi30"]
+    n_acc, day = pnl["ranked_from"], hl["fetched"][:10]
+    b_n = _bar(n_acc)
+    top10 = pnl["rows"][:10]
+    outside = sum("pnl_outside_record" in r["flags"] for r in top10)
+    unscored10 = sum(r["t"] is None for r in top10)
+    others = "".join(f'<li><a href="/q/{slug}/">{html.escape(q)}</a></li>' for slug, q in QUESTIONS)
+    form = ('<form class="wcheck" action="/wallet/" method="get" autocomplete="off" style="margin:22px 0">'
+            '<input name="a" placeholder="0x… Hyperliquid address" spellcheck="false" aria-label="Hyperliquid address">'
+            '<button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button></form>')
+
+    bodies = {
+        "hyperliquid-trader-skill-or-luck": (
+            f"Paste the address below. On {day}, of the {pnl['scored']} wallets in Hyperliquid’s all-time PnL top 100 with enough history to score, "
+            f"{pnl['n_t_ge_2']} would pass the usual test (t ≥ 2) if you had picked them blind, and {pnl['n_t_ge_bar']} pass the bar that applies when "
+            f"you found them by sorting a board of {n_acc:,} accounts (t ≥ {b_n:.2f}). For the 30-day ROI top 100: {roi['n_t_ge_2']} and {roi['n_t_ge_bar']} of {roi['scored']}.",
+            f"""{form}
+<h2>What the check does</h2>
+<p>It takes the wallet’s public portfolio history from Hyperliquid, turns it into weekly returns (change in cumulative PnL over the account value at the start of the week, so deposits and withdrawals are not returns), and asks how strong that record is: t = annualised Sharpe × √years, adjusted for short and irregular records.</p>
+<h2>Which bar applies</h2>
+<p>If someone sent you this one wallet and you had no other candidates, t ≥ 2 is the usual bar. If you found it on a leaderboard, it is the best of {n_acc:,}, and someone is always on a streak in a crowd that size. The bar for the best of {n_acc:,} is t ≥ {b_n:.2f} (Bonferroni). Most people find wallets on leaderboards.</p>
+<h2>What the verdict cannot see</h2>
+<p>A strategy that sells insurance can show no losing week for a long time. The page flags a record with no losing week, one where a single week made most of the gains, and one where most of the PnL was booked while the account held under $1,000 and cannot be turned into a return. In the PnL top 10 on {day}, {outside} carry that last flag and {unscored10} have too little measurable history to score at all.</p>
+<p>From an agent: the MCP tool <code>hyperliquid_wallet</code>{API_LINE}, or the skill in the <a href="{REPO}">repository</a>.</p>"""),
+        "how-many-months-of-backtest": (
+            f"At a true annualised Sharpe of 1, about 48 months to reach t = 2 for a single result; at Sharpe 2, 12 months. "
+            f"If the result is the best of many tries, it needs more: the best of 100 needs t ≥ {_bar(100):.2f}, which at Sharpe 1 is {_months(_bar(100), 1)}.",
+            f"""<h2>The formula</h2>
+<div class="eq">t = Sharpe × √years        months needed = (t / Sharpe)² × 12</div>
+<p>This is Lo (2002) under i.i.d. returns, so it is a floor: autocorrelated returns need longer.</p>
+<h2>The table</h2>
+<div class="table-wrap"><table class="lb-table"><thead><tr><th>True Sharpe</th><th class="r">One result (t ≥ 2)</th><th class="r">Best of 100 (t ≥ {_bar(100):.2f})</th><th class="r">Best of {n_acc:,} (t ≥ {b_n:.2f})</th></tr></thead><tbody>
+{"".join(f'<tr><td>{sh}</td><td class="r">{_months(2, sh)}</td><td class="r">{_months(_bar(100), sh)}</td><td class="r">{_months(b_n, sh)}</td></tr>' for sh in (0.5, 1, 2, 3))}
+</tbody></table></div>
+<h2>Which months count</h2>
+<p>Only months the result was not fitted on. For a backtest run with a language model, months before the model’s training cutoff cannot be ruled out as seen; only months after it are clean. <a href="/check/">Check a backtest</a> splits the window for you. For a trader you are about to copy, only the record after the day you picked them tests the pick.</p>
+<p>Count every variant tried, including ones that were dropped. An agent can try fifty in a minute; the plugin in the <a href="{REPO}">repository</a> counts them as it goes.</p>"""),
+        "why-leaderboard-winner-is-not-evidence": (
+            f"Because the top of a board is the maximum of many draws. Among {n_acc:,} accounts, someone is on a streak by chance alone; the best of {n_acc:,} has to clear t ≥ {b_n:.2f}, not 2. "
+            f"On {day}, {pnl['n_t_ge_bar']} of the {pnl['scored']} scoreable wallets in Hyperliquid’s all-time PnL top 100 did.",
+            f"""<h2>The bar rises with the number you picked from</h2>
+<div class="table-wrap"><table class="lb-table"><thead><tr><th>Picked from</th><th class="r">t needed</th></tr></thead><tbody>
+{"".join(f'<tr><td>{n:,}</td><td class="r">{_bar(n):.2f}</td></tr>' for n in (1, 10, 100, 1000, n_acc))}
+</tbody></table></div>
+<p>The bar keeps the chance that a no-skill account clears it, anywhere on the board, at the 2.3% a single test allows (Bonferroni on α = 1 − Φ(2)). Counting every account as independent overstates the charge when accounts copy each other; the true number of independent bets is unknown, so the table is an upper bound on the bar and the honest range sits below it.</p>
+<h2>Profit ranks are not return ranks</h2>
+<p>A PnL board ranks dollars. A large account with an ordinary return outranks a small one with an exceptional return, and PnL booked into a near-empty account cannot be turned into a return at all. In the all-time PnL top 10 on {day}, {outside} wallets had most of their PnL booked while the account held under $1,000.</p>
+<h2>What would count</h2>
+<p>A record found after the fact has already been picked for looking good. The clean test is forward: freeze the list, then watch. We froze 200 wallets from the top of the board on 2026-10-14 and publish how each does from then on, on the <a href="/wallet/">wallet page</a>.</p>"""),
+    }
+    for slug, q in QUESTIONS:
+        lead, rest = bodies[slug]
+        page = head(f"{q} · Evidence Deflator", lead[:300], f"/q/{slug}/") + header("") + f"""
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><span class="dot"></span>Question · data as of {day}</div>
+<h1 style="margin-top:16px">{html.escape(q)}</h1>
+<p class="lede" style="margin-top:14px">{lead}</p>
+{rest}
+<h2>Related questions</h2><ul>{others}</ul>
+<p class="muted small">Numbers rebuild daily from <a href="/data/hl/latest.json">latest.json</a>. Method: <a href="/method/">Method</a>. Not investment advice.</p>
+</article></div></main>
+""" + footer()
+        write(f"q/{slug}/index.html", page)
+
+
 # IndexNow (Bing, Yandex, Seznam, Naver...): the key is public by design; the
 # file at /<key>.txt proves we own the host. tools/indexnow.py submits URLs.
 INDEXNOW_KEY = "b756502a8abaf3fb7bf6e69716e37269"
@@ -735,6 +837,7 @@ def main():
     build_api()
     build_wallet()
     build_404()
+    build_questions()
     inject_chrome()
     build_crawl_files()
 
