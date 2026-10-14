@@ -19,6 +19,12 @@ SITE = "https://evidencedeflator.com"
 REPO = "https://github.com/Beltran12138/evidence-deflator"
 ISSUE_AUDIT = REPO + "/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A"
 VERSION = "0.2.0"
+# Cloudflare Web Analytics site token (public, cookie-less page counts). Empty = no beacon.
+CF_BEACON = ""
+PRIVACY = ("The address is never sent to us; we count page views and checks without cookies (Cloudflare Web Analytics)."
+           if CF_BEACON else "Nothing is sent to us.")
+BEACON = (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+          f'data-cf-beacon=\'{{"token": "{CF_BEACON}", "spa": true}}\'></script>\n') if CF_BEACON else ""
 
 MARK = ('<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/>'
         '<rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/>'
@@ -55,7 +61,7 @@ def head(title, desc, path, og=f"{SITE}/leaderboard/og-2026-10.png", extra=""):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css">
 <link rel="stylesheet" href="/assets/site.css">
-{extra}</head>
+{extra}{BEACON}</head>
 <body>
 """
 
@@ -589,7 +595,7 @@ def build_wallet():
  <p><strong>Weekly, because the history is.</strong> Hyperliquid keeps older history about a week apart and recent history minutes apart. Everything is put on one weekly grid; a week with no new data point is merged into the next one, not counted as a zero.</p>
  <p><strong>Two bars.</strong> If you came to this wallet with no prior selection, t ≥ 2 is the usual bar. If you found it by sorting a leaderboard, you picked the best of many, and the bar rises with the number you picked from (Bonferroni on {pnl['ranked_from']:,} accounts: {pnl['t_bar_best_of_n']:.2f}). Most people find wallets on leaderboards.</p>
  <p><strong>What t cannot see.</strong> Tail risk that has not happened yet. A strategy that sells insurance can show no losing week for a long time. Where the record has no losing week, or one week made most of the gains, the page says so.</p>
- <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser; nothing is sent to us. Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
+ <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser. {PRIVACY} Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
 </div></section>
 </main>
 """ + footer("""<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>
@@ -617,7 +623,8 @@ def build_wallet():
  async function run(a) {
   a = a.trim().toLowerCase();
   if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = 'That is not a Hyperliquid address'; $('wsub').textContent = 'Expected 0x followed by 40 hex characters.'; return; }
-  history.replaceState(null, '', '/wallet/?a=' + a);
+  // count the check as a virtual page view of /wallet/check (no address), then show the shareable URL
+  history.pushState(null, '', '/wallet/check'); history.replaceState(null, '', '/wallet/?a=' + a);
   $('wout').hidden = false; $('whead').textContent = 'Reading the public record…'; $('wsub').textContent = ''; $('wflags').innerHTML = '';
   $('wid').textContent = a; $('whl').href = 'https://app.hyperliquid.xyz/explorer/address/' + a;
   let pf;
@@ -678,7 +685,7 @@ def inject_chrome():
             f'<link rel="canonical" href="{SITE}{path}">',
             '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
             '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">',
-            '<link rel="stylesheet" href="/assets/chrome.css">'])
+            '<link rel="stylesheet" href="/assets/chrome.css">'] + ([BEACON.strip()] if BEACON else []))
         for name, body in (("site-head", links), ("site-header", header(active)), ("site-footer", foot)):
             s, n = re.subn(rf"<!-- {name} -->.*?<!-- /{name} -->",
                            lambda m, name=name, body=body: f"<!-- {name} -->\n{body}\n<!-- /{name} -->", s, count=1, flags=re.S)
