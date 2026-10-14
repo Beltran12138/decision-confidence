@@ -20,7 +20,7 @@ REPO = "https://github.com/Beltran12138/evidence-deflator"
 ISSUE_AUDIT = REPO + "/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A"
 VERSION = "0.2.0"
 # Cloudflare Web Analytics site token (public, cookie-less page counts). Empty = no beacon.
-CF_BEACON = ""
+CF_BEACON = "e38b718917cf4c2891f9038a6a597a88"
 PRIVACY = ("The address is never sent to us; we count page views and checks without cookies (Cloudflare Web Analytics)."
            if CF_BEACON else "Nothing is sent to us.")
 BEACON = (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
