@@ -186,12 +186,11 @@ def build_audits():
 
 def build_home(rows, lb):
     with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
-        hp = json.load(f)["boards"]["pnl"]
-    k = hp["n_t_ge_bar"]
-    hl_line = (f"Of the all-time PnL top 100, {'none' if not k else k} clear{'s' if k <= 1 else ''} the bar for being picked "
-               f"from {hp['ranked_from']:,} accounts.")
+        hl = json.load(f)
+    hp, hc = hl["boards"]["pnl"], hl.get("cohort") or {}
     la, ai = lb["boards"]
     feed = [
+        ("2026-10-14", "Hyperliquid leaderboard, rescored", f"Of the all-time PnL top 100, {hp['n_t_ge_bar']} of {hp['scored']} clear the bar for being picked from {hp['ranked_from']:,} accounts. 200 wallets frozen for a forward record.", "/wallet/", "Wallets"),
         ("2026-10-13", "Leaderboard No. 1", "Liquidity Arena and HKUDS AI-Trader, rescored by evidence instead of return.", "/leaderboard/", "Leaderboard"),
     ] + [(a["date"], f"Audit {a['num']} · {a['subject']}", a["finding"], f"/audits/{a['slug']}.html", "Audit") for a in reversed(rows)][:4] + [
         ("2026-10-05", "17 published LLM trading papers", "Of the 9 with a documented cutoff, none reaches 48 clean months.", "/audit.html", "Paper audit"),
@@ -208,34 +207,32 @@ def build_home(rows, lb):
     mcp = ('pip install <span class="s">"evidence-deflator[mcp]"</span>\n\n'
            '<span class="c"># claude_desktop_config.json, Cursor, Claude Code …</span>\n'
            '{ <span class="s">"mcpServers"</span>: { <span class="s">"evidence-deflator"</span>: { <span class="s">"command"</span>: <span class="s">"evidence-deflator-mcp"</span> } } }')
-    page = head("Evidence Deflator · How much of an AI trading result actually counts?",
-                "Open-source checks for AI trading backtests and public leaderboards: months the model may have seen, clean months a claim needs, and the bar after selection.", "/") + header("home") + f"""
+    page = head("Evidence Deflator · Is that trading record skill, or could it be luck?",
+                "Paste any Hyperliquid address and see whether its record can be told apart from luck. Open-source evidence checks for trading records, leaderboards and AI backtests.", "/") + header("home") + f"""
 <main>
 <div class="container hero">
- <a class="callout wnew" href="/wallet/"><span class="tag tag-red">New</span> <b>Check any Hyperliquid wallet.</b> {hl_line} <span class="arr">→</span></a>
- <div class="eyebrow"><span class="dot"></span>Evidence checks for AI trading</div>
- <h1 class="display">How much of an AI trading result actually counts?</h1>
- <p class="lede">AI agents now write, backtest and rank strategies in minutes. Two things almost nobody reports: what the model may already have seen, and how many attempts the winner was picked from. Evidence Deflator turns both into numbers.</p>
- <div class="btns">
-  <a class="btn btn-primary" href="/leaderboard/">See the October leaderboard <span class="arr">→</span></a>
-  <a class="btn btn-secondary" href="/check/">Check a backtest</a>
-  <button class="copy" data-copy="pip install evidence-deflator">$ pip install evidence-deflator {COPY_ICON}</button>
- </div>
+ <div class="eyebrow"><span class="dot"></span>Evidence for trading records</div>
+ <h1 class="display">Is that trading record skill, or could it be luck?</h1>
+ <p class="lede">Leaderboards rank by profit. Among {hp['ranked_from']:,} accounts, someone is always on a winning streak. Paste a Hyperliquid address and see how strong its record is once you allow for that, and how many more months it would need.</p>
+ <form class="wcheck" action="/wallet/" method="get" autocomplete="off" style="margin-top:28px">
+  <input name="a" placeholder="0x… Hyperliquid address" spellcheck="false" aria-label="Hyperliquid address">
+  <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
+ </form>
  <div class="instrument">
-  <div class="instrument-head"><span class="t"><b style="color:var(--ink);font-weight:550">{html.escape(la['board'])}</b> · each dot is one team’s t-statistic</span><a class="small" href="/leaderboard/#{la['id']}">Full board →</a></div>
+  <div class="instrument-head"><span class="t"><b style="color:var(--ink);font-weight:550">Hyperliquid, all-time PnL top 100</b> · each dot is one wallet’s t-statistic · {hl['fetched'][:10]}</span><a class="small" href="/wallet/">Rescored board →</a></div>
   <div class="instrument-body chart" style="border:0;border-radius:0" id="hero-chart"></div>
   <div class="instrument-foot">
-   <div><b class="c-accent">0 / {la['entries']}</b><span>teams reach even t = 2</span></div>
-   <div><b>{la['t_bar_best_of_n']:.2f}</b><span>bar for the best of {la['entries']}</span></div>
-   <div><b>{la['max_t']:.2f}</b><span>closest: {html.escape(la['max_t_name'])}, rank {la['max_t_rank']} by return</span></div>
-   <div><b>~{round(la['months_to_winner']['sharpe_5'])} mo</b><span>before a winner could be named, at a true Sharpe of 5</span></div>
+   <div><b class="c-accent">{hp['n_t_ge_bar']} / {hp['scored']}</b><span>clear the bar for the best of {hp['ranked_from']:,}</span></div>
+   <div><b>{hp['t_bar_best_of_n']:.2f}</b><span>that bar; a single test needs 2</span></div>
+   <div><b>{hp['n_t_ge_2']} / {hp['scored']}</b><span>would pass if you had picked them blind</span></div>
+   <div><b>{hc.get('members', 0)}</b><span>wallets frozen {hc.get('frozen_at', '')[:10]}, scored from then on</span></div>
   </div>
  </div>
 </div>
 
 <section><div class="container">
- <div class="sec-head"><div><div class="eyebrow">The method</div><h2 style="margin-top:12px">Three numbers, before any performance figure</h2>
- <p>Each is plain arithmetic on inputs a project can state in one line. None needs the strategy’s code.</p></div><a class="more" href="/method/">Read the method →</a></div>
+ <div class="sec-head"><div><div class="eyebrow">For AI backtests · where the method started</div><h2 style="margin-top:12px">Three numbers, before any performance figure</h2>
+ <p>Each is plain arithmetic on inputs a project can state in one line. None needs the strategy’s code. <a href="/check/">Check a backtest →</a></p></div><a class="more" href="/method/">Read the method →</a></div>
  <div class="triad">
   <div><span class="k">01 · OPEN-BOOK MONTHS</span><h3>What the model may have seen</h3><p>Months of the test window on or before the model’s training cutoff. For those months, we cannot rule out that it already knows what happened.</p></div>
   <div><span class="k">02 · CLEAN MONTHS NEEDED</span><h3>How long the result must run</h3><p>A Sharpe of 1 needs about 48 clean months to reach t = 2; a Sharpe of 2 needs 12. The quadratic is the whole story.</p></div>
@@ -257,9 +254,9 @@ def build_home(rows, lb):
 <section><div class="container">
  <div class="sec-head"><div><div class="eyebrow">Who it is for</div><h2 style="margin-top:12px">One check, three places it belongs</h2></div></div>
  <div class="who">
+  <div><h3>Copy-trading and vault platforms</h3><p>Show an evidence score next to PnL. A score nobody can buy tells followers which records are strong enough to commit to.</p><p class="act"><a href="/wallet/">See it on Hyperliquid →</a></p></div>
+  <div><h3>Allocators and reviewers</h3><p>Send a wallet, a deck, a backtest or a public claim. Get a one-page report: what is open-book, what is underpowered, what is missing.</p><p class="act"><a href="{ISSUE_AUDIT}">Request an audit →</a></p></div>
   <div><h3>Agent frameworks</h3><p>One call between “backtest” and “deploy”: flag runs whose window sits before the model’s cutoff, and charge the result for every variant tried.</p><p class="act"><a href="/api/">Python, CLI and MCP →</a></p></div>
-  <div><h3>Competition operators</h3><p>Show a t-statistic next to return, and the date a winner could first be named. Carry records across phases so evidence accumulates.</p><p class="act"><a href="/leaderboard/">See the leaderboard →</a></p></div>
-  <div><h3>Allocators and reviewers</h3><p>Send a deck, a backtest or a public claim. Get a one-page report: what is open-book, what is underpowered, what is missing.</p><p class="act"><a href="{ISSUE_AUDIT}">Request an audit →</a></p></div>
  </div>
 </div></section>
 
@@ -272,7 +269,9 @@ def build_home(rows, lb):
 </div></section>
 </main>
 """ + footer("""<script src="/assets/lb.js"></script>
-<script>LB.load('/leaderboard/2026-10.json').then(d=>{document.getElementById('hero-chart').innerHTML=LB.strip(d.boards[0],{h:170})});</script>
+<script>LB.load('/data/hl/latest.json').then(d=>{const p=d.boards.pnl,rows=p.rows.filter(r=>r.t!=null).map(r=>({t:r.t,rank:r.rank,name:r.address.slice(0,6)+'…'+r.address.slice(-4)}));
+ const best=rows.reduce((a,r)=>r.t>a.t?r:a,rows[0]);
+ document.getElementById('hero-chart').innerHTML=LB.strip({board:p.board,rows,entries:p.ranked_from,t_bar_best_of_n:p.t_bar_best_of_n,max_t_rank:best.rank},{h:170});});</script>
 """)
     write("index.html", page)
 
