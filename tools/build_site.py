@@ -837,6 +837,9 @@ def build_legal():
 <h2>The API and MCP server (api.evidencedeflator.com)</h2>
 <p>When you or your AI assistant call the API or the MCP tool, the request carries a wallet address and, optionally, a number. Our server, a Cloudflare Worker, forwards the address to Hyperliquid’s public info API to fetch that wallet’s history, scores it, and returns the result. We do not store the address or the result, and we have not turned on request logging for the Worker. Each completed check adds one tally to a daily count (whether it came from the API or the MCP tool), without the address or anything about the caller. Cloudflare, which runs the Worker, processes requests (including your IP address) under its own privacy policy. Hyperliquid receives the address under its own terms.</p>
 <p>A wallet address on a public blockchain is public data. Do not send anything else; the tool does not need it.</p>
+<h2>The Telegram bot and the Chrome extension</h2>
+<p>The Telegram bot receives the messages you send it through Telegram, which processes them under its own privacy policy. The Worker above reads the address in your message, checks it the same way, replies, and keeps nothing: not the message, not your chat or user ID. Each check adds one tally to the daily count.</p>
+<p>The Chrome extension reads the address or trader ID in the URL of the page you are on and fetches that record directly from the exchange's public API (Hyperliquid, Binance or OKX). It sends nothing about the trader or you to us; it only downloads our daily board sizes. It has no analytics.</p>
 <h2>The Python package, Claude Code plugin and skill</h2>
 <p>They run on your machine. The plugin’s backtest counter keeps a small log of matching shell commands in your local plugin data folder; it is never sent anywhere. The package and plugin contact Hyperliquid (and our API, if you use the hosted MCP tool) only when you check a wallet.</p>
 <h2>Changes and contact</h2>

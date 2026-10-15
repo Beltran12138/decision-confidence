@@ -4,6 +4,7 @@
 //
 //   GET  /api/wallet?a=0x...&picked_from=47153   -> JSON verdict
 //   POST /mcp                                     -> MCP JSON-RPC (initialize, tools/list, tools/call)
+//   POST /tg                                      -> Telegram bot webhook (secret header required)
 
 const SITE = 'https://evidencedeflator.com';
 const SERVER = {name: 'evidence-deflator', version: '0.3.0'};
@@ -76,7 +77,7 @@ const json = (body, status = 200) =>
 
 // One data point per completed check, for a daily count: which surface ran it and, for the web
 // page, its language. No address, no IP, nothing about the caller (see /privacy/).
-const KINDS = new Set(['web', 'api', 'mcp']), LANGS = new Set(['en', 'zh-hans', 'zh-hant', '']);
+const KINDS = new Set(['web', 'api', 'mcp', 'tg']), LANGS = new Set(['en', 'zh-hans', 'zh-hant', '']);
 function count(env, kind, lang = '') {
   if (!env.COUNTS || !KINDS.has(kind) || !LANGS.has(lang)) return;
   try { env.COUNTS.writeDataPoint({blobs: [kind, lang], doubles: [1], indexes: [kind]}); } catch {}
@@ -104,6 +105,64 @@ async function rpc(msg, env = {}) {
     }
   }
   return err(-32601, 'method not found: ' + method);
+}
+
+// ---- Telegram bot: send a Hyperliquid address, get the verdict back. Nothing is stored; the
+// only trace is one tally (kind 'tg') like every other check.
+const SAY = {
+  loses: 'Losing, and not by chance',
+  luck: 'Cannot be told apart from luck',
+  clears_single: 'Passes one test, not the leaderboard bar',
+  clears_board: 'Clears the leaderboard bar',
+  too_short: 'Too short to say (under 8 measurable weeks)',
+};
+const FLAG_TEXT = {
+  no_losing_week: 'No losing week: consistent with market making or selling tail risk.',
+  one_week_majority: 'One week produced more than half the gains.',
+  pnl_outside_record: 'Most PnL was booked on a near-empty account; t covers only the measurable weeks.',
+};
+let boardCache = null;
+async function boardSizes() {
+  if (boardCache && Date.now() - boardCache.at < 6 * 3600e3) return boardCache;
+  const s = {at: Date.now(), accounts: 47039, vaults: 9477};
+  try {
+    const d = await (await fetch(SITE + '/data/hl/latest.json')).json();
+    s.accounts = d.boards.pnl.ranked_from || s.accounts;
+    if (d.vaults && d.vaults.listed) s.vaults = d.vaults.listed;
+  } catch {}
+  return (boardCache = s);
+}
+
+async function tgReply(env, chatId, text) {
+  await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/sendMessage`, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({chat_id: chatId, text, disable_web_page_preview: true}),
+  });
+}
+
+async function telegram(env, chatId, text) {
+  const m = text.match(/0x[0-9a-fA-F]{40}/);
+  if (!m) {
+    return tgReply(env, chatId, 'Send a Hyperliquid wallet or vault address (0x… 40 hex characters) and I will tell you whether its record can be told apart from luck, allowing for it having been picked off a leaderboard.\n\nMethod: ' + SITE + '/method/\nNothing you send is stored.');
+  }
+  const addr = m[0].toLowerCase();
+  try {
+    const [pf, vd, sizes] = await Promise.all([HL.fetchPortfolio(addr), HL.fetchVault(addr), boardSizes()]);
+    if (!Array.isArray(pf) || !pf.length) return tgReply(env, chatId, 'No Hyperliquid history for ' + addr);
+    const vault = vd && vd.name ? vd : null, n = vault ? sizes.vaults : sizes.accounts;
+    const r = checkWallet(addr, n, pf);
+    const lines = [
+      SAY[r.verdict] + (vault ? ` (vault: ${vault.name})` : ''),
+      `t ${r.t == null ? '—' : r.t.toFixed(2)} · bar ${r.bar.toFixed(2)} (best of ${n.toLocaleString('en')} ${vault ? 'vaults' : 'accounts'}) · ${r.weeks ?? 0} weeks`,
+      ...r.flags.map(k => '• ' + (FLAG_TEXT[k] || k)),
+      '',
+      'Full check: ' + r.page,
+    ];
+    count(env, 'tg');
+    return tgReply(env, chatId, lines.join('\n'));
+  } catch (e) {
+    return tgReply(env, chatId, 'Could not reach Hyperliquid right now. Try again in a minute.');
+  }
 }
 
 async function handle(request, env = {}) {
@@ -141,6 +200,17 @@ async function handle(request, env = {}) {
     for (const m of batch) if (m && m.id !== undefined && m.method) replies.push(await rpc(m, env));
     if (!replies.length) return new Response(null, {status: 202, headers: CORS});  // notifications only
     return json(Array.isArray(body) ? replies : replies[0]);
+  }
+
+  // Telegram bot webhook. Telegram sends the secret set with setWebhook in a header; anything
+  // without it is dropped. The token and the secret are Worker secrets (wrangler secret put).
+  if (url.pathname === '/tg' && request.method === 'POST') {
+    if (!env.TG_TOKEN || request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== env.TG_WEBHOOK_SECRET) return json({error: 'not found'}, 404);
+    let update;
+    try { update = await request.json(); } catch { return new Response('ok'); }
+    const msg = update.message || update.channel_post;
+    if (msg && msg.chat && typeof msg.text === 'string') await telegram(env, msg.chat.id, msg.text);
+    return new Response('ok');  // always 200, or Telegram retries
   }
 
   if (url.pathname === '/') {
