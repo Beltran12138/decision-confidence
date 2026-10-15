@@ -15,10 +15,13 @@ HANT_WORDS = [("賬戶", "帳戶"), ("默認", "預設"), ("鏈接", "連結"), 
 LABELS = {"⟦JIAN⟧": "简体", "⟦FAN⟧": "繁體"}
 LANGS = {"zh-Hans": "/zh-hans/", "zh-Hant": "/zh-hant/"}
 HTML_LANG = {"zh-Hans": "zh-Hans", "zh-Hant": "zh-Hant-HK"}
-FONTS = {  # Latin in the site's faces, Chinese in a system sans of the right script
+FONTS = {  # Latin in the site's faces, Chinese body in a system sans of the right script
     "zh-Hans": "'PingFang SC','Microsoft YaHei','Noto Sans SC'",
     "zh-Hant": "'PingFang HK','Microsoft JhengHei','Noto Sans TC'",
 }
+# Chinese headings in Source Han Serif (Noto Serif SC/TC), the CJK sibling of the site's
+# Source Serif; Google Fonts serves it in slices, so a page loads only the glyphs it uses.
+SERIF = {"zh-Hans": "Noto Serif SC", "zh-Hant": "Noto Serif TC"}
 Q = [
     ("hyperliquid-trader-skill-or-luck", "这个 Hyperliquid 交易员是实力还是运气？", "实力还是运气？"),
     ("how-many-months-of-backtest", "回测或实盘记录要多少个月才够？", "要几个月？"),
@@ -48,8 +51,11 @@ def months(t, sharpe):
 
 
 def head(B, lang, title, desc, path, alt, extra=""):
-    style = (f"<style>:root{{--serif:'Source Serif 4',Georgia,{FONTS[lang]},sans-serif;"
-             f"--sans:Inter,{FONTS[lang]},system-ui,sans-serif}}</style>\n")
+    serif = SERIF[lang]
+    style = (f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={serif.replace(" ", "+")}:wght@500;600&display=swap">\n'
+             f"<style>:root{{--serif:'Source Serif 4',Georgia,'{serif}',{FONTS[lang]},serif;"
+             f"--sans:Inter,{FONTS[lang]},system-ui,sans-serif}}"
+             "h1,h2,h3{letter-spacing:0}h1{line-height:1.3}h2{line-height:1.35}</style>\n")
     return B.head(title, desc, path, extra=style + extra, lang=HTML_LANG[lang], alt=alt)
 
 
