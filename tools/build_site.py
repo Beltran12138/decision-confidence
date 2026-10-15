@@ -21,6 +21,8 @@ ISSUE_AUDIT = REPO + "/issues/new?title=Audit%20request%3A%20&body=Link%20to%20t
 VERSION = "0.2.0"
 # Cloudflare Web Analytics site token (public, cookie-less page counts). Empty = no beacon.
 CF_BEACON = "e38b718917cf4c2891f9038a6a597a88"
+# Baidu Search Resource Platform site verification (public token; keep it, or the site unverifies).
+BAIDU_META = '<meta name="baidu-site-verification" content="codeva-Dwaytu2snb" />\n'
 PRIVACY = ("The address is never sent to us; we count page views and checks without cookies (Cloudflare Web Analytics)."
            if CF_BEACON else "Nothing is sent to us.")
 BEACON = (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
@@ -237,7 +239,7 @@ def build_home(rows, lb):
            '{ <span class="s">"mcpServers"</span>: { <span class="s">"evidence-deflator"</span>: { <span class="s">"command"</span>: <span class="s">"evidence-deflator-mcp"</span> } } }')
     page = head("Evidence Deflator · Is that trading record skill, or could it be luck?",
                 "Paste any Hyperliquid address and see whether its record can be told apart from luck. Open-source evidence checks for trading records, leaderboards and AI backtests.", "/",
-                extra=ld(APP_LD)) + header("home") + f"""
+                extra=ld(APP_LD) + BAIDU_META) + header("home") + f"""
 <main>
 <div class="container hero">
  <div class="eyebrow"><span class="dot"></span>Evidence for trading records</div>
