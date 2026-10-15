@@ -38,7 +38,8 @@ def main():
     os.makedirs(os.path.join(ROOT, "dist"), exist_ok=True)
     out = os.path.join(ROOT, "dist", f"evidence-deflator-extension-{version}.zip")
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
-        for dirpath, _, files in os.walk(EXT):
+        for dirpath, dirs, files in os.walk(EXT):
+            dirs[:] = [d for d in dirs if d != "store"]  # listing images and text are not part of the package
             for f in sorted(files):
                 p = os.path.join(dirpath, f)
                 z.write(p, os.path.relpath(p, EXT))
