@@ -53,7 +53,7 @@
   if (sc.sharpe == null) { $('wm').textContent = '—'; $('wml').textContent = M.noSharpe; }
   else if (need == null) { $('wm').textContent = M.never[0]; $('wml').textContent = M.never[1]; }
   else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = M.done; }
-  else { const m = need - have; $('wm').textContent = m >= 24 ? (m / 12).toFixed(1) + M.yr : Math.round(m) + M.mo; $('wml').textContent = M.more; }
+  else { const m = need - have; $('wm').textContent = m >= 1188 ? '> 99' + M.yr : m >= 24 ? (m / 12).toFixed(1) + M.yr : Math.round(m) + M.mo; $('wml').textContent = M.more; }
   $('wflags').innerHTML = fl.map(k => `<li>${T.notes[k]}</li>`).join('');
   $('wcopy').dataset.copy = location.origin + T.selfPath + '?a=' + a;
   $('wnote').textContent = start ? fill(T.wnote, {start: new Date(start).toISOString().slice(0, 10), now: new Date().toISOString().slice(0, 16).replace('T', ' ')}) : '';

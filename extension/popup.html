@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+body{width:320px;margin:0;padding:14px 16px;font-family:system-ui;color:#15171c;background:#faf9f6}
+h1{font:600 14px system-ui;margin:0 0 10px;display:flex;gap:8px;align-items:center}
+form{display:flex;gap:6px;margin-bottom:12px}
+input{flex:1;min-width:0;font:13px ui-monospace,Consolas,monospace;padding:8px;border:1px solid #ccc;border-radius:6px}
+button{font:600 13px system-ui;padding:8px 12px;border:0;border-radius:6px;background:#15171c;color:#fff;cursor:pointer}
+.hint{font:12px/1.4 system-ui;color:#777}
+</style>
+<h1><img src="icons/16.png" width="16" height="16" alt="">Is this record skill, or luck?</h1>
+<form id="f"><input id="q" placeholder="0x… address, Binance portfolio ID or OKX code" autofocus><button>Check</button></form>
+<div id="out"><p class="hint">Hyperliquid wallets and vaults, Binance lead portfolios (the number in the page URL) and OKX lead traders (the 16-character code). Opening one of those pages shows the verdict there too. Data comes straight from each exchange's public API; nothing is sent to us.</p></div>
+<script src="verdict.js"></script>
+<script src="popup.js"></script>

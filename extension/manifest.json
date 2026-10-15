@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Evidence Deflator",
+  "short_name": "Deflator",
+  "version": "0.1.0",
+  "description": "Is this trader's record skill, or could it be luck? A verdict next to Hyperliquid wallets and vaults and Binance/OKX lead traders.",
+  "homepage_url": "https://evidencedeflator.com/",
+  "icons": {"16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png"},
+  "action": {"default_popup": "popup.html", "default_title": "Check a trader"},
+  "background": {"service_worker": "background.js"},
+  "permissions": ["contextMenus"],
+  "host_permissions": [
+    "https://api.hyperliquid.xyz/*",
+    "https://www.binance.com/*",
+    "https://www.okx.com/*",
+    "https://evidencedeflator.com/*"
+  ],
+  "content_scripts": [{
+    "matches": [
+      "https://app.hyperliquid.xyz/*",
+      "https://hypurrscan.io/*",
+      "https://hyperdash.info/*",
+      "https://www.binance.com/*",
+      "https://www.okx.com/*"
+    ],
+    "js": ["verdict.js", "content.js"],
+    "run_at": "document_idle"
+  }]
+}
