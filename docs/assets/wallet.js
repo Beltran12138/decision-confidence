@@ -18,8 +18,12 @@
  async function run(a) {
   a = a.trim().toLowerCase();
   if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = T.notAddr[0]; $('wsub').textContent = T.notAddr[1]; return; }
-  // count the check as a virtual page view (no address), then show the shareable URL
-  history.pushState(null, '', T.checkPath); history.replaceState(null, '', T.selfPath + '?a=' + a);
+  // count the check as a virtual page view (no address). The URL stays on the virtual path until the
+  // result is shown: replacing it at once meant the analytics beacon never saw it.
+  history.pushState(null, '', T.checkPath);
+  try { await show(a); } finally { setTimeout(() => history.replaceState(null, '', T.selfPath + '?a=' + a), 1500); }
+ }
+ async function show(a) {
   $('wout').hidden = false; $('whead').textContent = T.reading; $('wsub').textContent = ''; $('wflags').innerHTML = '';
   $('wid').textContent = a; $('whl').href = 'https://app.hyperliquid.xyz/explorer/address/' + a;
   let pf;
@@ -37,7 +41,7 @@
   else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = M.done; }
   else { const m = need - have; $('wm').textContent = m >= 24 ? (m / 12).toFixed(1) + M.yr : Math.round(m) + M.mo; $('wml').textContent = M.more; }
   $('wflags').innerHTML = fl.map(k => `<li>${T.notes[k]}</li>`).join('');
-  $('wcopy').dataset.copy = location.href;
+  $('wcopy').dataset.copy = location.origin + T.selfPath + '?a=' + a;
   $('wnote').textContent = start ? fill(T.wnote, {start: new Date(start).toISOString().slice(0, 10), now: new Date().toISOString().slice(0, 16).replace('T', ' ')}) : '';
  }
  $('wform').addEventListener('submit', e => { e.preventDefault(); run($('waddr').value); });
