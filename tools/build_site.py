@@ -23,7 +23,7 @@ VERSION = "0.2.0"
 CF_BEACON = "e38b718917cf4c2891f9038a6a597a88"
 # Baidu Search Resource Platform site verification (public token; keep it, or the site unverifies).
 BAIDU_META = '<meta name="baidu-site-verification" content="codeva-Dwaytu2snb" />\n'
-PRIVACY = ("The address is never sent to us; we count page views and checks without cookies (Cloudflare Web Analytics)."
+PRIVACY = ("The address is never sent to us. We count page views without cookies (Cloudflare Web Analytics), and each check as one tally with the page language and nothing else."
            if CF_BEACON else "Nothing is sent to us.")
 BEACON = (f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
           f'data-cf-beacon=\'{{"token": "{CF_BEACON}", "spa": true}}\'></script>\n') if CF_BEACON else ""
@@ -554,7 +554,7 @@ WALLET_T_EN = {
               "one_week_majority": "One week produced more than half of all the gains. The record rests mostly on that week.",
               "pnl_outside_record": "Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured."},
     "wnote": "History from {start}. Read {now} UTC from api.hyperliquid.xyz.",
-    "checkPath": "/wallet/check", "selfPath": "/wallet/",
+    "selfPath": "/wallet/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=en",
 }
 
 
@@ -816,7 +816,7 @@ def build_questions():
 
 # ---------------------------------------------------------------- privacy, terms
 
-LEGAL_UPDATED = "2026-10-14"
+LEGAL_UPDATED = "2026-10-15"
 
 
 def build_legal():
@@ -825,9 +825,9 @@ def build_legal():
         "privacy": ("Privacy", "What Evidence Deflator collects: no accounts, no cookies, no stored wallet addresses.", f"""
 <p class="lede" style="margin-top:14px">No accounts, no cookies, no stored wallet addresses. Last updated {LEGAL_UPDATED}.</p>
 <h2>The website (evidencedeflator.com)</h2>
-<p>Static pages hosted on GitHub Pages. We count page views with Cloudflare Web Analytics, which sets no cookies and does not identify you. When you check a wallet on the site, your browser asks Hyperliquid’s public API for that wallet’s history directly; the address is not sent to us.</p>
+<p>Static pages hosted on GitHub Pages behind Cloudflare. We count page views with Cloudflare Web Analytics, which sets no cookies and does not identify you. When you check a wallet on the site, your browser asks Hyperliquid’s public API for that wallet’s history directly; the address is not sent to us. After a verdict is shown, the page sends our API one tally that says only “a check was done” and the page language, so we can count daily checks.</p>
 <h2>The API and MCP server (api.evidencedeflator.com)</h2>
-<p>When you or your AI assistant call the API or the MCP tool, the request carries a wallet address and, optionally, a number. Our server, a Cloudflare Worker, forwards the address to Hyperliquid’s public info API to fetch that wallet’s history, scores it, and returns the result. We do not store the address or the result, and we have not turned on request logging for the Worker. Cloudflare, which runs the Worker, processes requests (including your IP address) under its own privacy policy. Hyperliquid receives the address under its own terms.</p>
+<p>When you or your AI assistant call the API or the MCP tool, the request carries a wallet address and, optionally, a number. Our server, a Cloudflare Worker, forwards the address to Hyperliquid’s public info API to fetch that wallet’s history, scores it, and returns the result. We do not store the address or the result, and we have not turned on request logging for the Worker. Each completed check adds one tally to a daily count (whether it came from the API or the MCP tool), without the address or anything about the caller. Cloudflare, which runs the Worker, processes requests (including your IP address) under its own privacy policy. Hyperliquid receives the address under its own terms.</p>
 <p>A wallet address on a public blockchain is public data. Do not send anything else; the tool does not need it.</p>
 <h2>The Python package, Claude Code plugin and skill</h2>
 <p>They run on your machine. The plugin’s backtest counter keeps a small log of matching shell commands in your local plugin data folder; it is never sent anywhere. The package and plugin contact Hyperliquid (and our API, if you use the hosted MCP tool) only when you check a wallet.</p>

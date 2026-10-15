@@ -74,7 +74,15 @@ const CORS = {
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body, null, 2), {status, headers: {'Content-Type': 'application/json', ...CORS}});
 
-async function rpc(msg) {
+// One data point per completed check, for a daily count: which surface ran it and, for the web
+// page, its language. No address, no IP, nothing about the caller (see /privacy/).
+const KINDS = new Set(['web', 'api', 'mcp']), LANGS = new Set(['en', 'zh-hans', 'zh-hant', '']);
+function count(env, kind, lang = '') {
+  if (!env.COUNTS || !KINDS.has(kind) || !LANGS.has(lang)) return;
+  try { env.COUNTS.writeDataPoint({blobs: [kind, lang], doubles: [1], indexes: [kind]}); } catch {}
+}
+
+async function rpc(msg, env = {}) {
   const {id, method, params} = msg;
   const ok = result => ({jsonrpc: '2.0', id, result});
   const err = (code, message) => ({jsonrpc: '2.0', id, error: {code, message}});
@@ -89,6 +97,7 @@ async function rpc(msg) {
     const a = params.arguments || {};
     try {
       const r = await walletFromApi(a.address, a.picked_from);
+      count(env, 'mcp');
       return ok({content: [{type: 'text', text: JSON.stringify(r, null, 2)}], structuredContent: r, isError: false});
     } catch (e) {
       return ok({content: [{type: 'text', text: String(e.message || e)}], isError: true});
@@ -109,10 +118,18 @@ async function handle(request, env = {}) {
   if (url.pathname === '/api/wallet' && request.method === 'GET') {
     const pf = url.searchParams.get('picked_from');
     try {
-      return json(await walletFromApi(url.searchParams.get('a') || url.searchParams.get('address'), pf ? parseInt(pf, 10) : null));
+      const r = await walletFromApi(url.searchParams.get('a') || url.searchParams.get('address'), pf ? parseInt(pf, 10) : null);
+      count(env, 'api');
+      return json(r);
     } catch (e) {
       return json({error: String(e.message || e)}, e instanceof RangeError ? 400 : 502);
     }
+  }
+
+  // The wallet pages check in the browser; after showing a verdict they report it here (kind and language only).
+  if (url.pathname === '/api/count' && request.method === 'POST') {
+    if (url.searchParams.get('k') === 'web') count(env, 'web', url.searchParams.get('l') || '');
+    return new Response(null, {status: 204, headers: CORS});
   }
 
   if (url.pathname === '/mcp') {
@@ -121,7 +138,7 @@ async function handle(request, env = {}) {
     try { body = await request.json(); } catch { return json({jsonrpc: '2.0', id: null, error: {code: -32700, message: 'parse error'}}, 400); }
     const batch = Array.isArray(body) ? body : [body];
     const replies = [];
-    for (const m of batch) if (m && m.id !== undefined && m.method) replies.push(await rpc(m));
+    for (const m of batch) if (m && m.id !== undefined && m.method) replies.push(await rpc(m, env));
     if (!replies.length) return new Response(null, {status: 202, headers: CORS});  // notifications only
     return json(Array.isArray(body) ? replies : replies[0]);
   }

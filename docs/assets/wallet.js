@@ -18,10 +18,11 @@
  async function run(a) {
   a = a.trim().toLowerCase();
   if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = T.notAddr[0]; $('wsub').textContent = T.notAddr[1]; return; }
-  // count the check as a virtual page view (no address). The URL stays on the virtual path until the
-  // result is shown: replacing it at once meant the analytics beacon never saw it.
-  history.pushState(null, '', T.checkPath);
-  try { await show(a); } finally { setTimeout(() => history.replaceState(null, '', T.selfPath + '?a=' + a), 1500); }
+  history.replaceState(null, '', T.selfPath + '?a=' + a);
+  if (await show(a)) {
+   // one count per verdict shown: page language only, never the address
+   try { fetch(T.countUrl, {method: 'POST', mode: 'no-cors', keepalive: true}); } catch (e) {}
+  }
  }
  async function show(a) {
   $('wout').hidden = false; $('whead').textContent = T.reading; $('wsub').textContent = ''; $('wflags').innerHTML = '';
@@ -43,6 +44,7 @@
   $('wflags').innerHTML = fl.map(k => `<li>${T.notes[k]}</li>`).join('');
   $('wcopy').dataset.copy = location.origin + T.selfPath + '?a=' + a;
   $('wnote').textContent = start ? fill(T.wnote, {start: new Date(start).toISOString().slice(0, 10), now: new Date().toISOString().slice(0, 16).replace('T', ' ')}) : '';
+  return true;
  }
  $('wform').addEventListener('submit', e => { e.preventDefault(); run($('waddr').value); });
  document.querySelectorAll('[data-ex]').forEach(b => b.addEventListener('click', () => { $('waddr').value = b.dataset.ex; run(b.dataset.ex); }));

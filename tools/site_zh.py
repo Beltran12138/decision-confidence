@@ -27,7 +27,7 @@ Q = [
     ("how-many-months-of-backtest", "回测或实盘记录要多少个月才够？", "要几个月？"),
     ("why-leaderboard-winner-is-not-evidence", "为什么排行榜第一名不算实力的证据？", "榜首不算证据"),
 ]
-PRIVACY = "地址不会发送给我们；我们用 Cloudflare Web Analytics 统计页面访问和检验次数，不使用 cookie。"
+PRIVACY = "地址不会发送给我们。我们用 Cloudflare Web Analytics 统计页面访问，不使用 cookie；每完成一次检验，页面会向我们的接口记一次数，只带页面语言，不带别的。"
 
 
 def hant(text):
@@ -166,7 +166,7 @@ def wallet_page(B, hl, lang):
 """
 
     alt = {"en": "/wallet/", **LANGS}
-    T = dict(WALLET_T, checkPath=P + "check", selfPath=P)
+    T = dict(WALLET_T, selfPath=P, countUrl=f"https://api.evidencedeflator.com/api/count?k=web&l={lang.lower()}")
     page = head(B, lang, "查 Hyperliquid 钱包：实力还是运气 · Evidence Deflator",
                 "贴入任意 Hyperliquid 地址，看它的战绩能不能和运气分开，还差几个月才够。", P, alt,
                 extra=B.ld({**B.APP_LD, "@type": "WebApplication", "name": "Evidence Deflator · 查 Hyperliquid 钱包",
