@@ -53,9 +53,17 @@ APP_LD = {"@type": "SoftwareApplication", "name": "Evidence Deflator", "url": SI
           "license": "https://opensource.org/licenses/MIT", "codeRepository": REPO, "sameAs": [REPO]}
 
 
-def head(title, desc, path, og=f"{SITE}/leaderboard/og-2026-10.png", extra=""):
+def hreflang(alt):
+    """<link rel=alternate> for each language version; alt maps hreflang -> path."""
+    if not alt:
+        return ""
+    links = [*alt.items(), ("x-default", alt["en"])]
+    return "".join(f'<link rel="alternate" hreflang="{k}" href="{SITE}{v}">\n' for k, v in links)
+
+
+def head(title, desc, path, og=f"{SITE}/leaderboard/og-2026-10.png", extra="", lang="en", alt=None):
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -74,18 +82,19 @@ def head(title, desc, path, og=f"{SITE}/leaderboard/og-2026-10.png", extra=""):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css">
 <link rel="stylesheet" href="/assets/site.css">
-{extra}{BEACON}</head>
+{hreflang(alt)}{extra}{BEACON}</head>
 <body>
 """
 
 
-def header(active):
+def header(active, alt=None):
     cur = ' aria-current="page"'
     links = "".join(f'<a href="{u}"{cur if k == active else ""}>{t}</a>' for k, t, u in NAV)
+    zh = (alt or {}).get("zh-Hans", "/zh-hans/")
     return f"""<header class="site-header"><div class="container">
 <a class="brand" href="/">{MARK}Evidence Deflator</a>
 <nav class="nav" aria-label="Main">{links}</nav>
-<div class="header-cta"><a class="gh" href="{REPO}">{GH}<span>GitHub</span></a></div>
+<div class="header-cta"><a class="gh" href="{zh}" hreflang="zh-Hans" lang="zh-Hans">中文</a><a class="gh" href="{REPO}">{GH}<span>GitHub</span></a></div>
 </div></header>
 """
 
@@ -517,6 +526,38 @@ python tools/record.py --start 2026-03 --end 2026-08 --sharpe 3 --trials 4800</p
 
 # ---------------------------------------------------------------- wallet check
 
+WALLET_ALT = {"en": "/wallet/", "zh-Hans": "/zh-hans/", "zh-Hant": "/zh-hant/"}
+
+WALLET_T_EN = {
+    "say": {
+        "loses": ["Losing, and not by chance", "tag-red", "t is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain."],
+        "luck": ["Cannot be told apart from luck", "tag-red", "t is below 2: a record like this turns up by chance often enough that it says little about skill."],
+        "clears_single": ["Passes one test, not the leaderboard bar", "tag-amber", "Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ {BAR}."],
+        "clears_board": ["Clears the leaderboard bar", "tag-green", "The record is strong enough even allowing for having been picked from {N} accounts."],
+        "too_short": ["Too short to say", "tag-grey", "Fewer than 8 weeks of history with at least $1,000 in the account."],
+    },
+    "tag": {"loses": "loses", "luck": "luck", "clears_single": "clears single", "clears_board": "clears board", "too_short": "too short"},
+    "meterAria": "t against the two bars", "meterT2": "t = 2 · one test", "meterBest": "best of {N} · {bar}",
+    "notAddr": ["That is not a Hyperliquid address", "Expected 0x followed by 40 hex characters."],
+    "reading": "Reading the public record…", "noReach": "Could not reach Hyperliquid", "noHist": "No history for this address",
+    "months": {"noSharpe": "needs 8 weeks of record before this can be estimated",
+               "never": ["never", "at a Sharpe of zero or below, no length of record clears the bar"],
+               "done": "more months needed: the record already clears the leaderboard bar",
+               "more": "more record needed to clear the leaderboard bar, if the Sharpe held", "yr": " yr", "mo": " mo"},
+    "notes": {"no_losing_week": "No losing week in the record. Consistent with market making, funding carry or selling tail risk; t measures consistency, not the size of a loss that has not happened yet.",
+              "one_week_majority": "One week produced more than half of all the gains. The record rests mostly on that week.",
+              "pnl_outside_record": "Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured."},
+    "wnote": "History from {start}. Read {now} UTC from api.hyperliquid.xyz.",
+    "checkPath": "/wallet/check", "selfPath": "/wallet/",
+}
+
+
+def wallet_scripts(n_accounts, strings):
+    data = json.dumps({"N": n_accounts, "T": strings}, ensure_ascii=False).replace("</", "<\\/")
+    return (f'<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>\n'
+            f'<script>window.WALLET = {data};</script>\n<script src="/assets/wallet.js"></script>\n')
+
+
 def build_wallet():
     p = os.path.join(DOCS, "data", "hl", "latest.json")
     with open(p, encoding="utf-8") as f:
@@ -571,7 +612,7 @@ def build_wallet():
     page = head("Check a Hyperliquid wallet · Evidence Deflator",
                 "Paste any Hyperliquid address. See whether its record can be told apart from luck, and how many more months it would need.",
                 "/wallet/", extra=ld({**APP_LD, "@type": "WebApplication", "name": "Evidence Deflator · Hyperliquid wallet check",
-                                       "url": SITE + "/wallet/", "operatingSystem": "Web"})) + header("wallet") + f"""
+                                       "url": SITE + "/wallet/", "operatingSystem": "Web"}), alt=WALLET_ALT) + header("wallet", WALLET_ALT) + f"""
 <main>
 <div class="container page-head">
  <div class="eyebrow"><span class="dot"></span>Hyperliquid · wallet check · public data, computed in your browser</div>
@@ -623,62 +664,7 @@ def build_wallet():
  <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser. {PRIVACY} Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
 </div></section>
 </main>
-""" + footer("""<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>
-<script>
-(() => {
- const N = """ + str(pnl["ranked_from"]) + """, $ = id => document.getElementById(id), f = (x, d=2) => x == null ? '—' : Number(x).toFixed(d);
- const say = {
-  loses: ['Losing, and not by chance', 'tag-red', 't is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain.'],
-  luck: ['Cannot be told apart from luck', 'tag-red', 't is below 2: a record like this turns up by chance often enough that it says little about skill.'],
-  clears_single: ['Passes one test, not the leaderboard bar', 'tag-amber', 'Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ BAR.'],
-  clears_board: ['Clears the leaderboard bar', 'tag-green', 'The record is strong enough even allowing for having been picked from N accounts.'],
-  too_short: ['Too short to say', 'tag-grey', 'Fewer than 8 weeks of history with at least $1,000 in the account.']
- };
- function meter(t, bar) {
-  const lo = Math.min(-1, Math.floor(t ?? 0)), hi = Math.max(Math.ceil(bar + .5), Math.ceil(t ?? 0)), W = 1000, H = 92, L = 14, R = 14;
-  const x = v => L + (v - lo) / (hi - lo) * (W - L - R);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="t against the two bars">`;
-  s += `<rect class="zone" x="${x(bar)}" y="22" width="${W - R - x(bar)}" height="40"/>`;
-  for (let v = lo; v <= hi; v++) s += `<line class="ax" x1="${x(v)}" x2="${x(v)}" y1="22" y2="62"/><text class="lab" x="${x(v)}" y="84" text-anchor="middle">${v}</text>`;
-  s += `<line class="t2" x1="${x(2)}" x2="${x(2)}" y1="8" y2="62"/><text class="t2lab" x="${x(2) - 6}" y="16" text-anchor="end">t = 2 · one test</text>`;
-  s += `<line class="bar" x1="${x(bar)}" x2="${x(bar)}" y1="8" y2="62"/><text class="barlab" x="${x(bar) - 6}" y="16" text-anchor="end" dy="${x(bar) - x(2) < 230 ? 14 : 0}">best of ${N.toLocaleString('en')} · ${f(bar)}</text>`;
-  if (t != null) s += `<circle class="pt best" cx="${x(Math.max(lo, Math.min(hi, t)))}" cy="42" r="7"/>`;
-  return s + '</svg>';
- }
- async function run(a) {
-  a = a.trim().toLowerCase();
-  if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = 'That is not a Hyperliquid address'; $('wsub').textContent = 'Expected 0x followed by 40 hex characters.'; return; }
-  // count the check as a virtual page view of /wallet/check (no address), then show the shareable URL
-  history.pushState(null, '', '/wallet/check'); history.replaceState(null, '', '/wallet/?a=' + a);
-  $('wout').hidden = false; $('whead').textContent = 'Reading the public record…'; $('wsub').textContent = ''; $('wflags').innerHTML = '';
-  $('wid').textContent = a; $('whl').href = 'https://app.hyperliquid.xyz/explorer/address/' + a;
-  let pf;
-  try { pf = await HL.fetchPortfolio(a); } catch (e) { $('whead').textContent = 'Could not reach Hyperliquid'; $('wsub').textContent = String(e.message || e); return; }
-  if (!Array.isArray(pf) || !pf.length) { $('whead').textContent = 'No history for this address'; return; }
-  const {rets, start, counted} = HL.weeklyReturns(pf), sc = HL.score(rets), v = HL.verdict(sc, N), fl = HL.flags(pf, rets, counted);
-  const [title, tag, sub] = say[v.key];
-  $('whead').textContent = title; $('wtag').innerHTML = `<span class="tag ${tag}">${v.key.replace('_', ' ')}</span>`;
-  $('wsub').textContent = sub.replace('BAR', f(v.bar)).replace('N accounts', N.toLocaleString('en') + ' accounts');
-  $('wmeter').innerHTML = meter(sc.t, v.bar);
-  $('wt').textContent = f(sc.t); $('ws').textContent = f(sc.sharpe); $('ww').textContent = sc.weeks ?? '—';
-  const need = HL.monthsToClear(v.bar, sc.sharpe), have = (sc.weeks || 0) / 4.345;
-  if (sc.sharpe == null) { $('wm').textContent = '—'; $('wml').textContent = 'needs 8 weeks of record before this can be estimated'; }
-  else if (need == null) { $('wm').textContent = 'never'; $('wml').textContent = 'at a Sharpe of zero or below, no length of record clears the bar'; }
-  else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = 'more months needed: the record already clears the leaderboard bar'; }
-  else { const m = need - have; $('wm').textContent = m >= 24 ? (m / 12).toFixed(1) + ' yr' : Math.round(m) + ' mo'; $('wml').textContent = 'more record needed to clear the leaderboard bar, if the Sharpe held'; }
-  const notes = {no_losing_week: 'No losing week in the record. Consistent with market making, funding carry or selling tail risk; t measures consistency, not the size of a loss that has not happened yet.',
-                 one_week_majority: 'One week produced more than half of all the gains. The record rests mostly on that week.',
-                 pnl_outside_record: 'Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured.'};
-  $('wflags').innerHTML = fl.map(k => `<li>${notes[k]}</li>`).join('');
-  $('wcopy').dataset.copy = location.href;
-  $('wnote').textContent = start ? `History from ${new Date(start).toISOString().slice(0, 10)}. Read ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC from api.hyperliquid.xyz.` : '';
- }
- $('wform').addEventListener('submit', e => { e.preventDefault(); run($('waddr').value); });
- document.querySelectorAll('[data-ex]').forEach(b => b.addEventListener('click', () => { $('waddr').value = b.dataset.ex; run(b.dataset.ex); }));
- const q = new URLSearchParams(location.search).get('a'); if (q) { $('waddr').value = q; run(q); }
-})();
-</script>
-""")
+""" + footer(wallet_scripts(pnl["ranked_from"], WALLET_T_EN))
     write("wallet/index.html", page)
 
 
@@ -801,7 +787,8 @@ def build_questions():
         lead, rest = bodies[slug]
         faq = ld({"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q,
                   "acceptedAnswer": {"@type": "Answer", "text": lead}}]})
-        page = head(f"{q} · Evidence Deflator", lead[:300], f"/q/{slug}/", extra=faq) + header("") + f"""
+        alt = {"en": f"/q/{slug}/", "zh-Hans": f"/zh-hans/q/{slug}/", "zh-Hant": f"/zh-hant/q/{slug}/"}
+        page = head(f"{q} · Evidence Deflator", lead[:300], f"/q/{slug}/", extra=faq, alt=alt) + header("", alt) + f"""
 <main class="container article"><div class="split">
 <article class="prose">
 <div class="eyebrow"><span class="dot"></span>Question · data as of {day}</div>
@@ -931,6 +918,8 @@ def main():
     build_404()
     build_questions()
     build_legal()
+    import site_zh
+    site_zh.build(_sys.modules[__name__])
     inject_chrome()
     build_crawl_files()
 

@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install markdown
+      - run: pip install markdown opencc-python-reimplemented==0.1.7
       - name: Build board and cohort
         run: |
           python tools/build_hl_board.py --cache .hlcache --refresh \
@@ -30,9 +30,9 @@ jobs:
         run: |
           git config user.name "hl-daily"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/hl/latest.json docs/wallet/index.html docs/index.html docs/sitemap.xml docs/q
+          git add docs/data/hl/latest.json docs/wallet/index.html docs/index.html docs/sitemap.xml docs/q docs/zh-hans docs/zh-hant
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: Hyperliquid board $(date -u +%Y-%m-%d)"
           git push
           sleep 90  # let Pages deploy before the engines come to look
-          python tools/indexnow.py / /wallet/ || echo "IndexNow ping failed (not fatal)"
+          python tools/indexnow.py / /wallet/ /zh-hans/ /zh-hant/ || echo "IndexNow ping failed (not fatal)"

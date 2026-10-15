@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>查 Hyperliquid 钱包：实力还是运气 · Evidence Deflator</title>
+<meta name="description" content="贴入任意 Hyperliquid 地址，看它的战绩能不能和运气分开，还差几个月才够。">
+<link rel="canonical" href="https://evidencedeflator.com/zh-hans/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="查 Hyperliquid 钱包：实力还是运气 · Evidence Deflator">
+<meta property="og:description" content="贴入任意 Hyperliquid 地址，看它的战绩能不能和运气分开，还差几个月才够。">
+<meta property="og:url" content="https://evidencedeflator.com/zh-hans/">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="alternate" hreflang="en" href="https://evidencedeflator.com/wallet/">
+<link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/">
+<link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/">
+<link rel="alternate" hreflang="x-default" href="https://evidencedeflator.com/wallet/">
+<style>:root{--serif:'Source Serif 4',Georgia,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;--sans:Inter,'PingFang SC','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Evidence Deflator · 查 Hyperliquid 钱包", "url": "https://evidencedeflator.com/zh-hans/", "applicationCategory": "FinanceApplication", "operatingSystem": "Web", "description": "Checks whether a trading record, such as a Hyperliquid wallet or a leaderboard winner, can be told apart from luck once you allow for how it was picked.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "license": "https://opensource.org/licenses/MIT", "codeRepository": "https://github.com/Beltran12138/evidence-deflator", "sameAs": ["https://github.com/Beltran12138/evidence-deflator"], "inLanguage": "zh-Hans"}</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e38b718917cf4c2891f9038a6a597a88", "spa": true}'></script>
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/zh-hans/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="主导航"><a href="/zh-hans/" aria-current="page">查钱包</a><a href="/zh-hans/q/hyperliquid-trader-skill-or-luck/">实力还是运气？</a><a href="/zh-hans/q/how-many-months-of-backtest/">要几个月？</a><a href="/zh-hans/q/why-leaderboard-winner-is-not-evidence/">榜首不算证据</a><a href="/method/">方法（英文）</a></nav>
+<div class="header-cta"><a class="gh" href="/zh-hans/" hreflang="zh-Hans" lang="zh-Hans" aria-current="page">简体</a><a class="gh" href="/zh-hant/" hreflang="zh-Hant" lang="zh-Hant">繁體</a><a class="gh" href="/wallet/" hreflang="en" lang="en">EN</a><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main>
+<div class="container page-head">
+ <div class="eyebrow"><span class="dot"></span>Hyperliquid · 钱包检验 · 公开数据，在你的浏览器里计算</div>
+ <h1>贴一个 Hyperliquid 地址，看它的战绩有多少算数。</h1>
+ <p class="lede">排行榜只告诉你谁赚得最多，不告诉你那会不会只是运气。这个页面读取钱包公开的盈亏历史，只回答一个问题：证据有多强，还要多久才可能够强？</p>
+ <form class="wcheck" id="wform" autocomplete="off">
+  <input id="waddr" name="a" placeholder="0x… Hyperliquid 地址" spellcheck="false" aria-label="Hyperliquid 地址">
+  <button class="btn btn-primary" type="submit">检验 <span class="arr">→</span></button>
+ </form>
+ <div class="wex muted small">试试：<button class="linkbtn" data-ex="0xdfc24b077bc1425ad1dea75bcb6f8158e10df303">PnL 榜前 100 里 t 最高的</button><button class="linkbtn" data-ex="0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05">PnL 榜前 100 的中位数</button><button class="linkbtn" data-ex="0x4d21e561c54302a4e6646fa9051aae68960d10fe">30 日 ROI 榜第 1</button></div>
+</div>
+
+<div class="container" id="wout" hidden>
+ <div class="instrument wres">
+  <div class="instrument-head"><span class="t mono" id="wid"></span><span id="wtag"></span></div>
+  <div class="instrument-body"><h2 id="whead" style="margin:18px 4px 6px"></h2><p id="wsub" class="muted" style="margin:0 4px 10px"></p>
+   <div class="chart" id="wmeter"></div></div>
+  <div class="instrument-foot">
+   <div><b id="wt">—</b><span>t 值，已按记录长度校正</span></div>
+   <div><b id="ws">—</b><span>年化夏普比率（按周）</span></div>
+   <div><b id="ww">—</b><span>账户高于 $1k 的周数</span></div>
+   <div><b id="wm">—</b><span id="wml">按当前夏普，过排行榜门槛需要的记录月数</span></div>
+  </div>
+ </div>
+ <ul class="wflags" id="wflags"></ul>
+ <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">复制这个结果的链接</span><span class="ok">已复制</span></button>
+  <a class="btn btn-secondary" id="whl" href="#" rel="noopener">在 Hyperliquid 上查看</a></div>
+ <p class="muted small" id="wnote"></p>
+</div>
+
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Hyperliquid 官方排行榜，重新打分 · 2026-10-14</div><h2 style="margin-top:12px">榜单按利润排名。前 100 名里，没有一个过得了「从 47,153 个账户里挑出来」的门槛。</h2></div></div>
+ <div class="stats" style="margin:8px 0 26px">
+  <div><b class="c-accent">0 / 98</b><span>全期 PnL 前 100 中，过「47,153 选 1」门槛（t ≥ 4.90）的数量</span></div>
+  <div><b>8 / 98</b><span>假如是随手挑中、没经过筛选，能过单次检验（t ≥ 2）的数量</span></div>
+  <div><b class="c-accent">0 / 80</b><span>30 日 ROI 前 100（账户 ≥ $10k）中过门槛的数量；5 个能过单次检验。</span></div>
+ </div>
+ <div class="table-wrap"><table class="data"><thead><tr><th class="r">PnL 排名</th><th>钱包</th><th class="r">全期 PnL</th><th class="r">周数</th><th class="r">t</th><th>占门槛的比例</th></tr></thead><tbody><tr><td class="r">1</td><td><a class="mono" href="/zh-hans/?a=0x03ad92c36f19f093194983221962ccc3bee3cfa3">0x03ad…cfa3</a></td><td class="r">$645.2M</td><td class="r">—</td><td class="r">—<sup>†</sup></td><td><span class="mbar"><span class="track"><span class="fill" style="width:0.0%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">2</td><td><a class="mono" href="/zh-hans/?a=0x4ec8fe22a531a96c8a846aaf5cbef73202649a80">0x4ec8…9a80</a></td><td class="r">$445.0M</td><td class="r">28.9</td><td class="r">-2.57<sup>†</sup></td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:52.4%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">3</td><td><a class="mono" href="/zh-hans/?a=0x393d0b87ed38fc779fd9611144ae649ba6082109">0x393d…2109</a></td><td class="r">$388.5M</td><td class="r">64.9</td><td class="r">0.99</td><td><span class="mbar"><span class="track"><span class="fill" style="width:20.3%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">4</td><td><a class="mono" href="/zh-hans/?a=0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00">0xecb6…2b00</a></td><td class="r">$208.3M</td><td class="r">141.9</td><td class="r">1.66</td><td><span class="mbar"><span class="track"><span class="fill" style="width:33.9%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">5</td><td><a class="mono" href="/zh-hans/?a=0x8d68efbf06fb8cf932518bcb53705e674c4852dc">0x8d68…52dc</a></td><td class="r">$177.6M</td><td class="r">25.9</td><td class="r">0.27<sup>†</sup></td><td><span class="mbar"><span class="track"><span class="fill" style="width:5.5%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">6</td><td><a class="mono" href="/zh-hans/?a=0x5b5d51203a0f9079f8aeb098a6523a13f298c060">0x5b5d…c060</a></td><td class="r">$153.6M</td><td class="r">73.9</td><td class="r">0.50</td><td><span class="mbar"><span class="track"><span class="fill" style="width:10.3%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">7</td><td><a class="mono" href="/zh-hans/?a=0x488d2a9b70cc18ef66057a48ab3d59da1c59fe08">0x488d…fe08</a></td><td class="r">$145.7M</td><td class="r">45.0</td><td class="r">1.25</td><td><span class="mbar"><span class="track"><span class="fill" style="width:25.6%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">8</td><td><a class="mono" href="/zh-hans/?a=0x9794bbbc222b6b93c1417d01aa1ff06d42e5333b">0x9794…333b</a></td><td class="r">$144.1M</td><td class="r">104.0</td><td class="r">1.12</td><td><span class="mbar"><span class="track"><span class="fill" style="width:23.0%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">9</td><td><a class="mono" href="/zh-hans/?a=0x7fdafde5cfb5465924316eced2d3715494c517d1">0x7fda…17d1</a> · BobbyBigSize</td><td class="r">$141.2M</td><td class="r">106.0</td><td class="r">-1.18</td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:24.1%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">10</td><td><a class="mono" href="/zh-hans/?a=0xdfc24b077bc1425ad1dea75bcb6f8158e10df303">0xdfc2…f303</a></td><td class="r">$138.7M</td><td class="r">178.9</td><td class="r">3.43</td><td><span class="mbar"><span class="track"><span class="fill" style="width:69.9%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">11</td><td><a class="mono" href="/zh-hans/?a=0x20c2d95a3dfdca9e9ad12794d5fa6fad99da44f5">0x20c2…44f5</a></td><td class="r">$122.5M</td><td class="r">86.0</td><td class="r">0.94</td><td><span class="mbar"><span class="track"><span class="fill" style="width:19.2%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">12</td><td><a class="mono" href="/zh-hans/?a=0x880ac484a1743862989a441d6d867238c7aa311c">0x880a…311c</a> · x.com/SilkBtc</td><td class="r">$121.1M</td><td class="r">102.9</td><td class="r">-0.81</td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:16.6%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">13</td><td><a class="mono" href="/zh-hans/?a=0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36">0xb83d…6e36</a></td><td class="r">$118.9M</td><td class="r">84.9</td><td class="r">-0.93</td><td><span class="mbar"><span class="track"><span class="fill neg" style="width:19.0%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">14</td><td><a class="mono" href="/zh-hans/?a=0x493db0ed7514c975e9abcc110bd40c473b6763e3">0x493d…63e3</a></td><td class="r">$116.9M</td><td class="r">97.0</td><td class="r">1.13</td><td><span class="mbar"><span class="track"><span class="fill" style="width:23.1%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr><tr><td class="r">15</td><td><a class="mono" href="/zh-hans/?a=0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50">0xbdfa…5c50</a></td><td class="r">$115.0M</td><td class="r">156.9</td><td class="r">1.23</td><td><span class="mbar"><span class="track"><span class="fill" style="width:25.0%"></span><span class="t2" style="left:40.8%"></span></span></span></td></tr></tbody></table></div>
+ <p class="muted small" style="margin-top:10px">门槛：单个结果需要 t ≥ 2；从 N 个账户的榜单里扫出来的钱包，要过「N 选 1」的门槛，这里是 4.90。† 这个钱包的大部分盈亏是在账户不足 $1,000 时记下的，无法换算成收益率；t 只覆盖能测量的那些周。全部 100 + 100 行见 <a href="/data/hl/latest.json">latest.json</a>（由 <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/tools/build_hl_board.py"><code>tools/build_hl_board.py</code></a> 生成）。</p>
+</div></section>
+
+<section><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">前向记录 · 2026-10-14 冻结</div><h2 style="margin-top:12px">同样这 200 个钱包，只按从冻结那一刻起的表现打分。</h2>
+ <p>回头翻出来的战绩，都是事后挑过的。所以我们在 2026-10-14 把当天两个前 100 名单冻结下来，每天公开每个钱包在那一刻之后的表现。冻结之前的一概不算，名单也改不了：它的哈希值在下面，修改历史在 git 里。</p></div></div>
+ <div class="stats" style="margin:8px 0 18px">
+  <div><b>200</b><span>个钱包，冻结于 2026-10-14 09:48 UTC</span></div>
+  <div><b>2026-12-09</b><span>首次读数：钱包要在冻结后累积 8 周记录才有 t 值</span></div>
+  <div><b>每天</b><span>由仓库里的定时任务从公开 API 刷新</span></div>
+ </div>
+ <p class="muted small mono" style="overflow-wrap:anywhere">cohort-2026-10-14.json · sha256 aacda553127fcc213669fc9ca05fd0dfe9de25a1b11d67a63974e867f3f36609</p>
+ <div class="btns" style="margin-top:12px"><a class="btn btn-secondary" href="/data/hl/cohort-2026-10-14.json">冻结名单</a><a class="btn btn-secondary" href="/data/hl/latest.json">每日分数（JSON）</a></div>
+</div></section>
+
+<section><div class="container narrow prose">
+ <h2>怎么读一个钱包</h2>
+ <p><strong>收益率来自盈亏，不来自账户余额。</strong>账户余额会随充值和提现变化，盈亏不会。每周收益率 = 累计盈亏在这一周的变化 ÷ 周初的账户价值。周初账户低于 $1,000 的周跳过。</p>
+ <p><strong>按周算，因为历史数据就是这样存的。</strong>Hyperliquid 较早的历史大约一周一个点，最近的几分钟一个点。所有数据放到同一个周网格上；没有新数据点的周并入下一周，不记为零。</p>
+ <p><strong>短记录不会被高估。</strong>只有几周数据算出来的 t 尾部很厚：8 周记录、完全没有实力，t ≥ 2 出现的频率大约是门槛假设的两倍。所以 t 取自按记录有效自由度计算的 Student t 分布（靠少数几段长间隔撑起来的记录，自由度更低），再换回常用的尺度。记录长时，它接近 夏普 × √年数；记录短时会更低。已检验：没有实力时，无论历史采样多稀疏，达到 2 的比例都保持在名义上的 2.3%。</p>
+ <p><strong>两个门槛。</strong>如果你没有经过任何筛选就来看这个钱包，t ≥ 2 是常用门槛。如果你是在排行榜上排序找到它的，你就是从很多个里挑了最好的那个，门槛会随候选数量上升（对 47,153 个账户做 Bonferroni 校正：4.90）。大多数人都是在排行榜上找到钱包的。</p>
+ <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。</p>
+ <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。地址不会发送给我们；我们用 Cloudflare Web Analytics 统计页面访问和检验次数，不使用 cookie。 方法：<a href="/method/">Method（英文）</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
+</div></section>
+</main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/zh-hans/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">交易战绩是实力还是运气？开源的证据检验工具，看一份记录里有多少算数。</p></div>
+ <div><h4>产品</h4><ul><li><a href="/zh-hans/">查钱包</a></li><li><a href="/api/">API（英文）</a></li><li><a href="/">英文版首页</a></li></ul></div>
+ <div><h4>问题</h4><ul><li><a href="/zh-hans/q/hyperliquid-trader-skill-or-luck/">实力还是运气？</a></li><li><a href="/zh-hans/q/how-many-months-of-backtest/">要几个月？</a></li><li><a href="/zh-hans/q/why-leaderboard-winner-is-not-evidence/">榜首不算证据</a></li></ul></div>
+ <div><h4>项目</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="/privacy/">隐私（英文）</a></li><li><a href="/terms/">条款（英文）</a></li></ul></div>
+</div>
+<div class="foot-note"><span>开源 · MIT · v0.2.0</span><span>统计估计，不构成投资建议。</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>
+<script>window.WALLET = {"N": 47153, "T": {"say": {"loses": ["亏损，而且不是运气差", "tag-red", "t 不高于 −2：在能测量的那些周里，这个钱包亏得太稳定，运气解释不了。"], "luck": ["和运气分不开", "tag-red", "t 低于 2：这样的记录靠运气出现的频率太高，说明不了实力。"], "clears_single": ["过了单次检验，没过排行榜门槛", "tag-amber", "如果你是随手挑中这个钱包的，这个强度够了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["过了排行榜门槛", "tag-green", "即使考虑到它是从 {N} 个账户里挑出来的，这份记录也够强。"], "too_short": ["记录太短，还说不了", "tag-grey", "账户里至少有 $1,000 的历史不足 8 周。"]}, "tag": {"loses": "亏损", "luck": "运气", "clears_single": "单次通过", "clears_board": "过门槛", "too_short": "太短"}, "meterAria": "t 与两个门槛", "meterT2": "t = 2 · 单次检验", "meterBest": "{N} 选 1 · {bar}", "notAddr": ["这不是 Hyperliquid 地址", "应为 0x 加 40 位十六进制字符。"], "reading": "正在读取公开记录…", "noReach": "连不上 Hyperliquid", "noHist": "这个地址没有历史记录", "months": {"noSharpe": "至少要有 8 周记录才能估计", "never": ["永远", "夏普为零或负数时，多长的记录都过不了门槛"], "done": "个月：记录已经过了排行榜门槛", "more": "如果夏普保持不变，过排行榜门槛还需要的记录", "yr": " 年", "mo": " 个月"}, "notes": {"no_losing_week": "记录里没有一个亏损周。这和做市、吃资金费率或卖尾部风险的策略一致；t 衡量的是稳定性，不是一笔还没发生的亏损有多大。", "one_week_majority": "单独一周贡献了一半以上的收益，这份记录主要靠那一周撑着。", "pnl_outside_record": "全期盈亏的大部分记在账户不足 $1,000 的时段，无法换算成收益率。结论只覆盖能测量的那些周。"}, "wnote": "历史起于 {start}。{now} UTC 读取自 api.hyperliquid.xyz。", "checkPath": "/zh-hans/check", "selfPath": "/zh-hans/"}};</script>
+<script src="/assets/wallet.js"></script>
+</body>
+</html>

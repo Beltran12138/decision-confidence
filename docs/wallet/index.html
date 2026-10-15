@@ -18,6 +18,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css">
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="alternate" hreflang="en" href="https://evidencedeflator.com/wallet/">
+<link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/">
+<link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/">
+<link rel="alternate" hreflang="x-default" href="https://evidencedeflator.com/wallet/">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Evidence Deflator · Hyperliquid wallet check", "url": "https://evidencedeflator.com/wallet/", "applicationCategory": "FinanceApplication", "operatingSystem": "Web", "description": "Checks whether a trading record, such as a Hyperliquid wallet or a leaderboard winner, can be told apart from luck once you allow for how it was picked.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "license": "https://opensource.org/licenses/MIT", "codeRepository": "https://github.com/Beltran12138/evidence-deflator", "sameAs": ["https://github.com/Beltran12138/evidence-deflator"]}</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e38b718917cf4c2891f9038a6a597a88", "spa": true}'></script>
 </head>
@@ -25,7 +29,7 @@
 <header class="site-header"><div class="container">
 <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
 <nav class="nav" aria-label="Main"><a href="/wallet/" aria-current="page">Check a wallet</a><a href="/leaderboard/">Leaderboard</a><a href="/audits/">Audits</a><a href="/check/">Check a backtest</a><a href="/method/">Method</a><a href="/api/">API</a></nav>
-<div class="header-cta"><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+<div class="header-cta"><a class="gh" href="/zh-hans/" hreflang="zh-Hans" lang="zh-Hans">中文</a><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
 </div></header>
 
 <main>
@@ -103,59 +107,7 @@
 </div></footer>
 <script src="/assets/site.js"></script>
 <script src="/assets/site.js"></script><script src="/assets/hl.js"></script>
-<script>
-(() => {
- const N = 47153, $ = id => document.getElementById(id), f = (x, d=2) => x == null ? '—' : Number(x).toFixed(d);
- const say = {
-  loses: ['Losing, and not by chance', 'tag-red', 't is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain.'],
-  luck: ['Cannot be told apart from luck', 'tag-red', 't is below 2: a record like this turns up by chance often enough that it says little about skill.'],
-  clears_single: ['Passes one test, not the leaderboard bar', 'tag-amber', 'Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ BAR.'],
-  clears_board: ['Clears the leaderboard bar', 'tag-green', 'The record is strong enough even allowing for having been picked from N accounts.'],
-  too_short: ['Too short to say', 'tag-grey', 'Fewer than 8 weeks of history with at least $1,000 in the account.']
- };
- function meter(t, bar) {
-  const lo = Math.min(-1, Math.floor(t ?? 0)), hi = Math.max(Math.ceil(bar + .5), Math.ceil(t ?? 0)), W = 1000, H = 92, L = 14, R = 14;
-  const x = v => L + (v - lo) / (hi - lo) * (W - L - R);
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="t against the two bars">`;
-  s += `<rect class="zone" x="${x(bar)}" y="22" width="${W - R - x(bar)}" height="40"/>`;
-  for (let v = lo; v <= hi; v++) s += `<line class="ax" x1="${x(v)}" x2="${x(v)}" y1="22" y2="62"/><text class="lab" x="${x(v)}" y="84" text-anchor="middle">${v}</text>`;
-  s += `<line class="t2" x1="${x(2)}" x2="${x(2)}" y1="8" y2="62"/><text class="t2lab" x="${x(2) - 6}" y="16" text-anchor="end">t = 2 · one test</text>`;
-  s += `<line class="bar" x1="${x(bar)}" x2="${x(bar)}" y1="8" y2="62"/><text class="barlab" x="${x(bar) - 6}" y="16" text-anchor="end" dy="${x(bar) - x(2) < 230 ? 14 : 0}">best of ${N.toLocaleString('en')} · ${f(bar)}</text>`;
-  if (t != null) s += `<circle class="pt best" cx="${x(Math.max(lo, Math.min(hi, t)))}" cy="42" r="7"/>`;
-  return s + '</svg>';
- }
- async function run(a) {
-  a = a.trim().toLowerCase();
-  if (!/^0x[0-9a-f]{40}$/.test(a)) { $('wout').hidden = false; $('whead').textContent = 'That is not a Hyperliquid address'; $('wsub').textContent = 'Expected 0x followed by 40 hex characters.'; return; }
-  // count the check as a virtual page view of /wallet/check (no address), then show the shareable URL
-  history.pushState(null, '', '/wallet/check'); history.replaceState(null, '', '/wallet/?a=' + a);
-  $('wout').hidden = false; $('whead').textContent = 'Reading the public record…'; $('wsub').textContent = ''; $('wflags').innerHTML = '';
-  $('wid').textContent = a; $('whl').href = 'https://app.hyperliquid.xyz/explorer/address/' + a;
-  let pf;
-  try { pf = await HL.fetchPortfolio(a); } catch (e) { $('whead').textContent = 'Could not reach Hyperliquid'; $('wsub').textContent = String(e.message || e); return; }
-  if (!Array.isArray(pf) || !pf.length) { $('whead').textContent = 'No history for this address'; return; }
-  const {rets, start, counted} = HL.weeklyReturns(pf), sc = HL.score(rets), v = HL.verdict(sc, N), fl = HL.flags(pf, rets, counted);
-  const [title, tag, sub] = say[v.key];
-  $('whead').textContent = title; $('wtag').innerHTML = `<span class="tag ${tag}">${v.key.replace('_', ' ')}</span>`;
-  $('wsub').textContent = sub.replace('BAR', f(v.bar)).replace('N accounts', N.toLocaleString('en') + ' accounts');
-  $('wmeter').innerHTML = meter(sc.t, v.bar);
-  $('wt').textContent = f(sc.t); $('ws').textContent = f(sc.sharpe); $('ww').textContent = sc.weeks ?? '—';
-  const need = HL.monthsToClear(v.bar, sc.sharpe), have = (sc.weeks || 0) / 4.345;
-  if (sc.sharpe == null) { $('wm').textContent = '—'; $('wml').textContent = 'needs 8 weeks of record before this can be estimated'; }
-  else if (need == null) { $('wm').textContent = 'never'; $('wml').textContent = 'at a Sharpe of zero or below, no length of record clears the bar'; }
-  else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = 'more months needed: the record already clears the leaderboard bar'; }
-  else { const m = need - have; $('wm').textContent = m >= 24 ? (m / 12).toFixed(1) + ' yr' : Math.round(m) + ' mo'; $('wml').textContent = 'more record needed to clear the leaderboard bar, if the Sharpe held'; }
-  const notes = {no_losing_week: 'No losing week in the record. Consistent with market making, funding carry or selling tail risk; t measures consistency, not the size of a loss that has not happened yet.',
-                 one_week_majority: 'One week produced more than half of all the gains. The record rests mostly on that week.',
-                 pnl_outside_record: 'Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured.'};
-  $('wflags').innerHTML = fl.map(k => `<li>${notes[k]}</li>`).join('');
-  $('wcopy').dataset.copy = location.href;
-  $('wnote').textContent = start ? `History from ${new Date(start).toISOString().slice(0, 10)}. Read ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC from api.hyperliquid.xyz.` : '';
- }
- $('wform').addEventListener('submit', e => { e.preventDefault(); run($('waddr').value); });
- document.querySelectorAll('[data-ex]').forEach(b => b.addEventListener('click', () => { $('waddr').value = b.dataset.ex; run(b.dataset.ex); }));
- const q = new URLSearchParams(location.search).get('a'); if (q) { $('waddr').value = q; run(q); }
-})();
-</script>
+<script>window.WALLET = {"N": 47153, "T": {"say": {"loses": ["Losing, and not by chance", "tag-red", "t is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain."], "luck": ["Cannot be told apart from luck", "tag-red", "t is below 2: a record like this turns up by chance often enough that it says little about skill."], "clears_single": ["Passes one test, not the leaderboard bar", "tag-amber", "Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ {BAR}."], "clears_board": ["Clears the leaderboard bar", "tag-green", "The record is strong enough even allowing for having been picked from {N} accounts."], "too_short": ["Too short to say", "tag-grey", "Fewer than 8 weeks of history with at least $1,000 in the account."]}, "tag": {"loses": "loses", "luck": "luck", "clears_single": "clears single", "clears_board": "clears board", "too_short": "too short"}, "meterAria": "t against the two bars", "meterT2": "t = 2 · one test", "meterBest": "best of {N} · {bar}", "notAddr": ["That is not a Hyperliquid address", "Expected 0x followed by 40 hex characters."], "reading": "Reading the public record…", "noReach": "Could not reach Hyperliquid", "noHist": "No history for this address", "months": {"noSharpe": "needs 8 weeks of record before this can be estimated", "never": ["never", "at a Sharpe of zero or below, no length of record clears the bar"], "done": "more months needed: the record already clears the leaderboard bar", "more": "more record needed to clear the leaderboard bar, if the Sharpe held", "yr": " yr", "mo": " mo"}, "notes": {"no_losing_week": "No losing week in the record. Consistent with market making, funding carry or selling tail risk; t measures consistency, not the size of a loss that has not happened yet.", "one_week_majority": "One week produced more than half of all the gains. The record rests mostly on that week.", "pnl_outside_record": "Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured."}, "wnote": "History from {start}. Read {now} UTC from api.hyperliquid.xyz.", "checkPath": "/wallet/check", "selfPath": "/wallet/"}};</script>
+<script src="/assets/wallet.js"></script>
 </body>
 </html>
