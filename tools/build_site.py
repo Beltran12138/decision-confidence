@@ -9,7 +9,7 @@ the library that tools/check_js_parity.py diffs, and three older pages) only get
 their marked head, header and footer blocks refreshed.
 Needs the `markdown` package for the audit pages; nothing at runtime.
 """
-import html, json, os, re
+import hashlib, html, json, os, re
 
 import markdown
 
@@ -558,10 +558,16 @@ WALLET_T_EN = {
 }
 
 
+def asset(name):
+    """/assets/<name>?v=<content hash>: the Cloudflare edge caches assets, so a changed file needs a new URL."""
+    with open(os.path.join(DOCS, "assets", name), "rb") as f:
+        return f"/assets/{name}?v={hashlib.sha256(f.read()).hexdigest()[:8]}"
+
+
 def wallet_scripts(n_accounts, strings):
     data = json.dumps({"N": n_accounts, "T": strings}, ensure_ascii=False).replace("</", "<\\/")
-    return (f'<script src="/assets/site.js"></script><script src="/assets/hl.js"></script>\n'
-            f'<script>window.WALLET = {data};</script>\n<script src="/assets/wallet.js"></script>\n')
+    return (f'<script src="/assets/site.js"></script><script src="{asset("hl.js")}"></script>\n'
+            f'<script>window.WALLET = {data};</script>\n<script src="{asset("wallet.js")}"></script>\n')
 
 
 def build_wallet():
