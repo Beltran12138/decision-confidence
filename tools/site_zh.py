@@ -96,7 +96,7 @@ WALLET_T = {
         "loses": ["亏损，而且不是运气差", "tag-red", "t 不高于 −2：在能测量的那些周里，这个钱包亏得太稳定，运气解释不了。"],
         "luck": ["和运气分不开", "tag-red", "t 低于 2：这样的记录靠运气出现的频率太高，说明不了实力。"],
         "clears_single": ["过了单次检验，没过排行榜门槛", "tag-amber", "如果你是随手挑中这个钱包的，这个强度够了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"],
-        "clears_board": ["过了排行榜门槛", "tag-green", "即使考虑到它是从 {N} 个账户里挑出来的，这份记录也够强。"],
+        "clears_board": ["过了排行榜门槛", "tag-green", "即使考虑到它是从 {N} 个{U}里挑出来的，这份记录也够强。"],
         "too_short": ["记录太短，还说不了", "tag-grey", "账户里至少有 $1,000 的历史不足 8 周。"],
     },
     "tag": {"loses": "亏损", "luck": "运气", "clears_single": "单次通过", "clears_board": "过门槛", "too_short": "太短"},
@@ -111,6 +111,9 @@ WALLET_T = {
               "one_week_majority": "单独一周贡献了一半以上的收益，这份记录主要靠那一周撑着。",
               "pnl_outside_record": "全期盈亏的大部分记在账户不足 $1,000 的时段，无法换算成收益率。结论只覆盖能测量的那些周。"},
     "wnote": "历史起于 {start}。{now} UTC 读取自 api.hyperliquid.xyz。",
+    "unitAcct": "账户", "unitVault": "金库（vault）",
+    "vault": "这是一个金库（vault）：{name}。管理人自己持有 {lf}%，从存款人的盈利里抽 {c}%；分数按金库抽成前的盈亏计算。",
+    "vaultBar": "门槛按「从 Hyperliquid 列出的 {NV} 个金库里挑出」计算，包括已关闭的。",
 }
 
 
@@ -187,6 +190,7 @@ def wallet_page(B, hl, lang):
  <div class="instrument wres">
   <div class="instrument-head"><span class="t mono" id="wid"></span><span id="wtag"></span></div>
   <div class="instrument-body"><h2 id="whead" style="margin:18px 4px 6px"></h2><p id="wsub" class="muted" style="margin:0 4px 10px"></p>
+   <p id="wvault" class="muted small" style="margin:0 4px 10px" hidden></p>
    <div class="chart" id="wmeter"></div></div>
   <div class="instrument-foot">
    <div><b id="wt">—</b><span>t 值，已按记录长度校正</span></div>
@@ -222,7 +226,7 @@ def wallet_page(B, hl, lang):
  <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。{PRIVACY} 方法：<a href="{P}method/">方法</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
 </div></section>
 </main>
-""" + footer(B, P, B.wallet_scripts(N, T))
+""" + footer(B, P, B.wallet_scripts(N, T, (hl.get("vaults") or {}).get("listed")))
     return finish(page, lang)
 
 

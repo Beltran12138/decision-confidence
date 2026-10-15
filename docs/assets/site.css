@@ -143,6 +143,8 @@ table.data tr.hl td{background:var(--accent-soft)}
 .chart .t2{stroke:var(--muted);stroke-dasharray:3 4} .chart .t2lab{fill:var(--muted);font:11.5px var(--mono)}
 .chart .zone{fill:var(--accent-soft)} .chart .zonelab{fill:var(--accent);font:11px var(--mono);opacity:.8}
 .chart .pt{fill:var(--ink);fill-opacity:.45} .chart .pt.best{fill:var(--ink);fill-opacity:1}
+.chart .pt.slide{transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion:reduce){.chart .pt.slide{transition:none}}
 .chart .src{fill:var(--faint);font:10.5px var(--mono)}
 
 /* ---------- article (audits, method) ---------- */
@@ -191,6 +193,11 @@ table.data tr.hl td{background:var(--accent-soft)}
   .stats > div{flex-basis:100%;border-right:0;margin-right:0;border-bottom:1px solid var(--rule);padding-right:0}
   .stats > div:last-child{border-bottom:0}
   .hero{padding-block:48px 40px}
+  .instrument-foot{display:grid;grid-template-columns:1fr 1fr}
+  .instrument-foot div{padding:14px 16px;border-right:0;border-bottom:1px solid var(--rule-2)}
+  .instrument-foot div:nth-child(odd){border-right:1px solid var(--rule-2)}
+  .instrument-foot div:nth-last-child(-n+2){border-bottom:0}
+  .instrument-foot b{font-size:24px}
 }
 h1 code,h2 code,h3 code,.row-title code{font-size:.78em;padding:2px 7px;vertical-align:.08em}
 

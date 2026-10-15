@@ -84,6 +84,9 @@ main{height:100%;padding:58px 0 46px;display:flex}
 .facts li::before{content:'—  ';color:var(--gold)}
 .qr2{text-align:center;font-size:14px;color:var(--dim);font-family:Consolas,monospace}.qr2 svg{display:block;margin:0 auto 6px}
 [data-l="en"] .zh,[data-l="zh"] .en{display:none}
+/* phones: the deck is built for a projector; keep it inside the screen when opened from the QR code */
+@media (max-width:640px){header{padding:0 14px;gap:10px}.brand em{display:none}nav{gap:2px;overflow-x:auto;min-width:0}nav button{padding:6px 7px;flex-shrink:0}
+ .slide{padding:0 16px}footer{padding:0 14px;font-size:11px}footer .keys{display:none}}
 </style>
 </head>
 <body data-l="zh">

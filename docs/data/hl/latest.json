@@ -5291,5 +5291,10 @@
     "t": null
    }
   ]
+ },
+ "vaults": {
+  "source": "https://stats-data.hyperliquid.xyz/Mainnet/vaults",
+  "listed": 9477,
+  "open": 3086
  }
 }

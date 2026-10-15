@@ -34,6 +34,7 @@ from hl_wallet import (  # noqa: E402,F401  (re-exported for tests and tools/che
 )
 
 LB_URL = "https://stats-data.hyperliquid.xyz/Mainnet/leaderboard"
+VAULTS_URL = "https://stats-data.hyperliquid.xyz/Mainnet/vaults"
 
 
 def curl(args):
@@ -64,6 +65,25 @@ def fetch_portfolio(cache, addr, refresh):
         time.sleep(0.25)
     with open(p, encoding="utf-8") as f:
         return dict(json.load(f))
+
+
+def count_vaults(cache, refresh):
+    """How many vaults Hyperliquid lists, open and closed: the N for a vault picked off the vault page.
+
+    Closed vaults count because a vault that looks good today was picked from every vault that was
+    started, including the ones that closed. None if the list cannot be fetched (the board still builds).
+    """
+    p = os.path.join(cache, "vaults.json")
+    try:
+        if refresh or not os.path.exists(p):
+            with open(p, "wb") as f:
+                f.write(curl([VAULTS_URL]))
+        with open(p, encoding="utf-8") as f:
+            vaults = json.load(f)
+        return {"listed": len(vaults), "open": sum(not v["summary"].get("isClosed") for v in vaults)}
+    except Exception as ex:
+        print("vault list:", ex, file=sys.stderr)
+        return None
 
 
 def window(row, name):
@@ -183,6 +203,7 @@ def main():
             "rows": fwd,
         }
 
+    vaults = count_vaults(a.cache, a.refresh)
     result = {
         "source": LB_URL,
         # when the leaderboard was fetched (the cache may be reused across builds)
@@ -190,6 +211,7 @@ def main():
         "method": "weekly returns = delta cumulative PnL / account value at week start; t = Sharpe*sqrt(years)",
         "boards": boards,
         "cohort": cohort,
+        "vaults": vaults and {"source": VAULTS_URL, **vaults},
     }
     s = json.dumps(result, indent=1, ensure_ascii=False)
     if a.out:

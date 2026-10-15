@@ -16,8 +16,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="/assets/chrome.css">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/chrome.css?v=c240ffff">
+<link rel="stylesheet" href="/assets/site.css?v=02e101b3">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/wallet/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/">
@@ -50,6 +50,7 @@
  <div class="instrument wres">
   <div class="instrument-head"><span class="t mono" id="wid"></span><span id="wtag"></span></div>
   <div class="instrument-body"><h2 id="whead" style="margin:18px 4px 6px"></h2><p id="wsub" class="muted" style="margin:0 4px 10px"></p>
+   <p id="wvault" class="muted small" style="margin:0 4px 10px" hidden></p>
    <div class="chart" id="wmeter"></div></div>
   <div class="instrument-foot">
    <div><b id="wt">—</b><span>t 值，已按記錄長度校正</span></div>
@@ -108,8 +109,8 @@
 <div class="foot-note"><span>開源 · MIT · v0.2.0</span><span>統計估計，不構成投資建議。</span></div>
 </div></footer>
 <script src="/assets/site.js"></script>
-<script src="/assets/site.js"></script><script src="/assets/hl.js?v=d2315cb3"></script>
-<script>window.WALLET = {"N": 47039, "T": {"say": {"loses": ["虧損，而且不是運氣差", "tag-red", "t 不高於 −2：在能測量的那些週裏，這個錢包虧得太穩定，運氣解釋不了。"], "luck": ["和運氣分不開", "tag-red", "t 低於 2：這樣的記錄靠運氣出現的頻率太高，說明不了實力。"], "clears_single": ["過了單次檢驗，沒過排行榜門檻", "tag-amber", "如果你是隨手挑中這個錢包的，這個強度夠了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["過了排行榜門檻", "tag-green", "即使考慮到它是從 {N} 個帳戶裏挑出來的，這份記錄也夠強。"], "too_short": ["記錄太短，還說不了", "tag-grey", "帳戶裏至少有 $1,000 的歷史不足 8 週。"]}, "tag": {"loses": "虧損", "luck": "運氣", "clears_single": "單次通過", "clears_board": "過門檻", "too_short": "太短"}, "meterAria": "t 與兩個門檻", "meterT2": "t = 2 · 單次檢驗", "meterBest": "{N} 選 1 · {bar}", "notAddr": ["這不是 Hyperliquid 地址", "應為 0x 加 40 位十六進制字符。"], "reading": "正在讀取公開記錄…", "noReach": "連不上 Hyperliquid", "noHist": "這個地址沒有歷史記錄", "months": {"noSharpe": "至少要有 8 週記錄才能估計", "never": ["永遠", "夏普為零或負數時，多長的記錄都過不了門檻"], "done": "個月：記錄已經過了排行榜門檻", "more": "如果夏普保持不變，過排行榜門檻還需要的記錄", "yr": " 年", "mo": " 個月"}, "notes": {"no_losing_week": "記錄裏沒有一個虧損週。這和做市、吃資金費率或賣尾部風險的策略一致；t 衡量的是穩定性，不是一筆還沒發生的虧損有多大。", "one_week_majority": "單獨一週貢獻了一半以上的收益，這份記錄主要靠那一週撐著。", "pnl_outside_record": "全期盈虧的大部分記在帳戶不足 $1,000 的時段，無法換算成收益率。結論只覆蓋能測量的那些週。"}, "wnote": "歷史起於 {start}。{now} UTC 讀取自 api.hyperliquid.xyz。", "selfPath": "/zh-hant/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=zh-hant"}};</script>
-<script src="/assets/wallet.js?v=353761ea"></script>
+<script src="/assets/site.js"></script><script src="/assets/hl.js?v=5515b2cb"></script>
+<script>window.WALLET = {"N": 47039, "NV": 9477, "T": {"say": {"loses": ["虧損，而且不是運氣差", "tag-red", "t 不高於 −2：在能測量的那些週裏，這個錢包虧得太穩定，運氣解釋不了。"], "luck": ["和運氣分不開", "tag-red", "t 低於 2：這樣的記錄靠運氣出現的頻率太高，說明不了實力。"], "clears_single": ["過了單次檢驗，沒過排行榜門檻", "tag-amber", "如果你是隨手挑中這個錢包的，這個強度夠了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["過了排行榜門檻", "tag-green", "即使考慮到它是從 {N} 個{U}裏挑出來的，這份記錄也夠強。"], "too_short": ["記錄太短，還說不了", "tag-grey", "帳戶裏至少有 $1,000 的歷史不足 8 週。"]}, "tag": {"loses": "虧損", "luck": "運氣", "clears_single": "單次通過", "clears_board": "過門檻", "too_short": "太短"}, "meterAria": "t 與兩個門檻", "meterT2": "t = 2 · 單次檢驗", "meterBest": "{N} 選 1 · {bar}", "notAddr": ["這不是 Hyperliquid 地址", "應為 0x 加 40 位十六進制字符。"], "reading": "正在讀取公開記錄…", "noReach": "連不上 Hyperliquid", "noHist": "這個地址沒有歷史記錄", "months": {"noSharpe": "至少要有 8 週記錄才能估計", "never": ["永遠", "夏普為零或負數時，多長的記錄都過不了門檻"], "done": "個月：記錄已經過了排行榜門檻", "more": "如果夏普保持不變，過排行榜門檻還需要的記錄", "yr": " 年", "mo": " 個月"}, "notes": {"no_losing_week": "記錄裏沒有一個虧損週。這和做市、吃資金費率或賣尾部風險的策略一致；t 衡量的是穩定性，不是一筆還沒發生的虧損有多大。", "one_week_majority": "單獨一週貢獻了一半以上的收益，這份記錄主要靠那一週撐著。", "pnl_outside_record": "全期盈虧的大部分記在帳戶不足 $1,000 的時段，無法換算成收益率。結論只覆蓋能測量的那些週。"}, "wnote": "歷史起於 {start}。{now} UTC 讀取自 api.hyperliquid.xyz。", "unitAcct": "帳戶", "unitVault": "金庫（vault）", "vault": "這是一個金庫（vault）：{name}。管理人自己持有 {lf}%，從存款人的盈利裏抽 {c}%；分數按金庫抽成前的盈虧計算。", "vaultBar": "門檻按「從 Hyperliquid 列出的 {NV} 個金庫裏挑出」計算，包括已關閉的。", "selfPath": "/zh-hant/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=zh-hant"}};</script>
+<script src="/assets/wallet.js?v=a0a4615a"></script>
 </body>
 </html>

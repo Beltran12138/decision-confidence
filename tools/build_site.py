@@ -82,8 +82,8 @@ def head(title, desc, path, og=f"{SITE}/leaderboard/og-2026-10.png", extra="", l
 <link rel="icon" href="{FAVICON}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="/assets/chrome.css">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="{asset("chrome.css")}">
+<link rel="stylesheet" href="{asset("site.css")}">
 {hreflang(alt)}{extra}{BEACON}</head>
 <body>
 """
@@ -136,6 +136,7 @@ def write(rel, text):
 AUDIT_TAGS = {  # short status shown in lists; the finding text comes from audits/README.md
     "001": ("Cannot assess", "grey"), "002": ("Narrowed comparison", "amber"),
     "003": ("0 of 41 reach t = 2", "red"), "004": ("88% open-book", "red"), "005": ("Cannot assess", "grey"),
+    "006": ("0 of 6 reach |t| = 2", "red"),
 }
 
 
@@ -539,7 +540,7 @@ WALLET_T_EN = {
         "loses": ["Losing, and not by chance", "tag-red", "t is −2 or lower: over the weeks that can be measured, this wallet lost money too consistently for luck to explain."],
         "luck": ["Cannot be told apart from luck", "tag-red", "t is below 2: a record like this turns up by chance often enough that it says little about skill."],
         "clears_single": ["Passes one test, not the leaderboard bar", "tag-amber", "Strong enough if you had picked this wallet blind. If you found it on a leaderboard, it needs t ≥ {BAR}."],
-        "clears_board": ["Clears the leaderboard bar", "tag-green", "The record is strong enough even allowing for having been picked from {N} accounts."],
+        "clears_board": ["Clears the leaderboard bar", "tag-green", "The record is strong enough even allowing for having been picked from {N} {U}."],
         "too_short": ["Too short to say", "tag-grey", "Fewer than 8 weeks of history with at least $1,000 in the account."],
     },
     "tag": {"loses": "loses", "luck": "luck", "clears_single": "clears single", "clears_board": "clears board", "too_short": "too short"},
@@ -554,6 +555,9 @@ WALLET_T_EN = {
               "one_week_majority": "One week produced more than half of all the gains. The record rests mostly on that week.",
               "pnl_outside_record": "Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured."},
     "wnote": "History from {start}. Read {now} UTC from api.hyperliquid.xyz.",
+    "unitAcct": "accounts", "unitVault": "vaults",
+    "vault": "This is a vault: {name}. The leader holds {lf}% of it and takes {c}% of depositors' profits; the score is on the vault's PnL before that cut.",
+    "vaultBar": " Its bar assumes it was picked from the {NV} vaults Hyperliquid lists, open and closed.",
     "selfPath": "/wallet/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=en",
 }
 
@@ -564,8 +568,8 @@ def asset(name):
         return f"/assets/{name}?v={hashlib.sha256(f.read()).hexdigest()[:8]}"
 
 
-def wallet_scripts(n_accounts, strings):
-    data = json.dumps({"N": n_accounts, "T": strings}, ensure_ascii=False).replace("</", "<\\/")
+def wallet_scripts(n_accounts, strings, n_vaults=None):
+    data = json.dumps({"N": n_accounts, "NV": n_vaults, "T": strings}, ensure_ascii=False).replace("</", "<\\/")
     return (f'<script src="/assets/site.js"></script><script src="{asset("hl.js")}"></script>\n'
             f'<script>window.WALLET = {data};</script>\n<script src="{asset("wallet.js")}"></script>\n')
 
@@ -641,6 +645,7 @@ def build_wallet():
  <div class="instrument wres">
   <div class="instrument-head"><span class="t mono" id="wid"></span><span id="wtag"></span></div>
   <div class="instrument-body"><h2 id="whead" style="margin:18px 4px 6px"></h2><p id="wsub" class="muted" style="margin:0 4px 10px"></p>
+   <p id="wvault" class="muted small" style="margin:0 4px 10px" hidden></p>
    <div class="chart" id="wmeter"></div></div>
   <div class="instrument-foot">
    <div><b id="wt">—</b><span>t, adjusted for record length</span></div>
@@ -676,7 +681,7 @@ def build_wallet():
  <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser. {PRIVACY} Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
 </div></section>
 </main>
-""" + footer(wallet_scripts(pnl["ranked_from"], WALLET_T_EN))
+""" + footer(wallet_scripts(pnl["ranked_from"], WALLET_T_EN, (hl.get("vaults") or {}).get("listed")))
     write("wallet/index.html", page)
 
 

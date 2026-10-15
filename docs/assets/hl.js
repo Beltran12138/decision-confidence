@@ -138,6 +138,16 @@ const HL = (() => {
     return r.json();
   }
 
-  return {WEEK_MS, MIN_WEEKS, bar, monthsToClear, weeklyReturns, score, flags, verdict, fetchPortfolio, cdf, inv, tToZ};
+  // Vault details, or null when the address is not a vault (the API answers null). The portfolio
+  // endpoint already returns a vault's own PnL history, so scoring is unchanged; this only says
+  // what the address is and which board it was picked from.
+  async function fetchVault(addr) {
+    try {
+      const r = await fetch('https://api.hyperliquid.xyz/info', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({type: 'vaultDetails', vaultAddress: addr})});
+      return r.ok ? await r.json() : null;
+    } catch (e) { return null; }
+  }
+
+  return {WEEK_MS, MIN_WEEKS, bar, monthsToClear, weeklyReturns, score, flags, verdict, fetchPortfolio, fetchVault, cdf, inv, tToZ};
 })();
 if (typeof module !== 'undefined') module.exports = HL;
