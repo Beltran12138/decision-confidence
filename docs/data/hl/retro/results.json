@@ -1,0 +1,5441 @@
+{
+ "prereg": "docs/data/hl/retro/PREREG.md",
+ "min_weeks": 8,
+ "pooled_n": 405,
+ "pooled_rho_t": 0.204,
+ "pooled_rho_t_ci95": [
+  0.116,
+  0.296
+ ],
+ "snapshots_rho_t_beats_rho_pnl": 3,
+ "verdict": "win",
+ "snapshots": [
+  {
+   "snapshot": "2025-11-10T11:17Z",
+   "board_size": 27244,
+   "cohort": 199,
+   "fetched": 199,
+   "scored_both": 134,
+   "rho_t": 0.274,
+   "rho_pnl": 0.227,
+   "t_before_ge_2": 7,
+   "median_t_after_if_t_before_ge_2": 1.035,
+   "median_t_after_if_t_before_lt_2": 0.621,
+   "share_t_after_ge_2": 0.015,
+   "rows": [
+    {
+     "address": "0x77c3ea550d2da44b120e55071f57a108f8dd5e45",
+     "board": "pnl",
+     "rank": 1,
+     "pnl_all_time": 305309947.694492,
+     "t_before": -0.832,
+     "t_after": -0.634,
+     "weeks_after": 8.2
+    },
+    {
+     "address": "0xfae95f601f3a25ace60d19dbb929f2a5c57e3571",
+     "board": "pnl",
+     "rank": 2,
+     "pnl_all_time": 156036381.978512,
+     "t_before": 1.423,
+     "t_after": -1.297,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0x9794bbbc222b6b93c1417d01aa1ff06d42e5333b",
+     "board": "pnl",
+     "rank": 3,
+     "pnl_all_time": 144492674.89437,
+     "t_before": 0.719,
+     "t_after": 1.06,
+     "weeks_after": 48.9
+    },
+    {
+     "address": "0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00",
+     "board": "pnl",
+     "rank": 4,
+     "pnl_all_time": 138035063.666272,
+     "t_before": 1.31,
+     "t_after": 1.766,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0xdfc24b077bc1425ad1dea75bcb6f8158e10df303",
+     "board": "pnl",
+     "rank": 5,
+     "pnl_all_time": 122310017.048936,
+     "t_before": 3.32,
+     "t_after": 1.013,
+     "weeks_after": 49.5
+    },
+    {
+     "address": "0x2ea18c23f72a4b6172c55b411823cdc5335923f4",
+     "board": "pnl",
+     "rank": 6,
+     "pnl_all_time": 106341324.52,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xb317d2bc2d3d2df5fa441b5bae0ab9d8b07283ae",
+     "board": "pnl",
+     "rank": 7,
+     "pnl_all_time": 104233472.543595,
+     "t_before": null,
+     "t_after": -0.994,
+     "weeks_after": 10.0
+    },
+    {
+     "address": "0x716bd8d3337972db99995dda5c4b34d954a61d95",
+     "board": "pnl",
+     "rank": 8,
+     "pnl_all_time": 102948646.205236,
+     "t_before": 1.414,
+     "t_after": 0.621,
+     "weeks_after": 40.0
+    },
+    {
+     "address": "0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36",
+     "board": "pnl",
+     "rank": 9,
+     "pnl_all_time": 99429022.647106,
+     "t_before": -0.94,
+     "t_after": 1.133,
+     "weeks_after": 48.3
+    },
+    {
+     "address": "0xbde2ddc49a2e6827300faa6afc93d572114a60b1",
+     "board": "pnl",
+     "rank": 10,
+     "pnl_all_time": 97539125.994504,
+     "t_before": 1.008,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x51156f7002c4f74f4956c9e0f2b7bfb6e9dbfac2",
+     "board": "pnl",
+     "rank": 11,
+     "pnl_all_time": 95450615.679176,
+     "t_before": 1.081,
+     "t_after": 0.633,
+     "weeks_after": 48.0
+    },
+    {
+     "address": "0x5b5d51203a0f9079f8aeb098a6523a13f298c060",
+     "board": "pnl",
+     "rank": 12,
+     "pnl_all_time": 94257735.855978,
+     "t_before": 0.452,
+     "t_after": 0.459,
+     "weeks_after": 48.3
+    },
+    {
+     "address": "0x2e3d94f0562703b25c83308a05046ddaf9a8dd14",
+     "board": "pnl",
+     "rank": 13,
+     "pnl_all_time": 90643535.53,
+     "t_before": 1.175,
+     "t_after": -1.174,
+     "weeks_after": 47.4
+    },
+    {
+     "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+     "board": "pnl",
+     "rank": 14,
+     "pnl_all_time": 88150716.054607,
+     "t_before": -1.307,
+     "t_after": 0.501,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50",
+     "board": "pnl",
+     "rank": 15,
+     "pnl_all_time": 75961601.862712,
+     "t_before": 1.096,
+     "t_after": 1.106,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0xa312114b5795dff9b8db50474dd57701aa78ad1e",
+     "board": "pnl",
+     "rank": 16,
+     "pnl_all_time": 74175657.545506,
+     "t_before": 1.522,
+     "t_after": -0.001,
+     "weeks_after": 48.0
+    },
+    {
+     "address": "0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05",
+     "board": "pnl",
+     "rank": 17,
+     "pnl_all_time": 72385308.408223,
+     "t_before": 1.092,
+     "t_after": 0.635,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x20c2d95a3dfdca9e9ad12794d5fa6fad99da44f5",
+     "board": "pnl",
+     "rank": 18,
+     "pnl_all_time": 68563219.369484,
+     "t_before": 0.882,
+     "t_after": 0.508,
+     "weeks_after": 28.0
+    },
+    {
+     "address": "0x493db0ed7514c975e9abcc110bd40c473b6763e3",
+     "board": "pnl",
+     "rank": 19,
+     "pnl_all_time": 67363718.90839,
+     "t_before": 1.049,
+     "t_after": 1.248,
+     "weeks_after": 47.7
+    },
+    {
+     "address": "0xcfdb74a8c080bb7b4360ed6fe21f895c653efff4",
+     "board": "pnl",
+     "rank": 20,
+     "pnl_all_time": 63648117.792511,
+     "t_before": 0.922,
+     "t_after": 0.759,
+     "weeks_after": 32.0
+    },
+    {
+     "address": "0x4e14fc11f58b64740e66e4b1aa188a4b007c0eab",
+     "board": "pnl",
+     "rank": 21,
+     "pnl_all_time": 63482767.495795,
+     "t_before": 1.546,
+     "t_after": 0.963,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x9eec98d048d06d9cd75318fffa3f3960e081daab",
+     "board": "pnl",
+     "rank": 22,
+     "pnl_all_time": 61685710.840469,
+     "t_before": 1.207,
+     "t_after": -0.508,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x880ac484a1743862989a441d6d867238c7aa311c",
+     "board": "pnl",
+     "rank": 23,
+     "pnl_all_time": 60757286.641429,
+     "t_before": -0.978,
+     "t_after": 2.51,
+     "weeks_after": 49.0
+    },
+    {
+     "address": "0x0d446c3372a9ba9cddef0eef7a1afab6dc0e8c0b",
+     "board": "pnl",
+     "rank": 24,
+     "pnl_all_time": 57392653.602153,
+     "t_before": 1.113,
+     "t_after": 0.974,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x656c8da58d738295e03550796dd83900aa7c6525",
+     "board": "pnl",
+     "rank": 25,
+     "pnl_all_time": 56184002.57662,
+     "t_before": -0.877,
+     "t_after": 1.08,
+     "weeks_after": 36.4
+    },
+    {
+     "address": "0x7dacca323e44f168494c779bb5e7483c468ef410",
+     "board": "pnl",
+     "rank": 26,
+     "pnl_all_time": 50380408.106689,
+     "t_before": 0.728,
+     "t_after": 0.974,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0x03b9a189e2480d1e4c3007080b29f362282130fa",
+     "board": "pnl",
+     "rank": 27,
+     "pnl_all_time": 50114604.924321,
+     "t_before": 1.77,
+     "t_after": 0.969,
+     "weeks_after": 49.6
+    },
+    {
+     "address": "0x13c50dcdee4bbcba71baf578b345cdd35c7928be",
+     "board": "pnl",
+     "rank": 28,
+     "pnl_all_time": 46741327.376145,
+     "t_before": 1.434,
+     "t_after": 0.982,
+     "weeks_after": 49.4
+    },
+    {
+     "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+     "board": "pnl",
+     "rank": 29,
+     "pnl_all_time": 46574363.73735,
+     "t_before": 1.278,
+     "t_after": -0.609,
+     "weeks_after": 48.7
+    },
+    {
+     "address": "0x03b3e2069830dd3bd1a5b5e45dad60a770227ed7",
+     "board": "pnl",
+     "rank": 30,
+     "pnl_all_time": 46496367.28474,
+     "t_before": 1.023,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x45d26f28196d226497130c4bac709d808fed4029",
+     "board": "pnl",
+     "rank": 31,
+     "pnl_all_time": 46131877.856882,
+     "t_before": 0.21,
+     "t_after": -0.143,
+     "weeks_after": 47.6
+    },
+    {
+     "address": "0x023a3d058020fb76cca98f01b3c48c8938a22355",
+     "board": "pnl",
+     "rank": 32,
+     "pnl_all_time": 44880536.895131,
+     "t_before": 1.338,
+     "t_after": 0.529,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0xda3cdff67ce27fa68ba5600a7c95efd8153d9f15",
+     "board": "pnl",
+     "rank": 33,
+     "pnl_all_time": 43348851.492781,
+     "t_before": 1.049,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x4f7634c03ec4e87e14725c84913ade523c6fad5a",
+     "board": "pnl",
+     "rank": 34,
+     "pnl_all_time": 42088569.433151,
+     "t_before": 1.391,
+     "t_after": -1.288,
+     "weeks_after": 31.1
+    },
+    {
+     "address": "0x31ca8395cf837de08b24da3f660e77761dfb974b",
+     "board": "pnl",
+     "rank": 35,
+     "pnl_all_time": 38933206.640742,
+     "t_before": -0.352,
+     "t_after": -2.4,
+     "weeks_after": 48.7
+    },
+    {
+     "address": "0x56498e5f90c14060499b62b6f459b3e3fb9280c5",
+     "board": "pnl",
+     "rank": 36,
+     "pnl_all_time": 38716317.85506,
+     "t_before": -0.724,
+     "t_after": 0.988,
+     "weeks_after": 47.8
+    },
+    {
+     "address": "0x1419e75330c71ce463102e6a1eb62fe80b412d5f",
+     "board": "pnl",
+     "rank": 37,
+     "pnl_all_time": 37725622.594452,
+     "t_before": 1.256,
+     "t_after": 1.042,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0xbadbb1de95b5f333623ebece7026932fa5039ee6",
+     "board": "pnl",
+     "rank": 38,
+     "pnl_all_time": 36398588.99463,
+     "t_before": null,
+     "t_after": 1.152,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0x82d8dc80190e6bc1d92b048f9fc7e85e5e1e32ff",
+     "board": "pnl",
+     "rank": 39,
+     "pnl_all_time": 36340372.984949,
+     "t_before": 1.071,
+     "t_after": 0.223,
+     "weeks_after": 24.0
+    },
+    {
+     "address": "0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9",
+     "board": "pnl",
+     "rank": 40,
+     "pnl_all_time": 35223019.207038,
+     "t_before": 1.839,
+     "t_after": 1.321,
+     "weeks_after": 48.0
+    },
+    {
+     "address": "0x4a207d289fd49e60502451099771127bcf35b961",
+     "board": "pnl",
+     "rank": 41,
+     "pnl_all_time": 35154178.362891,
+     "t_before": 0.73,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x0e8bf301805df4e6ba7151297e5f7dfedc1eaab9",
+     "board": "pnl",
+     "rank": 42,
+     "pnl_all_time": 33471594.637385,
+     "t_before": 1.08,
+     "t_after": 0.745,
+     "weeks_after": 33.0
+    },
+    {
+     "address": "0x5cedcb1fc2f201ad7063ddc2c08557a6e3d82a51",
+     "board": "pnl",
+     "rank": 43,
+     "pnl_all_time": 33330064.184,
+     "t_before": -1.369,
+     "t_after": -0.554,
+     "weeks_after": 17.0
+    },
+    {
+     "address": "0x5d2f4460ac3514ada79f5d9838916e508ab39bb7",
+     "board": "pnl",
+     "rank": 44,
+     "pnl_all_time": 32945450.269266,
+     "t_before": 1.226,
+     "t_after": 1.81,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0xc59498175d6d317642aeb97f895a7ce1aa992191",
+     "board": "pnl",
+     "rank": 45,
+     "pnl_all_time": 32002785.310913,
+     "t_before": 0.558,
+     "t_after": 1.441,
+     "weeks_after": 42.0
+    },
+    {
+     "address": "0xbee95bb47bc4e28bb1fd489a2d0f873fe59172ad",
+     "board": "pnl",
+     "rank": 46,
+     "pnl_all_time": 31000054.770265,
+     "t_before": 1.128,
+     "t_after": 0.983,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0x8196e0648cb16e9151c2920618a58605706b5836",
+     "board": "pnl",
+     "rank": 47,
+     "pnl_all_time": 30435727.596118,
+     "t_before": 1.904,
+     "t_after": 1.074,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x9263c1bd29aa87a118242f3fbba4517037f8cc7a",
+     "board": "pnl",
+     "rank": 48,
+     "pnl_all_time": 30012675.846752,
+     "t_before": -0.585,
+     "t_after": -0.915,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0x8bff50aad8b4e06c5e148eaeb9d7aef69e26cdc3",
+     "board": "pnl",
+     "rank": 49,
+     "pnl_all_time": 28681111.745594,
+     "t_before": 1.484,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x77375a8c9d13bf79afb2a87f1b0ac1dfd5f5bf66",
+     "board": "pnl",
+     "rank": 50,
+     "pnl_all_time": 28669835.921092,
+     "t_before": 1.122,
+     "t_after": 1.043,
+     "weeks_after": 49.2
+    },
+    {
+     "address": "0x8607a7d180de23645db594d90621d837749408d5",
+     "board": "pnl",
+     "rank": 51,
+     "pnl_all_time": 28355789.328103002,
+     "t_before": 0.484,
+     "t_after": 0.473,
+     "weeks_after": 48.3
+    },
+    {
+     "address": "0xe4178ba889ac1c931861533b98bb86cb9d4858c7",
+     "board": "pnl",
+     "rank": 52,
+     "pnl_all_time": 28269229.364056,
+     "t_before": 2.172,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xf517639a8872e756ac98d3c65507d2ebc25cc032",
+     "board": "pnl",
+     "rank": 53,
+     "pnl_all_time": 28179534.181093,
+     "t_before": 1.842,
+     "t_after": -0.123,
+     "weeks_after": 49.6
+    },
+    {
+     "address": "0xa87a233e8a7d8951ff790a2e39738086cb5f71b7",
+     "board": "pnl",
+     "rank": 54,
+     "pnl_all_time": 27930348.507076,
+     "t_before": 0.827,
+     "t_after": 1.452,
+     "weeks_after": 47.4
+    },
+    {
+     "address": "0x0f991873aab3e14191978946d48f30f624ae9867",
+     "board": "pnl",
+     "rank": 55,
+     "pnl_all_time": 26269068.011859,
+     "t_before": 1.073,
+     "t_after": 1.073,
+     "weeks_after": 48.7
+    },
+    {
+     "address": "0x1da722cfa8b0dfda57cf8d787689039c7a63f049",
+     "board": "pnl",
+     "rank": 56,
+     "pnl_all_time": 25969381.982411,
+     "t_before": 1.715,
+     "t_after": 1.046,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0xd9225c2b6383f6e532c01c34d7588b1106b9e30b",
+     "board": "pnl",
+     "rank": 57,
+     "pnl_all_time": 25825453.902421,
+     "t_before": 1.013,
+     "t_after": -0.594,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0xcac19662ec88d23fa1c81ac0e8570b0cf2ff26b3",
+     "board": "pnl",
+     "rank": 58,
+     "pnl_all_time": 25819876.740099,
+     "t_before": 1.12,
+     "t_after": -2.059,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x99967871e6c4f9a5185abc57edede9e9540191f6",
+     "board": "pnl",
+     "rank": 59,
+     "pnl_all_time": 25478705.755661,
+     "t_before": 1.091,
+     "t_after": 0.236,
+     "weeks_after": 46.0
+    },
+    {
+     "address": "0x807a2e2e469df84b299da5f90f15dda4380daca1",
+     "board": "pnl",
+     "rank": 60,
+     "pnl_all_time": 25344181.326585,
+     "t_before": 1.297,
+     "t_after": 0.956,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0xdcac85ecae7148886029c20e661d848a4de99ce2",
+     "board": "pnl",
+     "rank": 61,
+     "pnl_all_time": 24714351.554074004,
+     "t_before": 0.863,
+     "t_after": 1.215,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0x4051aea2475a4ec2c25f2e2efae6eae4d620874b",
+     "board": "pnl",
+     "rank": 62,
+     "pnl_all_time": 24448293.861321,
+     "t_before": -1.922,
+     "t_after": -0.661,
+     "weeks_after": 48.0
+    },
+    {
+     "address": "0x89453000afe81a8843ae2d1c5df0f340f8800779",
+     "board": "pnl",
+     "rank": 63,
+     "pnl_all_time": 24121622.455671,
+     "t_before": 1.112,
+     "t_after": -0.832,
+     "weeks_after": 24.0
+    },
+    {
+     "address": "0x939f95036d2e7b6d7419ec072bf9d967352204d2",
+     "board": "pnl",
+     "rank": 64,
+     "pnl_all_time": 24042274.102278,
+     "t_before": 1.245,
+     "t_after": 0.806,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x598f9efb3164ec216b4eff33c2b239605be5af8e",
+     "board": "pnl",
+     "rank": 65,
+     "pnl_all_time": 23909885.897083,
+     "t_before": 1.191,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x3300eebeea8239b90a435e403b130a853a0d7dff",
+     "board": "pnl",
+     "rank": 66,
+     "pnl_all_time": 23513444.234111,
+     "t_before": 1.008,
+     "t_after": -0.878,
+     "weeks_after": 42.7
+    },
+    {
+     "address": "0x162cc7c861ebd0c06b3d72319201150482518185",
+     "board": "pnl",
+     "rank": 67,
+     "pnl_all_time": 23460868.203876995,
+     "t_before": 2.009,
+     "t_after": 1.444,
+     "weeks_after": 39.0
+    },
+    {
+     "address": "0xdafc555a97b358bc09fccf4c0e583c1ec5838b16",
+     "board": "pnl",
+     "rank": 68,
+     "pnl_all_time": 22936549.437902,
+     "t_before": 1.013,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x7fe8cfe481ec2f702692a9152e3f002f3e417ac6",
+     "board": "pnl",
+     "rank": 69,
+     "pnl_all_time": 22400886.817553,
+     "t_before": 2.172,
+     "t_after": 1.035,
+     "weeks_after": 19.0
+    },
+    {
+     "address": "0xbbbc35dfac3a00a03a8fde3540eca4f0e15c5e64",
+     "board": "pnl",
+     "rank": 70,
+     "pnl_all_time": 21902472.442258,
+     "t_before": 2.105,
+     "t_after": 1.237,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0xa16e0fd908d5da6f37590d6005f15b5cb6a91688",
+     "board": "pnl",
+     "rank": 71,
+     "pnl_all_time": 21479335.732872,
+     "t_before": 1.737,
+     "t_after": 1.08,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0x34971bc50eb4484505e4a24516c8db843fbef162",
+     "board": "pnl",
+     "rank": 72,
+     "pnl_all_time": 20806319.843777,
+     "t_before": 1.051,
+     "t_after": 1.005,
+     "weeks_after": 47.9
+    },
+    {
+     "address": "0x156115e100141e9330620c253225cc5ee598a31a",
+     "board": "pnl",
+     "rank": 73,
+     "pnl_all_time": 20418707.599473,
+     "t_before": 1.765,
+     "t_after": 0.972,
+     "weeks_after": 48.9
+    },
+    {
+     "address": "0xb041569b6ffac3b2cb6d289e85458e90b62d6ecb",
+     "board": "pnl",
+     "rank": 74,
+     "pnl_all_time": 20271621.757858,
+     "t_before": 0.652,
+     "t_after": 0.367,
+     "weeks_after": 44.9
+    },
+    {
+     "address": "0x17a4ce9320bec0ac79420f0af19848044a469d8d",
+     "board": "pnl",
+     "rank": 75,
+     "pnl_all_time": 20124591.952036,
+     "t_before": 1.701,
+     "t_after": 0.849,
+     "weeks_after": 49.2
+    },
+    {
+     "address": "0x2ba553d9f990a3b66b03b2dc0d030dfc1c061036",
+     "board": "pnl",
+     "rank": 76,
+     "pnl_all_time": 20106667.237673,
+     "t_before": 1.595,
+     "t_after": -0.246,
+     "weeks_after": 34.0
+    },
+    {
+     "address": "0x123dbca6a27005a3c4ce10cb66ee8ece8fc13bff",
+     "board": "pnl",
+     "rank": 77,
+     "pnl_all_time": 19697047.903392,
+     "t_before": -0.053,
+     "t_after": -0.751,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x5c02f2dfcb6537b83929596fe8a3278e237e3e7c",
+     "board": "pnl",
+     "rank": 78,
+     "pnl_all_time": 19688888.730973,
+     "t_before": 0.849,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0xf02021e26e0bbfef8ffa2cc9cb64305a8ae465b4",
+     "board": "pnl",
+     "rank": 79,
+     "pnl_all_time": 19410835.290553,
+     "t_before": -0.195,
+     "t_after": 0.972,
+     "weeks_after": 49.1
+    },
+    {
+     "address": "0x62bc1fe6009388219dd84f9dca37930f6fb6fa22",
+     "board": "pnl",
+     "rank": 80,
+     "pnl_all_time": 19125608.327973,
+     "t_before": 1.788,
+     "t_after": 1.104,
+     "weeks_after": 47.9
+    },
+    {
+     "address": "0x97bfcf95b940e46990a42fdc21812be84442ef74",
+     "board": "pnl",
+     "rank": 81,
+     "pnl_all_time": 19022004.54557,
+     "t_before": 1.002,
+     "t_after": 0.908,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0xa23190045c4aebeb724844ce622465475e539bae",
+     "board": "pnl",
+     "rank": 82,
+     "pnl_all_time": 18741043.168977,
+     "t_before": 1.222,
+     "t_after": 0.638,
+     "weeks_after": 49.6
+    },
+    {
+     "address": "0xb62aba8182bcd9d86c1cf85f995d6078663fba78",
+     "board": "pnl",
+     "rank": 83,
+     "pnl_all_time": 18677013.858264003,
+     "t_before": 1.371,
+     "t_after": 1.147,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x2263b62fec062260e2ce72fa2e3b8a89d6bc062e",
+     "board": "pnl",
+     "rank": 84,
+     "pnl_all_time": 18474617.76972,
+     "t_before": 1.565,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x992ec71207c9e183e64c81461908f1a1a783af6a",
+     "board": "pnl",
+     "rank": 85,
+     "pnl_all_time": 18402002.636819,
+     "t_before": 1.118,
+     "t_after": 1.067,
+     "weeks_after": 48.3
+    },
+    {
+     "address": "0x0aadc54a9e78cfe2e971aa8edcedea9c6df01f46",
+     "board": "pnl",
+     "rank": 86,
+     "pnl_all_time": 18122300.917075,
+     "t_before": 1.476,
+     "t_after": 1.073,
+     "weeks_after": 48.9
+    },
+    {
+     "address": "0x6859da14835424957a1e6b397d8026b1d9ff7e1e",
+     "board": "pnl",
+     "rank": 87,
+     "pnl_all_time": 17817328.948985,
+     "t_before": 1.473,
+     "t_after": 0.7,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x580809c0dfe56287e933f99e347cd5385a645ee3",
+     "board": "pnl",
+     "rank": 88,
+     "pnl_all_time": 17796238.928524,
+     "t_before": 1.076,
+     "t_after": -0.431,
+     "weeks_after": 47.4
+    },
+    {
+     "address": "0xa69e24a291687a7cc0bb1d8bc09ba74e667d4d9e",
+     "board": "pnl",
+     "rank": 89,
+     "pnl_all_time": 17292593.871296,
+     "t_before": 1.157,
+     "t_after": 0.94,
+     "weeks_after": 47.9
+    },
+    {
+     "address": "0x9ff588d01f8948c25b3dd8a36fc583b019fd4a61",
+     "board": "pnl",
+     "rank": 90,
+     "pnl_all_time": 17251845.928478,
+     "t_before": 1.162,
+     "t_after": 1.243,
+     "weeks_after": 47.7
+    },
+    {
+     "address": "0xffe664491482ae9db6ba9e55c2ed1ea55c700a52",
+     "board": "pnl",
+     "rank": 91,
+     "pnl_all_time": 17235510.181077,
+     "t_before": 0.553,
+     "t_after": -1.976,
+     "weeks_after": 12.0
+    },
+    {
+     "address": "0x5db201ae15f9702f0a0ff9f00b8c1c18355373d0",
+     "board": "pnl",
+     "rank": 92,
+     "pnl_all_time": 17204738.283078,
+     "t_before": 1.752,
+     "t_after": 0.837,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0x8decc13b6e83873a78126e99036f9442019fd0b5",
+     "board": "pnl",
+     "rank": 93,
+     "pnl_all_time": 17195096.474909,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xaa7577a7a27aa7fcf6d0ec481b87df3ad0f6a88e",
+     "board": "pnl",
+     "rank": 94,
+     "pnl_all_time": 17115528.137678,
+     "t_before": -0.832,
+     "t_after": -0.325,
+     "weeks_after": 12.0
+    },
+    {
+     "address": "0x0aa989625dedaee97b1996edd964bbb1bf52184d",
+     "board": "pnl",
+     "rank": 95,
+     "pnl_all_time": 17114646.334605,
+     "t_before": 1.233,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x045bad6ba93375aab642f502c2c89851488c129f",
+     "board": "pnl",
+     "rank": 96,
+     "pnl_all_time": 17063535.690571003,
+     "t_before": 0.533,
+     "t_after": 1.065,
+     "weeks_after": 49.6
+    },
+    {
+     "address": "0x7be1cba648ebe1ab8084244d23f28d68a86480d8",
+     "board": "pnl",
+     "rank": 97,
+     "pnl_all_time": 16731044.662457999,
+     "t_before": 1.217,
+     "t_after": 1.335,
+     "weeks_after": 47.7
+    },
+    {
+     "address": "0xd07c845339b07d98c62f4c6b898a54b0c1baa992",
+     "board": "pnl",
+     "rank": 98,
+     "pnl_all_time": 16658100.134343,
+     "t_before": 0.996,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xa4dedda59f2908b92ae192cfd494839373bcb3c4",
+     "board": "pnl",
+     "rank": 99,
+     "pnl_all_time": 16639637.003128,
+     "t_before": 1.904,
+     "t_after": 1.191,
+     "weeks_after": 48.0
+    },
+    {
+     "address": "0xaf0fdd39e5d92499b0ed9f68693da99c0ec1e92e",
+     "board": "pnl",
+     "rank": 100,
+     "pnl_all_time": 16416788.242179,
+     "t_before": 2.049,
+     "t_after": 1.722,
+     "weeks_after": 49.5
+    },
+    {
+     "address": "0x79c0650064b10f73649b7b64c5ebf0b319606140",
+     "board": "roi30",
+     "rank": 1,
+     "pnl_all_time": 449875.844916,
+     "t_before": null,
+     "t_after": 1.707,
+     "weeks_after": 31.0
+    },
+    {
+     "address": "0xebad7252e9c26f2ec76b3db66c51bd94690b1583",
+     "board": "roi30",
+     "rank": 2,
+     "pnl_all_time": 444696.629277,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xc36e58ead15275347459a26a883b3cd28715e9b5",
+     "board": "roi30",
+     "rank": 3,
+     "pnl_all_time": -1103582.45794,
+     "t_before": -1.262,
+     "t_after": -0.256,
+     "weeks_after": 48.1
+    },
+    {
+     "address": "0x2cfa080c92f7bb3512d407b9ec70aad97fd8eb1e",
+     "board": "roi30",
+     "rank": 4,
+     "pnl_all_time": 535836.357109,
+     "t_before": 0.042,
+     "t_after": 1.462,
+     "weeks_after": 26.0
+    },
+    {
+     "address": "0xfacd8ff899b7e794c2cd021cdcde8d7ef05e80a0",
+     "board": "roi30",
+     "rank": 5,
+     "pnl_all_time": 158242.525069,
+     "t_before": null,
+     "t_after": 0.297,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0x34365f472a3af2ff8167970a519931437e2c2094",
+     "board": "roi30",
+     "rank": 6,
+     "pnl_all_time": 5143601.66465,
+     "t_before": 1.128,
+     "t_after": 0.345,
+     "weeks_after": 14.0
+    },
+    {
+     "address": "0x0e19ff435720c4ced5ad422a6311a57d0f2b829c",
+     "board": "roi30",
+     "rank": 7,
+     "pnl_all_time": 191356.276658,
+     "t_before": null,
+     "t_after": -0.253,
+     "weeks_after": 42.4
+    },
+    {
+     "address": "0x102e65fc180f0e954f1a84faa2a75d228fdb6de7",
+     "board": "roi30",
+     "rank": 8,
+     "pnl_all_time": 232780.095884,
+     "t_before": null,
+     "t_after": -0.831,
+     "weeks_after": 42.0
+    },
+    {
+     "address": "0xb3269f7c41298812b9e13bc232ed6efd014327ee",
+     "board": "roi30",
+     "rank": 9,
+     "pnl_all_time": 77180.386987,
+     "t_before": 1.707,
+     "t_after": 0.394,
+     "weeks_after": 14.0
+    },
+    {
+     "address": "0x547e5aabe3ed93e72a1bcdaebff15110d273d141",
+     "board": "roi30",
+     "rank": 10,
+     "pnl_all_time": 110588.222031,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x80d245d6e3383befde2cd240314bf82df5040902",
+     "board": "roi30",
+     "rank": 11,
+     "pnl_all_time": 9492.96547,
+     "t_before": null,
+     "t_after": 0.371,
+     "weeks_after": 38.0
+    },
+    {
+     "address": "0xa07af5595b5f7039b38f46916bd6df921c96b7aa",
+     "board": "roi30",
+     "rank": 12,
+     "pnl_all_time": -599288.05391,
+     "t_before": -0.814,
+     "t_after": 0.214,
+     "weeks_after": 13.0
+    },
+    {
+     "address": "0x7759d4dca0b4467314ba08d22dfdb6dac9c22a8b",
+     "board": "roi30",
+     "rank": 13,
+     "pnl_all_time": 80005.602139,
+     "t_before": null,
+     "t_after": 2.52,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x83d038f06f65a2011e31434d15c656dace128153",
+     "board": "roi30",
+     "rank": 14,
+     "pnl_all_time": 1142498.8591170001,
+     "t_before": 1.016,
+     "t_after": 1.001,
+     "weeks_after": 45.3
+    },
+    {
+     "address": "0x75ec3ba266176e733f1b1fdaa15052f5eff724b8",
+     "board": "roi30",
+     "rank": 15,
+     "pnl_all_time": 1403431.67577,
+     "t_before": 2.071,
+     "t_after": 1.013,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x0e6e39c30aa0da597ae1ab96f64a20f1be2d66a9",
+     "board": "roi30",
+     "rank": 16,
+     "pnl_all_time": 132682.222491,
+     "t_before": -0.435,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0xf7d09e599d33767621b91606793dfd97baa25452",
+     "board": "roi30",
+     "rank": 17,
+     "pnl_all_time": 922752.789896,
+     "t_before": 1.911,
+     "t_after": 0.094,
+     "weeks_after": 48.9
+    },
+    {
+     "address": "0x99b22bc017e417aecdac5298dcc2f0b199764e95",
+     "board": "roi30",
+     "rank": 18,
+     "pnl_all_time": 94016.875211,
+     "t_before": 1.241,
+     "t_after": -0.64,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0xccce3b80bd58f1db206458dbca45be049cfd8557",
+     "board": "roi30",
+     "rank": 19,
+     "pnl_all_time": 22338.159446,
+     "t_before": 1.226,
+     "t_after": 1.603,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x4ac523187901c75879f25918aef09ba8a0adcdef",
+     "board": "roi30",
+     "rank": 20,
+     "pnl_all_time": -33251.072731,
+     "t_before": null,
+     "t_after": -0.569,
+     "weeks_after": 33.6
+    },
+    {
+     "address": "0xec326a384ae965647d87e1f85db46d2efa15ae82",
+     "board": "roi30",
+     "rank": 21,
+     "pnl_all_time": 1881274.086671,
+     "t_before": 0.373,
+     "t_after": -0.599,
+     "weeks_after": 25.0
+    },
+    {
+     "address": "0xb7fb2b774eb5e2dad9c060fb367acbdc7fa7099b",
+     "board": "roi30",
+     "rank": 22,
+     "pnl_all_time": 77876.481535,
+     "t_before": 0.531,
+     "t_after": 1.747,
+     "weeks_after": 19.0
+    },
+    {
+     "address": "0xad188cba2b527ee0b9f66744ecd8afecbb4b1ec5",
+     "board": "roi30",
+     "rank": 23,
+     "pnl_all_time": 51714.274857,
+     "t_before": 0.165,
+     "t_after": -0.72,
+     "weeks_after": 46.1
+    },
+    {
+     "address": "0xc51019ce6ca32fdf69a72e9977cd6b0063be75ca",
+     "board": "roi30",
+     "rank": 24,
+     "pnl_all_time": 316505.526235,
+     "t_before": 2.476,
+     "t_after": 0.113,
+     "weeks_after": 48.3
+    },
+    {
+     "address": "0xf4b68732980c2a72d7bdd1f4b0f461c794526738",
+     "board": "roi30",
+     "rank": 25,
+     "pnl_all_time": 139979.998441,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0x8bae3527e5a33fa0cf184f37bc112d071463ab6d",
+     "board": "roi30",
+     "rank": 26,
+     "pnl_all_time": 2423540.659368,
+     "t_before": 1.21,
+     "t_after": 4.545,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x7b7f8d4405aad704b352ca6e2feccec766155dda",
+     "board": "roi30",
+     "rank": 27,
+     "pnl_all_time": 16394.679676,
+     "t_before": 0.794,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x4c6953ad96f37f1acec75122ce9255f23197382d",
+     "board": "roi30",
+     "rank": 28,
+     "pnl_all_time": -115940.971602,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x894f596bd1fdbb5de4079400ee148a6dcd0e5073",
+     "board": "roi30",
+     "rank": 29,
+     "pnl_all_time": -24973.341246,
+     "t_before": null,
+     "t_after": -1.839,
+     "weeks_after": 8.0
+    },
+    {
+     "address": "0x1e7127c81c8a58661a0811f026b6be66533934be",
+     "board": "roi30",
+     "rank": 30,
+     "pnl_all_time": 180740.051938,
+     "t_before": 0.859,
+     "t_after": 0.945,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x7e98d97e0703a79299b65cb57a992a77a5079678",
+     "board": "roi30",
+     "rank": 31,
+     "pnl_all_time": -366582.197815,
+     "t_before": 0.409,
+     "t_after": -1.761,
+     "weeks_after": 47.2
+    },
+    {
+     "address": "0xc845a0feaff2905000f8bd2c80be8cf429f012e5",
+     "board": "roi30",
+     "rank": 32,
+     "pnl_all_time": 12786154.353149,
+     "t_before": 1.649,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xd2bec6aa8a506d5b2ea6515ee8cfaf76fb2948c0",
+     "board": "roi30",
+     "rank": 33,
+     "pnl_all_time": 283596.750465,
+     "t_before": null,
+     "t_after": -0.263,
+     "weeks_after": 12.0
+    },
+    {
+     "address": "0x763dc2a2b9243124ce6bc6c460cdefaf69a89773",
+     "board": "roi30",
+     "rank": 34,
+     "pnl_all_time": -69720.447819,
+     "t_before": 0.985,
+     "t_after": -1.496,
+     "weeks_after": 24.0
+    },
+    {
+     "address": "0x82b3c2522ad6d4bd1a6b43409dc0c6f783ccede6",
+     "board": "roi30",
+     "rank": 35,
+     "pnl_all_time": 388496.798371,
+     "t_before": 0.22,
+     "t_after": -0.391,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x4461ddc43a183926d0e40ccb6a792553c2b5dba9",
+     "board": "roi30",
+     "rank": 36,
+     "pnl_all_time": -42348.525982,
+     "t_before": 1.0,
+     "t_after": 1.248,
+     "weeks_after": 42.3
+    },
+    {
+     "address": "0xf7013b5448964a7ab8ee2a1c47eae5fe96f59a4a",
+     "board": "roi30",
+     "rank": 37,
+     "pnl_all_time": 618279.710258,
+     "t_before": null,
+     "t_after": 1.163,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0xdfd3b7c54e82513a458adb6dbcafb3c8c685835b",
+     "board": "roi30",
+     "rank": 38,
+     "pnl_all_time": 126020.759636,
+     "t_before": null,
+     "t_after": -0.091,
+     "weeks_after": 44.4
+    },
+    {
+     "address": "0xf45be88352514cc1d4fbf36a2ccb7218382e0341",
+     "board": "roi30",
+     "rank": 39,
+     "pnl_all_time": 72189.928593,
+     "t_before": null,
+     "t_after": -0.573,
+     "weeks_after": 28.0
+    },
+    {
+     "address": "0xc0321916a1d9d99de347e43bd4fcde55d9054f76",
+     "board": "roi30",
+     "rank": 40,
+     "pnl_all_time": 968934.289461,
+     "t_before": 1.27,
+     "t_after": -0.629,
+     "weeks_after": 48.4
+    },
+    {
+     "address": "0xd28e005c992b168d0b20fca312958e105bb260ab",
+     "board": "roi30",
+     "rank": 41,
+     "pnl_all_time": 1813666.882247,
+     "t_before": null,
+     "t_after": 1.124,
+     "weeks_after": 47.3
+    },
+    {
+     "address": "0x96eaaf0375a6c5ecfc4980503bc8ce6c0192616d",
+     "board": "roi30",
+     "rank": 42,
+     "pnl_all_time": 7048821.312714,
+     "t_before": null,
+     "t_after": -1.118,
+     "weeks_after": 19.0
+    },
+    {
+     "address": "0x755b810c59a1b7ccd16f63a109afdd0043dc00e0",
+     "board": "roi30",
+     "rank": 43,
+     "pnl_all_time": -171459.2341,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x5b54a0ddf261c08eeac0a95ef27403f4541afd36",
+     "board": "roi30",
+     "rank": 44,
+     "pnl_all_time": 88103.683245,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x7ee8797e8b049925c77e6629a35fb910ebf2db37",
+     "board": "roi30",
+     "rank": 45,
+     "pnl_all_time": 9159.525048,
+     "t_before": 0.582,
+     "t_after": -0.884,
+     "weeks_after": 8.0
+    },
+    {
+     "address": "0x92d479fe3ce423e06f2c2e12b8171436d8b09b49",
+     "board": "roi30",
+     "rank": 46,
+     "pnl_all_time": 131786.920887,
+     "t_before": null,
+     "t_after": 1.486,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x3979bdf742ce46c9dcd570c70d2d6e88b87df0e9",
+     "board": "roi30",
+     "rank": 47,
+     "pnl_all_time": 119243.28264,
+     "t_before": null,
+     "t_after": 2.112,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x26eb1f737cfff14c1335a3b888ad033ce6024e8f",
+     "board": "roi30",
+     "rank": 48,
+     "pnl_all_time": 215585.242158,
+     "t_before": 1.614,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x08b5cf766ffbc31c129d2733b3f831054cec310c",
+     "board": "roi30",
+     "rank": 49,
+     "pnl_all_time": 1774746.7122880002,
+     "t_before": null,
+     "t_after": -0.727,
+     "weeks_after": 38.7
+    },
+    {
+     "address": "0x18abd8dae780eb8a37c3dd2cab31916c6de6c4bf",
+     "board": "roi30",
+     "rank": 51,
+     "pnl_all_time": 124470.393282,
+     "t_before": 1.078,
+     "t_after": -0.97,
+     "weeks_after": 24.0
+    },
+    {
+     "address": "0x21a9810da8ce78c0cb3c5eab373c9a7e4f2dd9c7",
+     "board": "roi30",
+     "rank": 52,
+     "pnl_all_time": 67302.183201,
+     "t_before": 0.671,
+     "t_after": 0.729,
+     "weeks_after": 29.0
+    },
+    {
+     "address": "0x8d0a7b41ece5ac812e417270f83a299c3efb6486",
+     "board": "roi30",
+     "rank": 53,
+     "pnl_all_time": 1595950.472287,
+     "t_before": null,
+     "t_after": -0.706,
+     "weeks_after": 10.0
+    },
+    {
+     "address": "0x273c25abd33eca095e228fde0f15e8f7ec4eb4d9",
+     "board": "roi30",
+     "rank": 54,
+     "pnl_all_time": -11417.495745,
+     "t_before": 0.986,
+     "t_after": -0.136,
+     "weeks_after": 49.1
+    },
+    {
+     "address": "0x68c2c7dfbbe886017b60402424a5f6b2dd20ea37",
+     "board": "roi30",
+     "rank": 55,
+     "pnl_all_time": -548535.776653,
+     "t_before": 0.238,
+     "t_after": 0.423,
+     "weeks_after": 29.0
+    },
+    {
+     "address": "0xb8e1f0f1e0aab629ec07ae9e4fa680b58732c643",
+     "board": "roi30",
+     "rank": 56,
+     "pnl_all_time": -90715.40316,
+     "t_before": 0.413,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x718cc7ee2ae2493ebf7d454316df6b61f4e1a868",
+     "board": "roi30",
+     "rank": 57,
+     "pnl_all_time": 155084.566479,
+     "t_before": null,
+     "t_after": 1.605,
+     "weeks_after": 48.0
+    },
+    {
+     "address": "0x70f6beb6343ba1e9940bccf6dfb6eedc071dba63",
+     "board": "roi30",
+     "rank": 58,
+     "pnl_all_time": 309170.219044,
+     "t_before": 0.993,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0x48ec0004494081e8332589faf0747d568da79faf",
+     "board": "roi30",
+     "rank": 59,
+     "pnl_all_time": 358391.472123,
+     "t_before": 0.932,
+     "t_after": 1.505,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0xc4a3ebc2ce0f90bfade34d46053aa0bad09dfa03",
+     "board": "roi30",
+     "rank": 60,
+     "pnl_all_time": 212900.46917,
+     "t_before": 0.991,
+     "t_after": -2.253,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0xa917f318592113e15f0c94eb29f751f98a297fa6",
+     "board": "roi30",
+     "rank": 61,
+     "pnl_all_time": -568483.725065,
+     "t_before": -1.239,
+     "t_after": -2.023,
+     "weeks_after": 42.9
+    },
+    {
+     "address": "0xfd4452a7e7d5e435331bdb9ceef674872714d1f6",
+     "board": "roi30",
+     "rank": 62,
+     "pnl_all_time": 31371.226175,
+     "t_before": 0.228,
+     "t_after": 0.232,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0x610aec3851d7688c4c8aef3a6173f667e8beef73",
+     "board": "roi30",
+     "rank": 63,
+     "pnl_all_time": -188147.904065,
+     "t_before": -0.374,
+     "t_after": 0.003,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0xd3e6120db19a701abc40bae9614f3ca635abde88",
+     "board": "roi30",
+     "rank": 64,
+     "pnl_all_time": 55593.375789,
+     "t_before": 0.981,
+     "t_after": -1.006,
+     "weeks_after": 32.0
+    },
+    {
+     "address": "0x549e6dd8453ed87fccdcf4f8b37162b10edc0533",
+     "board": "roi30",
+     "rank": 65,
+     "pnl_all_time": 2747541.530917,
+     "t_before": 0.973,
+     "t_after": 0.828,
+     "weeks_after": 48.3
+    },
+    {
+     "address": "0x6ff75123fb65966ed0870a61d002004ec1775d78",
+     "board": "roi30",
+     "rank": 66,
+     "pnl_all_time": 4061.372546,
+     "t_before": 0.429,
+     "t_after": -0.786,
+     "weeks_after": 33.0
+    },
+    {
+     "address": "0xbf732ea04197942783e34730ed6e0f6099575d58",
+     "board": "roi30",
+     "rank": 67,
+     "pnl_all_time": 9467496.461972,
+     "t_before": 1.606,
+     "t_after": 1.104,
+     "weeks_after": 44.5
+    },
+    {
+     "address": "0x0b0d8925445caa3d1bb3ab1c838e5d0f842aef5f",
+     "board": "roi30",
+     "rank": 68,
+     "pnl_all_time": 25674.32833,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x24dcdfcce42548b1055b5d360f6506bfef4384ed",
+     "board": "roi30",
+     "rank": 69,
+     "pnl_all_time": 371926.719762,
+     "t_before": 0.469,
+     "t_after": -0.286,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0xd638d4c9d4f434df60c671f758f6655c0771da4f",
+     "board": "roi30",
+     "rank": 70,
+     "pnl_all_time": 179893.521419,
+     "t_before": 1.226,
+     "t_after": 0.447,
+     "weeks_after": 39.6
+    },
+    {
+     "address": "0x70c12a940ad80fea9f13962b0902549bba41d661",
+     "board": "roi30",
+     "rank": 71,
+     "pnl_all_time": -27292.244421,
+     "t_before": 1.319,
+     "t_after": 0.899,
+     "weeks_after": 47.4
+    },
+    {
+     "address": "0x99ab3fdbeecbfc8a36101f9f80c763c8434ecea8",
+     "board": "roi30",
+     "rank": 72,
+     "pnl_all_time": 1802477.617799,
+     "t_before": 1.355,
+     "t_after": -1.136,
+     "weeks_after": 23.0
+    },
+    {
+     "address": "0x469db52089f7dd519c9004c827083b586aa1b9a1",
+     "board": "roi30",
+     "rank": 73,
+     "pnl_all_time": -32541.380141,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0x234a8a11a01fe7ff6b292bec616ce810f4930501",
+     "board": "roi30",
+     "rank": 74,
+     "pnl_all_time": 706438.009625,
+     "t_before": null,
+     "t_after": -0.794,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x1a25a5b70dc3ce8398c04091b0a6c61c984b80f5",
+     "board": "roi30",
+     "rank": 75,
+     "pnl_all_time": 1267855.076134,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xa7ede026d1ab268dc7f43955aeb224cc24f99c63",
+     "board": "roi30",
+     "rank": 76,
+     "pnl_all_time": 326316.547773,
+     "t_before": 1.347,
+     "t_after": -1.058,
+     "weeks_after": 15.0
+    },
+    {
+     "address": "0x4e6732e95528019e9624699f0b220047d1ea7358",
+     "board": "roi30",
+     "rank": 77,
+     "pnl_all_time": 484696.584943,
+     "t_before": 1.383,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xd77eb80f38fec10d87a192d07329415173307e93",
+     "board": "roi30",
+     "rank": 78,
+     "pnl_all_time": 228657.700026,
+     "t_before": null,
+     "t_after": 0.099,
+     "weeks_after": 44.4
+    },
+    {
+     "address": "0xca92229b3123be78e35b645d0d0e6fd8adc81fc5",
+     "board": "roi30",
+     "rank": 79,
+     "pnl_all_time": 394705.807436,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0x06d770db05fa02a915cc343c96f0905bad626bcf",
+     "board": "roi30",
+     "rank": 80,
+     "pnl_all_time": 1070092.820508,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xbd331649fd1a0e3612d07b002df3c1e682dde34f",
+     "board": "roi30",
+     "rank": 81,
+     "pnl_all_time": 368130.046629,
+     "t_before": 0.578,
+     "t_after": -2.004,
+     "weeks_after": 47.8
+    },
+    {
+     "address": "0xc46ab9b1644b5ac97c0266bfdf49949f579a3109",
+     "board": "roi30",
+     "rank": 82,
+     "pnl_all_time": 113406.857281,
+     "t_before": null,
+     "t_after": 1.283,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0xe24f16916beb44f9ee4abf48970b2af7630f7490",
+     "board": "roi30",
+     "rank": 83,
+     "pnl_all_time": 268354.235519,
+     "t_before": 0.255,
+     "t_after": 0.821,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0x6a0b7dc3f0588c305865e5a4b18670aab4399f4b",
+     "board": "roi30",
+     "rank": 84,
+     "pnl_all_time": 147420.003032,
+     "t_before": null,
+     "t_after": -0.248,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0x3a2fff8285d4f2d6ffd6f244bb3b3bb1a489d75b",
+     "board": "roi30",
+     "rank": 85,
+     "pnl_all_time": 159046.25268,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x5ed2b0ba63c6d5a82b91b61b500d58078486348d",
+     "board": "roi30",
+     "rank": 86,
+     "pnl_all_time": -2630769.122582,
+     "t_before": 0.952,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0xfb4f73fc4d2d3be883a73b6e70e916ed88d8595d",
+     "board": "roi30",
+     "rank": 87,
+     "pnl_all_time": 75959.042012,
+     "t_before": null,
+     "t_after": 0.244,
+     "weeks_after": 44.6
+    },
+    {
+     "address": "0xa79a34dfd2fb9851a019b973129436240a69f256",
+     "board": "roi30",
+     "rank": 88,
+     "pnl_all_time": -708498.927645,
+     "t_before": -2.648,
+     "t_after": 0.42,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0x704b596c468008769db2698ec2d03124d39bfaa9",
+     "board": "roi30",
+     "rank": 89,
+     "pnl_all_time": 263877.772538,
+     "t_before": -0.765,
+     "t_after": -2.146,
+     "weeks_after": 25.6
+    },
+    {
+     "address": "0x470756b530bfa294b80dd4783a1fe13dcf3b3394",
+     "board": "roi30",
+     "rank": 90,
+     "pnl_all_time": 934696.037902,
+     "t_before": 1.146,
+     "t_after": 1.029,
+     "weeks_after": 48.6
+    },
+    {
+     "address": "0xb31af1a4ee9a77c3f29b0abc4046690bfab127f2",
+     "board": "roi30",
+     "rank": 91,
+     "pnl_all_time": 9087.650308,
+     "t_before": 0.632,
+     "t_after": 0.878,
+     "weeks_after": 48.2
+    },
+    {
+     "address": "0xe0ec9615f08407aba978c5e3a1a2f5362346fcdf",
+     "board": "roi30",
+     "rank": 92,
+     "pnl_all_time": 272376.814921,
+     "t_before": null,
+     "t_after": -1.409,
+     "weeks_after": 24.0
+    },
+    {
+     "address": "0x343ff91b7c11846ddbbec72a64d078c5e21c34dc",
+     "board": "roi30",
+     "rank": 93,
+     "pnl_all_time": 290209.976313,
+     "t_before": 1.359,
+     "t_after": -0.26,
+     "weeks_after": 8.0
+    },
+    {
+     "address": "0x02ea7af4762ad00870f07799e4adb3ba3d953660",
+     "board": "roi30",
+     "rank": 94,
+     "pnl_all_time": 212059.69961,
+     "t_before": null,
+     "t_after": -1.346,
+     "weeks_after": 26.0
+    },
+    {
+     "address": "0xa399f378380dddb1fbb72e935b0111d7a4d16a52",
+     "board": "roi30",
+     "rank": 95,
+     "pnl_all_time": 161474.115762,
+     "t_before": null,
+     "t_after": -0.674,
+     "weeks_after": 48.5
+    },
+    {
+     "address": "0x9074a37ff024386b1b47f42410fc6fea77b389be",
+     "board": "roi30",
+     "rank": 96,
+     "pnl_all_time": 166996.511624,
+     "t_before": -1.006,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0x5fa05c69dc06cad49fb77e9b356c9f0bfa3ebd00",
+     "board": "roi30",
+     "rank": 97,
+     "pnl_all_time": 133291.21325,
+     "t_before": -0.838,
+     "t_after": -0.309,
+     "weeks_after": 28.0
+    },
+    {
+     "address": "0x6d292d413bfabd031804c89a47edae8c7df65fbc",
+     "board": "roi30",
+     "rank": 98,
+     "pnl_all_time": 71031.379888,
+     "t_before": -0.99,
+     "t_after": -0.711,
+     "weeks_after": 22.6
+    },
+    {
+     "address": "0xd103fdac9ae59354ade450c8e90e8f6abe2456f1",
+     "board": "roi30",
+     "rank": 99,
+     "pnl_all_time": 71062.43804,
+     "t_before": 1.796,
+     "t_after": -1.154,
+     "weeks_after": 32.2
+    },
+    {
+     "address": "0x5bbc41b3254ae777f3bdc714964a722a685d0f30",
+     "board": "roi30",
+     "rank": 100,
+     "pnl_all_time": 21082.347074,
+     "t_before": null,
+     "t_after": 0.313,
+     "weeks_after": 11.0
+    }
+   ]
+  },
+  {
+   "snapshot": "2026-01-26T17:50Z",
+   "board_size": 29111,
+   "cohort": 199,
+   "fetched": 199,
+   "scored_both": 143,
+   "rho_t": 0.19,
+   "rho_pnl": 0.173,
+   "t_before_ge_2": 9,
+   "median_t_after_if_t_before_ge_2": 1.133,
+   "median_t_after_if_t_before_lt_2": 0.802,
+   "share_t_after_ge_2": 0.021,
+   "rows": [
+    {
+     "address": "0x5b5d51203a0f9079f8aeb098a6523a13f298c060",
+     "board": "pnl",
+     "rank": 1,
+     "pnl_all_time": 175586575.353655,
+     "t_before": 0.715,
+     "t_after": -0.054,
+     "weeks_after": 37.3
+    },
+    {
+     "address": "0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00",
+     "board": "pnl",
+     "rank": 2,
+     "pnl_all_time": 171833629.244178,
+     "t_before": 1.514,
+     "t_after": 1.188,
+     "weeks_after": 36.4
+    },
+    {
+     "address": "0xfae95f601f3a25ace60d19dbb929f2a5c57e3571",
+     "board": "pnl",
+     "rank": 3,
+     "pnl_all_time": 151701963.226886,
+     "t_before": 1.341,
+     "t_after": -0.551,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0x9794bbbc222b6b93c1417d01aa1ff06d42e5333b",
+     "board": "pnl",
+     "rank": 4,
+     "pnl_all_time": 144134183.49512,
+     "t_before": 1.081,
+     "t_after": 1.724,
+     "weeks_after": 37.9
+    },
+    {
+     "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+     "board": "pnl",
+     "rank": 5,
+     "pnl_all_time": 140628856.903935,
+     "t_before": -1.165,
+     "t_after": -0.229,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36",
+     "board": "pnl",
+     "rank": 6,
+     "pnl_all_time": 123987391.375109,
+     "t_before": -0.922,
+     "t_after": 0.524,
+     "weeks_after": 37.3
+    },
+    {
+     "address": "0xdfc24b077bc1425ad1dea75bcb6f8158e10df303",
+     "board": "pnl",
+     "rank": 7,
+     "pnl_all_time": 119268770.038585,
+     "t_before": 3.305,
+     "t_after": 1.068,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0x880ac484a1743862989a441d6d867238c7aa311c",
+     "board": "pnl",
+     "rank": 8,
+     "pnl_all_time": 110045752.51354,
+     "t_before": -0.961,
+     "t_after": 2.473,
+     "weeks_after": 38.0
+    },
+    {
+     "address": "0x2ea18c23f72a4b6172c55b411823cdc5335923f4",
+     "board": "pnl",
+     "rank": 9,
+     "pnl_all_time": 106341324.52,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xbde2ddc49a2e6827300faa6afc93d572114a60b1",
+     "board": "pnl",
+     "rank": 10,
+     "pnl_all_time": 97508580.878533,
+     "t_before": 1.037,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xa312114b5795dff9b8db50474dd57701aa78ad1e",
+     "board": "pnl",
+     "rank": 11,
+     "pnl_all_time": 92071491.558127,
+     "t_before": 1.778,
+     "t_after": -0.792,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x2e3d94f0562703b25c83308a05046ddaf9a8dd14",
+     "board": "pnl",
+     "rank": 12,
+     "pnl_all_time": 85206062.35,
+     "t_before": 1.154,
+     "t_after": -0.768,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0x20c2d95a3dfdca9e9ad12794d5fa6fad99da44f5",
+     "board": "pnl",
+     "rank": 13,
+     "pnl_all_time": 84817980.787141,
+     "t_before": 0.881,
+     "t_after": 0.985,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0x45d26f28196d226497130c4bac709d808fed4029",
+     "board": "pnl",
+     "rank": 14,
+     "pnl_all_time": 74444115.567387,
+     "t_before": 0.317,
+     "t_after": -0.963,
+     "weeks_after": 36.6
+    },
+    {
+     "address": "0x51156f7002c4f74f4956c9e0f2b7bfb6e9dbfac2",
+     "board": "pnl",
+     "rank": 15,
+     "pnl_all_time": 71682799.835701,
+     "t_before": 1.051,
+     "t_after": 1.067,
+     "weeks_after": 38.0
+    },
+    {
+     "address": "0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05",
+     "board": "pnl",
+     "rank": 16,
+     "pnl_all_time": 71099605.564996,
+     "t_before": 1.156,
+     "t_after": 0.709,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0x716bd8d3337972db99995dda5c4b34d954a61d95",
+     "board": "pnl",
+     "rank": 17,
+     "pnl_all_time": 69724626.847737,
+     "t_before": 0.577,
+     "t_after": 1.33,
+     "weeks_after": 29.0
+    },
+    {
+     "address": "0x023a3d058020fb76cca98f01b3c48c8938a22355",
+     "board": "pnl",
+     "rank": 18,
+     "pnl_all_time": 65539855.20988,
+     "t_before": 1.706,
+     "t_after": -0.271,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0xd47587702a91731dc1089b5db0932cf820151a91",
+     "board": "pnl",
+     "rank": 19,
+     "pnl_all_time": 58846846.745772004,
+     "t_before": -0.667,
+     "t_after": 0.17,
+     "weeks_after": 36.9
+    },
+    {
+     "address": "0x5d2f4460ac3514ada79f5d9838916e508ab39bb7",
+     "board": "pnl",
+     "rank": 20,
+     "pnl_all_time": 56429473.26714,
+     "t_before": 1.445,
+     "t_after": 1.745,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50",
+     "board": "pnl",
+     "rank": 21,
+     "pnl_all_time": 56269781.936292,
+     "t_before": 1.01,
+     "t_after": 1.857,
+     "weeks_after": 36.6
+    },
+    {
+     "address": "0x656c8da58d738295e03550796dd83900aa7c6525",
+     "board": "pnl",
+     "rank": 22,
+     "pnl_all_time": 56120290.622859,
+     "t_before": -0.887,
+     "t_after": 1.177,
+     "weeks_after": 30.4
+    },
+    {
+     "address": "0x0d446c3372a9ba9cddef0eef7a1afab6dc0e8c0b",
+     "board": "pnl",
+     "rank": 23,
+     "pnl_all_time": 53743517.303674,
+     "t_before": 1.158,
+     "t_after": 1.295,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9",
+     "board": "pnl",
+     "rank": 24,
+     "pnl_all_time": 50406896.703773,
+     "t_before": 2.27,
+     "t_after": 0.863,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+     "board": "pnl",
+     "rank": 25,
+     "pnl_all_time": 47570336.119409,
+     "t_before": 1.286,
+     "t_after": -0.652,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0x03b3e2069830dd3bd1a5b5e45dad60a770227ed7",
+     "board": "pnl",
+     "rank": 26,
+     "pnl_all_time": 46496367.286952,
+     "t_before": 1.013,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xcfdb74a8c080bb7b4360ed6fe21f895c653efff4",
+     "board": "pnl",
+     "rank": 27,
+     "pnl_all_time": 44204935.339619,
+     "t_before": 0.915,
+     "t_after": 1.48,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0xda3cdff67ce27fa68ba5600a7c95efd8153d9f15",
+     "board": "pnl",
+     "rank": 28,
+     "pnl_all_time": 43348850.873583,
+     "t_before": 1.05,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x493db0ed7514c975e9abcc110bd40c473b6763e3",
+     "board": "pnl",
+     "rank": 29,
+     "pnl_all_time": 41687525.762312,
+     "t_before": 1.033,
+     "t_after": 1.903,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0x56498e5f90c14060499b62b6f459b3e3fb9280c5",
+     "board": "pnl",
+     "rank": 30,
+     "pnl_all_time": 38667377.66486,
+     "t_before": -0.819,
+     "t_after": 0.989,
+     "weeks_after": 36.9
+    },
+    {
+     "address": "0x4f7634c03ec4e87e14725c84913ade523c6fad5a",
+     "board": "pnl",
+     "rank": 31,
+     "pnl_all_time": 37080275.97,
+     "t_before": 0.923,
+     "t_after": -1.206,
+     "weeks_after": 20.1
+    },
+    {
+     "address": "0x31ca8395cf837de08b24da3f660e77761dfb974b",
+     "board": "pnl",
+     "rank": 32,
+     "pnl_all_time": 37075440.318969,
+     "t_before": -0.36,
+     "t_after": -2.333,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0xcac19662ec88d23fa1c81ac0e8570b0cf2ff26b3",
+     "board": "pnl",
+     "rank": 33,
+     "pnl_all_time": 36244975.68380699,
+     "t_before": 1.027,
+     "t_after": -1.797,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x13c50dcdee4bbcba71baf578b345cdd35c7928be",
+     "board": "pnl",
+     "rank": 34,
+     "pnl_all_time": 36005619.893835,
+     "t_before": 1.36,
+     "t_after": 1.729,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0x4a207d289fd49e60502451099771127bcf35b961",
+     "board": "pnl",
+     "rank": 35,
+     "pnl_all_time": 35154177.537957,
+     "t_before": 0.834,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xa87a233e8a7d8951ff790a2e39738086cb5f71b7",
+     "board": "pnl",
+     "rank": 36,
+     "pnl_all_time": 34639293.51881,
+     "t_before": 0.886,
+     "t_after": 1.418,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0x4e14fc11f58b64740e66e4b1aa188a4b007c0eab",
+     "board": "pnl",
+     "rank": 37,
+     "pnl_all_time": 34156123.263704,
+     "t_before": 1.501,
+     "t_after": 1.751,
+     "weeks_after": 36.6
+    },
+    {
+     "address": "0x7dacca323e44f168494c779bb5e7483c468ef410",
+     "board": "pnl",
+     "rank": 38,
+     "pnl_all_time": 33677837.448203,
+     "t_before": 0.663,
+     "t_after": 1.742,
+     "weeks_after": 36.4
+    },
+    {
+     "address": "0xc59498175d6d317642aeb97f895a7ce1aa992191",
+     "board": "pnl",
+     "rank": 39,
+     "pnl_all_time": 33666537.564907,
+     "t_before": 0.583,
+     "t_after": 1.067,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0x939f95036d2e7b6d7419ec072bf9d967352204d2",
+     "board": "pnl",
+     "rank": 40,
+     "pnl_all_time": 33363589.116844,
+     "t_before": 1.249,
+     "t_after": 0.55,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0x5cedcb1fc2f201ad7063ddc2c08557a6e3d82a51",
+     "board": "pnl",
+     "rank": 41,
+     "pnl_all_time": 33130796.474,
+     "t_before": -1.643,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0x856c35038594767646266bc7fd68dc26480e910d",
+     "board": "pnl",
+     "rank": 42,
+     "pnl_all_time": 32662608.37761001,
+     "t_before": 1.877,
+     "t_after": 0.687,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x35d1151ef1aab579cbb3109e69fa82f94ff5acb1",
+     "board": "pnl",
+     "rank": 43,
+     "pnl_all_time": 32277650.395964,
+     "t_before": 0.662,
+     "t_after": 1.258,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0xa464abbf049fb75585484addcbc00169062e813a",
+     "board": "pnl",
+     "rank": 44,
+     "pnl_all_time": 31668329.411354996,
+     "t_before": 1.23,
+     "t_after": 0.705,
+     "weeks_after": 31.0
+    },
+    {
+     "address": "0x03b9a189e2480d1e4c3007080b29f362282130fa",
+     "board": "pnl",
+     "rank": 45,
+     "pnl_all_time": 31044287.188627996,
+     "t_before": 1.685,
+     "t_after": 1.776,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x8bff50aad8b4e06c5e148eaeb9d7aef69e26cdc3",
+     "board": "pnl",
+     "rank": 46,
+     "pnl_all_time": 28681070.440094,
+     "t_before": 1.6,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xe4178ba889ac1c931861533b98bb86cb9d4858c7",
+     "board": "pnl",
+     "rank": 47,
+     "pnl_all_time": 28269229.364056,
+     "t_before": 2.166,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xb317d2bc2d3d2df5fa441b5bae0ab9d8b07283ae",
+     "board": "pnl",
+     "rank": 48,
+     "pnl_all_time": 27883411.19101,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0x418aa6bf98a2b2bc93779f810330d88cde488888",
+     "board": "pnl",
+     "rank": 49,
+     "pnl_all_time": 26573653.399009,
+     "t_before": 2.064,
+     "t_after": 0.942,
+     "weeks_after": 37.1
+    },
+    {
+     "address": "0x162cc7c861ebd0c06b3d72319201150482518185",
+     "board": "pnl",
+     "rank": 50,
+     "pnl_all_time": 26352119.176796,
+     "t_before": 2.095,
+     "t_after": 1.133,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x7fe8cfe481ec2f702692a9152e3f002f3e417ac6",
+     "board": "pnl",
+     "rank": 51,
+     "pnl_all_time": 25897023.817158,
+     "t_before": 2.396,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0x123dbca6a27005a3c4ce10cb66ee8ece8fc13bff",
+     "board": "pnl",
+     "rank": 52,
+     "pnl_all_time": 25543090.289659,
+     "t_before": 0.222,
+     "t_after": -1.295,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0x8196e0648cb16e9151c2920618a58605706b5836",
+     "board": "pnl",
+     "rank": 53,
+     "pnl_all_time": 24102566.899381,
+     "t_before": 1.724,
+     "t_after": 1.884,
+     "weeks_after": 36.6
+    },
+    {
+     "address": "0x82d8dc80190e6bc1d92b048f9fc7e85e5e1e32ff",
+     "board": "pnl",
+     "rank": 54,
+     "pnl_all_time": 24055173.778462,
+     "t_before": 0.402,
+     "t_after": 1.11,
+     "weeks_after": 13.0
+    },
+    {
+     "address": "0x598f9efb3164ec216b4eff33c2b239605be5af8e",
+     "board": "pnl",
+     "rank": 55,
+     "pnl_all_time": 23908860.580332,
+     "t_before": 1.133,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xd4c1f7e8d876c4749228d515473d36f919583d1d",
+     "board": "pnl",
+     "rank": 56,
+     "pnl_all_time": 23865933.641666,
+     "t_before": 0.058,
+     "t_after": -0.547,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x87f9cd15f5050a9283b8896300f7c8cf69ece2cf",
+     "board": "pnl",
+     "rank": 57,
+     "pnl_all_time": 23854847.889381994,
+     "t_before": -0.695,
+     "t_after": 1.739,
+     "weeks_after": 37.3
+    },
+    {
+     "address": "0xf517639a8872e756ac98d3c65507d2ebc25cc032",
+     "board": "pnl",
+     "rank": 58,
+     "pnl_all_time": 23725394.025879,
+     "t_before": 1.858,
+     "t_after": 1.441,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x8607a7d180de23645db594d90621d837749408d5",
+     "board": "pnl",
+     "rank": 59,
+     "pnl_all_time": 23560198.451011,
+     "t_before": 0.329,
+     "t_after": 1.292,
+     "weeks_after": 36.3
+    },
+    {
+     "address": "0x99967871e6c4f9a5185abc57edede9e9540191f6",
+     "board": "pnl",
+     "rank": 60,
+     "pnl_all_time": 23448623.52613,
+     "t_before": 1.073,
+     "t_after": 0.647,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0xdafc555a97b358bc09fccf4c0e583c1ec5838b16",
+     "board": "pnl",
+     "rank": 61,
+     "pnl_all_time": 22936542.522518,
+     "t_before": 1.013,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0xe86b057f5eb764c9738d6b0d38170befd0723664",
+     "board": "pnl",
+     "rank": 62,
+     "pnl_all_time": 22876432.045116,
+     "t_before": 0.891,
+     "t_after": -0.983,
+     "weeks_after": 37.3
+    },
+    {
+     "address": "0x1c020f03305acd09994c1910d440646e4a5f91b0",
+     "board": "pnl",
+     "rank": 63,
+     "pnl_all_time": 22834011.687831,
+     "t_before": 1.067,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x3300eebeea8239b90a435e403b130a853a0d7dff",
+     "board": "pnl",
+     "rank": 64,
+     "pnl_all_time": 22753920.670659,
+     "t_before": 1.007,
+     "t_after": -0.859,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0x77375a8c9d13bf79afb2a87f1b0ac1dfd5f5bf66",
+     "board": "pnl",
+     "rank": 65,
+     "pnl_all_time": 22443463.697192,
+     "t_before": 1.113,
+     "t_after": 1.943,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0x6859da14835424957a1e6b397d8026b1d9ff7e1e",
+     "board": "pnl",
+     "rank": 66,
+     "pnl_all_time": 22218390.347158,
+     "t_before": 1.571,
+     "t_after": 0.39,
+     "weeks_after": 38.6
+    },
+    {
+     "address": "0xa16e0fd908d5da6f37590d6005f15b5cb6a91688",
+     "board": "pnl",
+     "rank": 67,
+     "pnl_all_time": 21532988.540063,
+     "t_before": 1.757,
+     "t_after": 1.083,
+     "weeks_after": 37.1
+    },
+    {
+     "address": "0x0ddf9bae2af4b874b96d287a5ad42eb47138a902",
+     "board": "pnl",
+     "rank": 68,
+     "pnl_all_time": 21000918.963375,
+     "t_before": -0.919,
+     "t_after": 0.643,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0x0e8bf301805df4e6ba7151297e5f7dfedc1eaab9",
+     "board": "pnl",
+     "rank": 69,
+     "pnl_all_time": 20913362.018906,
+     "t_before": 1.036,
+     "t_after": 1.558,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0x34971bc50eb4484505e4a24516c8db843fbef162",
+     "board": "pnl",
+     "rank": 70,
+     "pnl_all_time": 20675755.974923,
+     "t_before": 1.129,
+     "t_after": 1.817,
+     "weeks_after": 36.9
+    },
+    {
+     "address": "0x1419e75330c71ce463102e6a1eb62fe80b412d5f",
+     "board": "pnl",
+     "rank": 71,
+     "pnl_all_time": 20272198.428299,
+     "t_before": 1.051,
+     "t_after": 1.809,
+     "weeks_after": 36.6
+    },
+    {
+     "address": "0xff4cd3826ecee12acd4329aada4a2d3419fc463c",
+     "board": "pnl",
+     "rank": 72,
+     "pnl_all_time": 19956126.746550005,
+     "t_before": 2.394,
+     "t_after": 1.631,
+     "weeks_after": 36.3
+    },
+    {
+     "address": "0x5c02f2dfcb6537b83929596fe8a3278e237e3e7c",
+     "board": "pnl",
+     "rank": 73,
+     "pnl_all_time": 19688888.732608,
+     "t_before": 0.987,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xbee95bb47bc4e28bb1fd489a2d0f873fe59172ad",
+     "board": "pnl",
+     "rank": 74,
+     "pnl_all_time": 19584966.216555,
+     "t_before": 1.105,
+     "t_after": 1.796,
+     "weeks_after": 36.1
+    },
+    {
+     "address": "0x8cc94dc843e1ea7a19805e0cca43001123512b6a",
+     "board": "pnl",
+     "rank": 75,
+     "pnl_all_time": 19576216.329834,
+     "t_before": -0.1,
+     "t_after": -0.7,
+     "weeks_after": 37.3
+    },
+    {
+     "address": "0x1da722cfa8b0dfda57cf8d787689039c7a63f049",
+     "board": "pnl",
+     "rank": 76,
+     "pnl_all_time": 19524418.770366,
+     "t_before": 1.611,
+     "t_after": 1.795,
+     "weeks_after": 36.4
+    },
+    {
+     "address": "0x97bfcf95b940e46990a42fdc21812be84442ef74",
+     "board": "pnl",
+     "rank": 77,
+     "pnl_all_time": 19021954.839775,
+     "t_before": 1.041,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0xdcac85ecae7148886029c20e661d848a4de99ce2",
+     "board": "pnl",
+     "rank": 78,
+     "pnl_all_time": 18909083.936233997,
+     "t_before": 0.896,
+     "t_after": 1.331,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0xb041569b6ffac3b2cb6d289e85458e90b62d6ecb",
+     "board": "pnl",
+     "rank": 79,
+     "pnl_all_time": 18596920.792167,
+     "t_before": 0.737,
+     "t_after": 0.406,
+     "weeks_after": 34.9
+    },
+    {
+     "address": "0x807a2e2e469df84b299da5f90f15dda4380daca1",
+     "board": "pnl",
+     "rank": 80,
+     "pnl_all_time": 18570904.520686,
+     "t_before": 1.175,
+     "t_after": 1.702,
+     "weeks_after": 37.1
+    },
+    {
+     "address": "0x2263b62fec062260e2ce72fa2e3b8a89d6bc062e",
+     "board": "pnl",
+     "rank": 81,
+     "pnl_all_time": 18474614.64172,
+     "t_before": 1.541,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xbc2a70be4bd276d82b3a5e6fa365ef96e6daa6e3",
+     "board": "pnl",
+     "rank": 82,
+     "pnl_all_time": 18394239.335692,
+     "t_before": null,
+     "t_after": 0.112,
+     "weeks_after": 36.4
+    },
+    {
+     "address": "0x99b1098d9d50aa076f78bd26ab22e6abd3710729",
+     "board": "pnl",
+     "rank": 83,
+     "pnl_all_time": 18278265.638159,
+     "t_before": 0.94,
+     "t_after": 1.753,
+     "weeks_after": 31.0
+    },
+    {
+     "address": "0x7717a7a245d9f950e586822b8c9b46863ed7bd7e",
+     "board": "pnl",
+     "rank": 84,
+     "pnl_all_time": 18166669.734773,
+     "t_before": -0.119,
+     "t_after": 0.708,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0x580809c0dfe56287e933f99e347cd5385a645ee3",
+     "board": "pnl",
+     "rank": 85,
+     "pnl_all_time": 17767178.913882,
+     "t_before": -0.152,
+     "t_after": 1.085,
+     "weeks_after": 36.4
+    },
+    {
+     "address": "0xbbbc35dfac3a00a03a8fde3540eca4f0e15c5e64",
+     "board": "pnl",
+     "rank": 86,
+     "pnl_all_time": 17712847.99306,
+     "t_before": 1.971,
+     "t_after": 1.804,
+     "weeks_after": 38.1
+    },
+    {
+     "address": "0xd9225c2b6383f6e532c01c34d7588b1106b9e30b",
+     "board": "pnl",
+     "rank": 87,
+     "pnl_all_time": 17256270.810806,
+     "t_before": 1.014,
+     "t_after": 0.694,
+     "weeks_after": 15.0
+    },
+    {
+     "address": "0x8decc13b6e83873a78126e99036f9442019fd0b5",
+     "board": "pnl",
+     "rank": 88,
+     "pnl_all_time": 17195096.474909,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x0aa989625dedaee97b1996edd964bbb1bf52184d",
+     "board": "pnl",
+     "rank": 89,
+     "pnl_all_time": 17114643.832544,
+     "t_before": 1.257,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x5db201ae15f9702f0a0ff9f00b8c1c18355373d0",
+     "board": "pnl",
+     "rank": 90,
+     "pnl_all_time": 17103101.429257,
+     "t_before": 1.855,
+     "t_after": 1.538,
+     "weeks_after": 36.1
+    },
+    {
+     "address": "0xb62aba8182bcd9d86c1cf85f995d6078663fba78",
+     "board": "pnl",
+     "rank": 91,
+     "pnl_all_time": 17097190.952401,
+     "t_before": 1.219,
+     "t_after": 1.809,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x045bad6ba93375aab642f502c2c89851488c129f",
+     "board": "pnl",
+     "rank": 92,
+     "pnl_all_time": 17038399.056335,
+     "t_before": 0.282,
+     "t_after": 1.694,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0xaa7577a7a27aa7fcf6d0ec481b87df3ad0f6a88e",
+     "board": "pnl",
+     "rank": 93,
+     "pnl_all_time": 16925097.548518,
+     "t_before": -0.891,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x152e41f0b83e6cad4b5dc730c1d6279b7d67c9dc",
+     "board": "pnl",
+     "rank": 94,
+     "pnl_all_time": 16759106.44563,
+     "t_before": 1.462,
+     "t_after": 1.081,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0xd07c845339b07d98c62f4c6b898a54b0c1baa992",
+     "board": "pnl",
+     "rank": 95,
+     "pnl_all_time": 16658097.724037,
+     "t_before": 1.046,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x42b6d907f36255d48f70db8b4a2684088a162634",
+     "board": "pnl",
+     "rank": 96,
+     "pnl_all_time": 16633531.966154,
+     "t_before": 1.016,
+     "t_after": 0.755,
+     "weeks_after": 37.1
+    },
+    {
+     "address": "0x9e8b1e51c642f4c8b87c6ba11c53d516a218afc4",
+     "board": "pnl",
+     "rank": 97,
+     "pnl_all_time": 16505068.065935,
+     "t_before": 2.812,
+     "t_after": 1.458,
+     "weeks_after": 38.2
+    },
+    {
+     "address": "0xbb780de916dde665445f673495426c5273389dad",
+     "board": "pnl",
+     "rank": 98,
+     "pnl_all_time": 16386203.89914,
+     "t_before": 0.939,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x142a1aad965db6b3d2ad63b174419a3095bfa4c0",
+     "board": "pnl",
+     "rank": 99,
+     "pnl_all_time": 16184637.622839,
+     "t_before": 1.613,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x9ff588d01f8948c25b3dd8a36fc583b019fd4a61",
+     "board": "pnl",
+     "rank": 100,
+     "pnl_all_time": 16118086.16173,
+     "t_before": 1.124,
+     "t_after": 1.898,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0xa0667eea9477a9e70e6c9480d2bbdc6336c777ae",
+     "board": "roi30",
+     "rank": 2,
+     "pnl_all_time": 190290.491233,
+     "t_before": null,
+     "t_after": -0.53,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0xaf11b310b7c49b842589dfdf3d2dcbd3f78072f9",
+     "board": "roi30",
+     "rank": 3,
+     "pnl_all_time": -19967.704444,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0xc817bc977fb13173b4561f5c9c7fa2e261593e91",
+     "board": "roi30",
+     "rank": 4,
+     "pnl_all_time": 9753.539526,
+     "t_before": null,
+     "t_after": -0.98,
+     "weeks_after": 35.4
+    },
+    {
+     "address": "0xe966a12bf7b93838096e4519a684519ab22df618",
+     "board": "roi30",
+     "rank": 5,
+     "pnl_all_time": 10787.552864,
+     "t_before": 0.577,
+     "t_after": 1.668,
+     "weeks_after": 37.1
+    },
+    {
+     "address": "0xf533cc7da355efab771f13c482098b9f29bbc8d8",
+     "board": "roi30",
+     "rank": 6,
+     "pnl_all_time": 19919.145009,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0x4fd5696142fcfb346dd084a19fc28ff6e4a9fca3",
+     "board": "roi30",
+     "rank": 7,
+     "pnl_all_time": 2589.27,
+     "t_before": 0.892,
+     "t_after": 1.83,
+     "weeks_after": 34.0
+    },
+    {
+     "address": "0x6d292d413bfabd031804c89a47edae8c7df65fbc",
+     "board": "roi30",
+     "rank": 8,
+     "pnl_all_time": 18111.498883,
+     "t_before": -1.175,
+     "t_after": -0.708,
+     "weeks_after": 11.7
+    },
+    {
+     "address": "0xdcd62a213d1009992da52d8428b5562adee065b0",
+     "board": "roi30",
+     "rank": 9,
+     "pnl_all_time": -208678.093985,
+     "t_before": -0.092,
+     "t_after": 1.814,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x25ca93c584756d674d6fe6d1e241a89791b18df3",
+     "board": "roi30",
+     "rank": 10,
+     "pnl_all_time": -4451.86,
+     "t_before": 0.41,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0xa4f37e5599a7c83da793c2ca567f567a7415c555",
+     "board": "roi30",
+     "rank": 11,
+     "pnl_all_time": 42585.880525,
+     "t_before": 1.345,
+     "t_after": -0.271,
+     "weeks_after": 19.0
+    },
+    {
+     "address": "0x3d99d05951ea06181864af64a53f78a5ee3f1796",
+     "board": "roi30",
+     "rank": 12,
+     "pnl_all_time": -145918.581376,
+     "t_before": 0.682,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x3b290def8e0b287a2c8ac0ae1ab31642caecc7e7",
+     "board": "roi30",
+     "rank": 13,
+     "pnl_all_time": 19626.187437,
+     "t_before": 0.725,
+     "t_after": 0.195,
+     "weeks_after": 36.8
+    },
+    {
+     "address": "0xd0441edb3ef3b8b5ade2239c7abdf101c8060477",
+     "board": "roi30",
+     "rank": 14,
+     "pnl_all_time": 39138.010918,
+     "t_before": 0.993,
+     "t_after": 1.359,
+     "weeks_after": 38.2
+    },
+    {
+     "address": "0xc1c94d3677f8876664dd555559ec8f726352dd2d",
+     "board": "roi30",
+     "rank": 15,
+     "pnl_all_time": 30305.430462,
+     "t_before": null,
+     "t_after": 0.975,
+     "weeks_after": 16.0
+    },
+    {
+     "address": "0xe2872b5ae7dcbba40cc4510d08c8bbea95b42d43",
+     "board": "roi30",
+     "rank": 16,
+     "pnl_all_time": 215370.004705,
+     "t_before": null,
+     "t_after": 3.542,
+     "weeks_after": 23.0
+    },
+    {
+     "address": "0xf005093464e14cbacf0f9b9a371269fc118776dd",
+     "board": "roi30",
+     "rank": 17,
+     "pnl_all_time": 834515.900364,
+     "t_before": 1.0,
+     "t_after": 1.081,
+     "weeks_after": 37.1
+    },
+    {
+     "address": "0xa3371d8b79f0d7e000c79755413ae345990cf4d3",
+     "board": "roi30",
+     "rank": 18,
+     "pnl_all_time": -584578.712133,
+     "t_before": 0.939,
+     "t_after": 0.558,
+     "weeks_after": 14.0
+    },
+    {
+     "address": "0x7798ba9512b5a684c12e31518923ea4221a41fb9",
+     "board": "roi30",
+     "rank": 19,
+     "pnl_all_time": -307575.79303,
+     "t_before": -1.89,
+     "t_after": 0.788,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0x760f7d5345c3d9710cc87519881ccf6f17b6e560",
+     "board": "roi30",
+     "rank": 20,
+     "pnl_all_time": 236576.633488,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x8ccee825f44c99fbdaa79464d5eb8beed9313da2",
+     "board": "roi30",
+     "rank": 21,
+     "pnl_all_time": 642764.994408,
+     "t_before": -1.294,
+     "t_after": 1.461,
+     "weeks_after": 28.2
+    },
+    {
+     "address": "0x421183f04d68d0c2c68e27f07ccf84cd8746b9ef",
+     "board": "roi30",
+     "rank": 22,
+     "pnl_all_time": -3275.180854,
+     "t_before": -0.926,
+     "t_after": 1.868,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0xf855fad4fe75406295fde3a8c6ee766f56dc1b36",
+     "board": "roi30",
+     "rank": 23,
+     "pnl_all_time": 91851.494025,
+     "t_before": null,
+     "t_after": -1.988,
+     "weeks_after": 30.6
+    },
+    {
+     "address": "0xb67f9e57d4d80d54331c916d7e740ee5afb84c3b",
+     "board": "roi30",
+     "rank": 24,
+     "pnl_all_time": 26567.76145,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xb58ce9191b41269684d2e448e22467c04a381bf0",
+     "board": "roi30",
+     "rank": 25,
+     "pnl_all_time": 284426.284079,
+     "t_before": 2.254,
+     "t_after": 0.762,
+     "weeks_after": 36.6
+    },
+    {
+     "address": "0x1a2bb9055c08f53ca9ae00b93b7cddc42d1fbbfd",
+     "board": "roi30",
+     "rank": 26,
+     "pnl_all_time": -4122689.791593,
+     "t_before": -1.14,
+     "t_after": 0.147,
+     "weeks_after": 24.0
+    },
+    {
+     "address": "0xdb515ff9dff171ad2c91ab11bfd7705fe0b86acb",
+     "board": "roi30",
+     "rank": 27,
+     "pnl_all_time": 44354.202024,
+     "t_before": 0.066,
+     "t_after": 1.627,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0x9c968355f2da59c95af028c2e059919e374ebdb7",
+     "board": "roi30",
+     "rank": 28,
+     "pnl_all_time": 57812.420849,
+     "t_before": 1.644,
+     "t_after": 0.028,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0xdfbf897d8604d82b4edf1ca754c8d580fe3c3abb",
+     "board": "roi30",
+     "rank": 29,
+     "pnl_all_time": -31097.411018,
+     "t_before": -0.177,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x2ea161d4e856f7945ac75f21b0486c8bbcaf7b11",
+     "board": "roi30",
+     "rank": 30,
+     "pnl_all_time": 303579.404919,
+     "t_before": -0.8,
+     "t_after": 0.974,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x0012910a3d0c2fbd801ab33a1cf032ac91f77ebc",
+     "board": "roi30",
+     "rank": 31,
+     "pnl_all_time": 112500.0,
+     "t_before": 0.809,
+     "t_after": 0.448,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x5bed117e5d6ad7a2a28ce7a320c05bd933663742",
+     "board": "roi30",
+     "rank": 32,
+     "pnl_all_time": 150000.0,
+     "t_before": 0.809,
+     "t_after": 0.448,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0xd47d1c8ba0687a5d11d1c4a1a05d34a94581060e",
+     "board": "roi30",
+     "rank": 33,
+     "pnl_all_time": 217721.1,
+     "t_before": 0.735,
+     "t_after": 0.447,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0xf70d33244f99dcc8daf08f88154ad0391a67fe7d",
+     "board": "roi30",
+     "rank": 34,
+     "pnl_all_time": 150000.0,
+     "t_before": 0.814,
+     "t_after": 0.448,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0xf75afed508c169b77dde62ec363289e189edd6ad",
+     "board": "roi30",
+     "rank": 35,
+     "pnl_all_time": 112500.0,
+     "t_before": 0.741,
+     "t_after": 0.447,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x417ac47ab85ff79254a541fd6a9fdff23852a9a4",
+     "board": "roi30",
+     "rank": 36,
+     "pnl_all_time": 723361.917599,
+     "t_before": -1.163,
+     "t_after": 0.431,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0x0d7ac07ded6ee0a571ac3e3fc05649104e5e81aa",
+     "board": "roi30",
+     "rank": 37,
+     "pnl_all_time": 80908.446695,
+     "t_before": 0.204,
+     "t_after": 1.521,
+     "weeks_after": 38.5
+    },
+    {
+     "address": "0xf07fc9df6cc892029addbef2994d8c221d37f2f6",
+     "board": "roi30",
+     "rank": 38,
+     "pnl_all_time": 2342440.30665,
+     "t_before": 0.758,
+     "t_after": 0.558,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x176d00613b25712048b164d00f89d9c7861faffa",
+     "board": "roi30",
+     "rank": 39,
+     "pnl_all_time": -400074.897886,
+     "t_before": 0.842,
+     "t_after": -0.237,
+     "weeks_after": 20.0
+    },
+    {
+     "address": "0xe42921388db8d4164aa819dd948578b3b7facf10",
+     "board": "roi30",
+     "rank": 40,
+     "pnl_all_time": 269821.631368,
+     "t_before": null,
+     "t_after": 1.135,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0xe2cc27bf177079fd13dfe86cef913b77224ddc4a",
+     "board": "roi30",
+     "rank": 41,
+     "pnl_all_time": 42159.019319,
+     "t_before": 1.269,
+     "t_after": -0.441,
+     "weeks_after": 15.0
+    },
+    {
+     "address": "0xf83895c42ea4c2b6e1f597828a1f27a0d7147497",
+     "board": "roi30",
+     "rank": 42,
+     "pnl_all_time": 2201.706049,
+     "t_before": 1.329,
+     "t_after": -0.022,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0xbd9c944dcfb31cd24c81ebf1c974d950f44e42b8",
+     "board": "roi30",
+     "rank": 43,
+     "pnl_all_time": 1781437.03127,
+     "t_before": 1.461,
+     "t_after": 0.023,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0xf3365305d3fe902b4b916ed7785b3751cf40e3a8",
+     "board": "roi30",
+     "rank": 44,
+     "pnl_all_time": 0.0,
+     "t_before": null,
+     "t_after": 1.178,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0x099c352a33ec06b672bfd95baa6955eed2d82f66",
+     "board": "roi30",
+     "rank": 45,
+     "pnl_all_time": 366506.627114,
+     "t_before": 0.67,
+     "t_after": 1.374,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0xd887c683ae148b622c42235d7c2395f9b22c6777",
+     "board": "roi30",
+     "rank": 46,
+     "pnl_all_time": 961990.984929,
+     "t_before": 0.571,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x63b638e86544aa8c47208661e0734769a128709c",
+     "board": "roi30",
+     "rank": 47,
+     "pnl_all_time": 5453.065634,
+     "t_before": 0.709,
+     "t_after": -2.566,
+     "weeks_after": 30.5
+    },
+    {
+     "address": "0x8dd3c652cd3a4b054905e4fb31ddf4ecff21c4da",
+     "board": "roi30",
+     "rank": 48,
+     "pnl_all_time": 176465.244348,
+     "t_before": null,
+     "t_after": 1.14,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0x6a9edc73adbcfd02f58ee95b3cbf742973f641c2",
+     "board": "roi30",
+     "rank": 49,
+     "pnl_all_time": 3770206.38143,
+     "t_before": 1.001,
+     "t_after": 0.912,
+     "weeks_after": 26.0
+    },
+    {
+     "address": "0x9466140c8781e253fe426c87ac17ccba500140ff",
+     "board": "roi30",
+     "rank": 50,
+     "pnl_all_time": 3938459.346093,
+     "t_before": 0.941,
+     "t_after": 1.386,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0xd1d30622a9c594ee0be5bb6ae4f98339b810b280",
+     "board": "roi30",
+     "rank": 51,
+     "pnl_all_time": -365678.798321,
+     "t_before": -0.376,
+     "t_after": 0.169,
+     "weeks_after": 8.0
+    },
+    {
+     "address": "0xb31af1a4ee9a77c3f29b0abc4046690bfab127f2",
+     "board": "roi30",
+     "rank": 52,
+     "pnl_all_time": -8855.691713,
+     "t_before": 0.187,
+     "t_after": 1.03,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0xbd764507c45fe579841402feb5f7a67f20576c0c",
+     "board": "roi30",
+     "rank": 53,
+     "pnl_all_time": 413094.769615,
+     "t_before": -0.864,
+     "t_after": 1.032,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0xbd163a8befc0a6d92d2e4983d7e178ed8907144a",
+     "board": "roi30",
+     "rank": 54,
+     "pnl_all_time": 498329.389605,
+     "t_before": 1.694,
+     "t_after": -0.806,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0x801cbfc19704c4fa52e6b5e62213748677dcf3a0",
+     "board": "roi30",
+     "rank": 55,
+     "pnl_all_time": -1126692.865957,
+     "t_before": -1.079,
+     "t_after": -2.709,
+     "weeks_after": 20.6
+    },
+    {
+     "address": "0x3adaa1d2d0598c9b661a746649d20e1e8aad9b3a",
+     "board": "roi30",
+     "rank": 56,
+     "pnl_all_time": 498555.312521,
+     "t_before": null,
+     "t_after": -0.948,
+     "weeks_after": 10.0
+    },
+    {
+     "address": "0x97f46f90c04efb91d0d740bd263e76683ca6f904",
+     "board": "roi30",
+     "rank": 57,
+     "pnl_all_time": 868788.214674,
+     "t_before": null,
+     "t_after": 1.38,
+     "weeks_after": 20.0
+    },
+    {
+     "address": "0xbdfa55c747ef5eecdcee64284879337a0d27d4f4",
+     "board": "roi30",
+     "rank": 58,
+     "pnl_all_time": -10963.303564,
+     "t_before": -0.486,
+     "t_after": -0.49,
+     "weeks_after": 9.0
+    },
+    {
+     "address": "0x8d4b6671ce3de134f009235a41d9906f80d672ed",
+     "board": "roi30",
+     "rank": 59,
+     "pnl_all_time": 23458.239007,
+     "t_before": -0.514,
+     "t_after": 0.457,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x2f9ba5eeb440d14bb01a7c072b82ed37fc901047",
+     "board": "roi30",
+     "rank": 60,
+     "pnl_all_time": -441282.033895,
+     "t_before": -0.042,
+     "t_after": 0.812,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0x184cf6ce32208e4bb324d402fdd8f5b34c810880",
+     "board": "roi30",
+     "rank": 61,
+     "pnl_all_time": 219442.097775,
+     "t_before": 0.899,
+     "t_after": 1.194,
+     "weeks_after": 34.2
+    },
+    {
+     "address": "0x59176fc2adb517087fd41cb57f6e0c928731055a",
+     "board": "roi30",
+     "rank": 62,
+     "pnl_all_time": 3771.247052,
+     "t_before": 1.358,
+     "t_after": -2.464,
+     "weeks_after": 8.0
+    },
+    {
+     "address": "0xebb052a8c7e08d42ddc17241d596be3f3b2b3f1e",
+     "board": "roi30",
+     "rank": 63,
+     "pnl_all_time": 32154.19147,
+     "t_before": 1.187,
+     "t_after": -1.249,
+     "weeks_after": 13.0
+    },
+    {
+     "address": "0x34843b85e9dbc33a071307ad4f8e587ab551dc6b",
+     "board": "roi30",
+     "rank": 64,
+     "pnl_all_time": -82362.7703,
+     "t_before": 1.093,
+     "t_after": -1.981,
+     "weeks_after": 36.1
+    },
+    {
+     "address": "0x7624946e29b542572d56f978658da7db8936651e",
+     "board": "roi30",
+     "rank": 65,
+     "pnl_all_time": 24620.543143,
+     "t_before": -0.072,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0xf763d7c28ce6a5df1068fdda9627ae19dff65dee",
+     "board": "roi30",
+     "rank": 66,
+     "pnl_all_time": 1313651.033514,
+     "t_before": 1.016,
+     "t_after": -0.499,
+     "weeks_after": 35.5
+    },
+    {
+     "address": "0x75e4c0ffb05c07798e22605b607e2c8717a1e885",
+     "board": "roi30",
+     "rank": 67,
+     "pnl_all_time": 110522.754199,
+     "t_before": -0.904,
+     "t_after": 0.733,
+     "weeks_after": 38.7
+    },
+    {
+     "address": "0xbcc7fd5f27cba04dca862b94509133c453dde764",
+     "board": "roi30",
+     "rank": 68,
+     "pnl_all_time": 685334.518505,
+     "t_before": null,
+     "t_after": -0.064,
+     "weeks_after": 34.4
+    },
+    {
+     "address": "0x9c00d5e11cb1f2e4fcc94a204d50797072291256",
+     "board": "roi30",
+     "rank": 69,
+     "pnl_all_time": 16374.057283,
+     "t_before": -0.951,
+     "t_after": 1.34,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0x04a542178490a736a6d93b522c39b8114b3458e3",
+     "board": "roi30",
+     "rank": 70,
+     "pnl_all_time": -2166.923978,
+     "t_before": 0.777,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x82c4426b73929c9b2a373b3a902ae7471abf0914",
+     "board": "roi30",
+     "rank": 71,
+     "pnl_all_time": 204159.28883,
+     "t_before": 1.031,
+     "t_after": 0.822,
+     "weeks_after": 36.7
+    },
+    {
+     "address": "0xd83516572789f1c782c8298efce58a5600318fd7",
+     "board": "roi30",
+     "rank": 72,
+     "pnl_all_time": 4660694.627861,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0x8cd41382b134950fbf36f6ef7d9c738a00f14056",
+     "board": "roi30",
+     "rank": 73,
+     "pnl_all_time": 39645.169834,
+     "t_before": 1.022,
+     "t_after": 0.913,
+     "weeks_after": 23.0
+    },
+    {
+     "address": "0x05a196a9477e70c184ed212d6cf02073f535c3bb",
+     "board": "roi30",
+     "rank": 74,
+     "pnl_all_time": 2363476.526128,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0xaeccb6a5c07f988f085f37c2d73a1c152c3edce0",
+     "board": "roi30",
+     "rank": 75,
+     "pnl_all_time": 6703.692521,
+     "t_before": 0.343,
+     "t_after": -1.12,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x3120181ebab99f77da448ff02413b063f119316a",
+     "board": "roi30",
+     "rank": 76,
+     "pnl_all_time": 12070.23866,
+     "t_before": 0.908,
+     "t_after": 0.796,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0x1718cbbb004d7efcb7855b0da7bb9e3d4c999566",
+     "board": "roi30",
+     "rank": 77,
+     "pnl_all_time": -243115.267746,
+     "t_before": 0.783,
+     "t_after": 0.932,
+     "weeks_after": 37.7
+    },
+    {
+     "address": "0xec2208e7add4111dedcb4aa9c6dc87b365c99d8f",
+     "board": "roi30",
+     "rank": 78,
+     "pnl_all_time": -72676.405277,
+     "t_before": 0.67,
+     "t_after": -0.845,
+     "weeks_after": 22.1
+    },
+    {
+     "address": "0xa2ec6aaa7361d53212257bcfe38acd8624f9d0d6",
+     "board": "roi30",
+     "rank": 79,
+     "pnl_all_time": 538301.832996,
+     "t_before": null,
+     "t_after": 0.434,
+     "weeks_after": 37.3
+    },
+    {
+     "address": "0x9b6e12b36508282d3e89a2f9cd3104303c09b4ff",
+     "board": "roi30",
+     "rank": 80,
+     "pnl_all_time": -154446.467495,
+     "t_before": -0.41,
+     "t_after": -2.06,
+     "weeks_after": 28.4
+    },
+    {
+     "address": "0x345359af77917c494f4282f389b534d64e1cb323",
+     "board": "roi30",
+     "rank": 81,
+     "pnl_all_time": -686291.290137,
+     "t_before": -1.175,
+     "t_after": -1.84,
+     "weeks_after": 8.4
+    },
+    {
+     "address": "0x00620ada30d98ffcf8e3c91e65283127d11c64ce",
+     "board": "roi30",
+     "rank": 82,
+     "pnl_all_time": -274970.296825,
+     "t_before": -0.318,
+     "t_after": 0.749,
+     "weeks_after": 37.0
+    },
+    {
+     "address": "0x5b5f798b94f54d33ba316c8b1c837e930c90c052",
+     "board": "roi30",
+     "rank": 83,
+     "pnl_all_time": 13645.579834,
+     "t_before": 0.272,
+     "t_after": 0.808,
+     "weeks_after": 29.7
+    },
+    {
+     "address": "0xc01fadc561720248ecc36e23f51743f4a583167b",
+     "board": "roi30",
+     "rank": 84,
+     "pnl_all_time": -58944.668245,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0xf3dcaeb909d3d17318c0908a1ec0ca31321e1672",
+     "board": "roi30",
+     "rank": 85,
+     "pnl_all_time": 9708.5644,
+     "t_before": null,
+     "t_after": 0.798,
+     "weeks_after": 31.4
+    },
+    {
+     "address": "0x7ab12f7a0925ef24927343d47199e75a91fc78aa",
+     "board": "roi30",
+     "rank": 86,
+     "pnl_all_time": 28623.766739,
+     "t_before": 2.378,
+     "t_after": 3.835,
+     "weeks_after": 37.5
+    },
+    {
+     "address": "0x1a2a33107f2b52e7c7e1d11d7606a63f6e52eeee",
+     "board": "roi30",
+     "rank": 87,
+     "pnl_all_time": -23131.891089,
+     "t_before": 0.989,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x3a732cb2ab4495ec52f1ca4c42b5f6b6c83ef6dd",
+     "board": "roi30",
+     "rank": 88,
+     "pnl_all_time": 95615.701162,
+     "t_before": 0.842,
+     "t_after": -0.758,
+     "weeks_after": 30.0
+    },
+    {
+     "address": "0x597568694fe6ee1b701ec8578bd57102c9a29abd",
+     "board": "roi30",
+     "rank": 89,
+     "pnl_all_time": -255258.876369,
+     "t_before": -0.505,
+     "t_after": -0.69,
+     "weeks_after": 37.4
+    },
+    {
+     "address": "0xcacf02ccefefe60f10762556ab996587d4f08f67",
+     "board": "roi30",
+     "rank": 90,
+     "pnl_all_time": 53117.071452,
+     "t_before": 2.544,
+     "t_after": 2.713,
+     "weeks_after": 37.2
+    },
+    {
+     "address": "0x8db084dd3962a2baebd91d5c3c91ca8d61b67d7a",
+     "board": "roi30",
+     "rank": 91,
+     "pnl_all_time": 88906.176507,
+     "t_before": null,
+     "t_after": -0.697,
+     "weeks_after": 22.0
+    },
+    {
+     "address": "0x53e655101ea361537124ef814ad4e654b54d0637",
+     "board": "roi30",
+     "rank": 92,
+     "pnl_all_time": 294348.293309,
+     "t_before": null,
+     "t_after": 1.829,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0x3c363e96d22c056d748f199fb728fc80d70e461a",
+     "board": "roi30",
+     "rank": 93,
+     "pnl_all_time": 3833347.324586,
+     "t_before": 1.811,
+     "t_after": -0.894,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0xa3241f16c99c81b25dfd5720ce83ed173d847d24",
+     "board": "roi30",
+     "rank": 94,
+     "pnl_all_time": 34994.05,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xd8d4241b00bb8a692171ce3780cfd3e660dd5e65",
+     "board": "roi30",
+     "rank": 95,
+     "pnl_all_time": 789147.78264,
+     "t_before": 1.038,
+     "t_after": 1.205,
+     "weeks_after": 19.0
+    },
+    {
+     "address": "0x29c792a175627a15c60f5288e55d1cf7d95f2157",
+     "board": "roi30",
+     "rank": 96,
+     "pnl_all_time": 157098.422378,
+     "t_before": 0.817,
+     "t_after": 1.649,
+     "weeks_after": 37.6
+    },
+    {
+     "address": "0xcd21065085e9bb2a9c8baa7cbd84a5da1e260601",
+     "board": "roi30",
+     "rank": 97,
+     "pnl_all_time": 411922.798448,
+     "t_before": 1.844,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0x1cda20f9f6a23c209d54940af3ef63b96c9b2c31",
+     "board": "roi30",
+     "rank": 98,
+     "pnl_all_time": 918691.11367,
+     "t_before": 1.149,
+     "t_after": 1.796,
+     "weeks_after": 38.7
+    },
+    {
+     "address": "0x60e9e40e343343d4d1b51f66ede8b07bf448e7a0",
+     "board": "roi30",
+     "rank": 99,
+     "pnl_all_time": 1227.338424,
+     "t_before": null,
+     "t_after": -1.837,
+     "weeks_after": 34.4
+    },
+    {
+     "address": "0x44ca55a6fd39c68a7510d7b03c25810b1299adf5",
+     "board": "roi30",
+     "rank": 100,
+     "pnl_all_time": 1856699.432261,
+     "t_before": null,
+     "t_after": 0.088,
+     "weeks_after": 30.0
+    }
+   ]
+  },
+  {
+   "snapshot": "2026-04-03T15:38Z",
+   "board_size": 33253,
+   "cohort": 200,
+   "fetched": 200,
+   "scored_both": 128,
+   "rho_t": 0.226,
+   "rho_pnl": 0.072,
+   "t_before_ge_2": 10,
+   "median_t_after_if_t_before_ge_2": 0.822,
+   "median_t_after_if_t_before_lt_2": 0.585,
+   "share_t_after_ge_2": 0.016,
+   "rows": [
+    {
+     "address": "0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00",
+     "board": "pnl",
+     "rank": 1,
+     "pnl_all_time": 203095342.74652,
+     "t_before": 1.297,
+     "t_after": -0.033,
+     "weeks_after": 26.4
+    },
+    {
+     "address": "0x5b5d51203a0f9079f8aeb098a6523a13f298c060",
+     "board": "pnl",
+     "rank": 2,
+     "pnl_all_time": 170970074.531046,
+     "t_before": 0.813,
+     "t_after": -0.813,
+     "weeks_after": 26.4
+    },
+    {
+     "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+     "board": "pnl",
+     "rank": 3,
+     "pnl_all_time": 161709003.295132,
+     "t_before": -1.115,
+     "t_after": -0.826,
+     "weeks_after": 28.1
+    },
+    {
+     "address": "0xfae95f601f3a25ace60d19dbb929f2a5c57e3571",
+     "board": "pnl",
+     "rank": 4,
+     "pnl_all_time": 150451685.796273,
+     "t_before": 1.283,
+     "t_after": 0.432,
+     "weeks_after": 26.1
+    },
+    {
+     "address": "0x9794bbbc222b6b93c1417d01aa1ff06d42e5333b",
+     "board": "pnl",
+     "rank": 5,
+     "pnl_all_time": 144134737.33036,
+     "t_before": 1.104,
+     "t_after": 1.313,
+     "weeks_after": 27.9
+    },
+    {
+     "address": "0xdfc24b077bc1425ad1dea75bcb6f8158e10df303",
+     "board": "pnl",
+     "rank": 6,
+     "pnl_all_time": 138049370.146776,
+     "t_before": 3.412,
+     "t_after": 0.531,
+     "weeks_after": 25.7
+    },
+    {
+     "address": "0x20c2d95a3dfdca9e9ad12794d5fa6fad99da44f5",
+     "board": "pnl",
+     "rank": 7,
+     "pnl_all_time": 122729006.785177,
+     "t_before": 0.925,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36",
+     "board": "pnl",
+     "rank": 8,
+     "pnl_all_time": 116262946.309143,
+     "t_before": -0.912,
+     "t_after": -0.37,
+     "weeks_after": 26.4
+    },
+    {
+     "address": "0x880ac484a1743862989a441d6d867238c7aa311c",
+     "board": "pnl",
+     "rank": 9,
+     "pnl_all_time": 115251698.815191,
+     "t_before": -0.973,
+     "t_after": 1.11,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x2ea18c23f72a4b6172c55b411823cdc5335923f4",
+     "board": "pnl",
+     "rank": 10,
+     "pnl_all_time": 106341324.52,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xbde2ddc49a2e6827300faa6afc93d572114a60b1",
+     "board": "pnl",
+     "rank": 11,
+     "pnl_all_time": 97508580.87893,
+     "t_before": 1.036,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xa312114b5795dff9b8db50474dd57701aa78ad1e",
+     "board": "pnl",
+     "rank": 12,
+     "pnl_all_time": 92654345.300187,
+     "t_before": 1.785,
+     "t_after": -0.985,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x716bd8d3337972db99995dda5c4b34d954a61d95",
+     "board": "pnl",
+     "rank": 13,
+     "pnl_all_time": 87784788.22168,
+     "t_before": 1.027,
+     "t_after": 0.866,
+     "weeks_after": 19.0
+    },
+    {
+     "address": "0xd47587702a91731dc1089b5db0932cf820151a91",
+     "board": "pnl",
+     "rank": 14,
+     "pnl_all_time": 87247843.08340101,
+     "t_before": -0.487,
+     "t_after": -0.36,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0x2e3d94f0562703b25c83308a05046ddaf9a8dd14",
+     "board": "pnl",
+     "rank": 15,
+     "pnl_all_time": 84600279.044246,
+     "t_before": 1.155,
+     "t_after": -0.759,
+     "weeks_after": 27.4
+    },
+    {
+     "address": "0x45d26f28196d226497130c4bac709d808fed4029",
+     "board": "pnl",
+     "rank": 16,
+     "pnl_all_time": 82252089.108213,
+     "t_before": 0.413,
+     "t_after": -1.581,
+     "weeks_after": 26.6
+    },
+    {
+     "address": "0x51156f7002c4f74f4956c9e0f2b7bfb6e9dbfac2",
+     "board": "pnl",
+     "rank": 17,
+     "pnl_all_time": 71729160.976106,
+     "t_before": 1.088,
+     "t_after": 0.794,
+     "weeks_after": 28.0
+    },
+    {
+     "address": "0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50",
+     "board": "pnl",
+     "rank": 18,
+     "pnl_all_time": 70854748.17016101,
+     "t_before": 1.103,
+     "t_after": 1.406,
+     "weeks_after": 27.6
+    },
+    {
+     "address": "0x023a3d058020fb76cca98f01b3c48c8938a22355",
+     "board": "pnl",
+     "rank": 19,
+     "pnl_all_time": 62390797.00373,
+     "t_before": 1.621,
+     "t_after": -0.843,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x5d2f4460ac3514ada79f5d9838916e508ab39bb7",
+     "board": "pnl",
+     "rank": 20,
+     "pnl_all_time": 61273704.926034,
+     "t_before": 1.636,
+     "t_after": 1.438,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9",
+     "board": "pnl",
+     "rank": 21,
+     "pnl_all_time": 60759869.092076,
+     "t_before": 2.095,
+     "t_after": -0.71,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05",
+     "board": "pnl",
+     "rank": 22,
+     "pnl_all_time": 60706114.341599,
+     "t_before": 0.948,
+     "t_after": 1.752,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x35d1151ef1aab579cbb3109e69fa82f94ff5acb1",
+     "board": "pnl",
+     "rank": 23,
+     "pnl_all_time": 59088891.612829,
+     "t_before": 1.06,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0x493db0ed7514c975e9abcc110bd40c473b6763e3",
+     "board": "pnl",
+     "rank": 24,
+     "pnl_all_time": 57945567.245967,
+     "t_before": 1.064,
+     "t_after": 1.549,
+     "weeks_after": 26.7
+    },
+    {
+     "address": "0x656c8da58d738295e03550796dd83900aa7c6525",
+     "board": "pnl",
+     "rank": 25,
+     "pnl_all_time": 56127331.534834,
+     "t_before": -0.905,
+     "t_after": 1.236,
+     "weeks_after": 26.1
+    },
+    {
+     "address": "0xcfdb74a8c080bb7b4360ed6fe21f895c653efff4",
+     "board": "pnl",
+     "rank": 26,
+     "pnl_all_time": 55568513.09213,
+     "t_before": 0.932,
+     "t_after": 1.009,
+     "weeks_after": 11.0
+    },
+    {
+     "address": "0x87f9cd15f5050a9283b8896300f7c8cf69ece2cf",
+     "board": "pnl",
+     "rank": 27,
+     "pnl_all_time": 53143380.58605299,
+     "t_before": -0.024,
+     "t_after": 1.499,
+     "weeks_after": 26.6
+    },
+    {
+     "address": "0x0d446c3372a9ba9cddef0eef7a1afab6dc0e8c0b",
+     "board": "pnl",
+     "rank": 28,
+     "pnl_all_time": 52159519.424831,
+     "t_before": 1.125,
+     "t_after": 1.293,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x4e14fc11f58b64740e66e4b1aa188a4b007c0eab",
+     "board": "pnl",
+     "rank": 29,
+     "pnl_all_time": 51747680.496493,
+     "t_before": 1.553,
+     "t_after": 1.31,
+     "weeks_after": 27.6
+    },
+    {
+     "address": "0x939f95036d2e7b6d7419ec072bf9d967352204d2",
+     "board": "pnl",
+     "rank": 30,
+     "pnl_all_time": 46771072.606159,
+     "t_before": 1.508,
+     "t_after": -0.263,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x010461c14e146ac35fe42271bdc1134ee31c703a",
+     "board": "pnl",
+     "rank": 31,
+     "pnl_all_time": 46705002.488081,
+     "t_before": 1.279,
+     "t_after": -0.572,
+     "weeks_after": 27.7
+    },
+    {
+     "address": "0xcac19662ec88d23fa1c81ac0e8570b0cf2ff26b3",
+     "board": "pnl",
+     "rank": 32,
+     "pnl_all_time": 46539452.530148,
+     "t_before": 1.021,
+     "t_after": -1.342,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0x03b3e2069830dd3bd1a5b5e45dad60a770227ed7",
+     "board": "pnl",
+     "rank": 33,
+     "pnl_all_time": 46496367.288265,
+     "t_before": 1.005,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x13c50dcdee4bbcba71baf578b345cdd35c7928be",
+     "board": "pnl",
+     "rank": 34,
+     "pnl_all_time": 46273755.722483,
+     "t_before": 1.438,
+     "t_after": 1.309,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x7dacca323e44f168494c779bb5e7483c468ef410",
+     "board": "pnl",
+     "rank": 35,
+     "pnl_all_time": 46139989.707475,
+     "t_before": 0.884,
+     "t_after": 1.4,
+     "weeks_after": 26.4
+    },
+    {
+     "address": "0xda3cdff67ce27fa68ba5600a7c95efd8153d9f15",
+     "board": "pnl",
+     "rank": 36,
+     "pnl_all_time": 43348850.873841,
+     "t_before": 1.057,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x03b9a189e2480d1e4c3007080b29f362282130fa",
+     "board": "pnl",
+     "rank": 37,
+     "pnl_all_time": 42764582.32352,
+     "t_before": 1.751,
+     "t_after": 1.29,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x162cc7c861ebd0c06b3d72319201150482518185",
+     "board": "pnl",
+     "rank": 38,
+     "pnl_all_time": 42457657.27524701,
+     "t_before": 2.181,
+     "t_after": 0.264,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0x4f7634c03ec4e87e14725c84913ade523c6fad5a",
+     "board": "pnl",
+     "rank": 39,
+     "pnl_all_time": 40788599.385839,
+     "t_before": 1.24,
+     "t_after": -1.279,
+     "weeks_after": 16.1
+    },
+    {
+     "address": "0x56498e5f90c14060499b62b6f459b3e3fb9280c5",
+     "board": "pnl",
+     "rank": 40,
+     "pnl_all_time": 38668350.330459,
+     "t_before": -0.75,
+     "t_after": 0.982,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0x856c35038594767646266bc7fd68dc26480e910d",
+     "board": "pnl",
+     "rank": 41,
+     "pnl_all_time": 38559663.74147401,
+     "t_before": 2.056,
+     "t_after": 0.369,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0xa87a233e8a7d8951ff790a2e39738086cb5f71b7",
+     "board": "pnl",
+     "rank": 42,
+     "pnl_all_time": 38493136.693515,
+     "t_before": 1.261,
+     "t_after": 0.527,
+     "weeks_after": 26.4
+    },
+    {
+     "address": "0x31ca8395cf837de08b24da3f660e77761dfb974b",
+     "board": "pnl",
+     "rank": 43,
+     "pnl_all_time": 37725772.157722,
+     "t_before": -0.356,
+     "t_after": -2.422,
+     "weeks_after": 27.7
+    },
+    {
+     "address": "0x418aa6bf98a2b2bc93779f810330d88cde488888",
+     "board": "pnl",
+     "rank": 44,
+     "pnl_all_time": 36897381.051016,
+     "t_before": 2.138,
+     "t_after": -0.108,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x4a207d289fd49e60502451099771127bcf35b961",
+     "board": "pnl",
+     "rank": 45,
+     "pnl_all_time": 35154178.985784,
+     "t_before": 0.843,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xc59498175d6d317642aeb97f895a7ce1aa992191",
+     "board": "pnl",
+     "rank": 46,
+     "pnl_all_time": 34234102.530287,
+     "t_before": 0.593,
+     "t_after": 0.805,
+     "weeks_after": 20.0
+    },
+    {
+     "address": "0x0ddf9bae2af4b874b96d287a5ad42eb47138a902",
+     "board": "pnl",
+     "rank": 47,
+     "pnl_all_time": 33240511.757475,
+     "t_before": -0.866,
+     "t_after": -0.52,
+     "weeks_after": 20.0
+    },
+    {
+     "address": "0x82d8dc80190e6bc1d92b048f9fc7e85e5e1e32ff",
+     "board": "pnl",
+     "rank": 48,
+     "pnl_all_time": 33111242.40813,
+     "t_before": 1.082,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xa464abbf049fb75585484addcbc00169062e813a",
+     "board": "pnl",
+     "rank": 49,
+     "pnl_all_time": 31662561.870493997,
+     "t_before": 1.229,
+     "t_after": 1.251,
+     "weeks_after": 22.0
+    },
+    {
+     "address": "0x1419e75330c71ce463102e6a1eb62fe80b412d5f",
+     "board": "pnl",
+     "rank": 50,
+     "pnl_all_time": 31646865.569684,
+     "t_before": 1.197,
+     "t_after": 1.362,
+     "weeks_after": 27.6
+    },
+    {
+     "address": "0xd4c1f7e8d876c4749228d515473d36f919583d1d",
+     "board": "pnl",
+     "rank": 51,
+     "pnl_all_time": 30632801.040223002,
+     "t_before": 0.867,
+     "t_after": -1.063,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0xb0a55f13d22f66e6d495ac98113841b2326e9540",
+     "board": "pnl",
+     "rank": 52,
+     "pnl_all_time": 30593059.34,
+     "t_before": 1.551,
+     "t_after": 0.98,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x0e8bf301805df4e6ba7151297e5f7dfedc1eaab9",
+     "board": "pnl",
+     "rank": 53,
+     "pnl_all_time": 29227413.421487,
+     "t_before": 1.086,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x8bff50aad8b4e06c5e148eaeb9d7aef69e26cdc3",
+     "board": "pnl",
+     "rank": 54,
+     "pnl_all_time": 28681089.789329,
+     "t_before": 1.02,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x8196e0648cb16e9151c2920618a58605706b5836",
+     "board": "pnl",
+     "rank": 55,
+     "pnl_all_time": 28340587.240939,
+     "t_before": 1.869,
+     "t_after": 1.432,
+     "weeks_after": 27.6
+    },
+    {
+     "address": "0xe4178ba889ac1c931861533b98bb86cb9d4858c7",
+     "board": "pnl",
+     "rank": 56,
+     "pnl_all_time": 28269229.364056,
+     "t_before": 2.244,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x77375a8c9d13bf79afb2a87f1b0ac1dfd5f5bf66",
+     "board": "pnl",
+     "rank": 57,
+     "pnl_all_time": 28054697.062671,
+     "t_before": 1.306,
+     "t_after": 1.933,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0xbee95bb47bc4e28bb1fd489a2d0f873fe59172ad",
+     "board": "pnl",
+     "rank": 58,
+     "pnl_all_time": 26941004.047506,
+     "t_before": 1.122,
+     "t_after": 1.262,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0xff4cd3826ecee12acd4329aada4a2d3419fc463c",
+     "board": "pnl",
+     "rank": 59,
+     "pnl_all_time": 26711049.913396,
+     "t_before": 2.5,
+     "t_after": 1.339,
+     "weeks_after": 26.3
+    },
+    {
+     "address": "0x99967871e6c4f9a5185abc57edede9e9540191f6",
+     "board": "pnl",
+     "rank": 60,
+     "pnl_all_time": 26244429.908531,
+     "t_before": 1.14,
+     "t_after": -0.154,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x123dbca6a27005a3c4ce10cb66ee8ece8fc13bff",
+     "board": "pnl",
+     "rank": 61,
+     "pnl_all_time": 26200898.745274,
+     "t_before": 0.327,
+     "t_after": -1.485,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x7fe8cfe481ec2f702692a9152e3f002f3e417ac6",
+     "board": "pnl",
+     "rank": 62,
+     "pnl_all_time": 25897015.639966,
+     "t_before": 2.607,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x6859da14835424957a1e6b397d8026b1d9ff7e1e",
+     "board": "pnl",
+     "rank": 63,
+     "pnl_all_time": 25394703.883964,
+     "t_before": 1.82,
+     "t_after": -0.734,
+     "weeks_after": 26.3
+    },
+    {
+     "address": "0xf517639a8872e756ac98d3c65507d2ebc25cc032",
+     "board": "pnl",
+     "rank": 64,
+     "pnl_all_time": 25356157.517368,
+     "t_before": 1.941,
+     "t_after": 0.917,
+     "weeks_after": 26.1
+    },
+    {
+     "address": "0xe86b057f5eb764c9738d6b0d38170befd0723664",
+     "board": "pnl",
+     "rank": 65,
+     "pnl_all_time": 24849569.278894998,
+     "t_before": 1.011,
+     "t_after": -1.277,
+     "weeks_after": 27.3
+    },
+    {
+     "address": "0x1da722cfa8b0dfda57cf8d787689039c7a63f049",
+     "board": "pnl",
+     "rank": 66,
+     "pnl_all_time": 24546346.859171,
+     "t_before": 1.723,
+     "t_after": 1.323,
+     "weeks_after": 27.4
+    },
+    {
+     "address": "0x99b1098d9d50aa076f78bd26ab22e6abd3710729",
+     "board": "pnl",
+     "rank": 67,
+     "pnl_all_time": 24338748.499037,
+     "t_before": 0.994,
+     "t_after": 1.539,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0x598f9efb3164ec216b4eff33c2b239605be5af8e",
+     "board": "pnl",
+     "rank": 68,
+     "pnl_all_time": 23908871.359702,
+     "t_before": 1.191,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x3300eebeea8239b90a435e403b130a853a0d7dff",
+     "board": "pnl",
+     "rank": 69,
+     "pnl_all_time": 23717837.162627004,
+     "t_before": 1.011,
+     "t_after": -0.872,
+     "weeks_after": 27.7
+    },
+    {
+     "address": "0x8def9f50456c6c4e37fa5d3d57f108ed23992dae",
+     "board": "pnl",
+     "rank": 70,
+     "pnl_all_time": 23629165.770643,
+     "t_before": 1.687,
+     "t_after": -0.967,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x0f991873aab3e14191978946d48f30f624ae9867",
+     "board": "pnl",
+     "rank": 71,
+     "pnl_all_time": 23252859.725429,
+     "t_before": 1.09,
+     "t_after": 1.402,
+     "weeks_after": 27.7
+    },
+    {
+     "address": "0xdafc555a97b358bc09fccf4c0e583c1ec5838b16",
+     "board": "pnl",
+     "rank": 72,
+     "pnl_all_time": 22936543.519706,
+     "t_before": 1.011,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0x1c020f03305acd09994c1910d440646e4a5f91b0",
+     "board": "pnl",
+     "rank": 73,
+     "pnl_all_time": 22834011.687831,
+     "t_before": 1.104,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x8607a7d180de23645db594d90621d837749408d5",
+     "board": "pnl",
+     "rank": 74,
+     "pnl_all_time": 22809306.548054,
+     "t_before": 0.588,
+     "t_after": 1.481,
+     "weeks_after": 26.3
+    },
+    {
+     "address": "0x807a2e2e469df84b299da5f90f15dda4380daca1",
+     "board": "pnl",
+     "rank": 75,
+     "pnl_all_time": 22585200.015802,
+     "t_before": 1.217,
+     "t_after": 1.326,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0xdcac85ecae7148886029c20e661d848a4de99ce2",
+     "board": "pnl",
+     "rank": 76,
+     "pnl_all_time": 22538402.096906,
+     "t_before": 0.855,
+     "t_after": 1.457,
+     "weeks_after": 25.9
+    },
+    {
+     "address": "0x8cc94dc843e1ea7a19805e0cca43001123512b6a",
+     "board": "pnl",
+     "rank": 77,
+     "pnl_all_time": 21696515.128403,
+     "t_before": -0.05,
+     "t_after": -1.25,
+     "weeks_after": 26.0
+    },
+    {
+     "address": "0xb041569b6ffac3b2cb6d289e85458e90b62d6ecb",
+     "board": "pnl",
+     "rank": 78,
+     "pnl_all_time": 21545059.33764,
+     "t_before": 0.727,
+     "t_after": -0.333,
+     "weeks_after": 27.9
+    },
+    {
+     "address": "0xa16e0fd908d5da6f37590d6005f15b5cb6a91688",
+     "board": "pnl",
+     "rank": 79,
+     "pnl_all_time": 21540800.729309,
+     "t_before": 1.862,
+     "t_after": 0.678,
+     "weeks_after": 28.1
+    },
+    {
+     "address": "0x152e41f0b83e6cad4b5dc730c1d6279b7d67c9dc",
+     "board": "pnl",
+     "rank": 80,
+     "pnl_all_time": 20840635.297032,
+     "t_before": 1.947,
+     "t_after": 0.679,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x7717a7a245d9f950e586822b8c9b46863ed7bd7e",
+     "board": "pnl",
+     "rank": 81,
+     "pnl_all_time": 20693474.430171,
+     "t_before": 0.1,
+     "t_after": -0.003,
+     "weeks_after": 26.7
+    },
+    {
+     "address": "0x34971bc50eb4484505e4a24516c8db843fbef162",
+     "board": "pnl",
+     "rank": 82,
+     "pnl_all_time": 20680554.692075003,
+     "t_before": 1.051,
+     "t_after": 1.45,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0xbbbc35dfac3a00a03a8fde3540eca4f0e15c5e64",
+     "board": "pnl",
+     "rank": 83,
+     "pnl_all_time": 20477170.868285,
+     "t_before": 2.108,
+     "t_after": 1.353,
+     "weeks_after": 28.1
+    },
+    {
+     "address": "0x71dfc07de32c2ebf1c4801f4b1c9e40b76d4a23d",
+     "board": "pnl",
+     "rank": 84,
+     "pnl_all_time": 19981194.19916,
+     "t_before": 1.339,
+     "t_after": -1.52,
+     "weeks_after": 26.7
+    },
+    {
+     "address": "0x5c02f2dfcb6537b83929596fe8a3278e237e3e7c",
+     "board": "pnl",
+     "rank": 85,
+     "pnl_all_time": 19688888.783827,
+     "t_before": 0.8,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x97bfcf95b940e46990a42fdc21812be84442ef74",
+     "board": "pnl",
+     "rank": 86,
+     "pnl_all_time": 19052366.85392,
+     "t_before": 1.045,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x3fc56e944aa7b1594c85861b2d46a07f82a2c0c1",
+     "board": "pnl",
+     "rank": 87,
+     "pnl_all_time": 18699608.290659,
+     "t_before": 1.824,
+     "t_after": -0.076,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x2263b62fec062260e2ce72fa2e3b8a89d6bc062e",
+     "board": "pnl",
+     "rank": 88,
+     "pnl_all_time": 18474614.142985,
+     "t_before": 1.543,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0xd9225c2b6383f6e532c01c34d7588b1106b9e30b",
+     "board": "pnl",
+     "rank": 89,
+     "pnl_all_time": 18410328.275939,
+     "t_before": 1.016,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xb62aba8182bcd9d86c1cf85f995d6078663fba78",
+     "board": "pnl",
+     "rank": 90,
+     "pnl_all_time": 18341715.295948002,
+     "t_before": 1.268,
+     "t_after": 1.471,
+     "weeks_after": 26.6
+    },
+    {
+     "address": "0xaf0fdd39e5d92499b0ed9f68693da99c0ec1e92e",
+     "board": "pnl",
+     "rank": 91,
+     "pnl_all_time": 18231058.348921,
+     "t_before": 2.048,
+     "t_after": 2.375,
+     "weeks_after": 26.0
+    },
+    {
+     "address": "0xfc667adba8d4837586078f4fdcdc29804337ca06",
+     "board": "pnl",
+     "rank": 92,
+     "pnl_all_time": 18122985.280021,
+     "t_before": 1.3,
+     "t_after": 0.567,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x9e8b1e51c642f4c8b87c6ba11c53d516a218afc4",
+     "board": "pnl",
+     "rank": 93,
+     "pnl_all_time": 17916816.806361,
+     "t_before": 2.874,
+     "t_after": 1.113,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x580809c0dfe56287e933f99e347cd5385a645ee3",
+     "board": "pnl",
+     "rank": 94,
+     "pnl_all_time": 17769633.027283,
+     "t_before": 0.114,
+     "t_after": 0.367,
+     "weeks_after": 25.3
+    },
+    {
+     "address": "0x2d23b731e5f04996a2dfdbe434c7d922afdb5e00",
+     "board": "pnl",
+     "rank": 95,
+     "pnl_all_time": 17733070.357982997,
+     "t_before": 2.254,
+     "t_after": 1.79,
+     "weeks_after": 26.7
+    },
+    {
+     "address": "0x17a4ce9320bec0ac79420f0af19848044a469d8d",
+     "board": "pnl",
+     "rank": 96,
+     "pnl_all_time": 17727458.489809,
+     "t_before": 1.707,
+     "t_after": 0.977,
+     "weeks_after": 28.2
+    },
+    {
+     "address": "0x156115e100141e9330620c253225cc5ee598a31a",
+     "board": "pnl",
+     "rank": 97,
+     "pnl_all_time": 17705887.560897,
+     "t_before": 1.735,
+     "t_after": 1.473,
+     "weeks_after": 27.9
+    },
+    {
+     "address": "0xbfc79c444c41a74516bf31237ebf586a231480b4",
+     "board": "pnl",
+     "rank": 98,
+     "pnl_all_time": 17419153.353139,
+     "t_before": 1.78,
+     "t_after": -1.775,
+     "weeks_after": 28.1
+    },
+    {
+     "address": "0x5db201ae15f9702f0a0ff9f00b8c1c18355373d0",
+     "board": "pnl",
+     "rank": 99,
+     "pnl_all_time": 17270205.559692,
+     "t_before": 1.681,
+     "t_after": 1.234,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x8decc13b6e83873a78126e99036f9442019fd0b5",
+     "board": "pnl",
+     "rank": 100,
+     "pnl_all_time": 17195096.474909,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 0
+    },
+    {
+     "address": "0x88ae2f0712685db3a3145a89dcd6a986f90762f0",
+     "board": "roi30",
+     "rank": 1,
+     "pnl_all_time": 120000.0,
+     "t_before": null,
+     "t_after": 0.998,
+     "weeks_after": 14.0
+    },
+    {
+     "address": "0x421f761f3b1b035fe44479f8c80b9e409299a5e8",
+     "board": "roi30",
+     "rank": 2,
+     "pnl_all_time": 112164.907125,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0x5bcb8556d5e8d7fee989cf06045a4275e5d9b800",
+     "board": "roi30",
+     "rank": 3,
+     "pnl_all_time": 52554.23,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xbd9cd285a11854742955982dcc882e40b05a492a",
+     "board": "roi30",
+     "rank": 4,
+     "pnl_all_time": 37226.920935,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xb70ecbab0e839f614879100886cf3dd0bb794d71",
+     "board": "roi30",
+     "rank": 5,
+     "pnl_all_time": -66890.72,
+     "t_before": 0.81,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xb4177e838a5bcdc6097c2e328943b7d3081e1fe7",
+     "board": "roi30",
+     "rank": 6,
+     "pnl_all_time": -7158.666998,
+     "t_before": -2.51,
+     "t_after": -1.149,
+     "weeks_after": 20.0
+    },
+    {
+     "address": "0xf5f569a7006860e6e17c92ba9d5959090acf0336",
+     "board": "roi30",
+     "rank": 7,
+     "pnl_all_time": 28056.024111,
+     "t_before": 1.563,
+     "t_after": 1.562,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x3fe88207f7cc9098f3b75574260a666819ace4ec",
+     "board": "roi30",
+     "rank": 8,
+     "pnl_all_time": -13185.649714,
+     "t_before": -1.879,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xe392e9008c49e7f82e7927a741fcb12799ebdb2b",
+     "board": "roi30",
+     "rank": 9,
+     "pnl_all_time": 19647.915093,
+     "t_before": 0.611,
+     "t_after": 1.876,
+     "weeks_after": 26.6
+    },
+    {
+     "address": "0x857a4fdebb4d7aad8714a3759f61b7ded894f349",
+     "board": "roi30",
+     "rank": 10,
+     "pnl_all_time": -1758.847261,
+     "t_before": -0.232,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0xd07aa01bd68bd5519f13e325d143eddc4b35100c",
+     "board": "roi30",
+     "rank": 11,
+     "pnl_all_time": -614.14,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0x9c03f850e76f6f01c1220cbe8ea70d6e2ce37dbe",
+     "board": "roi30",
+     "rank": 12,
+     "pnl_all_time": 12150.166695,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xeb88e70b8cc677a9262d313d010b039ff3ac44ff",
+     "board": "roi30",
+     "rank": 13,
+     "pnl_all_time": -19016.22,
+     "t_before": 0.153,
+     "t_after": 1.484,
+     "weeks_after": 26.6
+    },
+    {
+     "address": "0x6b8a3e5c1d6547a716c91d305b79b4b9b3fe9e53",
+     "board": "roi30",
+     "rank": 14,
+     "pnl_all_time": 1164151.57579,
+     "t_before": null,
+     "t_after": 1.111,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0xca5e46bb68e999827129d1336033d986b7773804",
+     "board": "roi30",
+     "rank": 15,
+     "pnl_all_time": 11818.856715,
+     "t_before": -1.357,
+     "t_after": 0.139,
+     "weeks_after": 8.0
+    },
+    {
+     "address": "0xdab23e6d93e72c9838d61c1ae3c1c1e311800e79",
+     "board": "roi30",
+     "rank": 16,
+     "pnl_all_time": 4724.31,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0x9323508139801da043fff2b0f30fc951120b16e6",
+     "board": "roi30",
+     "rank": 17,
+     "pnl_all_time": -15833.782862,
+     "t_before": -2.928,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xb9ec4e1886adeefa95cb4d13873dc420dfe6b583",
+     "board": "roi30",
+     "rank": 18,
+     "pnl_all_time": 4136.024753,
+     "t_before": 0.316,
+     "t_after": -0.903,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x085d2ac5a2ab89191feea50b5557d5d9cd7a3e88",
+     "board": "roi30",
+     "rank": 19,
+     "pnl_all_time": -26659.84125,
+     "t_before": -0.664,
+     "t_after": 0.64,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x9d20a319ee8fb208621be1230945e55b78193002",
+     "board": "roi30",
+     "rank": 20,
+     "pnl_all_time": -86300.350392,
+     "t_before": -0.774,
+     "t_after": -1.958,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0xa6856e83992b37ee91728f3a278bdf514c07b3b4",
+     "board": "roi30",
+     "rank": 21,
+     "pnl_all_time": -638462.47,
+     "t_before": 0.855,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0xb09fd1865e1ece9a52bcf3915b73c7c7b81822bb",
+     "board": "roi30",
+     "rank": 22,
+     "pnl_all_time": -7372.090671,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0xdfb03d12d96e60643e88f14bb80d51622203d3f9",
+     "board": "roi30",
+     "rank": 23,
+     "pnl_all_time": -633.26,
+     "t_before": 0.803,
+     "t_after": 0.978,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0xc387339879190ec6bb5dd0ceae32f9e1d2ed386d",
+     "board": "roi30",
+     "rank": 24,
+     "pnl_all_time": 106214.653527,
+     "t_before": -0.555,
+     "t_after": -0.181,
+     "weeks_after": 22.0
+    },
+    {
+     "address": "0x68dd8ac27f89c29bcabf37d0fd0c78e0ab2e0823",
+     "board": "roi30",
+     "rank": 25,
+     "pnl_all_time": -232389.694544,
+     "t_before": 0.926,
+     "t_after": null,
+     "weeks_after": 27
+    },
+    {
+     "address": "0x5af25164a0f1207db70727a2c447d6a7b44b89d0",
+     "board": "roi30",
+     "rank": 26,
+     "pnl_all_time": 440.281006,
+     "t_before": null,
+     "t_after": 1.866,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x922197fd26290e3af3da0c35e7f4f299d95e8741",
+     "board": "roi30",
+     "rank": 27,
+     "pnl_all_time": 605109.671267,
+     "t_before": 1.511,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x25699fd4882257697a36284b5b39c1fc3ffd4212",
+     "board": "roi30",
+     "rank": 28,
+     "pnl_all_time": 665094.362786,
+     "t_before": 0.54,
+     "t_after": -0.118,
+     "weeks_after": 26.1
+    },
+    {
+     "address": "0x7933481da364d5cc3151c22154a0295703765ac9",
+     "board": "roi30",
+     "rank": 29,
+     "pnl_all_time": -60133.412421,
+     "t_before": 0.124,
+     "t_after": 0.734,
+     "weeks_after": 16.1
+    },
+    {
+     "address": "0xba55fe992567bf23a61301c6cda2add81ad8c8e2",
+     "board": "roi30",
+     "rank": 30,
+     "pnl_all_time": 154812.274634,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 7
+    },
+    {
+     "address": "0x640425b7d91943d3a625ffea3da4dd58426a26cf",
+     "board": "roi30",
+     "rank": 31,
+     "pnl_all_time": -36619.578101,
+     "t_before": -1.939,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0xaff8c2ea5157495b7d91cb97c7129269e1430ea8",
+     "board": "roi30",
+     "rank": 32,
+     "pnl_all_time": -99636.912133,
+     "t_before": 0.481,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0xeb2c29a8917422b3ff466f74539b206318c40118",
+     "board": "roi30",
+     "rank": 33,
+     "pnl_all_time": 599716.848341,
+     "t_before": 1.552,
+     "t_after": -1.632,
+     "weeks_after": 15.7
+    },
+    {
+     "address": "0x712d121d3f1c4e9e7005cd1de76eb5d56b9df58b",
+     "board": "roi30",
+     "rank": 34,
+     "pnl_all_time": 1818.41703,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x557b08f94b8cd345bcd19ded9a33f5e28f969eea",
+     "board": "roi30",
+     "rank": 35,
+     "pnl_all_time": 3409.280026,
+     "t_before": 0.344,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0x9aba0385a22e9fa4e453c5a60f65fce7f5798276",
+     "board": "roi30",
+     "rank": 36,
+     "pnl_all_time": 9257.250657,
+     "t_before": 0.148,
+     "t_after": 0.603,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x5f77dc3b3641d06f68800e07bd0a65d949918b24",
+     "board": "roi30",
+     "rank": 37,
+     "pnl_all_time": 424566.562461,
+     "t_before": 1.228,
+     "t_after": -0.199,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x00871deac87b9096d8c361a1c27fb1c8e485f0f7",
+     "board": "roi30",
+     "rank": 38,
+     "pnl_all_time": 91846.584483,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0x8193b8a8044eeb157bb800909b3d931dbaae08e9",
+     "board": "roi30",
+     "rank": 39,
+     "pnl_all_time": 855249.556195,
+     "t_before": 0.909,
+     "t_after": -0.794,
+     "weeks_after": 12.0
+    },
+    {
+     "address": "0x570d7433062055ec1a2736d3636dbf476707bc03",
+     "board": "roi30",
+     "rank": 40,
+     "pnl_all_time": 33447.213719,
+     "t_before": -1.25,
+     "t_after": -1.592,
+     "weeks_after": 21.9
+    },
+    {
+     "address": "0x461936e2d4055a76d9739723f924600ea575433e",
+     "board": "roi30",
+     "rank": 41,
+     "pnl_all_time": -13642.055319,
+     "t_before": 0.649,
+     "t_after": null,
+     "weeks_after": 1
+    },
+    {
+     "address": "0xd492f50d405412fa59a4d3a90a35bc21a51fe956",
+     "board": "roi30",
+     "rank": 42,
+     "pnl_all_time": 15251.764994,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 3
+    },
+    {
+     "address": "0x675437e075f70c170f49ced83547cf3b6ff9aeb4",
+     "board": "roi30",
+     "rank": 43,
+     "pnl_all_time": -1945.127955,
+     "t_before": 0.868,
+     "t_after": -1.824,
+     "weeks_after": 22.0
+    },
+    {
+     "address": "0x34abcfd624440f57e5ca958969799dc0a38e18b8",
+     "board": "roi30",
+     "rank": 44,
+     "pnl_all_time": 527342.883565,
+     "t_before": null,
+     "t_after": -1.462,
+     "weeks_after": 10.0
+    },
+    {
+     "address": "0x8f25818ff64be1abee91abca70c306b33b602062",
+     "board": "roi30",
+     "rank": 45,
+     "pnl_all_time": 2521616.330988,
+     "t_before": 1.105,
+     "t_after": 2.023,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0xaf92bd13e0ff605cef65dba5abcf6453cbb59b37",
+     "board": "roi30",
+     "rank": 46,
+     "pnl_all_time": 653759.769174,
+     "t_before": 0.579,
+     "t_after": 1.075,
+     "weeks_after": 23.2
+    },
+    {
+     "address": "0x81a39aa0b0d6fa8513aa79929e7c01dfaa232fce",
+     "board": "roi30",
+     "rank": 47,
+     "pnl_all_time": 163958.506756,
+     "t_before": 0.965,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0x16bfd6c4c9b34d53d8dff0e3a4df0c6cf1e50797",
+     "board": "roi30",
+     "rank": 48,
+     "pnl_all_time": -1264.063285,
+     "t_before": -0.148,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0xafb76f29f78cfb933fa82aebb8ee8f80f55ea214",
+     "board": "roi30",
+     "rank": 49,
+     "pnl_all_time": 88022.77893,
+     "t_before": 0.778,
+     "t_after": null,
+     "weeks_after": 4
+    },
+    {
+     "address": "0xcb28f90dcab551f9fc17afdd85a09495a87f078e",
+     "board": "roi30",
+     "rank": 50,
+     "pnl_all_time": 458.192432,
+     "t_before": 0.362,
+     "t_after": -0.011,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0x36076e4bfad9624d7feba562326fdfa2063ede23",
+     "board": "roi30",
+     "rank": 51,
+     "pnl_all_time": 349087.054878,
+     "t_before": 0.954,
+     "t_after": 1.21,
+     "weeks_after": 27.8
+    },
+    {
+     "address": "0xfc19cc14a007c7a6dbf3d9e3e7480c7394934eda",
+     "board": "roi30",
+     "rank": 52,
+     "pnl_all_time": -1502098.257342,
+     "t_before": -2.527,
+     "t_after": 0.272,
+     "weeks_after": 10.0
+    },
+    {
+     "address": "0xd3cb1823da2ff584dec3f49ef6a3eea51471e5bc",
+     "board": "roi30",
+     "rank": 53,
+     "pnl_all_time": 7456003.603691,
+     "t_before": null,
+     "t_after": 0.171,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x049bdc370620beab340b01072fa580fd57745e7d",
+     "board": "roi30",
+     "rank": 54,
+     "pnl_all_time": 5652092.980025,
+     "t_before": null,
+     "t_after": -1.477,
+     "weeks_after": 22.0
+    },
+    {
+     "address": "0xd3ffc868b2e05dd82734828902342a52a153a64d",
+     "board": "roi30",
+     "rank": 55,
+     "pnl_all_time": -3561.715401,
+     "t_before": -0.845,
+     "t_after": 0.84,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x97be9c7904f9c772a3efbf9e10286b91ba8a773e",
+     "board": "roi30",
+     "rank": 56,
+     "pnl_all_time": 84674.96,
+     "t_before": null,
+     "t_after": 1.622,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0xf19f6d6e0f2992a85a19e10ac4fc7120e4ed10d9",
+     "board": "roi30",
+     "rank": 57,
+     "pnl_all_time": 556.144186,
+     "t_before": 0.053,
+     "t_after": -0.968,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0x7c8473d3852c63559a8a35c9dc0a7b764a653042",
+     "board": "roi30",
+     "rank": 58,
+     "pnl_all_time": -89055.037813,
+     "t_before": 0.944,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0xd470711252d74f232cd686ac5c4aefb05e1f43a7",
+     "board": "roi30",
+     "rank": 59,
+     "pnl_all_time": 135596.733782,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0xc552e2cfaaecc64eb42e4de0bcf77bbb85cd4e89",
+     "board": "roi30",
+     "rank": 60,
+     "pnl_all_time": -1876.76,
+     "t_before": -0.536,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0x7d0ccd71a45fc0612c0d3a4308cf0eb6944c7b07",
+     "board": "roi30",
+     "rank": 61,
+     "pnl_all_time": -45689.242996,
+     "t_before": null,
+     "t_after": -2.685,
+     "weeks_after": 26.1
+    },
+    {
+     "address": "0xaed022949be3988afef024762f1286f3294348af",
+     "board": "roi30",
+     "rank": 62,
+     "pnl_all_time": 136526.642394,
+     "t_before": 1.36,
+     "t_after": -0.961,
+     "weeks_after": 13.0
+    },
+    {
+     "address": "0x2e4634304d58856d003545badbfef5ec1a442c1d",
+     "board": "roi30",
+     "rank": 63,
+     "pnl_all_time": 13135.394961,
+     "t_before": -0.317,
+     "t_after": -0.998,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x8232a8ddae040329e6b7b144a730992eb5afdfbf",
+     "board": "roi30",
+     "rank": 64,
+     "pnl_all_time": 12530.826478,
+     "t_before": 0.684,
+     "t_after": 0.639,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x5df8f0a7d28c3784258ce7f9e1ea48e57cbbc2a9",
+     "board": "roi30",
+     "rank": 65,
+     "pnl_all_time": 17633.334773,
+     "t_before": null,
+     "t_after": -1.696,
+     "weeks_after": 14.4
+    },
+    {
+     "address": "0x8ad099df028b4c0a895bbd2818bf81d3e0ee775f",
+     "board": "roi30",
+     "rank": 66,
+     "pnl_all_time": 95139.437796,
+     "t_before": 1.3,
+     "t_after": -0.832,
+     "weeks_after": 14.0
+    },
+    {
+     "address": "0x0421e0457edddf6940f558042c797587b12ff429",
+     "board": "roi30",
+     "rank": 67,
+     "pnl_all_time": 85381.07,
+     "t_before": null,
+     "t_after": 1.146,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0xa8439bb20649305d11a4ef5fe2eeb4633ee959dd",
+     "board": "roi30",
+     "rank": 68,
+     "pnl_all_time": 3359.297888,
+     "t_before": 0.907,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0xcf685217df4960e8b1950227ef8b90dea02cf28a",
+     "board": "roi30",
+     "rank": 69,
+     "pnl_all_time": -1117772.895031,
+     "t_before": -0.346,
+     "t_after": -0.955,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0x198d12ecc9b499adf122eb62159dae75c6ca8002",
+     "board": "roi30",
+     "rank": 70,
+     "pnl_all_time": 102679.899945,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0x3e4db2489cdc102db0da07a7ced836874d5fac35",
+     "board": "roi30",
+     "rank": 71,
+     "pnl_all_time": -193764.126449,
+     "t_before": -1.054,
+     "t_after": -0.473,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x974cc4804ebccb4380e78c26f48f9279215851f3",
+     "board": "roi30",
+     "rank": 72,
+     "pnl_all_time": -12344.92,
+     "t_before": 0.671,
+     "t_after": 1.188,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0x8cd0e624102974b6636ce653573d62b98b2b4e85",
+     "board": "roi30",
+     "rank": 73,
+     "pnl_all_time": -15774.467918,
+     "t_before": -0.111,
+     "t_after": 0.617,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0x0903d00d5647b0f4dc30403d5923477d403a1833",
+     "board": "roi30",
+     "rank": 74,
+     "pnl_all_time": 76401.032241,
+     "t_before": null,
+     "t_after": -0.523,
+     "weeks_after": 21.0
+    },
+    {
+     "address": "0x6b08bbb2daf57d390538d73542f50d5f735ca420",
+     "board": "roi30",
+     "rank": 75,
+     "pnl_all_time": 907613.972938,
+     "t_before": null,
+     "t_after": 1.486,
+     "weeks_after": 13.0
+    },
+    {
+     "address": "0x6f31fef250a34a025f7784a2e3a02b4921b30394",
+     "board": "roi30",
+     "rank": 76,
+     "pnl_all_time": 230077.728583,
+     "t_before": 1.564,
+     "t_after": 0.941,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0xf246ea7abc16407115513c5145e242b42424054a",
+     "board": "roi30",
+     "rank": 77,
+     "pnl_all_time": 359256.686964,
+     "t_before": 1.442,
+     "t_after": -0.933,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x266b5569ed3017e74dd48059c6db804e016eefcb",
+     "board": "roi30",
+     "rank": 78,
+     "pnl_all_time": 81284.375002,
+     "t_before": -0.139,
+     "t_after": 1.775,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0xc49b6c714feaf22b12eb02a01521dab6edd1fcbd",
+     "board": "roi30",
+     "rank": 79,
+     "pnl_all_time": 358788.49275,
+     "t_before": 0.905,
+     "t_after": 0.566,
+     "weeks_after": 26.7
+    },
+    {
+     "address": "0x1b2601c417dcdf034fc688b912c4aaa52f146742",
+     "board": "roi30",
+     "rank": 80,
+     "pnl_all_time": 20067.102297,
+     "t_before": 1.376,
+     "t_after": 1.119,
+     "weeks_after": 26.4
+    },
+    {
+     "address": "0xcfbb55fcb05534e21f3a87a095c2dbd3df6bfcd7",
+     "board": "roi30",
+     "rank": 81,
+     "pnl_all_time": 144573.596686,
+     "t_before": -0.22,
+     "t_after": -1.793,
+     "weeks_after": 12.0
+    },
+    {
+     "address": "0xa65a864ca19535e4c06000768c6cfa9f6ebaeb12",
+     "board": "roi30",
+     "rank": 82,
+     "pnl_all_time": 84268.018309,
+     "t_before": 0.231,
+     "t_after": -0.103,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x1294ff538c184bdc4fc9fe5471b8cd324763b5b7",
+     "board": "roi30",
+     "rank": 83,
+     "pnl_all_time": 47388.698394,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 6
+    },
+    {
+     "address": "0xf6c3b538cec8e7236408931a64d73705657e8eb0",
+     "board": "roi30",
+     "rank": 84,
+     "pnl_all_time": 15406.336866,
+     "t_before": null,
+     "t_after": 1.034,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0x29978ba654bd08af0267cb22d88fe91bda87afe3",
+     "board": "roi30",
+     "rank": 85,
+     "pnl_all_time": -164904.204203,
+     "t_before": -2.066,
+     "t_after": null,
+     "weeks_after": 5
+    },
+    {
+     "address": "0x2fbccafe8c07a46804977c0c5b90be45d5858e9b",
+     "board": "roi30",
+     "rank": 86,
+     "pnl_all_time": -53269.463382,
+     "t_before": 0.506,
+     "t_after": 0.62,
+     "weeks_after": 16.0
+    },
+    {
+     "address": "0xf9fbfe77059b980cd8aef58204a3a66f9eaa0b98",
+     "board": "roi30",
+     "rank": 87,
+     "pnl_all_time": 281859.657872,
+     "t_before": null,
+     "t_after": 0.172,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x09c99869e87a7499231524147bc2ce18a27e5bc7",
+     "board": "roi30",
+     "rank": 88,
+     "pnl_all_time": -531474.770214,
+     "t_before": -1.721,
+     "t_after": -0.556,
+     "weeks_after": 17.0
+    },
+    {
+     "address": "0x52e6c32f0eb44f707e9c159052fc5039fc7b7725",
+     "board": "roi30",
+     "rank": 89,
+     "pnl_all_time": 274401.619312,
+     "t_before": 1.383,
+     "t_after": 1.692,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x34efcd07bb59121a9b6011097f7845302654febe",
+     "board": "roi30",
+     "rank": 90,
+     "pnl_all_time": -252808.891801,
+     "t_before": -0.455,
+     "t_after": 0.064,
+     "weeks_after": 27.4
+    },
+    {
+     "address": "0xcf8b283140415274eb35a0ddd38495e20b84fbbf",
+     "board": "roi30",
+     "rank": 91,
+     "pnl_all_time": 43073.221069,
+     "t_before": 0.475,
+     "t_after": 1.308,
+     "weeks_after": 26.9
+    },
+    {
+     "address": "0x80aaf27f4a9a0ad0411316fe88b7a461333df41e",
+     "board": "roi30",
+     "rank": 92,
+     "pnl_all_time": -3269.465678,
+     "t_before": -0.44,
+     "t_after": -1.471,
+     "weeks_after": 18.0
+    },
+    {
+     "address": "0x5b28335f6d5cd5a1ac3b66eb2edd2b917e7aa4a4",
+     "board": "roi30",
+     "rank": 93,
+     "pnl_all_time": 495867.27051,
+     "t_before": null,
+     "t_after": -0.176,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x6143eacf6db9c121b75f67642fb09a912c8f53a2",
+     "board": "roi30",
+     "rank": 94,
+     "pnl_all_time": -58110.197701,
+     "t_before": -0.406,
+     "t_after": 0.537,
+     "weeks_after": 27.1
+    },
+    {
+     "address": "0x9cd0a696c7cbb9d44de99268194cb08e5684e5fe",
+     "board": "roi30",
+     "rank": 95,
+     "pnl_all_time": 4686540.630115,
+     "t_before": null,
+     "t_after": 2.653,
+     "weeks_after": 27.0
+    },
+    {
+     "address": "0xdf2fa90f6cc6f6ad71eab02907cd128a97d8c753",
+     "board": "roi30",
+     "rank": 96,
+     "pnl_all_time": 7700.185224,
+     "t_before": null,
+     "t_after": -0.416,
+     "weeks_after": 25.1
+    },
+    {
+     "address": "0x046020bf59d0896371c0388baca5549e566b2f73",
+     "board": "roi30",
+     "rank": 97,
+     "pnl_all_time": -16777.032505,
+     "t_before": -0.76,
+     "t_after": 1.645,
+     "weeks_after": 27.3
+    },
+    {
+     "address": "0x3b11267dfc4b9ebe8427e8f557056b4b6ce98112",
+     "board": "roi30",
+     "rank": 98,
+     "pnl_all_time": 1259362.32075,
+     "t_before": null,
+     "t_after": -0.49,
+     "weeks_after": 27.2
+    },
+    {
+     "address": "0x8e61faebeda7bd83d5b6305a046eeb025123ef1e",
+     "board": "roi30",
+     "rank": 99,
+     "pnl_all_time": 55786.44,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 2
+    },
+    {
+     "address": "0xc8656b0c5e79bf06386148b065a8af417b508371",
+     "board": "roi30",
+     "rank": 100,
+     "pnl_all_time": 69205.89571,
+     "t_before": null,
+     "t_after": null,
+     "weeks_after": 6
+    }
+   ]
+  }
+ ]
+}
