@@ -20,5 +20,6 @@ Rules every audit follows:
 | [005](005-nof1.md) | Nof1's "proto scaling law for financial intelligence" | 2026-10-12 | Cannot assess: the claim is public, the evidence is not. |
 | [006](006-alpha-arena-season-1.md) | Alpha Arena Season 1 (6 LLMs, real money on Hyperliquid) | 2026-10-15 | No model is distinguishable from luck in either direction: the winner's t is 0.54, the worst loser's −0.83. 17 days needs a Sharpe of about 9.3 to reach t = 2. |
 | [007](007-cex-copy-trading.md) | Copy-trading boards on OKX and Binance (profit top 100 each) | 2026-10-15 | 0 lead traders clear the bar for being picked from the board (OKX 0/97, Binance 0/83); about one in ten passes a single test. |
+| [008](008-polymarket-profit-board.md) | Polymarket all-time profit board (top 50), position by position | 2026-10-15 | 0 of 38 complete records clear the bar. Reading only closed positions made 11 look like stars: unredeemed losers sit in a different list. |
 
 Computed with [Evidence Deflator](../../README.md). Have a backtest or a claim you want checked? Open an issue with a link to it.
