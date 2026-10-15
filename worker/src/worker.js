@@ -204,6 +204,20 @@ async function handle(request, env = {}) {
 
   // Telegram bot webhook. Telegram sends the secret set with setWebhook in a header; anything
   // without it is dropped. The token and the secret are Worker secrets (wrangler secret put).
+  // One-time setup: point the bot's webhook here, using the token the Worker already holds, so the
+  // token never has to be typed into a shell. Guarded by the same secret Telegram will send back.
+  if (url.pathname === '/tg/setup' && request.method === 'POST') {
+    if (!env.TG_TOKEN || !env.TG_WEBHOOK_SECRET || request.headers.get('X-Setup-Secret') !== env.TG_WEBHOOK_SECRET) return json({error: 'not found'}, 404);
+    const r = await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/setWebhook`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({url: url.origin + '/tg', secret_token: env.TG_WEBHOOK_SECRET, allowed_updates: ['message']}),
+    });
+    const info = await (await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/getWebhookInfo`)).json();
+    const me = await (await fetch(`https://api.telegram.org/bot${env.TG_TOKEN}/getMe`)).json();
+    return json({setWebhook: await r.json(), webhook: {url: info.result && info.result.url, pending: info.result && info.result.pending_update_count,
+                 last_error: info.result && info.result.last_error_message}, bot: me.result && me.result.username});
+  }
+
   if (url.pathname === '/tg' && request.method === 'POST') {
     if (!env.TG_TOKEN || request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== env.TG_WEBHOOK_SECRET) return json({error: 'not found'}, 404);
     let update;
