@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit 007 · Copy-trading boards on OKX and Binance (profit top 100 each) · Evidence Deflator</title>
+<meta name="description" content="0 lead traders clear the bar for being picked from the board (OKX 0/97, Binance 0/83); about one in ten passes a single test.">
+<link rel="canonical" href="https://evidencedeflator.com/audits/007-cex-copy-trading.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="Audit 007 · Copy-trading boards on OKX and Binance (profit top 100 each) · Evidence Deflator">
+<meta property="og:description" content="0 lead traders clear the bar for being picked from the board (OKX 0/97, Binance 0/83); about one in ten passes a single test.">
+<meta property="og:url" content="https://evidencedeflator.com/audits/007-cex-copy-trading.html">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css?v=c240ffff">
+<link rel="stylesheet" href="/assets/site.css?v=02e101b3">
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e38b718917cf4c2891f9038a6a597a88", "spa": true}'></script>
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="Main"><a href="/wallet/">Check a wallet</a><a href="/leaderboard/">Leaderboard</a><a href="/audits/" aria-current="page">Audits</a><a href="/check/">Check a backtest</a><a href="/method/">Method</a><a href="/api/">API</a></nav>
+<div class="header-cta"><a class="gh" href="/zh-hans/" hreflang="zh-Hans" lang="zh-Hans">中文</a><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><a href="/audits/" style="text-decoration:none">Audits</a> / 007</div>
+<h1 style="margin-top:16px">Copy-trading boards on OKX and Binance (profit top 100 each)</h1>
+<div class="meta"><span class="tag tag-red">0 of 180 clear the bar</span><span class="mono">2026-10-15</span><span>Sources public, fetched on the stated date</span></div>
+<div class="callout" style="margin-top:0"><div class="eyebrow" style="margin-bottom:10px">Finding</div>0 lead traders clear the bar for being picked from the board (OKX 0/97, Binance 0/83); about one in ten passes a single test.</div>
+<p>The subject is each exchange's public lead-trader board, not any one trader.</p>
+<h2>Subject</h2>
+<p>OKX and Binance let users copy a "lead trader" with one click and rank lead traders by profit. Each board shows PnL, ROI, win rate and (on Binance) a Sharpe ratio, but nothing that allows for having picked the trader from thousands.</p>
+<h2>Three inputs</h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>OKX</th>
+<th>Binance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Knowledge cutoff</td>
+<td>Not applicable (live trading)</td>
+<td>Not applicable (live trading)</td>
+</tr>
+<tr>
+<td>Window</td>
+<td>Last 365 days, daily cumulative PnL ratio; last 12 weeks, weekly PnL ratio</td>
+<td>Last 365 days, daily cumulative ROI</td>
+</tr>
+<tr>
+<td>Attempts</td>
+<td>240 lead traders listed (the public list stops there; the true number is larger)</td>
+<td>9,138 public lead portfolios</td>
+</tr>
+</tbody>
+</table>
+<h2>Finding</h2>
+<p><strong>On both boards, no lead trader in the profit top 100 clears the bar for having been picked from the board.</strong> About one in ten passes a single test.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>OKX</th>
+<th>Binance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ranked by</td>
+<td>PnL</td>
+<td>PnL, last 90 days</td>
+</tr>
+<tr>
+<td>Top 100, scoreable (8+ weeks)</td>
+<td>97</td>
+<td>83</td>
+</tr>
+<tr>
+<td>t ≥ 2 (would pass if picked blind)</td>
+<td>10</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Bar for the best of N</td>
+<td>3.73 (N = 240, a floor)</td>
+<td>4.57 (N = 9,138)</td>
+</tr>
+<tr>
+<td>Clear the bar</td>
+<td><strong>0</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>Highest t</td>
+<td>2.94 (rank 12)</td>
+<td>3.83 (rank 90, 11 weeks of record)</td>
+</tr>
+<tr>
+<td>Copying now / ever (top 100)</td>
+<td>5,581 / 88,513</td>
+<td>11,940 / not shown</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>OKX's #1 by PnL ($2.2M) has t = 0.03 over the last 365 days. Binance's #1 by 90-day PnL (+355% ROI) has t = 2.02.</li>
+<li>No trader in either top 100 is losing beyond chance (t ≤ −2): the boards are not full of bad traders, they are full of records that cannot be told apart from luck.</li>
+</ul>
+<h2>How it was computed, and what is uncertain</h2>
+<ul>
+<li>Data: OKX's documented public API (<code>/api/v5/copytrading/public-lead-traders</code>, <code>public-pnl</code>, <code>public-weekly-pnl</code>); Binance's public copy-trading web endpoints (<code>home-page/query-list</code>, <code>lead-portfolio/chart-data</code>), which are not a documented API. Fetched 2026-10-15, no key, no login. Scripts: <code>tools/audit_okx_copy.py</code>, <code>tools/audit_binance_copy.py</code>.</li>
+<li>Returns: neither exchange documents the base of its ratio. The cumulative daily series is compounded into weekly returns, r = (1 + R_end) / (1 + R_start) − 1, and scored with the wallet check's estimator (Student-t on effective degrees of freedom, on the normal scale).</li>
+<li>OKX check: its weekly endpoint and the compounded daily series disagree in some weeks. Scored on the weekly endpoint instead (12 weeks), 5 pass t ≥ 2 and 0 clear the bar; the two series agree on pass/fail at t = 2 for 82 of 97 traders. The finding holds on either.</li>
+<li>Survivorship: both lists show current lead traders. Traders who closed or stopped leading are not in them, which makes the boards look better than the population that started, not worse.</li>
+<li>The bar counts every listed trader as independent. Traders who copy each other or trade the same coins are fewer independent bets, which lowers the bar; how much is not measured here. On Hyperliquid we estimated it roughly (about 2.6); applied here, it would let 2 OKX and 4 Binance traders through, which is an order-of-magnitude statement, not a finding.</li>
+</ul>
+<h2>What it would take</h2>
+<p>At the median Sharpe of the scoreable traders (Binance 1.40, OKX 0.75, annualised from weekly returns), clearing the board's bar would take about 10.6 years of record on Binance and about 25 years on OKX, if the Sharpe held. Boards rank on 7, 30 or 90 days. The fix is not a better formula; it is to say how the trader was picked and to keep a forward record from the day they were picked.</p>
+<p>Recheck: monthly, with the frozen-cohort method if either exchange keeps its list stable.</p>
+</article>
+<aside class="aside">
+ <div class="box"><h4>Three inputs</h4><ul><li>The model’s knowledge cutoff</li><li>The test window</li><li>How many attempts the result was picked from</li></ul></div>
+ <div class="box"><h4>Rules</h4><ul><li>Numbers recomputed, not copied</li><li>A missing input is a finding, not a verdict</li><li>No judgement of intent</li></ul></div>
+ <div class="box"><h4>More audits</h4><ul><li><a href="/audits/006-alpha-arena-season-1.html">← 006 · Alpha Arena Season 1 (6 LLMs, real money on Hyperliquid)</a></li><li><a href="/audits/">All audits</a></li></ul></div>
+ <a class="btn btn-secondary" href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a>
+</aside>
+</div></main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
+ <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+ <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/q/hyperliquid-trader-skill-or-luck/">Skill or luck?</a></li><li><a href="/q/how-many-months-of-backtest/">How many months?</a></li><li><a href="/q/why-leaderboard-winner-is-not-evidence/">Why #1 is not evidence</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></div>
+</div>
+<div class="foot-note"><span>Open source · MIT · v0.2.0</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+</body>
+</html>

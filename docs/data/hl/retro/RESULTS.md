@@ -26,4 +26,4 @@ Three archived copies of Hyperliquid's public leaderboard (Wayback Machine: 2025
 - **Coverage.** 405 of 598 cohort slots (68%) had 8 weeks or more on both sides; the rest were too new at the snapshot or stopped trading after it. Who drops out is not random, and the direction of that bias is unknown.
 - t_after measures consistency (risk-adjusted), not the size of the return.
 
-For comparison, the closest product (Convexly, Polymarket) reported a pre-registered forward test of its score at Spearman +0.11 against a +0.30 threshold it set, and called it failed (convexly.app/research).
+For comparison, the closest product (Convexly, Polymarket) has published two pre-registered forward tests (convexly.app/research/forward-validation, read 2026-10-15): its Edge Score reached an out-of-sample Spearman of +0.11 against a +0.30 threshold it set, which it reports as not cleared; and a separate persistence test on wallets that cleared its bar, closed 2026-08-30, read "persistence_confirmed" (excess forward edge +2.93 pp), with 5.28 effective independent clusters by Kish and one wallet supplying 41.2% of positions.
