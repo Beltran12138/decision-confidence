@@ -10,7 +10,7 @@ from opencc import OpenCC
 
 _S2T = OpenCC("s2t")
 HANT_WORDS = [("賬戶", "帳戶"), ("默認", "預設"), ("鏈接", "連結"), ("信息", "資訊"), ("打分", "評分"), ("周", "週"),
-              ("纔", "才"), ("爲", "為"), ("喫", "吃"), ("着", "著")]  # s2t emits the older forms
+              ("纔", "才"), ("覈", "核"), ("爲", "為"), ("喫", "吃"), ("着", "著")]  # s2t emits the older forms
 # Language-switch labels are fixed per language, so they must not go through s2t.
 LABELS = {"⟦JIAN⟧": "简体", "⟦FAN⟧": "繁體"}
 LANGS = {"zh-Hans": "/zh-hans/", "zh-Hant": "/zh-hant/"}
@@ -55,7 +55,7 @@ def head(B, lang, title, desc, path, alt, extra=""):
 
 def header(B, P, lang, active, alt):
     cur = ' aria-current="page"'
-    nav = [("wallet", "查钱包", P)] + [(slug, short, f"{P}q/{slug}/") for slug, _, short in Q] + [("method", "方法（英文）", "/method/")]
+    nav = [("wallet", "查钱包", P)] + [(slug, short, f"{P}q/{slug}/") for slug, _, short in Q] + [("method", "方法", f"{P}method/"), ("api", "API", f"{P}api/")]
     links = "".join(f'<a href="{u}"{cur if k == active else ""}>{t}</a>' for k, t, u in nav)
     switch = "".join(f'<a class="gh" href="{alt[k]}" hreflang="{k}" lang="{k}"{cur if k == lang else ""}>{t}</a>'
                      for k, t in (("zh-Hans", "⟦JIAN⟧"), ("zh-Hant", "⟦FAN⟧"), ("en", "EN")))
@@ -73,7 +73,7 @@ def footer(B, P, scripts=""):
 <div class="foot-grid">
  <div><a class="brand" href="{P}">{B.MARK}Evidence Deflator</a>
   <p style="margin-top:14px;max-width:340px">交易战绩是实力还是运气？开源的证据检验工具，看一份记录里有多少算数。</p></div>
- <div><h4>产品</h4><ul><li><a href="{P}">查钱包</a></li><li><a href="/api/">API（英文）</a></li><li><a href="/">英文版首页</a></li></ul></div>
+ <div><h4>产品</h4><ul><li><a href="{P}">查钱包</a></li><li><a href="{P}api/">API</a></li><li><a href="{P}method/">方法</a></li><li><a href="/">英文版首页</a></li></ul></div>
  <div><h4>问题</h4><ul>{qs}</ul></div>
  <div><h4>项目</h4><ul><li><a href="{B.REPO}">GitHub</a></li><li><a href="/privacy/">隐私（英文）</a></li><li><a href="/terms/">条款（英文）</a></li></ul></div>
 </div>
@@ -213,7 +213,7 @@ def wallet_page(B, hl, lang):
  <p><strong>短记录不会被高估。</strong>只有几周数据算出来的 t 尾部很厚：8 周记录、完全没有实力，t ≥ 2 出现的频率大约是门槛假设的两倍。所以 t 取自按记录有效自由度计算的 Student t 分布（靠少数几段长间隔撑起来的记录，自由度更低），再换回常用的尺度。记录长时，它接近 夏普 × √年数；记录短时会更低。已检验：没有实力时，无论历史采样多稀疏，达到 2 的比例都保持在名义上的 2.3%。</p>
  <p><strong>两个门槛。</strong>如果你没有经过任何筛选就来看这个钱包，t ≥ 2 是常用门槛。如果你是在排行榜上排序找到它的，你就是从很多个里挑了最好的那个，门槛会随候选数量上升（对 {N:,} 个账户做 Bonferroni 校正：{bar:.2f}）。大多数人都是在排行榜上找到钱包的。</p>
  <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。</p>
- <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。{PRIVACY} 方法：<a href="/method/">Method（英文）</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
+ <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。{PRIVACY} 方法：<a href="{P}method/">方法</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
 </div></section>
 </main>
 """ + footer(B, P, B.wallet_scripts(N, T))
@@ -288,10 +288,144 @@ def question_pages(B, hl, lang):
 <p class="lede" style="margin-top:14px">{lead}</p>
 {rest}
 <h2>相关问题</h2><ul>{others}</ul>
-<p class="muted small">数字每天根据 <a href="/data/hl/latest.json">latest.json</a> 重建。方法：<a href="/method/">Method（英文）</a>。不构成投资建议。</p>
+<p class="muted small">数字每天根据 <a href="/data/hl/latest.json">latest.json</a> 重建。方法：<a href="{P}method/">方法</a>。不构成投资建议。</p>
 </article></div></main>
 """ + footer(B, P)
         yield f"{P.strip('/')}/q/{slug}/index.html", finish(page, lang)
+
+
+def method_page(B, lang):
+    P = LANGS[lang]
+    alt = {"en": "/method/", **{k: f"{v}method/" for k, v in LANGS.items()}}
+    page = head(B, lang, "方法 · Evidence Deflator", "Evidence Deflator 怎么算：开卷月数、需要多少干净月份、挑选之后的门槛，以及一个排行榜最早哪天能分出赢家。",
+                f"{P}method/", alt) + header(B, P, lang, "method", alt) + f"""
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><span class="dot"></span>方法</div>
+<h1 style="margin-top:16px">用任何人都说得清的输入，做最朴素的算术</h1>
+<p class="lede" style="margin-top:14px">本站每一个数字，都能用仓库里的脚本从公开数据重新算出来。不依赖我们自己的模型，也不需要策略的代码。</p>
+
+<h2 id="wallet">0 · Hyperliquid 钱包</h2>
+<p>钱包检验的算法写在<a href="{P}">钱包页面</a>底部「怎么读一个钱包」：周收益率来自盈亏（充值提现不算收益），t 按记录的有效自由度做小样本校正，门槛按挑选范围用下面第 3 节的 Bonferroni 公式抬高。</p>
+
+<h2 id="open-book">1 · 开卷月数</h2>
+<p>在模型官方公布的训练截止日把回测窗口切开。截止日当月及之前的月份，无法排除被模型见过：模型可能已经知道当时发生了什么。截止日之后的月份才是干净的。</p>
+<div class="eq">窗口 2020-01 → 2025-06，截止日 2024-10
+66 个月  =  58 个开卷  +  8 个干净</div>
+<p>截止日只采用模型提供方自己的文档。没有公布的，我们直说没有，不替它估。截止日越早，结果看起来越好，所以它是最需要出处的那个输入。</p>
+
+<h2 id="clean-months">2 · 需要多少干净月份</h2>
+<p>年化夏普为 S 的结果，经过 T 年达到 t = 2，其中 t ≈ S × √T（Lo, 2002）：</p>
+<div class="eq">所需月数 = (t / S)² × 12
+夏普 2 → 12    夏普 1 → 48    夏普 0.5 → 192</div>
+<p>如果干净的那段比这个短，这次回测就是<em>检验力不足</em>：它没有被证明失败，只是没有被证明有效。独立同分布假设让这个数成为下限；收益有自相关时需要更久。</p>
+
+<h2 id="selection">3 · 挑选之后的门槛</h2>
+<p>从 N 次尝试里挑出最好的那个结果，就是 N 次抽签的最大值。我们用单侧 Bonferroni 校正抬高门槛，并让只试一次时的门槛正好保持在 t = 2：</p>
+<div class="eq">α      = 1 − Φ(2)          ≈ 2.3%，单侧
+bar(N) = Φ⁻¹(1 − α / N)
+N = 1 → 2.00    N = 41 → 3.26    N = 23,376 → 4.76</div>
+<p>Bonferroni 假设各次尝试相互独立。相关的变体（同一个人调的参数网格、用同一个模型的不同队伍）会让它偏保守。我们把这一点写明，而不是换成一个读者无法核对假设的校正；如果测得了有效尝试次数，程序库也接受直接传入。</p>
+
+<h2 id="leaderboards">4 · 排行榜</h2>
+<p>每个参赛者取其公开的净值历史，每天保留最后一个值，算日收益率。加密货币榜按一年 365 天年化，股票日历按 252 天。</p>
+<div class="eq">夏普 = 日收益率均值 / 日收益率标准差 × √(每年天数)
+t    = 夏普 × √(数据年数)</div>
+<p>单说「没有人显著」意义不大，所以每个榜单还会给一个日期：如果榜首的真实夏普是 S，它需要多少个月干净的前向记录才能过「N 选 1」的门槛。</p>
+<div class="eq">分出赢家所需月数 = (bar(N) / S)² × 12</div>
+<p>我们给出 S = 5、S = 2 以及最接近门槛那个参赛者实测夏普下的结果。这些是条件陈述，不是预测。</p>
+
+<h2 id="principles">原则</h2>
+<ul>
+ <li>来源公开，并注明抓取日期。数字重新计算，不照抄。</li>
+ <li>对模型训练数据，我们最强的说法是「无法排除被见过」，从不说「被污染」。</li>
+ <li>缺少某个输入本身就是发现，不是对项目的判决。</li>
+ <li>结论写明数字能支持什么、不能支持什么。不判断动机，不给投资建议。</li>
+ <li>每个榜单、每个说法用同一条规则，不按曲线打分。</li>
+ <li>更正会公开。你觉得哪个数字错了，请<a href="{B.REPO}/issues">提 issue</a>。</li>
+</ul>
+
+<h2 id="limits">这套方法不做什么</h2>
+<ul>
+ <li>它不说任何策略或模型没有实力，只说现有证据还分不清实力和运气。</li>
+ <li>它不检测模型内部的泄漏，只划出无法排除泄漏的范围。</li>
+ <li>它只用项目或榜单自己公开的东西。</li>
+</ul>
+
+<h2 id="reading">延伸阅读</h2>
+<p class="small">Lo, “The Statistics of Sharpe Ratios” (2002). Bailey &amp; López de Prado, “The Deflated Sharpe Ratio” (2014). Zhang &amp; Stadie, “Temporal Leakage in LLM Backtesting” (arXiv 2608.02985).</p>
+</article>
+<aside class="aside">
+ <div class="box"><h4>本页</h4><ul><li><a href="#wallet">Hyperliquid 钱包</a></li><li><a href="#open-book">开卷月数</a></li><li><a href="#clean-months">干净月份</a></li><li><a href="#selection">挑选之后的门槛</a></li><li><a href="#leaderboards">排行榜</a></li><li><a href="#principles">原则</a></li><li><a href="#limits">局限</a></li></ul></div>
+ <div class="box"><h4>试一试</h4><ul><li><a href="{P}">查一个钱包</a></li><li><a href="/check/">在浏览器里检验回测（英文）</a></li><li><a href="{P}api/">API、MCP 与 Python</a></li></ul></div>
+</aside>
+</div></main>
+""" + footer(B, P)
+    return finish(page, lang)
+
+
+def api_page(B, lang):
+    P = LANGS[lang]
+    alt = {"en": "/api/", **{k: f"{v}api/" for k, v in LANGS.items()}}
+    page = head(B, lang, "API · Evidence Deflator", "在 Python、命令行或任何 MCP 客户端里使用 Evidence Deflator。托管的钱包检验接口免密钥。",
+                f"{P}api/", alt) + header(B, P, lang, "api", alt) + f"""
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><span class="dot"></span>API</div>
+<h1 style="margin-top:16px">托管接口、MCP 与 Python</h1>
+<p class="lede" style="margin-top:14px">查 Hyperliquid 钱包不用安装任何东西；检验回测的引擎是纯 Python 标准库，不要密钥、不联网、不执行代码。</p>
+
+<h2 id="remote">托管：通过 HTTP 和 MCP 检验钱包</h2>
+<p>托管接口读取钱包的公开历史并打分，用的是和<a href="{P}">钱包页面</a>在你浏览器里跑的同一套代码。</p>
+<pre class="code solo">curl <span class="s">"https://api.evidencedeflator.com/api/wallet?a=0xADDRESS&amp;picked_from=47153"</span></pre>
+<p><code>picked_from</code> 是你从多大的榜单里挑出这个钱包；不传就按「没经过筛选」处理，门槛是 2。</p>
+<p>远程 MCP（Streamable HTTP，免密钥）：在 Claude、ChatGPT、Cursor 或任何 MCP 客户端里，把 <code>https://api.evidencedeflator.com/mcp</code> 添加为连接器。它只有一个只读工具 <code>hyperliquid_wallet(address, picked_from)</code>。在 Claude Code 里：</p>
+<pre class="code solo">claude mcp add --transport http evidence-deflator https://api.evidencedeflator.com/mcp</pre>
+<p>或者安装 Claude Code 插件。它带同一个工具、一个告诉 agent 如何汇报结论的 skill，以及一个给每次回测计数的 hook：</p>
+<pre class="code solo">/plugin marketplace add Beltran12138/evidence-deflator
+/plugin install evidence-deflator@evidence-deflator</pre>
+
+<h2 id="python">Python</h2>
+<div class="btns" style="margin:10px 0 14px"><button class="copy" data-copy="pip install evidence-deflator">$ pip install evidence-deflator <span class="cp">复制</span><span class="ok">已复制</span></button><span class="muted small">Python ≥ 3.8 · MIT</span></div>
+<pre class="code solo"><span class="k">from</span> evidence_deflator <span class="k">import</span> effective_window, selection_penalty, months_for_power
+
+w = effective_window(cutoff=<span class="s">"2024-10"</span>, start=<span class="s">"2020-01"</span>, end=<span class="s">"2025-06"</span>, trials=<span class="o">41</span>)
+w.open_book_months   <span class="c"># 58  截止日当月及之前的月份</span>
+w.effective_months   <span class="c"># 8   干净月份</span>
+w.months_required    <span class="c"># 128 夏普 1、41 选 1 时需要的干净月份</span>
+w.verdict            <span class="c"># 'underpowered'（检验力不足）</span>
+w.to_dict()          <span class="c"># 全部结果，附文字推理</span>
+
+selection_penalty(<span class="o">41</span>).t_adjusted   <span class="c"># 3.26</span>
+months_for_power(<span class="o">2.0</span>)               <span class="c"># 12</span></pre>
+<p class="small muted">用 <code>cutoff_source=</code> 传入模型提供方的文档链接；不传的话，结果会注明截止日未经核实。测得了尝试之间的相关程度时，传 <code>effective_trials=</code>。</p>
+
+<h2 id="cli">命令行</h2>
+<pre class="code solo">git clone {B.REPO}
+cd evidence-deflator
+python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
+python tools/record.py --start 2026-03 --end 2026-08 --sharpe 3 --trials 4800</pre>
+
+<h2 id="mcp">本地 MCP 服务器</h2>
+<p>适用于 Claude、Cursor 等 MCP 客户端，工具包括 <code>knowledge_window</code>、<code>track_record</code>、<code>counterfactual_audit</code>、<code>trace_audit</code> 和 <code>hyperliquid_wallet</code>。</p>
+<pre class="code solo">pip install <span class="s">"evidence-deflator[mcp]"</span>
+
+{{
+  <span class="s">"mcpServers"</span>: {{
+    <span class="s">"evidence-deflator"</span>: {{ <span class="s">"command"</span>: <span class="s">"evidence-deflator-mcp"</span> }}
+  }}
+}}</pre>
+
+<h2 id="data">数据</h2>
+<p>Hyperliquid 每日分数：<a href="/data/hl/latest.json"><code>/data/hl/latest.json</code></a>；冻结名单：<a href="/data/hl/cohort-2026-10-14.json"><code>/data/hl/cohort-2026-10-14.json</code></a>。AI 交易排行榜每期以 JSON 发布，CC BY 4.0：<a href="/leaderboard/2026-10.json"><code>/leaderboard/2026-10.json</code></a>。</p>
+</article>
+<aside class="aside">
+ <div class="box"><h4>本页</h4><ul><li><a href="#remote">托管接口与 MCP</a></li><li><a href="#python">Python</a></li><li><a href="#cli">命令行</a></li><li><a href="#mcp">本地 MCP</a></li><li><a href="#data">数据</a></li></ul></div>
+ <div class="box"><h4>链接</h4><ul><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{B.REPO}">GitHub</a></li><li><a href="{P}method/">方法</a></li></ul></div>
+</aside>
+</div></main>
+""" + footer(B, P)
+    return finish(page, lang)
 
 
 def build(B):
@@ -300,5 +434,7 @@ def build(B):
         hl = json.load(f)
     for lang, P in LANGS.items():
         B.write(f"{P.strip('/')}/index.html", wallet_page(B, hl, lang))
+        B.write(f"{P.strip('/')}/method/index.html", method_page(B, lang))
+        B.write(f"{P.strip('/')}/api/index.html", api_page(B, lang))
         for rel, page in question_pages(B, hl, lang):
             B.write(rel, page)

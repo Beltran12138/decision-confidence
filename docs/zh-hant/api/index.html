@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API · Evidence Deflator</title>
+<meta name="description" content="在 Python、命令行或任何 MCP 客戶端裏使用 Evidence Deflator。託管的錢包檢驗接口免密鑰。">
+<link rel="canonical" href="https://evidencedeflator.com/zh-hant/api/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="API · Evidence Deflator">
+<meta property="og:description" content="在 Python、命令行或任何 MCP 客戶端裏使用 Evidence Deflator。託管的錢包檢驗接口免密鑰。">
+<meta property="og:url" content="https://evidencedeflator.com/zh-hant/api/">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="alternate" hreflang="en" href="https://evidencedeflator.com/api/">
+<link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/api/">
+<link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/api/">
+<link rel="alternate" hreflang="x-default" href="https://evidencedeflator.com/api/">
+<style>:root{--serif:'Source Serif 4',Georgia,'PingFang HK','Microsoft JhengHei','Noto Sans TC',sans-serif;--sans:Inter,'PingFang HK','Microsoft JhengHei','Noto Sans TC',system-ui,sans-serif}</style>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e38b718917cf4c2891f9038a6a597a88", "spa": true}'></script>
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/zh-hant/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="主導航"><a href="/zh-hant/">查錢包</a><a href="/zh-hant/q/hyperliquid-trader-skill-or-luck/">實力還是運氣？</a><a href="/zh-hant/q/how-many-months-of-backtest/">要幾個月？</a><a href="/zh-hant/q/why-leaderboard-winner-is-not-evidence/">榜首不算證據</a><a href="/zh-hant/method/">方法</a><a href="/zh-hant/api/" aria-current="page">API</a></nav>
+<div class="header-cta"><a class="gh" href="/zh-hans/api/" hreflang="zh-Hans" lang="zh-Hans">简体</a><a class="gh" href="/zh-hant/api/" hreflang="zh-Hant" lang="zh-Hant" aria-current="page">繁體</a><a class="gh" href="/api/" hreflang="en" lang="en">EN</a><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><span class="dot"></span>API</div>
+<h1 style="margin-top:16px">託管接口、MCP 與 Python</h1>
+<p class="lede" style="margin-top:14px">查 Hyperliquid 錢包不用安裝任何東西；檢驗回測的引擎是純 Python 標準庫，不要密鑰、不聯網、不執行代碼。</p>
+
+<h2 id="remote">託管：通過 HTTP 和 MCP 檢驗錢包</h2>
+<p>託管接口讀取錢包的公開歷史並評分，用的是和<a href="/zh-hant/">錢包頁面</a>在你瀏覽器裏跑的同一套代碼。</p>
+<pre class="code solo">curl <span class="s">"https://api.evidencedeflator.com/api/wallet?a=0xADDRESS&amp;picked_from=47153"</span></pre>
+<p><code>picked_from</code> 是你從多大的榜單裏挑出這個錢包；不傳就按「沒經過篩選」處理，門檻是 2。</p>
+<p>遠程 MCP（Streamable HTTP，免密鑰）：在 Claude、ChatGPT、Cursor 或任何 MCP 客戶端裏，把 <code>https://api.evidencedeflator.com/mcp</code> 添加為連接器。它只有一個只讀工具 <code>hyperliquid_wallet(address, picked_from)</code>。在 Claude Code 裏：</p>
+<pre class="code solo">claude mcp add --transport http evidence-deflator https://api.evidencedeflator.com/mcp</pre>
+<p>或者安裝 Claude Code 插件。它帶同一個工具、一個告訴 agent 如何彙報結論的 skill，以及一個給每次回測計數的 hook：</p>
+<pre class="code solo">/plugin marketplace add Beltran12138/evidence-deflator
+/plugin install evidence-deflator@evidence-deflator</pre>
+
+<h2 id="python">Python</h2>
+<div class="btns" style="margin:10px 0 14px"><button class="copy" data-copy="pip install evidence-deflator">$ pip install evidence-deflator <span class="cp">複製</span><span class="ok">已複製</span></button><span class="muted small">Python ≥ 3.8 · MIT</span></div>
+<pre class="code solo"><span class="k">from</span> evidence_deflator <span class="k">import</span> effective_window, selection_penalty, months_for_power
+
+w = effective_window(cutoff=<span class="s">"2024-10"</span>, start=<span class="s">"2020-01"</span>, end=<span class="s">"2025-06"</span>, trials=<span class="o">41</span>)
+w.open_book_months   <span class="c"># 58  截止日當月及之前的月份</span>
+w.effective_months   <span class="c"># 8   乾淨月份</span>
+w.months_required    <span class="c"># 128 夏普 1、41 選 1 時需要的乾淨月份</span>
+w.verdict            <span class="c"># 'underpowered'（檢驗力不足）</span>
+w.to_dict()          <span class="c"># 全部結果，附文字推理</span>
+
+selection_penalty(<span class="o">41</span>).t_adjusted   <span class="c"># 3.26</span>
+months_for_power(<span class="o">2.0</span>)               <span class="c"># 12</span></pre>
+<p class="small muted">用 <code>cutoff_source=</code> 傳入模型提供方的文檔連結；不傳的話，結果會註明截止日未經核實。測得了嘗試之間的相關程度時，傳 <code>effective_trials=</code>。</p>
+
+<h2 id="cli">命令行</h2>
+<pre class="code solo">git clone https://github.com/Beltran12138/evidence-deflator
+cd evidence-deflator
+python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06
+python tools/record.py --start 2026-03 --end 2026-08 --sharpe 3 --trials 4800</pre>
+
+<h2 id="mcp">本地 MCP 服務器</h2>
+<p>適用於 Claude、Cursor 等 MCP 客戶端，工具包括 <code>knowledge_window</code>、<code>track_record</code>、<code>counterfactual_audit</code>、<code>trace_audit</code> 和 <code>hyperliquid_wallet</code>。</p>
+<pre class="code solo">pip install <span class="s">"evidence-deflator[mcp]"</span>
+
+{
+  <span class="s">"mcpServers"</span>: {
+    <span class="s">"evidence-deflator"</span>: { <span class="s">"command"</span>: <span class="s">"evidence-deflator-mcp"</span> }
+  }
+}</pre>
+
+<h2 id="data">數據</h2>
+<p>Hyperliquid 每日分數：<a href="/data/hl/latest.json"><code>/data/hl/latest.json</code></a>；凍結名單：<a href="/data/hl/cohort-2026-10-14.json"><code>/data/hl/cohort-2026-10-14.json</code></a>。AI 交易排行榜每期以 JSON 發佈，CC BY 4.0：<a href="/leaderboard/2026-10.json"><code>/leaderboard/2026-10.json</code></a>。</p>
+</article>
+<aside class="aside">
+ <div class="box"><h4>本頁</h4><ul><li><a href="#remote">託管接口與 MCP</a></li><li><a href="#python">Python</a></li><li><a href="#cli">命令行</a></li><li><a href="#mcp">本地 MCP</a></li><li><a href="#data">數據</a></li></ul></div>
+ <div class="box"><h4>連結</h4><ul><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="/zh-hant/method/">方法</a></li></ul></div>
+</aside>
+</div></main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/zh-hant/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">交易戰績是實力還是運氣？開源的證據檢驗工具，看一份記錄裏有多少算數。</p></div>
+ <div><h4>產品</h4><ul><li><a href="/zh-hant/">查錢包</a></li><li><a href="/zh-hant/api/">API</a></li><li><a href="/zh-hant/method/">方法</a></li><li><a href="/">英文版首頁</a></li></ul></div>
+ <div><h4>問題</h4><ul><li><a href="/zh-hant/q/hyperliquid-trader-skill-or-luck/">實力還是運氣？</a></li><li><a href="/zh-hant/q/how-many-months-of-backtest/">要幾個月？</a></li><li><a href="/zh-hant/q/why-leaderboard-winner-is-not-evidence/">榜首不算證據</a></li></ul></div>
+ <div><h4>項目</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="/privacy/">隱私（英文）</a></li><li><a href="/terms/">條款（英文）</a></li></ul></div>
+</div>
+<div class="foot-note"><span>開源 · MIT · v0.2.0</span><span>統計估計，不構成投資建議。</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+</body>
+</html>

@@ -395,8 +395,12 @@ LB.load('/leaderboard/2026-10.json').then(d=>{
 
 # ---------------------------------------------------------------- method
 
+METHOD_ALT = {"en": "/method/", "zh-Hans": "/zh-hans/method/", "zh-Hant": "/zh-hant/method/"}
+API_ALT = {"en": "/api/", "zh-Hans": "/zh-hans/api/", "zh-Hant": "/zh-hant/api/"}
+
+
 def build_method():
-    page = head("Method · Evidence Deflator", "How Evidence Deflator computes open-book months, clean months needed, the bar after selection, and the earliest date a leaderboard could name a winner.", "/method/") + header("method") + f"""
+    page = head("Method · Evidence Deflator", "How Evidence Deflator computes open-book months, clean months needed, the bar after selection, and the earliest date a leaderboard could name a winner.", "/method/", alt=METHOD_ALT) + header("method", METHOD_ALT) + f"""
 <main class="container article"><div class="split">
 <article class="prose">
 <div class="eyebrow"><span class="dot"></span>Method</div>
@@ -462,7 +466,7 @@ t      = Sharpe × √(years of data)</div>
 # ---------------------------------------------------------------- api
 
 def build_api():
-    page = head("API · Evidence Deflator", "Use Evidence Deflator from Python, the command line, or any MCP client. Pure standard library, no keys, no network.", "/api/") + header("api") + f"""
+    page = head("API · Evidence Deflator", "Use Evidence Deflator from Python, the command line, or any MCP client. Pure standard library, no keys, no network.", "/api/", alt=API_ALT) + header("api", API_ALT) + f"""
 <main class="container article"><div class="split">
 <article class="prose">
 <div class="eyebrow"><span class="dot"></span>API</div>

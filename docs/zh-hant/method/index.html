@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方法 · Evidence Deflator</title>
+<meta name="description" content="Evidence Deflator 怎麼算：開卷月數、需要多少乾淨月份、挑選之後的門檻，以及一個排行榜最早哪天能分出贏家。">
+<link rel="canonical" href="https://evidencedeflator.com/zh-hant/method/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="方法 · Evidence Deflator">
+<meta property="og:description" content="Evidence Deflator 怎麼算：開卷月數、需要多少乾淨月份、挑選之後的門檻，以及一個排行榜最早哪天能分出贏家。">
+<meta property="og:url" content="https://evidencedeflator.com/zh-hant/method/">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="alternate" hreflang="en" href="https://evidencedeflator.com/method/">
+<link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/method/">
+<link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/method/">
+<link rel="alternate" hreflang="x-default" href="https://evidencedeflator.com/method/">
+<style>:root{--serif:'Source Serif 4',Georgia,'PingFang HK','Microsoft JhengHei','Noto Sans TC',sans-serif;--sans:Inter,'PingFang HK','Microsoft JhengHei','Noto Sans TC',system-ui,sans-serif}</style>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e38b718917cf4c2891f9038a6a597a88", "spa": true}'></script>
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/zh-hant/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="主導航"><a href="/zh-hant/">查錢包</a><a href="/zh-hant/q/hyperliquid-trader-skill-or-luck/">實力還是運氣？</a><a href="/zh-hant/q/how-many-months-of-backtest/">要幾個月？</a><a href="/zh-hant/q/why-leaderboard-winner-is-not-evidence/">榜首不算證據</a><a href="/zh-hant/method/" aria-current="page">方法</a><a href="/zh-hant/api/">API</a></nav>
+<div class="header-cta"><a class="gh" href="/zh-hans/method/" hreflang="zh-Hans" lang="zh-Hans">简体</a><a class="gh" href="/zh-hant/method/" hreflang="zh-Hant" lang="zh-Hant" aria-current="page">繁體</a><a class="gh" href="/method/" hreflang="en" lang="en">EN</a><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main class="container article"><div class="split">
+<article class="prose">
+<div class="eyebrow"><span class="dot"></span>方法</div>
+<h1 style="margin-top:16px">用任何人都說得清的輸入，做最樸素的算術</h1>
+<p class="lede" style="margin-top:14px">本站每一個數字，都能用倉庫裏的腳本從公開數據重新算出來。不依賴我們自己的模型，也不需要策略的代碼。</p>
+
+<h2 id="wallet">0 · Hyperliquid 錢包</h2>
+<p>錢包檢驗的算法寫在<a href="/zh-hant/">錢包頁面</a>底部「怎麼讀一個錢包」：週收益率來自盈虧（充值提現不算收益），t 按記錄的有效自由度做小樣本校正，門檻按挑選範圍用下面第 3 節的 Bonferroni 公式抬高。</p>
+
+<h2 id="open-book">1 · 開卷月數</h2>
+<p>在模型官方公佈的訓練截止日把回測窗口切開。截止日當月及之前的月份，無法排除被模型見過：模型可能已經知道當時發生了什麼。截止日之後的月份才是乾淨的。</p>
+<div class="eq">窗口 2020-01 → 2025-06，截止日 2024-10
+66 個月  =  58 個開卷  +  8 個乾淨</div>
+<p>截止日只採用模型提供方自己的文檔。沒有公佈的，我們直說沒有，不替它估。截止日越早，結果看起來越好，所以它是最需要出處的那個輸入。</p>
+
+<h2 id="clean-months">2 · 需要多少乾淨月份</h2>
+<p>年化夏普為 S 的結果，經過 T 年達到 t = 2，其中 t ≈ S × √T（Lo, 2002）：</p>
+<div class="eq">所需月數 = (t / S)² × 12
+夏普 2 → 12    夏普 1 → 48    夏普 0.5 → 192</div>
+<p>如果幹淨的那段比這個短，這次回測就是<em>檢驗力不足</em>：它沒有被證明失敗，只是沒有被證明有效。獨立同分布假設讓這個數成為下限；收益有自相關時需要更久。</p>
+
+<h2 id="selection">3 · 挑選之後的門檻</h2>
+<p>從 N 次嘗試裏挑出最好的那個結果，就是 N 次抽籤的最大值。我們用單側 Bonferroni 校正抬高門檻，並讓只試一次時的門檻正好保持在 t = 2：</p>
+<div class="eq">α      = 1 − Φ(2)          ≈ 2.3%，單側
+bar(N) = Φ⁻¹(1 − α / N)
+N = 1 → 2.00    N = 41 → 3.26    N = 23,376 → 4.76</div>
+<p>Bonferroni 假設各次嘗試相互獨立。相關的變體（同一個人調的參數網格、用同一個模型的不同隊伍）會讓它偏保守。我們把這一點寫明，而不是換成一個讀者無法核對假設的校正；如果測得了有效嘗試次數，程序庫也接受直接傳入。</p>
+
+<h2 id="leaderboards">4 · 排行榜</h2>
+<p>每個參賽者取其公開的淨值歷史，每天保留最後一個值，算日收益率。加密貨幣榜按一年 365 天年化，股票日曆按 252 天。</p>
+<div class="eq">夏普 = 日收益率均值 / 日收益率標準差 × √(每年天數)
+t    = 夏普 × √(數據年數)</div>
+<p>單說「沒有人顯著」意義不大，所以每個榜單還會給一個日期：如果榜首的真實夏普是 S，它需要多少個月乾淨的前向記錄才能過「N 選 1」的門檻。</p>
+<div class="eq">分出贏家所需月數 = (bar(N) / S)² × 12</div>
+<p>我們給出 S = 5、S = 2 以及最接近門檻那個參賽者實測夏普下的結果。這些是條件陳述，不是預測。</p>
+
+<h2 id="principles">原則</h2>
+<ul>
+ <li>來源公開，並註明抓取日期。數字重新計算，不照抄。</li>
+ <li>對模型訓練數據，我們最強的說法是「無法排除被見過」，從不說「被污染」。</li>
+ <li>缺少某個輸入本身就是發現，不是對項目的判決。</li>
+ <li>結論寫明數字能支持什麼、不能支持什麼。不判斷動機，不給投資建議。</li>
+ <li>每個榜單、每個說法用同一條規則，不按曲線評分。</li>
+ <li>更正會公開。你覺得哪個數字錯了，請<a href="https://github.com/Beltran12138/evidence-deflator/issues">提 issue</a>。</li>
+</ul>
+
+<h2 id="limits">這套方法不做什麼</h2>
+<ul>
+ <li>它不說任何策略或模型沒有實力，只說現有證據還分不清實力和運氣。</li>
+ <li>它不檢測模型內部的泄漏，只劃出無法排除泄漏的範圍。</li>
+ <li>它只用項目或榜單自己公開的東西。</li>
+</ul>
+
+<h2 id="reading">延伸閱讀</h2>
+<p class="small">Lo, “The Statistics of Sharpe Ratios” (2002). Bailey &amp; López de Prado, “The Deflated Sharpe Ratio” (2014). Zhang &amp; Stadie, “Temporal Leakage in LLM Backtesting” (arXiv 2608.02985).</p>
+</article>
+<aside class="aside">
+ <div class="box"><h4>本頁</h4><ul><li><a href="#wallet">Hyperliquid 錢包</a></li><li><a href="#open-book">開卷月數</a></li><li><a href="#clean-months">乾淨月份</a></li><li><a href="#selection">挑選之後的門檻</a></li><li><a href="#leaderboards">排行榜</a></li><li><a href="#principles">原則</a></li><li><a href="#limits">侷限</a></li></ul></div>
+ <div class="box"><h4>試一試</h4><ul><li><a href="/zh-hant/">查一個錢包</a></li><li><a href="/check/">在瀏覽器裏檢驗回測（英文）</a></li><li><a href="/zh-hant/api/">API、MCP 與 Python</a></li></ul></div>
+</aside>
+</div></main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/zh-hant/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">交易戰績是實力還是運氣？開源的證據檢驗工具，看一份記錄裏有多少算數。</p></div>
+ <div><h4>產品</h4><ul><li><a href="/zh-hant/">查錢包</a></li><li><a href="/zh-hant/api/">API</a></li><li><a href="/zh-hant/method/">方法</a></li><li><a href="/">英文版首頁</a></li></ul></div>
+ <div><h4>問題</h4><ul><li><a href="/zh-hant/q/hyperliquid-trader-skill-or-luck/">實力還是運氣？</a></li><li><a href="/zh-hant/q/how-many-months-of-backtest/">要幾個月？</a></li><li><a href="/zh-hant/q/why-leaderboard-winner-is-not-evidence/">榜首不算證據</a></li></ul></div>
+ <div><h4>項目</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="/privacy/">隱私（英文）</a></li><li><a href="/terms/">條款（英文）</a></li></ul></div>
+</div>
+<div class="foot-note"><span>開源 · MIT · v0.2.0</span><span>統計估計，不構成投資建議。</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+</body>
+</html>
