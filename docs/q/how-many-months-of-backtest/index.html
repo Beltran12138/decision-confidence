@@ -34,14 +34,14 @@
 
 <main class="container article"><div class="split">
 <article class="prose">
-<div class="eyebrow"><span class="dot"></span>Question · data as of 2026-10-14</div>
+<div class="eyebrow"><span class="dot"></span>Question · data as of 2026-10-15</div>
 <h1 style="margin-top:16px">How many months of backtest or track record are enough?</h1>
 <p class="lede" style="margin-top:14px">At a true annualised Sharpe of 1, about 48 months to reach t = 2 for a single result; at Sharpe 2, 12 months. If the result is the best of many tries, it needs more: the best of 100 needs t ≥ 3.51, which at Sharpe 1 is 12.3 years.</p>
 <h2>The formula</h2>
 <div class="eq">t = Sharpe × √years        months needed = (t / Sharpe)² × 12</div>
 <p>This is Lo (2002) under i.i.d. returns, so it is a floor: autocorrelated returns need longer.</p>
 <h2>The table</h2>
-<div class="table-wrap"><table class="lb-table"><thead><tr><th>True Sharpe</th><th class="r">One result (t ≥ 2)</th><th class="r">Best of 100 (t ≥ 3.51)</th><th class="r">Best of 47,153 (t ≥ 4.90)</th></tr></thead><tbody>
+<div class="table-wrap"><table class="lb-table"><thead><tr><th>True Sharpe</th><th class="r">One result (t ≥ 2)</th><th class="r">Best of 100 (t ≥ 3.51)</th><th class="r">Best of 47,036 (t ≥ 4.90)</th></tr></thead><tbody>
 <tr><td>0.5</td><td class="r">16.0 years</td><td class="r">49.2 years</td><td class="r">96.0 years</td></tr><tr><td>1</td><td class="r">4.0 years</td><td class="r">12.3 years</td><td class="r">24.0 years</td></tr><tr><td>2</td><td class="r">12 months</td><td class="r">3.1 years</td><td class="r">6.0 years</td></tr><tr><td>3</td><td class="r">5 months</td><td class="r">16 months</td><td class="r">32 months</td></tr>
 </tbody></table></div>
 <h2>Which months count</h2>
