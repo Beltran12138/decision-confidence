@@ -1,0 +1,1807 @@
+{
+ "source": "https://kolscan.io/leaderboard (server-rendered initLeaderboard, fetched 2026-10-15)",
+ "frozen_at": "2026-10-15",
+ "recheck": "2026-11-14",
+ "rule": "every wallet on the 30-day profit board today; on 2026-11-14 report how many are still on the 30-day board and their profit then",
+ "note": "142 of 150 rows parsed across the 1/7/30-day boards; 47 rows on the 30-day board",
+ "members": [
+  {
+   "rank": 1,
+   "wallet": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "name": "decu",
+   "profit_sol_30d": 2772.39,
+   "wins": 2030,
+   "losses": 3304
+  },
+  {
+   "rank": 2,
+   "wallet": "ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "name": "trunoest",
+   "profit_sol_30d": 2302.24,
+   "wins": 1918,
+   "losses": 1639
+  },
+  {
+   "rank": 3,
+   "wallet": "4DdrfiDHpmx55i4SPssxVzS9ZaKLb8qr45NKY9Er9nNh",
+   "name": "Mr. Frog",
+   "profit_sol_30d": 1646.56,
+   "wins": 2184,
+   "losses": 263
+  },
+  {
+   "rank": 4,
+   "wallet": "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
+   "name": "Mitch",
+   "profit_sol_30d": 1182.51,
+   "wins": 74,
+   "losses": 47
+  },
+  {
+   "rank": 5,
+   "wallet": "B32QbbdDAyhvUQzjcaM5j6ZVKwjCxAwGH5Xgvb9SJqnC",
+   "name": "Kadenox",
+   "profit_sol_30d": 1112.8,
+   "wins": 658,
+   "losses": 1413
+  },
+  {
+   "rank": 6,
+   "wallet": "BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
+   "name": "Limfork.eth",
+   "profit_sol_30d": 1093.66,
+   "wins": 690,
+   "losses": 684
+  },
+  {
+   "rank": 7,
+   "wallet": "DNsh1UfJdxmze6T6GV9QK5SoFm7HsM5TRNxVuwVgo8Zj",
+   "name": "Hash",
+   "profit_sol_30d": 995.08,
+   "wins": 88,
+   "losses": 1427
+  },
+  {
+   "rank": 8,
+   "wallet": "EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
+   "name": "ban",
+   "profit_sol_30d": 909.4,
+   "wins": 1398,
+   "losses": 2066
+  },
+  {
+   "rank": 9,
+   "wallet": "EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
+   "name": "milito",
+   "profit_sol_30d": 901.51,
+   "wins": 1175,
+   "losses": 2444
+  },
+  {
+   "rank": 10,
+   "wallet": "FqamE7xrahg7FEWoByrx1o8SeyHt44rpmE6ZQfT7zrve",
+   "name": "EustazZ",
+   "profit_sol_30d": 900.77,
+   "wins": 1659,
+   "losses": 946
+  },
+  {
+   "rank": 11,
+   "wallet": "Au1GUWfcadx7jMzhsg6gHGUgViYJrnPfL1vbdqnvLK4i",
+   "name": "Hugo Fartingale",
+   "profit_sol_30d": 761.28,
+   "wins": 1,
+   "losses": 0
+  },
+  {
+   "rank": 12,
+   "wallet": "8AtQ4ka3dgtrH1z4Uq3Tm4YdMN3cK5RRj1eKuGNnvenm",
+   "name": "peacefuldestroy",
+   "profit_sol_30d": 756.87,
+   "wins": 51,
+   "losses": 194
+  },
+  {
+   "rank": 13,
+   "wallet": "ADC1QV9raLnGGDbnWdnsxazeZ4Tsiho4vrWadYswA2ph",
+   "name": "Ducky",
+   "profit_sol_30d": 753.35,
+   "wins": 184,
+   "losses": 1212
+  },
+  {
+   "rank": 14,
+   "wallet": "862TYSvRYoiHAK3F3WwTRYAfuGiQaGdxedN9AGvRGWo2",
+   "name": "Wugi",
+   "profit_sol_30d": 748.8,
+   "wins": 63,
+   "losses": 5
+  },
+  {
+   "rank": 15,
+   "wallet": "78N177fzNJpp8pG49xDv1efYcTMSzo9tPTKEA9mAVkh2",
+   "name": "Sheep",
+   "profit_sol_30d": 727.08,
+   "wins": 593,
+   "losses": 418
+  },
+  {
+   "rank": 16,
+   "wallet": "DjM7Tu7whh6P3pGVBfDzwXAx2zaw51GJWrJE3PwtuN7s",
+   "name": "LUKEY ✣",
+   "profit_sol_30d": 709.21,
+   "wins": 102,
+   "losses": 25
+  },
+  {
+   "rank": 17,
+   "wallet": "GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
+   "name": "Latuche",
+   "profit_sol_30d": 656.89,
+   "wins": 446,
+   "losses": 477
+  },
+  {
+   "rank": 18,
+   "wallet": "4fZFcK8ms3bFMpo1ACzEUz8bH741fQW4zhAMGd5yZMHu",
+   "name": "Rilsio",
+   "profit_sol_30d": 646.26,
+   "wins": 172,
+   "losses": 168
+  },
+  {
+   "rank": 19,
+   "wallet": "5hAgYC8TJCcEZV7LTXAzkTrm7YL29YXyQQJPCNrG84zM",
+   "name": "Schoen",
+   "profit_sol_30d": 604.05,
+   "wins": 1387,
+   "losses": 1183
+  },
+  {
+   "rank": 20,
+   "wallet": "95TWoKkvv2z85EXBzd2z6NwbxH2f54AvwuCA9x3NoKep",
+   "name": "Killua",
+   "profit_sol_30d": 580.53,
+   "wins": 1,
+   "losses": 5
+  },
+  {
+   "rank": 21,
+   "wallet": "8MaVa9kdt3NW4Q5HyNAm1X5LbR8PQRVDc1W8NMVK88D5",
+   "name": "Daumen",
+   "profit_sol_30d": 557.15,
+   "wins": 1254,
+   "losses": 889
+  },
+  {
+   "rank": 22,
+   "wallet": "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+   "name": "Jijo",
+   "profit_sol_30d": 518.07,
+   "wins": 258,
+   "losses": 203
+  },
+  {
+   "rank": 23,
+   "wallet": "AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
+   "name": "Putrick",
+   "profit_sol_30d": 517.87,
+   "wins": 668,
+   "losses": 1335
+  },
+  {
+   "rank": 24,
+   "wallet": "7NnaXghjuU92gM9kmwXysqa5HboyZuR2LTaBnvazFxSH",
+   "name": "Pavlo",
+   "profit_sol_30d": 515.85,
+   "wins": 70,
+   "losses": 1322
+  },
+  {
+   "rank": 25,
+   "wallet": "6KR7SorsUQtNH6CB6JpAnWCAKeTysa95iyXeWihdNeGT",
+   "name": "KOREAN",
+   "profit_sol_30d": 502.69,
+   "wins": 1103,
+   "losses": 1811
+  },
+  {
+   "rank": 26,
+   "wallet": "sAdNbe1cKNMDqDsa4npB3TfL62T14uAo2MsUQfLvzLT",
+   "name": "Ethan Prosper",
+   "profit_sol_30d": 489.54,
+   "wins": 126,
+   "losses": 238
+  },
+  {
+   "rank": 27,
+   "wallet": "5YRgrP3mjGzrzirYYN5HAQH19cTYREYwGxW6XRJQUzij",
+   "name": "slingoor",
+   "profit_sol_30d": 476.97,
+   "wins": 963,
+   "losses": 2776
+  },
+  {
+   "rank": 28,
+   "wallet": "G6fUXjMKPJzCY1rveAE6Qm7wy5U3vZgKDJmN1VPAdiZC",
+   "name": "clukz",
+   "profit_sol_30d": 472.57,
+   "wins": 146,
+   "losses": 175
+  },
+  {
+   "rank": 29,
+   "wallet": "H31vEBxSJk1nQdUN11qZgZyhScyShhscKhvhZZU3dQoU",
+   "name": "Megga",
+   "profit_sol_30d": 445.35,
+   "wins": 911,
+   "losses": 1737
+  },
+  {
+   "rank": 30,
+   "wallet": "99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
+   "name": "Coler",
+   "profit_sol_30d": 425.07,
+   "wins": 423,
+   "losses": 738
+  },
+  {
+   "rank": 31,
+   "wallet": "67Nwfi9hgwqhxGoovT2JGLU67uxfomLwQAWncjXXzU6U",
+   "name": "Silver",
+   "profit_sol_30d": 423.04,
+   "wins": 386,
+   "losses": 917
+  },
+  {
+   "rank": 32,
+   "wallet": "6aXFYXbFob1ZKAEDCcqZnX2vooA3TgEqDoy5dAQbeWoV",
+   "name": "Flames",
+   "profit_sol_30d": 400.07,
+   "wins": 900,
+   "losses": 1902
+  },
+  {
+   "rank": 33,
+   "wallet": "EjtQrPTbcMevStBkpnjsH23NfUCMhGHusTYsHuGVQZp2",
+   "name": "Zef",
+   "profit_sol_30d": 384.9,
+   "wins": 300,
+   "losses": 525
+  },
+  {
+   "rank": 34,
+   "wallet": "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
+   "name": "bandit",
+   "profit_sol_30d": 379.22,
+   "wins": 425,
+   "losses": 1232
+  },
+  {
+   "rank": 35,
+   "wallet": "GvTXquDAJbfrFrEGTPRPUj3WM5Bzub5yeTFzkLVHpjfD",
+   "name": "brunowsky",
+   "profit_sol_30d": 377.44,
+   "wins": 89,
+   "losses": 310
+  },
+  {
+   "rank": 36,
+   "wallet": "A3W8psibkTUvjxs4LRscbnjux6TFDXdvD4m4GsGpQ2KJ",
+   "name": "Numer0 (trench/arc)",
+   "profit_sol_30d": 358.77,
+   "wins": 132,
+   "losses": 105
+  },
+  {
+   "rank": 37,
+   "wallet": "BtMBMPkoNbnLF9Xn552guQq528KKXcsNBNNBre3oaQtr",
+   "name": "Letterbomb",
+   "profit_sol_30d": 347.15,
+   "wins": 458,
+   "losses": 719
+  },
+  {
+   "rank": 38,
+   "wallet": "7Js5gmq57y9jG2sseKrAeJt3vbncSWSFFHDEsyJDnyVm",
+   "name": "Yami 𓃵",
+   "profit_sol_30d": 346.99,
+   "wins": 1072,
+   "losses": 3142
+  },
+  {
+   "rank": 39,
+   "wallet": "4yo9CUuTBbds9NFhZd4MzPiZZkUvveXdTnAH8qMsE8ku",
+   "name": "Gfree",
+   "profit_sol_30d": 344.48,
+   "wins": 576,
+   "losses": 1097
+  },
+  {
+   "rank": 40,
+   "wallet": "6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC",
+   "name": "Nyhrox",
+   "profit_sol_30d": 340.38,
+   "wins": 163,
+   "losses": 693
+  },
+  {
+   "rank": 41,
+   "wallet": "J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
+   "name": "Johnson",
+   "profit_sol_30d": 328.86,
+   "wins": 270,
+   "losses": 356
+  },
+  {
+   "rank": 42,
+   "wallet": "8nqtxpFpuXwfXG4pBLsDkkuMMPK9FjSkBMCn542HiM3v",
+   "name": "dov 7",
+   "profit_sol_30d": 326.83,
+   "wins": 208,
+   "losses": 234
+  },
+  {
+   "rank": 43,
+   "wallet": "CEUA7zVoDRqRYoeHTP58UHU6TR8yvtVbeLrX1dppqoXJ",
+   "name": "Tom",
+   "profit_sol_30d": 299.18,
+   "wins": 140,
+   "losses": 1135
+  },
+  {
+   "rank": 44,
+   "wallet": "9iaawVBEsFG35PSwd4PahwT8fYNQe9XYuRdWm872dUqY",
+   "name": "Meechie",
+   "profit_sol_30d": 297.38,
+   "wins": 545,
+   "losses": 2829
+  },
+  {
+   "rank": 45,
+   "wallet": "DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
+   "name": "The Doc",
+   "profit_sol_30d": 295.21,
+   "wins": 214,
+   "losses": 322
+  },
+  {
+   "rank": 46,
+   "wallet": "CUHBzSPSaNS3tArEtM3maSV6pNdJhHJFYZpurPPK9P7H",
+   "name": "samsrep",
+   "profit_sol_30d": 281.81,
+   "wins": 111,
+   "losses": 616
+  },
+  {
+   "rank": 47,
+   "wallet": "SAALE2x3sn51EyahJyqD6913L3GqHZdZo3egUdMayQp",
+   "name": "saale",
+   "profit_sol_30d": 274.92,
+   "wins": 41,
+   "losses": 89
+  }
+ ],
+ "all_boards": [
+  {
+   "wallet_address": "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
+   "name": "Mitch",
+   "twitter": "https://x.com/idrawline",
+   "profit": 1181.1857473967943,
+   "wins": 4,
+   "losses": 2,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7NnaXghjuU92gM9kmwXysqa5HboyZuR2LTaBnvazFxSH",
+   "name": "Pavlo",
+   "twitter": "https://x.com/pavlotrading",
+   "profit": 381.8004340258508,
+   "wins": 4,
+   "losses": 6,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DAEdBmTPEKM6xkwfzC3d411QUe6coKpkND6UURa4CvHC",
+   "name": "Fox 🦊",
+   "twitter": "https://x.com/fox09_09",
+   "profit": 363.80097939342295,
+   "wins": 4,
+   "losses": 3,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "95TWoKkvv2z85EXBzd2z6NwbxH2f54AvwuCA9x3NoKep",
+   "name": "Killua",
+   "twitter": "https://x.com/cryptokillua99",
+   "profit": 248.33641779606438,
+   "wins": 0,
+   "losses": 0,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "Be24Gbf5KisDk1LcWWZsBn8dvB816By7YzYF5zWZnRR6",
+   "name": "Chairman ²",
+   "twitter": "https://x.com/Chairman_DN",
+   "profit": 198.28165849134203,
+   "wins": 1,
+   "losses": 0,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "3BLjRcxWGtR7WRshJ3hL25U3RjWr5Ud98wMcczQqk4Ei",
+   "name": "Sebastian",
+   "twitter": "https://x.com/Saint_pablo123",
+   "profit": 153.1487399442838,
+   "wins": 20,
+   "losses": 26,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "FsG3BaPmRTdSrPaivbgJsFNCCa8cPfkUtk8VLWXkHpHP",
+   "name": "Reljoo",
+   "twitter": "https://x.com/Reljoooo",
+   "profit": 143.6947829518678,
+   "wins": 5,
+   "losses": 7,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5dzH7gh5FjtrxUwtfBufJyTBA4fyCUGheZsdYQsE9vag",
+   "name": "Hermes",
+   "twitter": "https://x.com/coinsolmaxi",
+   "profit": 95.832407352969,
+   "wins": 8,
+   "losses": 9,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
+   "name": "milito",
+   "twitter": "https://x.com/fnmilito",
+   "profit": 91.56937743825328,
+   "wins": 74,
+   "losses": 88,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "SAALE2x3sn51EyahJyqD6913L3GqHZdZo3egUdMayQp",
+   "name": "saale",
+   "twitter": "https://x.com/saale",
+   "profit": 80.27373111511778,
+   "wins": 0,
+   "losses": 1,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "As7HjL7dzzvbRbaD3WCun47robib2kmAKRXMvjHkSMB5",
+   "name": "Otta",
+   "twitter": "https://x.com/ottabag",
+   "profit": 63.045759916303275,
+   "wins": 1,
+   "losses": 1,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "name": "decu",
+   "twitter": "https://x.com/notdecu",
+   "profit": 59.98094712437337,
+   "wins": 55,
+   "losses": 46,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "Hw5UKBU5k3YudnGwaykj5E8cYUidNMPuEewRRar5Xoc7",
+   "name": "Trenchman",
+   "twitter": "https://x.com/trenchmanjames",
+   "profit": 59.79576170146048,
+   "wins": 2,
+   "losses": 15,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "9iaawVBEsFG35PSwd4PahwT8fYNQe9XYuRdWm872dUqY",
+   "name": "Meechie",
+   "twitter": "https://x.com/973Meech",
+   "profit": 49.74906604356897,
+   "wins": 29,
+   "losses": 90,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "A3W8psibkTUvjxs4LRscbnjux6TFDXdvD4m4GsGpQ2KJ",
+   "name": "Numer0 (trench/arc)",
+   "twitter": "https://x.com/Numerooo0",
+   "profit": 46.61255767960986,
+   "wins": 17,
+   "losses": 12,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
+   "name": "Putrick",
+   "twitter": "https://x.com/Putrickk",
+   "profit": 45.68799192140175,
+   "wins": 22,
+   "losses": 39,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DjM7Tu7whh6P3pGVBfDzwXAx2zaw51GJWrJE3PwtuN7s",
+   "name": "LUKEY ✣",
+   "twitter": "https://x.com/VERYKOOLLUKEY",
+   "profit": 37.723930152525426,
+   "wins": 3,
+   "losses": 1,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
+   "name": "bandit",
+   "twitter": "https://x.com/bandeez",
+   "profit": 36.387345882042744,
+   "wins": 30,
+   "losses": 44,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "862TYSvRYoiHAK3F3WwTRYAfuGiQaGdxedN9AGvRGWo2",
+   "name": "Wugi",
+   "twitter": "https://x.com/xWugi_wara",
+   "profit": 33.40403779706047,
+   "wins": 3,
+   "losses": 0,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "Ab2baaggUWJMsVUtCvpRjq6iBRDk2Lxr5qzicHueHxM1",
+   "name": "leyko",
+   "twitter": "https://x.com/0xleyko",
+   "profit": 33.387022012420445,
+   "wins": 8,
+   "losses": 26,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "PMJA8UQDyWTFw2Smhyp9jGA6aTaP7jKHR7BPudrgyYN",
+   "name": "chester",
+   "twitter": "https://x.com/Chestererer",
+   "profit": 30.505230401237586,
+   "wins": 22,
+   "losses": 67,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "69z4qTgQ5DBRTJvnQzx2h8jZhNsv5UgADotEwwKUm2JS",
+   "name": "King",
+   "twitter": "https://x.com/thekryptoking_",
+   "profit": 28.39117842427289,
+   "wins": 1,
+   "losses": 1,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4yo9CUuTBbds9NFhZd4MzPiZZkUvveXdTnAH8qMsE8ku",
+   "name": "Gfree",
+   "twitter": "https://x.com/G_free9",
+   "profit": 27.85688273148571,
+   "wins": 15,
+   "losses": 13,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "J23qr98GjGJJqKq9CBEnyRhHbmkaVxtTJNNxKu597wsA",
+   "name": "gr3g",
+   "twitter": "https://x.com/gr3gor14n",
+   "profit": 25.64820102383609,
+   "wins": 1,
+   "losses": 0,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "name": "trunoest",
+   "twitter": "https://x.com/trunoest",
+   "profit": 25.12177124451041,
+   "wins": 39,
+   "losses": 27,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "B9K2wTQcRDLRLhMKFyRh2hPqHrr6VKiCC9yNGpkMUXrh",
+   "name": "Xanse.",
+   "twitter": "https://x.com/Xanse_crypto",
+   "profit": 23.592413309208812,
+   "wins": 4,
+   "losses": 10,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7Js5gmq57y9jG2sseKrAeJt3vbncSWSFFHDEsyJDnyVm",
+   "name": "Yami 𓃵",
+   "twitter": "https://x.com/YamiPNL",
+   "profit": 21.49905394618471,
+   "wins": 74,
+   "losses": 119,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "FqojC24nUn3x6oMQC2ypBHmtH7rFAnKS6DvwsJoCMaiv",
+   "name": "CoCo",
+   "twitter": "https://x.com/CoCoCookerr",
+   "profit": 20.36731952618749,
+   "wins": 19,
+   "losses": 26,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7tiRXPM4wwBMRMYzmywRAE6jveS3gDbNyxgRrEoU6RLA",
+   "name": "Qtdegen",
+   "twitter": "https://x.com/qtdegen",
+   "profit": 18.10570898896609,
+   "wins": 12,
+   "losses": 25,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
+   "name": "Art",
+   "twitter": "https://x.com/ArtCryptoz",
+   "profit": 17.970584610243474,
+   "wins": 33,
+   "losses": 50,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "Cv5GgkpXvtXcsrMcKCJvx46BpMjiM61mpPU1j8RbbbVL",
+   "name": "R4",
+   "twitter": "https://x.com/r4yancore",
+   "profit": 17.731553242311765,
+   "wins": 78,
+   "losses": 133,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "H31vEBxSJk1nQdUN11qZgZyhScyShhscKhvhZZU3dQoU",
+   "name": "Megga",
+   "twitter": "https://x.com/Megga",
+   "profit": 16.985032036384297,
+   "wins": 28,
+   "losses": 68,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
+   "name": "Coler",
+   "twitter": "https://x.com/ColerCooks",
+   "profit": 16.621135930245092,
+   "wins": 27,
+   "losses": 33,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "3L8RAxLkvwkz4CgHivaVRtq19741FAdGLk5DgjRfc1fW",
+   "name": "Inquixit",
+   "twitter": "https://x.com/inquixit",
+   "profit": 16.471257243246075,
+   "wins": 50,
+   "losses": 85,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
+   "name": "ban",
+   "twitter": "https://x.com/Ban_Val",
+   "profit": 16.135731671901187,
+   "wins": 45,
+   "losses": 57,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "8fsKLLtvKNanL4ginCaiRS6UfeemY11rSf8U8fN1dJw4",
+   "name": "Stigman",
+   "twitter": "https://x.com/Stigman__",
+   "profit": 15.177628147343986,
+   "wins": 19,
+   "losses": 33,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "2k7Mnf2K3GhpB7hEVN1CFFeV4oNzzuCS5Q6SmcfAoLHd",
+   "name": "Setsu",
+   "twitter": "https://x.com/Setsu2k",
+   "profit": 14.53024030434005,
+   "wins": 8,
+   "losses": 14,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "HbCxe8yWQJWnK3f3FX4oohgm87FZuPYD4Ydszqxgkwft",
+   "name": "Stacker ✝️",
+   "twitter": "https://x.com/Stackeronsol",
+   "profit": 13.368071977224416,
+   "wins": 1,
+   "losses": 5,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "72YiE4crBv2UhxRgRYKs4GaTGT2avbacfL4HNCfQLqsm",
+   "name": "kyz",
+   "twitter": "https://x.com/kyzenill",
+   "profit": 12.939851400092575,
+   "wins": 3,
+   "losses": 14,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "FqamE7xrahg7FEWoByrx1o8SeyHt44rpmE6ZQfT7zrve",
+   "name": "EustazZ",
+   "twitter": "https://x.com/Eustazzeus",
+   "profit": 12.259668504757816,
+   "wins": 55,
+   "losses": 33,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
+   "name": "Limfork.eth",
+   "twitter": "https://x.com/Limfork",
+   "profit": 11.708814730374709,
+   "wins": 32,
+   "losses": 39,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "2net6etAtTe3Rbq2gKECmQwnzcKVXRaLcHy2Zy1iCiWz",
+   "name": "rambo",
+   "twitter": "https://x.com/goatedondsticks",
+   "profit": 11.21056325348454,
+   "wins": 9,
+   "losses": 11,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "98T65wcMEjoNLDTJszBHGZEX75QRe8QaANXokv4yw3Mp",
+   "name": "Leck",
+   "twitter": "https://x.com/LeckSol",
+   "profit": 10.775560197329408,
+   "wins": 11,
+   "losses": 9,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DemfvB4iwd3NmVquvWqWbB92yVZWFFqybqBeJGdyEeM6",
+   "name": "japbitch",
+   "twitter": "https://x.com/bigjapbitch",
+   "profit": 10.696885815844366,
+   "wins": 2,
+   "losses": 5,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "2e1w3Xo441Ytvwn54wCn8itAXwCKbiizc9ynGEv14Vis",
+   "name": "prettyover",
+   "twitter": "https://x.com/prettyoverr",
+   "profit": 10.499342182022092,
+   "wins": 4,
+   "losses": 11,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "9RrKUhRpbPDNxR7x88ZsCgdtqPHUfwYPjj4JdpV4FBj9",
+   "name": "Pocket Hitlers",
+   "twitter": "https://x.com/pockethitlers",
+   "profit": 10.386326594691937,
+   "wins": 14,
+   "losses": 1,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ECa6q9uC9LaYYBekJ7ApD2EoKy3VKy7WZv863cg5pqM8",
+   "name": "Ochouso 🦈",
+   "twitter": "https://x.com/ochouso",
+   "profit": 9.93847424684939,
+   "wins": 18,
+   "losses": 33,
+   "timeframe": 1,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
+   "name": "Mitch",
+   "twitter": "https://x.com/idrawline",
+   "profit": 962.3874309771163,
+   "wins": 20,
+   "losses": 10,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "name": "decu",
+   "twitter": "https://x.com/notdecu",
+   "profit": 635.1134439680396,
+   "wins": 438,
+   "losses": 365,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP",
+   "name": "OGAntD",
+   "twitter": "https://x.com/0GAntD",
+   "profit": 524.7346864617809,
+   "wins": 10,
+   "losses": 13,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "AstaWuJuQiAS3AfqmM3xZxrJhkkZNXtW4VyaGQfqV6JL",
+   "name": "asta",
+   "twitter": "https://x.com/astaso1",
+   "profit": 453.4303666920904,
+   "wins": 8,
+   "losses": 3,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
+   "name": "bandit",
+   "twitter": "https://x.com/bandeez",
+   "profit": 434.51590441797083,
+   "wins": 235,
+   "losses": 367,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7NnaXghjuU92gM9kmwXysqa5HboyZuR2LTaBnvazFxSH",
+   "name": "Pavlo",
+   "twitter": "https://x.com/pavlotrading",
+   "profit": 434.1540579766477,
+   "wins": 13,
+   "losses": 13,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "95TWoKkvv2z85EXBzd2z6NwbxH2f54AvwuCA9x3NoKep",
+   "name": "Killua",
+   "twitter": "https://x.com/cryptokillua99",
+   "profit": 422.7786494681203,
+   "wins": 0,
+   "losses": 0,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DAEdBmTPEKM6xkwfzC3d411QUe6coKpkND6UURa4CvHC",
+   "name": "Fox 🦊",
+   "twitter": "https://x.com/fox09_09",
+   "profit": 414.78998780110385,
+   "wins": 34,
+   "losses": 36,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "name": "trunoest",
+   "twitter": "https://x.com/trunoest",
+   "profit": 388.25996028747727,
+   "wins": 396,
+   "losses": 294,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
+   "name": "milito",
+   "twitter": "https://x.com/fnmilito",
+   "profit": 286.5961086835115,
+   "wins": 340,
+   "losses": 562,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "A3W8psibkTUvjxs4LRscbnjux6TFDXdvD4m4GsGpQ2KJ",
+   "name": "Numer0 (trench/arc)",
+   "twitter": "https://x.com/Numerooo0",
+   "profit": 232.8517376652307,
+   "wins": 54,
+   "losses": 39,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
+   "name": "Coler",
+   "twitter": "https://x.com/ColerCooks",
+   "profit": 227.79539559747565,
+   "wins": 118,
+   "losses": 193,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DjM7Tu7whh6P3pGVBfDzwXAx2zaw51GJWrJE3PwtuN7s",
+   "name": "LUKEY ✣",
+   "twitter": "https://x.com/VERYKOOLLUKEY",
+   "profit": 218.77175215456654,
+   "wins": 16,
+   "losses": 8,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
+   "name": "ban",
+   "twitter": "https://x.com/Ban_Val",
+   "profit": 211.1499947734987,
+   "wins": 321,
+   "losses": 462,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "CxgPWvH2GoEDENELne2XKAR2z2Fr4shG2uaeyqZceGve",
+   "name": "narc",
+   "twitter": "https://x.com/narracanz",
+   "profit": 191.27722135253117,
+   "wins": 119,
+   "losses": 38,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
+   "name": "Limfork.eth",
+   "twitter": "https://x.com/Limfork",
+   "profit": 173.66604495869723,
+   "wins": 199,
+   "losses": 168,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
+   "name": "Putrick",
+   "twitter": "https://x.com/Putrickk",
+   "profit": 170.68167790313797,
+   "wins": 159,
+   "losses": 260,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "862TYSvRYoiHAK3F3WwTRYAfuGiQaGdxedN9AGvRGWo2",
+   "name": "Wugi",
+   "twitter": "https://x.com/xWugi_wara",
+   "profit": 166.89010840609674,
+   "wins": 14,
+   "losses": 1,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "67Nwfi9hgwqhxGoovT2JGLU67uxfomLwQAWncjXXzU6U",
+   "name": "Silver",
+   "twitter": "https://x.com/0xSilver",
+   "profit": 165.52079850705263,
+   "wins": 73,
+   "losses": 154,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DemfvB4iwd3NmVquvWqWbB92yVZWFFqybqBeJGdyEeM6",
+   "name": "japbitch",
+   "twitter": "https://x.com/bigjapbitch",
+   "profit": 159.9161197576325,
+   "wins": 60,
+   "losses": 92,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "9iaawVBEsFG35PSwd4PahwT8fYNQe9XYuRdWm872dUqY",
+   "name": "Meechie",
+   "twitter": "https://x.com/973Meech",
+   "profit": 156.63375596106337,
+   "wins": 114,
+   "losses": 612,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "FAicXNV5FVqtfbpn4Zccs71XcfGeyxBSGbqLDyDJZjke",
+   "name": "radiance",
+   "twitter": "https://x.com/radiancebrr",
+   "profit": 147.27106339027424,
+   "wins": 119,
+   "losses": 191,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5dzH7gh5FjtrxUwtfBufJyTBA4fyCUGheZsdYQsE9vag",
+   "name": "Hermes",
+   "twitter": "https://x.com/coinsolmaxi",
+   "profit": 129.79326145471146,
+   "wins": 64,
+   "losses": 82,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "2e1w3Xo441Ytvwn54wCn8itAXwCKbiizc9ynGEv14Vis",
+   "name": "prettyover",
+   "twitter": "https://x.com/prettyoverr",
+   "profit": 126.35772414242558,
+   "wins": 71,
+   "losses": 147,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ApRnQN2HkbCn7W2WWiT2FEKvuKJp9LugRyAE1a9Hdz1",
+   "name": "S",
+   "twitter": "https://x.com/runitbackghost",
+   "profit": 121.57112094904426,
+   "wins": 44,
+   "losses": 87,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
+   "name": "Johnson",
+   "twitter": "https://x.com/johnsoncooks101",
+   "profit": 121.53395453326779,
+   "wins": 82,
+   "losses": 115,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+   "name": "Jijo",
+   "twitter": "https://x.com/jijo_exe",
+   "profit": 119.10481022240658,
+   "wins": 58,
+   "losses": 25,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
+   "name": "Latuche",
+   "twitter": "https://x.com/Latuche95",
+   "profit": 109.27407814655604,
+   "wins": 77,
+   "losses": 81,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7Js5gmq57y9jG2sseKrAeJt3vbncSWSFFHDEsyJDnyVm",
+   "name": "Yami 𓃵",
+   "twitter": "https://x.com/YamiPNL",
+   "profit": 105.93736659008677,
+   "wins": 342,
+   "losses": 730,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "8MaVa9kdt3NW4Q5HyNAm1X5LbR8PQRVDc1W8NMVK88D5",
+   "name": "Daumen",
+   "twitter": "https://x.com/daumenxyz",
+   "profit": 104.3827956763318,
+   "wins": 363,
+   "losses": 209,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "H31vEBxSJk1nQdUN11qZgZyhScyShhscKhvhZZU3dQoU",
+   "name": "Megga",
+   "twitter": "https://x.com/Megga",
+   "profit": 101.33021374759662,
+   "wins": 268,
+   "losses": 462,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ALauG4FwEYDgSXd5Hen6kvuWSCdUi2fYNSNqM1Ci31wE",
+   "name": "Thurston (zapped arc)",
+   "twitter": "https://x.com/itsthurstxn",
+   "profit": 98.91877798192256,
+   "wins": 25,
+   "losses": 105,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "SAALE2x3sn51EyahJyqD6913L3GqHZdZo3egUdMayQp",
+   "name": "saale",
+   "twitter": "https://x.com/saale",
+   "profit": 92.77086829566923,
+   "wins": 5,
+   "losses": 6,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
+   "name": "The Doc",
+   "twitter": "https://x.com/KayTheDoc",
+   "profit": 92.3149817896204,
+   "wins": 56,
+   "losses": 78,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "2hN82SXLUffhG3vxpezRmae1sGrCBMqHHBDxjmjpagqk",
+   "name": "lyftical",
+   "twitter": "https://x.com/lyftical",
+   "profit": 92.07458796967167,
+   "wins": 69,
+   "losses": 68,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4yo9CUuTBbds9NFhZd4MzPiZZkUvveXdTnAH8qMsE8ku",
+   "name": "Gfree",
+   "twitter": "https://x.com/G_free9",
+   "profit": 88.94216727824698,
+   "wins": 104,
+   "losses": 186,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EtyHwLDfAi9E24Qw41xFUW8WtQ3NxajxJA2yaaUASR5a",
+   "name": "Dame",
+   "twitter": "https://x.com/TrenchDame",
+   "profit": 88.43381274472823,
+   "wins": 107,
+   "losses": 79,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "78N177fzNJpp8pG49xDv1efYcTMSzo9tPTKEA9mAVkh2",
+   "name": "Sheep",
+   "twitter": "https://x.com/imsheepsol",
+   "profit": 86.14404642092099,
+   "wins": 144,
+   "losses": 120,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "HbCxe8yWQJWnK3f3FX4oohgm87FZuPYD4Ydszqxgkwft",
+   "name": "Stacker ✝️",
+   "twitter": "https://x.com/Stackeronsol",
+   "profit": 78.33833785841183,
+   "wins": 33,
+   "losses": 58,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "H1TLERBQyQzSd5gbvbWwP97GjeL9txzWoN5BK4UG7xYm",
+   "name": "alex",
+   "twitter": "https://x.com/0xWarlord",
+   "profit": 78.30503503417033,
+   "wins": 45,
+   "losses": 59,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "FqamE7xrahg7FEWoByrx1o8SeyHt44rpmE6ZQfT7zrve",
+   "name": "EustazZ",
+   "twitter": "https://x.com/Eustazzeus",
+   "profit": 77.46869410337965,
+   "wins": 274,
+   "losses": 302,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "88e2kBDJoN7eQCBj2sxT15etUZ3jPNzD4ijCs1TNySWJ",
+   "name": "yeekidd",
+   "twitter": "https://x.com/yeekiddd",
+   "profit": 77.44988310035909,
+   "wins": 0,
+   "losses": 0,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "As7HjL7dzzvbRbaD3WCun47robib2kmAKRXMvjHkSMB5",
+   "name": "Otta",
+   "twitter": "https://x.com/ottabag",
+   "profit": 76.36393404301427,
+   "wins": 4,
+   "losses": 14,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4DdrfiDHpmx55i4SPssxVzS9ZaKLb8qr45NKY9Er9nNh",
+   "name": "Mr. Frog",
+   "twitter": "https://x.com/TheMisterFrog",
+   "profit": 75.32721288368899,
+   "wins": 193,
+   "losses": 63,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "CEUA7zVoDRqRYoeHTP58UHU6TR8yvtVbeLrX1dppqoXJ",
+   "name": "Tom",
+   "twitter": "https://x.com/tdmilky",
+   "profit": 74.06942540491359,
+   "wins": 19,
+   "losses": 38,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "2T5NgDDidkvhJQg8AHDi74uCFwgp25pYFMRZXBaCUNBH",
+   "name": "Idontpaytaxes",
+   "twitter": "https://x.com/untaxxable",
+   "profit": 73.30644055343645,
+   "wins": 49,
+   "losses": 43,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "zhYnXqK3MNSmwS3yxSvPmY5kUa1n2WUaCJgYUDrAHkL",
+   "name": "zhynx",
+   "twitter": "https://x.com/onlyzhynx",
+   "profit": 70.14863050535729,
+   "wins": 3,
+   "losses": 3,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7zTnUTHMd5qFUpZrrbXazpvGwC1Hvb3g5rFjnFAygLSo",
+   "name": "Apollo",
+   "twitter": "https://x.com/Apollopixel",
+   "profit": 69.43405137009275,
+   "wins": 50,
+   "losses": 73,
+   "timeframe": 7,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "name": "decu",
+   "twitter": "https://x.com/notdecu",
+   "profit": 2772.394912502641,
+   "wins": 2030,
+   "losses": 3304,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "name": "trunoest",
+   "twitter": "https://x.com/trunoest",
+   "profit": 2302.2440217768085,
+   "wins": 1918,
+   "losses": 1639,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4DdrfiDHpmx55i4SPssxVzS9ZaKLb8qr45NKY9Er9nNh",
+   "name": "Mr. Frog",
+   "twitter": "https://x.com/TheMisterFrog",
+   "profit": 1646.5620227850568,
+   "wins": 2184,
+   "losses": 263,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
+   "name": "Mitch",
+   "twitter": "https://x.com/idrawline",
+   "profit": 1182.5108259483895,
+   "wins": 74,
+   "losses": 47,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "B32QbbdDAyhvUQzjcaM5j6ZVKwjCxAwGH5Xgvb9SJqnC",
+   "name": "Kadenox",
+   "twitter": "https://x.com/kadenox",
+   "profit": 1112.7964776730078,
+   "wins": 658,
+   "losses": 1413,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
+   "name": "Limfork.eth",
+   "twitter": "https://x.com/Limfork",
+   "profit": 1093.656034479521,
+   "wins": 690,
+   "losses": 684,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DNsh1UfJdxmze6T6GV9QK5SoFm7HsM5TRNxVuwVgo8Zj",
+   "name": "Hash",
+   "twitter": "https://x.com/Hashbergers",
+   "profit": 995.0811088354371,
+   "wins": 88,
+   "losses": 1427,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
+   "name": "ban",
+   "twitter": "https://x.com/Ban_Val",
+   "profit": 909.4033886234192,
+   "wins": 1398,
+   "losses": 2066,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
+   "name": "milito",
+   "twitter": "https://x.com/fnmilito",
+   "profit": 901.5113934260555,
+   "wins": 1175,
+   "losses": 2444,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "FqamE7xrahg7FEWoByrx1o8SeyHt44rpmE6ZQfT7zrve",
+   "name": "EustazZ",
+   "twitter": "https://x.com/Eustazzeus",
+   "profit": 900.7699822790248,
+   "wins": 1659,
+   "losses": 946,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "Au1GUWfcadx7jMzhsg6gHGUgViYJrnPfL1vbdqnvLK4i",
+   "name": "Hugo Fartingale",
+   "twitter": "https://x.com/HugoMartingale",
+   "profit": 761.2817032384625,
+   "wins": 1,
+   "losses": 0,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "8AtQ4ka3dgtrH1z4Uq3Tm4YdMN3cK5RRj1eKuGNnvenm",
+   "name": "peacefuldestroy",
+   "twitter": "https://x.com/peacefuldestroy",
+   "profit": 756.8700676327713,
+   "wins": 51,
+   "losses": 194,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "ADC1QV9raLnGGDbnWdnsxazeZ4Tsiho4vrWadYswA2ph",
+   "name": "Ducky",
+   "twitter": "https://x.com/zXDuckyXz",
+   "profit": 753.3506865400756,
+   "wins": 184,
+   "losses": 1212,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "862TYSvRYoiHAK3F3WwTRYAfuGiQaGdxedN9AGvRGWo2",
+   "name": "Wugi",
+   "twitter": "https://x.com/xWugi_wara",
+   "profit": 748.8015108721487,
+   "wins": 63,
+   "losses": 5,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "78N177fzNJpp8pG49xDv1efYcTMSzo9tPTKEA9mAVkh2",
+   "name": "Sheep",
+   "twitter": "https://x.com/imsheepsol",
+   "profit": 727.0780408319403,
+   "wins": 593,
+   "losses": 418,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DjM7Tu7whh6P3pGVBfDzwXAx2zaw51GJWrJE3PwtuN7s",
+   "name": "LUKEY ✣",
+   "twitter": "https://x.com/VERYKOOLLUKEY",
+   "profit": 709.2076471972847,
+   "wins": 102,
+   "losses": 25,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
+   "name": "Latuche",
+   "twitter": "https://x.com/Latuche95",
+   "profit": 656.8870714704007,
+   "wins": 446,
+   "losses": 477,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4fZFcK8ms3bFMpo1ACzEUz8bH741fQW4zhAMGd5yZMHu",
+   "name": "Rilsio",
+   "twitter": "https://x.com/CryptoRilsio",
+   "profit": 646.2577427287274,
+   "wins": 172,
+   "losses": 168,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5hAgYC8TJCcEZV7LTXAzkTrm7YL29YXyQQJPCNrG84zM",
+   "name": "Schoen",
+   "twitter": "https://x.com/Schoen_xyz",
+   "profit": 604.0523950289164,
+   "wins": 1387,
+   "losses": 1183,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "95TWoKkvv2z85EXBzd2z6NwbxH2f54AvwuCA9x3NoKep",
+   "name": "Killua",
+   "twitter": "https://x.com/cryptokillua99",
+   "profit": 580.5347806513979,
+   "wins": 1,
+   "losses": 5,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "8MaVa9kdt3NW4Q5HyNAm1X5LbR8PQRVDc1W8NMVK88D5",
+   "name": "Daumen",
+   "twitter": "https://x.com/daumenxyz",
+   "profit": 557.1539819002678,
+   "wins": 1254,
+   "losses": 889,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+   "name": "Jijo",
+   "twitter": "https://x.com/jijo_exe",
+   "profit": 518.0701245157934,
+   "wins": 258,
+   "losses": 203,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
+   "name": "Putrick",
+   "twitter": "https://x.com/Putrickk",
+   "profit": 517.873841667251,
+   "wins": 668,
+   "losses": 1335,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7NnaXghjuU92gM9kmwXysqa5HboyZuR2LTaBnvazFxSH",
+   "name": "Pavlo",
+   "twitter": "https://x.com/pavlotrading",
+   "profit": 515.8452527261068,
+   "wins": 70,
+   "losses": 1322,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "6KR7SorsUQtNH6CB6JpAnWCAKeTysa95iyXeWihdNeGT",
+   "name": "KOREAN",
+   "twitter": "https://x.com/Korean_bags",
+   "profit": 502.68972950352463,
+   "wins": 1103,
+   "losses": 1811,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "sAdNbe1cKNMDqDsa4npB3TfL62T14uAo2MsUQfLvzLT",
+   "name": "Ethan Prosper",
+   "twitter": "https://x.com/pr6spr",
+   "profit": 489.54400615720374,
+   "wins": 126,
+   "losses": 238,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5YRgrP3mjGzrzirYYN5HAQH19cTYREYwGxW6XRJQUzij",
+   "name": "slingoor",
+   "twitter": "https://x.com/slingoorio",
+   "profit": 476.9650468787742,
+   "wins": 963,
+   "losses": 2776,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "G6fUXjMKPJzCY1rveAE6Qm7wy5U3vZgKDJmN1VPAdiZC",
+   "name": "clukz",
+   "twitter": "https://x.com/clukzSOL",
+   "profit": 472.56709367176853,
+   "wins": 146,
+   "losses": 175,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "H31vEBxSJk1nQdUN11qZgZyhScyShhscKhvhZZU3dQoU",
+   "name": "Megga",
+   "twitter": "https://x.com/Megga",
+   "profit": 445.3452539318372,
+   "wins": 911,
+   "losses": 1737,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
+   "name": "Coler",
+   "twitter": "https://x.com/ColerCooks",
+   "profit": 425.07402751938434,
+   "wins": 423,
+   "losses": 738,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "67Nwfi9hgwqhxGoovT2JGLU67uxfomLwQAWncjXXzU6U",
+   "name": "Silver",
+   "twitter": "https://x.com/0xSilver",
+   "profit": 423.0416414892023,
+   "wins": 386,
+   "losses": 917,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "6aXFYXbFob1ZKAEDCcqZnX2vooA3TgEqDoy5dAQbeWoV",
+   "name": "Flames",
+   "twitter": "https://x.com/FlamesOnSol",
+   "profit": 400.07043203002326,
+   "wins": 900,
+   "losses": 1902,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "EjtQrPTbcMevStBkpnjsH23NfUCMhGHusTYsHuGVQZp2",
+   "name": "Zef",
+   "twitter": "https://x.com/zefwashere",
+   "profit": 384.90399622613376,
+   "wins": 300,
+   "losses": 525,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
+   "name": "bandit",
+   "twitter": "https://x.com/bandeez",
+   "profit": 379.2197853834856,
+   "wins": 425,
+   "losses": 1232,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "GvTXquDAJbfrFrEGTPRPUj3WM5Bzub5yeTFzkLVHpjfD",
+   "name": "brunowsky",
+   "twitter": "https://x.com/brubowsky",
+   "profit": 377.43734722116506,
+   "wins": 89,
+   "losses": 310,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "A3W8psibkTUvjxs4LRscbnjux6TFDXdvD4m4GsGpQ2KJ",
+   "name": "Numer0 (trench/arc)",
+   "twitter": "https://x.com/Numerooo0",
+   "profit": 358.76843603747653,
+   "wins": 132,
+   "losses": 105,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "BtMBMPkoNbnLF9Xn552guQq528KKXcsNBNNBre3oaQtr",
+   "name": "Letterbomb",
+   "twitter": "https://x.com/ihateoop",
+   "profit": 347.1520506059982,
+   "wins": 458,
+   "losses": 719,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "7Js5gmq57y9jG2sseKrAeJt3vbncSWSFFHDEsyJDnyVm",
+   "name": "Yami 𓃵",
+   "twitter": "https://x.com/YamiPNL",
+   "profit": 346.9931272926393,
+   "wins": 1072,
+   "losses": 3142,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "4yo9CUuTBbds9NFhZd4MzPiZZkUvveXdTnAH8qMsE8ku",
+   "name": "Gfree",
+   "twitter": "https://x.com/G_free9",
+   "profit": 344.48222618192204,
+   "wins": 576,
+   "losses": 1097,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC",
+   "name": "Nyhrox",
+   "twitter": "https://x.com/nyhrox",
+   "profit": 340.38497412687684,
+   "wins": 163,
+   "losses": 693,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
+   "name": "Johnson",
+   "twitter": "https://x.com/johnsoncooks101",
+   "profit": 328.86177587198625,
+   "wins": 270,
+   "losses": 356,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "8nqtxpFpuXwfXG4pBLsDkkuMMPK9FjSkBMCn542HiM3v",
+   "name": "dov 7",
+   "twitter": "https://x.com/dovvvv7",
+   "profit": 326.83398255507706,
+   "wins": 208,
+   "losses": 234,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "CEUA7zVoDRqRYoeHTP58UHU6TR8yvtVbeLrX1dppqoXJ",
+   "name": "Tom",
+   "twitter": "https://x.com/tdmilky",
+   "profit": 299.17792404265094,
+   "wins": 140,
+   "losses": 1135,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "9iaawVBEsFG35PSwd4PahwT8fYNQe9XYuRdWm872dUqY",
+   "name": "Meechie",
+   "twitter": "https://x.com/973Meech",
+   "profit": 297.38459803524074,
+   "wins": 545,
+   "losses": 2829,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
+   "name": "The Doc",
+   "twitter": "https://x.com/KayTheDoc",
+   "profit": 295.21354453785267,
+   "wins": 214,
+   "losses": 322,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "CUHBzSPSaNS3tArEtM3maSV6pNdJhHJFYZpurPPK9P7H",
+   "name": "samsrep",
+   "twitter": "https://x.com/samsrepx",
+   "profit": 281.8056711760484,
+   "wins": 111,
+   "losses": 616,
+   "timeframe": 30,
+   "currency": "SOL"
+  },
+  {
+   "wallet_address": "SAALE2x3sn51EyahJyqD6913L3GqHZdZo3egUdMayQp",
+   "name": "saale",
+   "twitter": "https://x.com/saale",
+   "profit": 274.9152948592321,
+   "wins": 41,
+   "losses": 89,
+   "timeframe": 30,
+   "currency": "SOL"
+  }
+ ]
+}

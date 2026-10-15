@@ -21,5 +21,6 @@ Rules every audit follows:
 | [006](006-alpha-arena-season-1.md) | Alpha Arena Season 1 (6 LLMs, real money on Hyperliquid) | 2026-10-15 | No model is distinguishable from luck in either direction: the winner's t is 0.54, the worst loser's −0.83. 17 days needs a Sharpe of about 9.3 to reach t = 2. |
 | [007](007-cex-copy-trading.md) | Copy-trading boards on OKX and Binance (profit top 100 each) | 2026-10-15 | 0 lead traders clear the bar for being picked from the board (OKX 0/97, Binance 0/83); about one in ten passes a single test. |
 | [008](008-polymarket-profit-board.md) | Polymarket all-time profit board (top 50), position by position | 2026-10-15 | 0 of 38 complete records clear the bar. Reading only closed positions made 11 look like stars: unredeemed losers sit in a different list. |
+| [009](009-kolscan-kol-board.md) | kolscan's Solana KOL profit board (1/7/30 days) | 2026-10-15 | Cannot assess: the longest window is 30 days and there is no capital base. 33 of the 30-day top 47 lose more trades than they win. Board frozen; recheck 2026-11-14. |
 
 Computed with [Evidence Deflator](../../README.md). Have a backtest or a claim you want checked? Open an issue with a link to it.
