@@ -1,0 +1,23 @@
+# Evidence Deflator
+
+> Checks whether a trading record can be told apart from luck once you allow for how it was picked. Paste a Hyperliquid wallet and get a verdict; the best of a leaderboard of ~47,000 accounts has to clear t >= 4.90, not 2. Open source (MIT), no account, not investment advice.
+
+## Use it
+
+- [Check a Hyperliquid wallet](https://evidencedeflator.com/wallet/): browser tool, the address is not sent to us
+- [JSON API](https://api.evidencedeflator.com/api/wallet?a=0x393d0b87ed38fc779fd9611144ae649ba6082109): `GET /api/wallet?a=<address>&picked_from=<N>`
+- [Remote MCP server](https://api.evidencedeflator.com/mcp): streamable HTTP, one read-only tool `hyperliquid_wallet(address, picked_from)`
+- [API, Python package and plugin install](https://evidencedeflator.com/api/)
+
+## Questions
+
+- [Is this Hyperliquid trader skilled or just lucky?](https://evidencedeflator.com/q/hyperliquid-trader-skill-or-luck/)
+- [How many months of backtest or track record are enough?](https://evidencedeflator.com/q/how-many-months-of-backtest/)
+- [Why isn't the #1 trader on a leaderboard evidence of skill?](https://evidencedeflator.com/q/why-leaderboard-winner-is-not-evidence/)
+
+## Method and data
+
+- [Method](https://evidencedeflator.com/method/): t = Sharpe x sqrt(years) with a small-sample correction; Bonferroni bar for the best of N
+- [Daily Hyperliquid board data](https://evidencedeflator.com/data/hl/latest.json) (CC BY 4.0)
+- [Frozen forward cohort, 2026-10-14](https://evidencedeflator.com/data/hl/cohort-2026-10-14.json): 200 wallets scored only on PnL after the freeze
+- [Source code](https://github.com/Beltran12138/evidence-deflator)

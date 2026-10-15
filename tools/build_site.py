@@ -40,6 +40,19 @@ NAV = [("wallet", "Check a wallet", "/wallet/"), ("leaderboard", "Leaderboard", 
 COPY_ICON = '<span class="cp">copy</span><span class="ok">copied</span>'
 
 
+def ld(obj):
+    """schema.org JSON-LD block for head(extra=...)."""
+    data = json.dumps({"@context": "https://schema.org", **obj}, ensure_ascii=False).replace("</", "<\\/")
+    return f'<script type="application/ld+json">{data}</script>\n'
+
+
+APP_LD = {"@type": "SoftwareApplication", "name": "Evidence Deflator", "url": SITE + "/",
+          "applicationCategory": "FinanceApplication", "operatingSystem": "Web, Python, MCP",
+          "description": "Checks whether a trading record, such as a Hyperliquid wallet or a leaderboard winner, can be told apart from luck once you allow for how it was picked.",
+          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+          "license": "https://opensource.org/licenses/MIT", "codeRepository": REPO, "sameAs": [REPO]}
+
+
 def head(title, desc, path, og=f"{SITE}/leaderboard/og-2026-10.png", extra=""):
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -214,7 +227,8 @@ def build_home(rows, lb):
            '<span class="c"># claude_desktop_config.json, Cursor, Claude Code …</span>\n'
            '{ <span class="s">"mcpServers"</span>: { <span class="s">"evidence-deflator"</span>: { <span class="s">"command"</span>: <span class="s">"evidence-deflator-mcp"</span> } } }')
     page = head("Evidence Deflator · Is that trading record skill, or could it be luck?",
-                "Paste any Hyperliquid address and see whether its record can be told apart from luck. Open-source evidence checks for trading records, leaderboards and AI backtests.", "/") + header("home") + f"""
+                "Paste any Hyperliquid address and see whether its record can be told apart from luck. Open-source evidence checks for trading records, leaderboards and AI backtests.", "/",
+                extra=ld(APP_LD)) + header("home") + f"""
 <main>
 <div class="container hero">
  <div class="eyebrow"><span class="dot"></span>Evidence for trading records</div>
@@ -556,7 +570,8 @@ def build_wallet():
 
     page = head("Check a Hyperliquid wallet · Evidence Deflator",
                 "Paste any Hyperliquid address. See whether its record can be told apart from luck, and how many more months it would need.",
-                "/wallet/") + header("wallet") + f"""
+                "/wallet/", extra=ld({**APP_LD, "@type": "WebApplication", "name": "Evidence Deflator · Hyperliquid wallet check",
+                                       "url": SITE + "/wallet/", "operatingSystem": "Web"})) + header("wallet") + f"""
 <main>
 <div class="container page-head">
  <div class="eyebrow"><span class="dot"></span>Hyperliquid · wallet check · public data, computed in your browser</div>
@@ -784,7 +799,9 @@ def build_questions():
     }
     for slug, q in QUESTIONS:
         lead, rest = bodies[slug]
-        page = head(f"{q} · Evidence Deflator", lead[:300], f"/q/{slug}/") + header("") + f"""
+        faq = ld({"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q,
+                  "acceptedAnswer": {"@type": "Answer", "text": lead}}]})
+        page = head(f"{q} · Evidence Deflator", lead[:300], f"/q/{slug}/", extra=faq) + header("") + f"""
 <main class="container article"><div class="split">
 <article class="prose">
 <div class="eyebrow"><span class="dot"></span>Question · data as of {day}</div>
@@ -850,6 +867,34 @@ INDEXNOW_KEY = "b756502a8abaf3fb7bf6e69716e37269"
 NOT_IN_SITEMAP = {"404.html", "macau.html", "pitch.html"}  # error page and live decks
 
 
+# llms.txt (llmstxt.org): a plain-text map for language models. No evidence yet that
+# answer engines read it; it costs one file.
+LLMS_TXT = f"""# Evidence Deflator
+
+> Checks whether a trading record can be told apart from luck once you allow for how it was picked. Paste a Hyperliquid wallet and get a verdict; the best of a leaderboard of ~47,000 accounts has to clear t >= 4.90, not 2. Open source (MIT), no account, not investment advice.
+
+## Use it
+
+- [Check a Hyperliquid wallet]({SITE}/wallet/): browser tool, the address is not sent to us
+- [JSON API]({API_HOST}/api/wallet?a=0x393d0b87ed38fc779fd9611144ae649ba6082109): `GET /api/wallet?a=<address>&picked_from=<N>`
+- [Remote MCP server]({API_HOST}/mcp): streamable HTTP, one read-only tool `hyperliquid_wallet(address, picked_from)`
+- [API, Python package and plugin install]({SITE}/api/)
+
+## Questions
+
+- [Is this Hyperliquid trader skilled or just lucky?]({SITE}/q/hyperliquid-trader-skill-or-luck/)
+- [How many months of backtest or track record are enough?]({SITE}/q/how-many-months-of-backtest/)
+- [Why isn't the #1 trader on a leaderboard evidence of skill?]({SITE}/q/why-leaderboard-winner-is-not-evidence/)
+
+## Method and data
+
+- [Method]({SITE}/method/): t = Sharpe x sqrt(years) with a small-sample correction; Bonferroni bar for the best of N
+- [Daily Hyperliquid board data]({SITE}/data/hl/latest.json) (CC BY 4.0)
+- [Frozen forward cohort, 2026-10-14]({SITE}/data/hl/cohort-2026-10-14.json): 200 wallets scored only on PnL after the freeze
+- [Source code]({REPO})
+"""
+
+
 def build_crawl_files():
     """robots.txt, sitemap.xml and the IndexNow key file, from the pages on disk."""
     with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
@@ -870,6 +915,7 @@ def build_crawl_files():
     # Everything is public and meant to be read and cited, by search and answer engines alike.
     write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
     write(f"{INDEXNOW_KEY}.txt", INDEXNOW_KEY)
+    write("llms.txt", LLMS_TXT)
     return urls
 
 
