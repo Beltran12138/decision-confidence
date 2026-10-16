@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polymarket wallet check · Evidence Deflator</title>
+<meta name="description" content="Paste a Polymarket wallet or username and see whether its record of picks can be told apart from luck, position by position, counting the losers Polymarket lists separately.">
+<link rel="canonical" href="https://evidencedeflator.com/polymarket/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evidence Deflator">
+<meta property="og:title" content="Polymarket wallet check · Evidence Deflator">
+<meta property="og:description" content="Paste a Polymarket wallet or username and see whether its record of picks can be told apart from luck, position by position, counting the losers Polymarket lists separately.">
+<meta property="og:url" content="https://evidencedeflator.com/polymarket/">
+<meta property="og:image" content="https://evidencedeflator.com/leaderboard/og-2026-10.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/chrome.css?v=c240ffff">
+<link rel="stylesheet" href="/assets/site.css?v=85c04248">
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e38b718917cf4c2891f9038a6a597a88", "spa": true}'></script>
+</head>
+<body>
+<header class="site-header"><div class="container">
+<a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+<nav class="nav" aria-label="Main"><a href="/wallet/" aria-current="page">Check a wallet</a><a href="/leaderboard/">Leaderboard</a><a href="/audits/">Audits</a><a href="/check/">Check a backtest</a><a href="/method/">Method</a><a href="/api/">API</a></nav>
+<div class="header-cta"><a class="gh" href="/zh-hans/" hreflang="zh-Hans" lang="zh-Hans">中文</a><a class="gh" href="https://github.com/Beltran12138/evidence-deflator"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+</div></header>
+
+<main>
+<div class="container page-head">
+ <div class="eyebrow"><span class="dot"></span>Polymarket · wallet check · public data, computed in your browser</div>
+ <h1>Paste a Polymarket wallet. See whether its picks beat the prices it paid.</h1>
+ <p class="lede">A profit board shows who made the most. It does not show whether that wallet bought at prices that were too low for how things turned out, more often than chance allows. This page reads every resolved position and answers that.</p>
+ <form class="wcheck" id="pform" autocomplete="off">
+  <input id="paddr" name="a" placeholder="0x… wallet, polymarket.com profile link, or username" spellcheck="false" aria-label="Polymarket wallet or username">
+  <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
+ </form>
+ <div class="wex muted small">Try: <button class="linkbtn" data-ex="0x56687bf447db6ffa42ffe2204a05edaa20f55839">#1 by all-time profit</button><button class="linkbtn" data-ex="0xdb27bf2ac5d428a9c63dbc914611036855a6c56e">Looks like a star on closed positions only</button><button class="linkbtn" data-ex="0x476e1322d1a412fa0325527b8c3bc5e707b1396d">Highest z in the top 50</button></div>
+ <p class="muted small elsewhere">Hyperliquid wallets: <a href="/wallet/">the wallet check</a>.</p>
+</div>
+
+<div class="container" id="pout" hidden>
+ <div class="instrument wres">
+  <div class="instrument-head"><span class="t mono" id="pid"></span><span id="ptag"></span></div>
+  <div class="instrument-body"><h2 id="phead" style="margin:18px 4px 6px"></h2><p id="psub" class="muted" style="margin:0 4px 10px"></p>
+   <div class="chart" id="pmeter"></div></div>
+  <div class="instrument-foot">
+   <div><b id="pz">—</b><span>z, positions in one event counted as one bet</span></div>
+   <div><b id="pev">—</b><span>events</span></div>
+   <div><b id="pres">—</b><span>resolved positions</span></div>
+   <div><b id="pedge">—</b><span>average edge per share: outcome minus price paid</span></div>
+  </div>
+ </div>
+ <ul class="wflags" id="pflags"></ul>
+ <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="pcopy" data-copy=""><span class="cp">Copy link to this result</span><span class="ok">Copied</span></button>
+  <a class="btn btn-secondary" id="ppm" href="#" rel="noopener">Open on Polymarket</a></div>
+ <p class="muted small" id="pnote"></p>
+</div>
+
+<section><div class="container narrow prose">
+ <h2>How it reads a wallet</h2>
+ <p><strong>One question per position.</strong> A share bought at price p pays $1 if it wins. With no skill, it wins with probability p, so the edge, outcome minus price paid, averages zero. Someone who keeps buying at prices that turn out too low has a positive edge, and z measures how far that is from chance.</p>
+ <p><strong>Bets on one event are one bet.</strong> Ten positions on the same election share one outcome. z sums the edge within each event before comparing it with chance, so a wallet cannot look strong by splitting one view into many positions.</p>
+ <p><strong>The losers Polymarket lists elsewhere.</strong> A losing share is worth nothing, so many are never redeemed. They stay among open positions, not closed ones. Counting only closed positions made 11 of the profit top 50 look like stars in <a href="/audits/008-polymarket-profit-board.html">audit 008</a>; this page counts both.</p>
+ <p><strong>Two bars.</strong> z ≥ 2 is the usual bar for a wallet you came to with no prior selection. A wallet found on the profit board was picked from at least 10,050, so it needs z ≥ 4.59 (a floor: the board reports no total). The true number is far larger: a username search on the board returns a wallet ranked 450,853, which would put the bar at 5.33. Of the top 50 in audit 008, none cleared even the lower bar; the highest z was 2.40.</p>
+ <p><strong>What z cannot see.</strong> Position sizes (each position counts once; a few huge winning bets can make the money while the picks overall are ordinary), and whether the wallet traded on information others did not have.</p>
+ <p class="muted small">Not investment advice. Public data from <code>data-api.polymarket.com</code>, fetched by your browser; the wallet is never sent to us, and each check adds one tally with no address. Method: <a href="/audits/008-polymarket-profit-board.html">audit 008</a>, <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/tools/audit_polymarket.py"><code>tools/audit_polymarket.py</code></a>.</p>
+</div></section>
+</main>
+<footer class="site-footer"><div class="container">
+<div class="foot-grid">
+ <div><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="2.2" fill="var(--accent)"/><rect x="3.5" y="13" width="3.2" height="8" fill="currentColor"/><rect x="8.6" y="9" width="3.2" height="12" fill="currentColor"/><rect x="13.7" y="15" width="3.2" height="6" fill="currentColor"/><rect x="18.8" y="7.5" width="3.2" height="13.5" fill="currentColor" opacity=".55"/></svg>Evidence Deflator</a>
+  <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
+ <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+ <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/q/hyperliquid-trader-skill-or-luck/">Skill or luck?</a></li><li><a href="/q/how-many-months-of-backtest/">How many months?</a></li><li><a href="/q/why-leaderboard-winner-is-not-evidence/">Why #1 is not evidence</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="https://github.com/Beltran12138/evidence-deflator">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="https://github.com/Beltran12138/evidence-deflator/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A">Request an audit</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></div>
+</div>
+<div class="foot-note"><span>Open source · MIT · v0.2.0</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
+</div></footer>
+<script src="/assets/site.js"></script>
+<script src="/assets/site.js"></script>
+<script>window.PM = {"N": 10050, "bar": 4.59, "selfPath": "/polymarket/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=en"};</script>
+<script src="/assets/polymarket.js?v=5e135803"></script>
+</body>
+</html>

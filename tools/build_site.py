@@ -242,7 +242,7 @@ def boards_html(hl):
     if ok:
         rows.append(("OKX", "copy trading, PnL top 100", f"{ok['listed']:,}+ traders", ok["bar_best_of_n"], f"{ok['daily365_t_ge_bar']} / {ok['scored']}", f"{ok['daily365_t_ge_2']}", "/audits/007-cex-copy-trading.html", "Audit 007"))
     if pm:
-        rows.append(("Polymarket", "all-time profit top 50", f"{pm['n_floor']:,}+ wallets", pm["bar_best_of_n_floor"], f"{pm['z_cluster_ge_bar']} / {pm['complete_and_scored']}", f"{pm['z_cluster_ge_2']}", "/audits/008-polymarket-profit-board.html", "Audit 008"))
+        rows.append(("Polymarket", "all-time profit top 50", f"{pm['n_floor']:,}+ wallets", pm["bar_best_of_n_floor"], f"{pm['z_cluster_ge_bar']} / {pm['complete_and_scored']}", f"{pm['z_cluster_ge_2']}", "/polymarket/", "Check any wallet"))
     rows.append(("Alpha Arena", "season 1, 6 AI models", "6 models", 2.67, "0 / 6", "0", "/audits/006-alpha-arena-season-1.html", "Audit 006"))
     cell = lambda v, d, u: f'<td><a href="{u}"><b>{v}</b></a><span class="muted small" style="display:block">{d}</span></td>'
     body = "".join(f'<tr>{cell(v, d, u)}<td class="r hm">{n}</td><td class="r mono hm">{b:.2f}</td>'
@@ -257,7 +257,7 @@ def boards_html(hl):
  <div class="sec-head"><div><div class="eyebrow">Every board we have rescored</div><h2 style="margin-top:12px">Ranked by profit. None of the top clears the bar for being picked from the board.</h2>
  <p>Each row is a public leaderboard. "Clear the bar" counts records strong enough to stand out from everyone they were picked from; "pass one test" counts those that would pass if you had picked them blind (t ≥ 2).</p></div><a class="more" href="/audits/">All audits →</a></div>
  <div class="table-wrap"><table class="data boards"><thead><tr><th>Board</th><th class="r hm">Picked from</th><th class="r hm">Bar</th><th class="r">Clear the bar</th><th class="r">Pass one test</th></tr></thead><tbody>{body}</tbody></table></div>
- <p class="muted small" style="margin-top:10px">Hyperliquid rows are rebuilt daily; the others are as of the audit date. Binance and OKX traders can be checked one by one with the <a href="{EXT_URL}" rel="noopener">Chrome extension</a>; Hyperliquid wallets on this site or with <a href="{TG_BOT}" rel="noopener">@SkillOrLuckBot</a>.</p>
+ <p class="muted small" style="margin-top:10px">Hyperliquid rows are rebuilt daily; the others are as of the audit date. Check one wallet yourself: <a href="/wallet/">Hyperliquid</a> (also <a href="{TG_BOT}" rel="noopener">@SkillOrLuckBot</a>), <a href="/polymarket/">Polymarket</a>; Binance and OKX traders with the <a href="{EXT_URL}" rel="noopener">Chrome extension</a>.</p>
 </div></section>"""
 
 
@@ -734,6 +734,66 @@ def build_wallet():
     write("wallet/index.html", page)
 
 
+def build_polymarket():
+    """Polymarket wallet check: audit 008's per-position test, run in the browser (assets/polymarket.js)."""
+    with open(os.path.join(DOCS, "data", "cex", "polymarket-2026-10-15.json"), encoding="utf-8") as f:
+        pm = json.load(f)
+    n, bar_ = pm["n_floor"], pm["bar_best_of_n_floor"]
+    rows = {r["name"]: r for r in pm["rows"]}
+    examples = [("#1 by all-time profit", rows["Theo4"]["wallet"]),
+                ("Looks like a star on closed positions only", rows["DrPufferfish"]["wallet"]),
+                ("Highest z in the top 50", rows["asparagus2012"]["wallet"])]
+    ex = "".join(f'<button class="linkbtn" data-ex="{a}">{html.escape(t)}</button>' for t, a in examples)
+    data = json.dumps({"N": n, "bar": bar_, "selfPath": "/polymarket/",
+                       "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=en"})
+    page = head("Polymarket wallet check · Evidence Deflator",
+                "Paste a Polymarket wallet or username and see whether its record of picks can be told apart from luck, position by position, counting the losers Polymarket lists separately.",
+                "/polymarket/") + header("wallet") + f"""
+<main>
+<div class="container page-head">
+ <div class="eyebrow"><span class="dot"></span>Polymarket · wallet check · public data, computed in your browser</div>
+ <h1>Paste a Polymarket wallet. See whether its picks beat the prices it paid.</h1>
+ <p class="lede">A profit board shows who made the most. It does not show whether that wallet bought at prices that were too low for how things turned out, more often than chance allows. This page reads every resolved position and answers that.</p>
+ <form class="wcheck" id="pform" autocomplete="off">
+  <input id="paddr" name="a" placeholder="0x… wallet, polymarket.com profile link, or username" spellcheck="false" aria-label="Polymarket wallet or username">
+  <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
+ </form>
+ <div class="wex muted small">Try: {ex}</div>
+ <p class="muted small elsewhere">Hyperliquid wallets: <a href="/wallet/">the wallet check</a>.</p>
+</div>
+
+<div class="container" id="pout" hidden>
+ <div class="instrument wres">
+  <div class="instrument-head"><span class="t mono" id="pid"></span><span id="ptag"></span></div>
+  <div class="instrument-body"><h2 id="phead" style="margin:18px 4px 6px"></h2><p id="psub" class="muted" style="margin:0 4px 10px"></p>
+   <div class="chart" id="pmeter"></div></div>
+  <div class="instrument-foot">
+   <div><b id="pz">—</b><span>z, positions in one event counted as one bet</span></div>
+   <div><b id="pev">—</b><span>events</span></div>
+   <div><b id="pres">—</b><span>resolved positions</span></div>
+   <div><b id="pedge">—</b><span>average edge per share: outcome minus price paid</span></div>
+  </div>
+ </div>
+ <ul class="wflags" id="pflags"></ul>
+ <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="pcopy" data-copy=""><span class="cp">Copy link to this result</span><span class="ok">Copied</span></button>
+  <a class="btn btn-secondary" id="ppm" href="#" rel="noopener">Open on Polymarket</a></div>
+ <p class="muted small" id="pnote"></p>
+</div>
+
+<section><div class="container narrow prose">
+ <h2>How it reads a wallet</h2>
+ <p><strong>One question per position.</strong> A share bought at price p pays $1 if it wins. With no skill, it wins with probability p, so the edge, outcome minus price paid, averages zero. Someone who keeps buying at prices that turn out too low has a positive edge, and z measures how far that is from chance.</p>
+ <p><strong>Bets on one event are one bet.</strong> Ten positions on the same election share one outcome. z sums the edge within each event before comparing it with chance, so a wallet cannot look strong by splitting one view into many positions.</p>
+ <p><strong>The losers Polymarket lists elsewhere.</strong> A losing share is worth nothing, so many are never redeemed. They stay among open positions, not closed ones. Counting only closed positions made 11 of the profit top 50 look like stars in <a href="/audits/008-polymarket-profit-board.html">audit 008</a>; this page counts both.</p>
+ <p><strong>Two bars.</strong> z ≥ 2 is the usual bar for a wallet you came to with no prior selection. A wallet found on the profit board was picked from at least {n:,}, so it needs z ≥ {bar_:.2f} (a floor: the board reports no total). The true number is far larger: a username search on the board returns a wallet ranked 450,853, which would put the bar at 5.33. Of the top 50 in audit 008, none cleared even the lower bar; the highest z was 2.40.</p>
+ <p><strong>What z cannot see.</strong> Position sizes (each position counts once; a few huge winning bets can make the money while the picks overall are ordinary), and whether the wallet traded on information others did not have.</p>
+ <p class="muted small">Not investment advice. Public data from <code>data-api.polymarket.com</code>, fetched by your browser; the wallet is never sent to us, and each check adds one tally with no address. Method: <a href="/audits/008-polymarket-profit-board.html">audit 008</a>, <a href="{REPO}/blob/main/tools/audit_polymarket.py"><code>tools/audit_polymarket.py</code></a>.</p>
+</div></section>
+</main>
+""" + footer(f'<script src="/assets/site.js"></script>\n<script>window.PM = {data};</script>\n<script src="{asset("polymarket.js")}"></script>\n')
+    write("polymarket/index.html", page)
+
+
 def build_404():
     page = head("Not found · Evidence Deflator", "Page not found.", "/404.html") + header("") + """
 <main class="container page-head" style="min-height:50vh"><div class="eyebrow"><span class="dot"></span>404</div>
@@ -984,6 +1044,7 @@ def main():
     build_method()
     build_api()
     build_wallet()
+    build_polymarket()
     build_404()
     build_questions()
     build_legal()
