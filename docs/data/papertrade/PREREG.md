@@ -43,3 +43,11 @@ Let *share* be the fraction of scored wallets with positive PnL after the freeze
 - A board of synthetic positions against a pool is not a market of traders against each other. Traders as a whole lose (the pool overflowed past its $5M cap and paid stakers), so the control is expected to lose money; the comparison is top versus control, not top versus zero.
 - 100 versus 100 detects a difference of about 15 points at roughly two standard errors; a smaller real persistence would be missed.
 - Papertrade may change its rules again before the readings; any change we see is noted next to the result.
+
+## 2026-10-16, before the final freeze: data notes
+
+Found while running the first freeze attempt (discarded; no outcome exists yet, only the board at one moment):
+
+- Paperdash's descending board stops after the accounts with positive PnL, and its ascending board (`dir=asc`) stops after the accounts with negative PnL. The script walks both and merges them. About 5,700 of the ~20,100 accounts it counts appear in neither; every listed account has non-zero PnL, so these are taken to be accounts that never closed a trade.
+- The 24-hour page reports 24-hour figures. For `top_24h` the outcome baseline is each wallet's all-time PnL taken from the all-time board at the freeze; the 24-hour figures are kept alongside.
+- The control is therefore drawn from winners and losers alike (all-time ranks 101 and below, volume at least $1M), which is what the rule above says.

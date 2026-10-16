@@ -144,6 +144,7 @@ AUDIT_TAGS = {  # short status shown in lists; the finding text comes from audit
     "007": ("0 of 180 clear the bar", "red"),
     "008": ("0 of 38 clear the bar", "red"),
     "009": ("Cannot assess", "grey"),
+    "010": ("Frozen, readings 10-23 / 10-30", "grey"),
 }
 
 

@@ -22,5 +22,6 @@ Rules every audit follows:
 | [007](007-cex-copy-trading.md) | Copy-trading boards on OKX and Binance (profit top 100 each) | 2026-10-15 | 0 lead traders clear the bar for being picked from the board (OKX 0/97, Binance 0/83); about one in ten passes a single test. |
 | [008](008-polymarket-profit-board.md) | Polymarket all-time profit board (top 50), position by position | 2026-10-15 | 0 of 38 complete records clear the bar. Reading only closed positions made 11 look like stars: unredeemed losers sit in a different list. |
 | [009](009-kolscan-kol-board.md) | kolscan's Solana KOL profit board (1/7/30 days) | 2026-10-15 | Cannot assess: the longest window is 30 days and there is no capital base. 33 of the 30-day top 47 lose more trades than they win. Board frozen; recheck 2026-11-14. |
+| [010](010-papertrade-leaderboard.md) | Papertrade's PnL leaderboard (Paperdash, all-time and 24h) | 2026-10-16 | Cannot assess yet: no return series. #1 by PnL is the wallet The Block tied to price manipulation; one of the biggest winners ranks third from last. Three groups frozen; readings 2026-10-23 and 2026-10-30. |
 
 Computed with [Evidence Deflator](../../README.md). Have a backtest or a claim you want checked? Open an issue with a link to it.

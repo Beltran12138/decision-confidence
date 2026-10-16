@@ -12,7 +12,8 @@ Frozen groups (fixed before any outcome is seen):
   control   100 accounts drawn with seed 20261016 from the rest of the all-time board
             (accounts with at least $1M of volume, so the control is people who actually trade)
 
-Outcome: PnL after the freeze = all-time PnL at recheck - all-time PnL at freeze (USDC, realised + unrealised).
+Outcome: PnL after the freeze = all-time PnL at recheck - all-time PnL at freeze (USDC, realised + unrealised);
+for top_24h the all-time figures at the freeze come from the board, the 24h figures are kept under window_24h.
 PAPER rewards are recorded but not counted as PnL.
 """
 import argparse, csv, gzip, hashlib, io, json, random, re, sys, time, urllib.request
@@ -27,8 +28,8 @@ FIELDS = ["totalWindowedPnl", "realizedPnl", "currentUnrealizedPnl", "totalVolum
 SEED = 20261016
 
 
-def fetch_page(window, page, tries=4):
-    url = f"{BASE}?sort=pnl&window={window}&size=100&page={page}"
+def fetch_page(window, page, tries=4, asc=False):
+    url = f"{BASE}?sort=pnl&window={window}&size=100&page={page}" + ("&dir=asc" if asc else "")
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers=UA)
@@ -57,16 +58,27 @@ def flat(r):
 
 
 def full_board(window="all", pause=1.0):
-    rows, count = fetch_page(window, 1)
-    allrows = [flat(r) for r in rows]
-    pages = -(-count // 100)
-    for p in range(2, pages + 1):
-        time.sleep(pause)
-        rows, _ = fetch_page(window, p)
-        allrows += [flat(r) for r in rows]
-        if p % 20 == 0:
-            print(f"  page {p}/{pages}", file=sys.stderr)
-    return allrows, count
+    """Paperdash ranks only part of the board in each direction (pages run out before `count`),
+    so walk it from the top (desc) and from the bottom (dir=asc) until each runs dry, and merge."""
+    by, count = {}, None
+    for asc in (False, True):
+        p = 1
+        while True:
+            rows, c = fetch_page(window, p, asc=asc)
+            count = count or c
+            if not rows:
+                break
+            for r in rows:
+                f = flat(r)
+                by.setdefault(f["address"], f)
+            if p % 20 == 0:
+                print(f"  {'asc' if asc else 'desc'} page {p}", file=sys.stderr)
+            p += 1
+            time.sleep(pause)
+    rows = sorted(by.values(), key=lambda r: -(r["totalWindowedPnl"] or 0))
+    for i, r in enumerate(rows, 1):
+        r["rank"] = i
+    return rows, count
 
 
 def write_board(rows, path):
@@ -88,6 +100,11 @@ def freeze(args):
     print("fetching all-time board", file=sys.stderr)
     board, count = full_board("all")
     seen = {r["address"] for r in board}
+    by = {r["address"]: r for r in board}
+    # the 24h page reports 24h figures; the outcome is measured on all-time figures, so keep both
+    top24 = [{**{k: v for k, v in by.get(r["address"], {}).items() if k != "rank"},
+              "rank": r["rank"], "window_24h": {f: r[f] for f in FIELDS}, "address": r["address"]} for r in top24]
+    missing24 = [r["address"] for r in top24 if r["address"] not in by]
     top_all = board[:100]
     pool = [r for r in board[100:] if (r["totalVolume"] or 0) >= 1e6]
     control = random.Random(SEED).sample(pool, 100)
@@ -96,7 +113,7 @@ def freeze(args):
     frozen = {
         "frozen_at": now, "source": BASE + "?sort=pnl&window=all", "board_count": count, "board_rows": len(board),
         "board_unique": len(seen), "board_file": f"board-{day}.csv.gz", "board_csv_sha256": board_sha,
-        "board_24h_count": count24, "seed": SEED, "control_pool": len(pool),
+        "board_24h_count": count24, "top_24h_not_on_board": missing24, "seed": SEED, "control_pool": len(pool),
         "rule": "top_all = all-time PnL top 100; top_24h = 24h PnL top 100; control = 100 drawn with the seed "
                 "from all-time ranks 101+ with volume >= $1M. Outcome = all-time PnL at recheck minus at freeze.",
         "groups": {"top_all": top_all, "top_24h": top24, "control": control},
@@ -126,6 +143,8 @@ def recheck(args):
         for m in members:
             r = by.get(m["address"])
             if r is None:
+                missing.append(m["address"]); continue
+            if m.get("totalWindowedPnl") is None:  # 24h member that was not on the all-time board at the freeze
                 missing.append(m["address"]); continue
             after.append({"address": m["address"], "pnl_before": m["totalWindowedPnl"],
                           "pnl_after_freeze": r["totalWindowedPnl"] - m["totalWindowedPnl"],
