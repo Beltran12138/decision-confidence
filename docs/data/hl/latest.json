@@ -27,7 +27,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2026-10-12"
+     "history_from": "2026-10-12",
+     "vault": null
     },
     {
      "rank": 2,
@@ -46,7 +47,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2026-03-11"
+     "history_from": "2026-03-11",
+     "vault": null
     },
     {
      "rank": 3,
@@ -63,7 +65,8 @@
      "t": 1.007,
      "months_to_clear": 350.1,
      "flags": [],
-     "history_from": "2025-07-16"
+     "history_from": "2025-07-16",
+     "vault": null
     },
     {
      "rank": 4,
@@ -80,7 +83,8 @@
      "t": 1.698,
      "months_to_clear": 266.3,
      "flags": [],
-     "history_from": "2024-01-24"
+     "history_from": "2024-01-24",
+     "vault": null
     },
     {
      "rank": 5,
@@ -99,7 +103,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2026-04-15"
+     "history_from": "2026-04-15",
+     "vault": null
     },
     {
      "rank": 6,
@@ -116,7 +121,8 @@
      "t": 0.471,
      "months_to_clear": 1836.8,
      "flags": [],
-     "history_from": "2025-02-26"
+     "history_from": "2025-02-26",
+     "vault": null
     },
     {
      "rank": 7,
@@ -133,7 +139,8 @@
      "t": 1.277,
      "months_to_clear": 149.1,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 8,
@@ -152,7 +159,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-10-16"
+     "history_from": "2024-10-16",
+     "vault": null
     },
     {
      "rank": 9,
@@ -169,7 +177,8 @@
      "t": 3.426,
      "months_to_clear": 78.9,
      "flags": [],
-     "history_from": "2023-05-10"
+     "history_from": "2023-05-10",
+     "vault": "Hyperliquidity Provider (HLP)"
     },
     {
      "rank": 10,
@@ -186,7 +195,8 @@
      "t": -1.187,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2024-10-02"
+     "history_from": "2024-10-02",
+     "vault": null
     },
     {
      "rank": 11,
@@ -205,7 +215,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-09-25"
+     "history_from": "2024-09-25",
+     "vault": null
     },
     {
      "rank": 12,
@@ -222,7 +233,8 @@
      "t": -0.934,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-02-26"
+     "history_from": "2025-02-26",
+     "vault": null
     },
     {
      "rank": 13,
@@ -239,7 +251,8 @@
      "t": -0.842,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2024-10-23"
+     "history_from": "2024-10-23",
+     "vault": null
     },
     {
      "rank": 14,
@@ -258,7 +271,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 15,
@@ -277,7 +291,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2023-09-13"
+     "history_from": "2023-09-13",
+     "vault": null
     },
     {
      "rank": 16,
@@ -294,7 +309,8 @@
      "t": 1.602,
      "months_to_clear": 344.8,
      "flags": [],
-     "history_from": "2023-08-30"
+     "history_from": "2023-08-30",
+     "vault": null
     },
     {
      "rank": 17,
@@ -310,7 +326,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2025-08-20"
+     "history_from": "2025-08-20",
+     "vault": null
     },
     {
      "rank": 18,
@@ -327,7 +344,8 @@
      "t": 1.289,
      "months_to_clear": 86.1,
      "flags": [],
-     "history_from": "2026-04-08"
+     "history_from": "2026-04-08",
+     "vault": null
     },
     {
      "rank": 19,
@@ -344,7 +362,8 @@
      "t": 1.188,
      "months_to_clear": 184.3,
      "flags": [],
-     "history_from": "2025-11-12"
+     "history_from": "2025-11-12",
+     "vault": null
     },
     {
      "rank": 20,
@@ -363,7 +382,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 21,
@@ -380,7 +400,8 @@
      "t": 1.428,
      "months_to_clear": 265.8,
      "flags": [],
-     "history_from": "2024-11-13"
+     "history_from": "2024-11-13",
+     "vault": null
     },
     {
      "rank": 22,
@@ -399,7 +420,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2023-08-09"
+     "history_from": "2023-08-09",
+     "vault": "HLP Liquidator"
     },
     {
      "rank": 23,
@@ -416,7 +438,8 @@
      "t": 1.855,
      "months_to_clear": 225.2,
      "flags": [],
-     "history_from": "2024-01-10"
+     "history_from": "2024-01-10",
+     "vault": null
     },
     {
      "rank": 24,
@@ -433,7 +456,8 @@
      "t": 1.537,
      "months_to_clear": 281.2,
      "flags": [],
-     "history_from": "2024-04-17"
+     "history_from": "2024-04-17",
+     "vault": null
     },
     {
      "rank": 25,
@@ -450,7 +474,8 @@
      "t": 1.185,
      "months_to_clear": 185.2,
      "flags": [],
-     "history_from": "2025-11-12"
+     "history_from": "2025-11-12",
+     "vault": null
     },
     {
      "rank": 26,
@@ -467,7 +492,8 @@
      "t": 1.236,
      "months_to_clear": 489.6,
      "flags": [],
-     "history_from": "2024-02-28"
+     "history_from": "2024-02-28",
+     "vault": null
     },
     {
      "rank": 27,
@@ -486,7 +512,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 28,
@@ -505,7 +532,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-11-13"
+     "history_from": "2024-11-13",
+     "vault": null
     },
     {
      "rank": 29,
@@ -524,7 +552,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2025-04-16"
+     "history_from": "2025-04-16",
+     "vault": null
     },
     {
      "rank": 30,
@@ -541,7 +570,8 @@
      "t": -0.523,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-01-22"
+     "history_from": "2025-01-22",
+     "vault": null
     },
     {
      "rank": 31,
@@ -558,7 +588,8 @@
      "t": 1.788,
      "months_to_clear": 152.6,
      "flags": [],
-     "history_from": "2024-12-25"
+     "history_from": "2024-12-25",
+     "vault": null
     },
     {
      "rank": 32,
@@ -577,7 +608,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-04-10"
+     "history_from": "2024-04-10",
+     "vault": null
     },
     {
      "rank": 33,
@@ -594,7 +626,8 @@
      "t": 2.174,
      "months_to_clear": 119.6,
      "flags": [],
-     "history_from": "2024-02-14"
+     "history_from": "2024-02-14",
+     "vault": null
     },
     {
      "rank": 34,
@@ -611,7 +644,8 @@
      "t": 1.472,
      "months_to_clear": 281.8,
      "flags": [],
-     "history_from": "2024-08-14"
+     "history_from": "2024-08-14",
+     "vault": null
     },
     {
      "rank": 35,
@@ -628,7 +662,8 @@
      "t": 0.955,
      "months_to_clear": 408.2,
      "flags": [],
-     "history_from": "2025-06-18"
+     "history_from": "2025-06-18",
+     "vault": null
     },
     {
      "rank": 36,
@@ -647,7 +682,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2023-08-23"
+     "history_from": "2023-08-23",
+     "vault": null
     },
     {
      "rank": 37,
@@ -664,7 +700,8 @@
      "t": 2.272,
      "months_to_clear": 99.9,
      "flags": [],
-     "history_from": "2024-12-11"
+     "history_from": "2024-12-11",
+     "vault": null
     },
     {
      "rank": 38,
@@ -681,7 +718,8 @@
      "t": 1.136,
      "months_to_clear": 149.7,
      "flags": [],
-     "history_from": "2025-07-23"
+     "history_from": "2025-07-23",
+     "vault": null
     },
     {
      "rank": 39,
@@ -698,7 +736,8 @@
      "t": 0.147,
      "months_to_clear": 34783.1,
      "flags": [],
-     "history_from": "2024-01-03"
+     "history_from": "2024-01-03",
+     "vault": null
     },
     {
      "rank": 40,
@@ -715,7 +754,8 @@
      "t": -0.847,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2024-05-22"
+     "history_from": "2024-05-22",
+     "vault": null
     },
     {
      "rank": 41,
@@ -732,7 +772,8 @@
      "t": 1.191,
      "months_to_clear": 183.5,
      "flags": [],
-     "history_from": "2025-11-12"
+     "history_from": "2025-11-12",
+     "vault": null
     },
     {
      "rank": 42,
@@ -751,7 +792,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2026-07-29"
+     "history_from": "2026-07-29",
+     "vault": null
     },
     {
      "rank": 43,
@@ -768,7 +810,8 @@
      "t": 1.515,
      "months_to_clear": 292.1,
      "flags": [],
-     "history_from": "2024-05-29"
+     "history_from": "2024-05-29",
+     "vault": null
     },
     {
      "rank": 44,
@@ -785,7 +828,8 @@
      "t": 1.277,
      "months_to_clear": 149.1,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 45,
@@ -802,7 +846,8 @@
      "t": 1.773,
      "months_to_clear": 134.2,
      "flags": [],
-     "history_from": "2025-04-09"
+     "history_from": "2025-04-09",
+     "vault": null
     },
     {
      "rank": 46,
@@ -821,7 +866,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2023-05-31"
+     "history_from": "2023-05-31",
+     "vault": null
     },
     {
      "rank": 47,
@@ -838,7 +884,8 @@
      "t": 1.429,
      "months_to_clear": 96.7,
      "flags": [],
-     "history_from": "2026-01-28"
+     "history_from": "2026-01-28",
+     "vault": null
     },
     {
      "rank": 48,
@@ -855,7 +902,8 @@
      "t": 1.594,
      "months_to_clear": 112.1,
      "flags": [],
-     "history_from": "2025-10-08"
+     "history_from": "2025-10-08",
+     "vault": null
     },
     {
      "rank": 49,
@@ -872,7 +920,8 @@
      "t": 1.419,
      "months_to_clear": 175.0,
      "flags": [],
-     "history_from": "2025-07-16"
+     "history_from": "2025-07-16",
+     "vault": null
     },
     {
      "rank": 50,
@@ -889,7 +938,8 @@
      "t": 2.01,
      "months_to_clear": 128.4,
      "flags": [],
-     "history_from": "2024-12-11"
+     "history_from": "2024-12-11",
+     "vault": null
     },
     {
      "rank": 51,
@@ -906,7 +956,8 @@
      "t": 1.185,
      "months_to_clear": 185.2,
      "flags": [],
-     "history_from": "2025-11-12"
+     "history_from": "2025-11-12",
+     "vault": null
     },
     {
      "rank": 52,
@@ -925,7 +976,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-05-01"
+     "history_from": "2024-05-01",
+     "vault": null
     },
     {
      "rank": 53,
@@ -942,7 +994,8 @@
      "t": 1.253,
      "months_to_clear": 624.8,
      "flags": [],
-     "history_from": "2023-05-10"
+     "history_from": "2023-05-10",
+     "vault": "HLP Strategy A"
     },
     {
      "rank": 54,
@@ -959,7 +1012,8 @@
      "t": 1.34,
      "months_to_clear": 91.7,
      "flags": [],
-     "history_from": "2026-03-11"
+     "history_from": "2026-03-11",
+     "vault": null
     },
     {
      "rank": 55,
@@ -978,7 +1032,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-07-10"
+     "history_from": "2024-07-10",
+     "vault": null
     },
     {
      "rank": 56,
@@ -995,7 +1050,8 @@
      "t": -0.9,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-09-17"
+     "history_from": "2025-09-17",
+     "vault": null
     },
     {
      "rank": 57,
@@ -1014,7 +1070,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-12-11"
+     "history_from": "2024-12-11",
+     "vault": null
     },
     {
      "rank": 58,
@@ -1031,7 +1088,8 @@
      "t": -1.154,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-06-18"
+     "history_from": "2025-06-18",
+     "vault": null
     },
     {
      "rank": 59,
@@ -1048,7 +1106,8 @@
      "t": 2.199,
      "months_to_clear": 98.3,
      "flags": [],
-     "history_from": "2024-10-30"
+     "history_from": "2024-10-30",
+     "vault": null
     },
     {
      "rank": 60,
@@ -1065,7 +1124,8 @@
      "t": 2.099,
      "months_to_clear": 197.4,
      "flags": [],
-     "history_from": "2023-09-06"
+     "history_from": "2023-09-06",
+     "vault": null
     },
     {
      "rank": 61,
@@ -1082,7 +1142,8 @@
      "t": 1.605,
      "months_to_clear": 86.9,
      "flags": [],
-     "history_from": "2025-12-10"
+     "history_from": "2025-12-10",
+     "vault": null
     },
     {
      "rank": 62,
@@ -1099,7 +1160,8 @@
      "t": -0.079,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2024-06-05"
+     "history_from": "2024-06-05",
+     "vault": null
     },
     {
      "rank": 63,
@@ -1116,7 +1178,8 @@
      "t": 1.181,
      "months_to_clear": 186.4,
      "flags": [],
-     "history_from": "2025-11-12"
+     "history_from": "2025-11-12",
+     "vault": null
     },
     {
      "rank": 64,
@@ -1133,7 +1196,8 @@
      "t": 1.273,
      "months_to_clear": 478.3,
      "flags": [],
-     "history_from": "2024-01-24"
+     "history_from": "2024-01-24",
+     "vault": null
     },
     {
      "rank": 65,
@@ -1150,7 +1214,8 @@
      "t": 0.71,
      "months_to_clear": 542.0,
      "flags": [],
-     "history_from": "2025-10-22"
+     "history_from": "2025-10-22",
+     "vault": null
     },
     {
      "rank": 66,
@@ -1167,7 +1232,8 @@
      "t": 1.321,
      "months_to_clear": 415.1,
      "flags": [],
-     "history_from": "2023-10-25"
+     "history_from": "2023-10-25",
+     "vault": null
     },
     {
      "rank": 67,
@@ -1186,7 +1252,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-12-18"
+     "history_from": "2024-12-18",
+     "vault": null
     },
     {
      "rank": 68,
@@ -1203,7 +1270,8 @@
      "t": 0.107,
      "months_to_clear": 18143.0,
      "flags": [],
-     "history_from": "2025-11-26"
+     "history_from": "2025-11-26",
+     "vault": null
     },
     {
      "rank": 69,
@@ -1220,7 +1288,8 @@
      "t": 1.636,
      "months_to_clear": 191.0,
      "flags": [],
-     "history_from": "2024-12-25"
+     "history_from": "2024-12-25",
+     "vault": null
     },
     {
      "rank": 70,
@@ -1237,7 +1306,8 @@
      "t": 1.053,
      "months_to_clear": 245.1,
      "flags": [],
-     "history_from": "2025-10-22"
+     "history_from": "2025-10-22",
+     "vault": null
     },
     {
      "rank": 71,
@@ -1254,7 +1324,8 @@
      "t": 1.191,
      "months_to_clear": 183.5,
      "flags": [],
-     "history_from": "2025-11-12"
+     "history_from": "2025-11-12",
+     "vault": null
     },
     {
      "rank": 72,
@@ -1271,7 +1342,8 @@
      "t": -0.564,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2023-05-10"
+     "history_from": "2023-05-10",
+     "vault": "HLP Strategy B"
     },
     {
      "rank": 73,
@@ -1288,7 +1360,8 @@
      "t": 1.844,
      "months_to_clear": 193.8,
      "flags": [],
-     "history_from": "2024-06-05"
+     "history_from": "2024-06-05",
+     "vault": null
     },
     {
      "rank": 74,
@@ -1307,7 +1380,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-11-13"
+     "history_from": "2024-11-13",
+     "vault": null
     },
     {
      "rank": 75,
@@ -1326,7 +1400,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-11-13"
+     "history_from": "2024-11-13",
+     "vault": null
     },
     {
      "rank": 76,
@@ -1343,7 +1418,8 @@
      "t": 1.539,
      "months_to_clear": 119.9,
      "flags": [],
-     "history_from": "2025-09-03"
+     "history_from": "2025-09-03",
+     "vault": null
     },
     {
      "rank": 77,
@@ -1360,7 +1436,8 @@
      "t": 2.065,
      "months_to_clear": 80.0,
      "flags": [],
-     "history_from": "2025-07-23"
+     "history_from": "2025-07-23",
+     "vault": null
     },
     {
      "rank": 78,
@@ -1377,7 +1454,8 @@
      "t": 1.45,
      "months_to_clear": 252.1,
      "flags": [],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 79,
@@ -1394,7 +1472,8 @@
      "t": 1.744,
      "months_to_clear": 217.4,
      "flags": [],
-     "history_from": "2024-06-05"
+     "history_from": "2024-06-05",
+     "vault": null
     },
     {
      "rank": 80,
@@ -1413,7 +1492,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-12-11"
+     "history_from": "2024-12-11",
+     "vault": null
     },
     {
      "rank": 81,
@@ -1430,7 +1510,8 @@
      "t": 1.439,
      "months_to_clear": 127.3,
      "flags": [],
-     "history_from": "2025-10-15"
+     "history_from": "2025-10-15",
+     "vault": null
     },
     {
      "rank": 82,
@@ -1447,7 +1528,8 @@
      "t": 1.626,
      "months_to_clear": 199.7,
      "flags": [],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 83,
@@ -1466,7 +1548,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-08-14"
+     "history_from": "2024-08-14",
+     "vault": null
     },
     {
      "rank": 84,
@@ -1483,7 +1566,8 @@
      "t": 1.878,
      "months_to_clear": 269.9,
      "flags": [],
-     "history_from": "2023-05-31"
+     "history_from": "2023-05-31",
+     "vault": null
     },
     {
      "rank": 85,
@@ -1500,7 +1584,8 @@
      "t": 1.271,
      "months_to_clear": 150.4,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 86,
@@ -1517,7 +1602,8 @@
      "t": 0.579,
      "months_to_clear": 2298.5,
      "flags": [],
-     "history_from": "2024-02-07"
+     "history_from": "2024-02-07",
+     "vault": null
     },
     {
      "rank": 87,
@@ -1536,7 +1622,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2025-04-23"
+     "history_from": "2025-04-23",
+     "vault": "HLP Liquidator 2"
     },
     {
      "rank": 88,
@@ -1553,7 +1640,8 @@
      "t": 1.987,
      "months_to_clear": 199.0,
      "flags": [],
-     "history_from": "2023-12-13"
+     "history_from": "2023-12-13",
+     "vault": null
     },
     {
      "rank": 89,
@@ -1570,7 +1658,8 @@
      "t": 0.759,
      "months_to_clear": 138.1,
      "flags": [],
-     "history_from": "2026-05-20"
+     "history_from": "2026-05-20",
+     "vault": null
     },
     {
      "rank": 90,
@@ -1587,7 +1676,8 @@
      "t": 2.617,
      "months_to_clear": 110.7,
      "flags": [],
-     "history_from": "2024-01-10"
+     "history_from": "2024-01-10",
+     "vault": null
     },
     {
      "rank": 91,
@@ -1604,7 +1694,8 @@
      "t": 1.871,
      "months_to_clear": 197.7,
      "flags": [],
-     "history_from": "2024-04-24"
+     "history_from": "2024-04-24",
+     "vault": null
     },
     {
      "rank": 92,
@@ -1621,7 +1712,8 @@
      "t": 2.773,
      "months_to_clear": 95.9,
      "flags": [],
-     "history_from": "2024-01-31"
+     "history_from": "2024-01-31",
+     "vault": null
     },
     {
      "rank": 93,
@@ -1638,7 +1730,8 @@
      "t": 1.277,
      "months_to_clear": 148.9,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 94,
@@ -1655,7 +1748,8 @@
      "t": 1.271,
      "months_to_clear": 150.4,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 95,
@@ -1672,7 +1766,8 @@
      "t": 1.279,
      "months_to_clear": 148.7,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 96,
@@ -1689,7 +1784,8 @@
      "t": 1.073,
      "months_to_clear": 298.7,
      "flags": [],
-     "history_from": "2025-07-30"
+     "history_from": "2025-07-30",
+     "vault": null
     },
     {
      "rank": 97,
@@ -1706,7 +1802,8 @@
      "t": 1.783,
      "months_to_clear": 62.8,
      "flags": [],
-     "history_from": "2026-01-21"
+     "history_from": "2026-01-21",
+     "vault": null
     },
     {
      "rank": 98,
@@ -1723,7 +1820,8 @@
      "t": 1.586,
      "months_to_clear": 86.7,
      "flags": [],
-     "history_from": "2025-12-31"
+     "history_from": "2025-12-31",
+     "vault": null
     },
     {
      "rank": 99,
@@ -1740,7 +1838,8 @@
      "t": 1.6,
      "months_to_clear": 132.0,
      "flags": [],
-     "history_from": "2024-06-12"
+     "history_from": "2024-06-12",
+     "vault": null
     },
     {
      "rank": 100,
@@ -1759,7 +1858,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2025-04-09"
+     "history_from": "2025-04-09",
+     "vault": null
     }
    ]
   },
@@ -1787,7 +1887,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2026-09-22"
+     "history_from": "2026-09-22",
+     "vault": null
     },
     {
      "rank": 2,
@@ -1801,7 +1902,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-17"
+     "history_from": "2026-09-17",
+     "vault": null
     },
     {
      "rank": 3,
@@ -1817,7 +1919,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2026-10-12"
+     "history_from": "2026-10-12",
+     "vault": null
     },
     {
      "rank": 4,
@@ -1834,7 +1937,8 @@
      "t": 1.548,
      "months_to_clear": 217.0,
      "flags": [],
-     "history_from": "2024-10-09"
+     "history_from": "2024-10-09",
+     "vault": null
     },
     {
      "rank": 5,
@@ -1851,7 +1955,8 @@
      "t": 0.726,
      "months_to_clear": 728.0,
      "flags": [],
-     "history_from": "2025-06-11"
+     "history_from": "2025-06-11",
+     "vault": null
     },
     {
      "rank": 6,
@@ -1870,7 +1975,8 @@
      "flags": [
       "no_losing_week"
      ],
-     "history_from": "2023-12-06"
+     "history_from": "2023-12-06",
+     "vault": null
     },
     {
      "rank": 7,
@@ -1889,7 +1995,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2025-08-06"
+     "history_from": "2025-08-06",
+     "vault": null
     },
     {
      "rank": 8,
@@ -1906,7 +2013,8 @@
      "t": 2.971,
      "months_to_clear": 10.3,
      "flags": [],
-     "history_from": "2026-02-18"
+     "history_from": "2026-02-18",
+     "vault": null
     },
     {
      "rank": 9,
@@ -1923,7 +2031,8 @@
      "t": 1.748,
      "months_to_clear": 101.8,
      "flags": [],
-     "history_from": "2025-09-03"
+     "history_from": "2025-09-03",
+     "vault": null
     },
     {
      "rank": 10,
@@ -1940,7 +2049,8 @@
      "t": 3.154,
      "months_to_clear": 14.9,
      "flags": [],
-     "history_from": "2025-09-24"
+     "history_from": "2025-09-24",
+     "vault": null
     },
     {
      "rank": 11,
@@ -1957,7 +2067,8 @@
      "t": -1.073,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-07-01"
+     "history_from": "2026-07-01",
+     "vault": null
     },
     {
      "rank": 12,
@@ -1974,7 +2085,8 @@
      "t": 1.738,
      "months_to_clear": 141.4,
      "flags": [],
-     "history_from": "2025-04-09"
+     "history_from": "2025-04-09",
+     "vault": null
     },
     {
      "rank": 13,
@@ -1991,7 +2103,8 @@
      "t": 0.909,
      "months_to_clear": 410.2,
      "flags": [],
-     "history_from": "2025-08-06"
+     "history_from": "2025-08-06",
+     "vault": null
     },
     {
      "rank": 14,
@@ -2005,7 +2118,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-09"
+     "history_from": "2026-09-09",
+     "vault": null
     },
     {
      "rank": 15,
@@ -2022,7 +2136,8 @@
      "t": -0.953,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-06-10"
+     "history_from": "2026-06-10",
+     "vault": null
     },
     {
      "rank": 16,
@@ -2039,7 +2154,8 @@
      "t": 1.882,
      "months_to_clear": 32.6,
      "flags": [],
-     "history_from": "2026-05-06"
+     "history_from": "2026-05-06",
+     "vault": null
     },
     {
      "rank": 17,
@@ -2056,7 +2172,8 @@
      "t": 1.36,
      "months_to_clear": 94.9,
      "flags": [],
-     "history_from": "2026-02-25"
+     "history_from": "2026-02-25",
+     "vault": null
     },
     {
      "rank": 18,
@@ -2073,7 +2190,8 @@
      "t": -1.566,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2024-11-20"
+     "history_from": "2024-11-20",
+     "vault": null
     },
     {
      "rank": 19,
@@ -2090,7 +2208,8 @@
      "t": 1.585,
      "months_to_clear": 51.5,
      "flags": [],
-     "history_from": "2026-04-22"
+     "history_from": "2026-04-22",
+     "vault": null
     },
     {
      "rank": 20,
@@ -2107,7 +2226,8 @@
      "t": 2.082,
      "months_to_clear": 15.9,
      "flags": [],
-     "history_from": "2026-06-10"
+     "history_from": "2026-06-10",
+     "vault": null
     },
     {
      "rank": 21,
@@ -2124,7 +2244,8 @@
      "t": 1.31,
      "months_to_clear": 267.3,
      "flags": [],
-     "history_from": "2025-02-12"
+     "history_from": "2025-02-12",
+     "vault": null
     },
     {
      "rank": 22,
@@ -2143,7 +2264,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2025-01-08"
+     "history_from": "2025-01-08",
+     "vault": null
     },
     {
      "rank": 23,
@@ -2162,7 +2284,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2024-06-26"
+     "history_from": "2024-06-26",
+     "vault": null
     },
     {
      "rank": 24,
@@ -2179,7 +2302,8 @@
      "t": 1.189,
      "months_to_clear": 336.6,
      "flags": [],
-     "history_from": "2025-01-29"
+     "history_from": "2025-01-29",
+     "vault": null
     },
     {
      "rank": 25,
@@ -2196,7 +2320,8 @@
      "t": 0.344,
      "months_to_clear": 2597.5,
      "flags": [],
-     "history_from": "2025-05-28"
+     "history_from": "2025-05-28",
+     "vault": null
     },
     {
      "rank": 26,
@@ -2213,7 +2338,8 @@
      "t": -1.041,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-08-20"
+     "history_from": "2025-08-20",
+     "vault": null
     },
     {
      "rank": 27,
@@ -2230,7 +2356,8 @@
      "t": -1.024,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-02-26"
+     "history_from": "2025-02-26",
+     "vault": null
     },
     {
      "rank": 28,
@@ -2247,7 +2374,8 @@
      "t": 1.438,
      "months_to_clear": 116.6,
      "flags": [],
-     "history_from": "2024-06-26"
+     "history_from": "2024-06-26",
+     "vault": null
     },
     {
      "rank": 29,
@@ -2266,7 +2394,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2026-07-15"
+     "history_from": "2026-07-15",
+     "vault": null
     },
     {
      "rank": 30,
@@ -2283,7 +2412,8 @@
      "t": -0.208,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-07-30"
+     "history_from": "2025-07-30",
+     "vault": null
     },
     {
      "rank": 31,
@@ -2300,7 +2430,8 @@
      "t": 1.011,
      "months_to_clear": 92.8,
      "flags": [],
-     "history_from": "2026-04-22"
+     "history_from": "2026-04-22",
+     "vault": null
     },
     {
      "rank": 32,
@@ -2317,7 +2448,8 @@
      "t": 1.698,
      "months_to_clear": 11.6,
      "flags": [],
-     "history_from": "2025-10-01"
+     "history_from": "2025-10-01",
+     "vault": null
     },
     {
      "rank": 33,
@@ -2334,7 +2466,8 @@
      "t": -0.019,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-04-30"
+     "history_from": "2025-04-30",
+     "vault": null
     },
     {
      "rank": 34,
@@ -2348,7 +2481,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-09"
+     "history_from": "2026-09-09",
+     "vault": null
     },
     {
      "rank": 35,
@@ -2365,7 +2499,8 @@
      "t": 0.921,
      "months_to_clear": 105.8,
      "flags": [],
-     "history_from": "2026-06-17"
+     "history_from": "2026-06-17",
+     "vault": null
     },
     {
      "rank": 36,
@@ -2382,7 +2517,8 @@
      "t": 0.301,
      "months_to_clear": 2677.3,
      "flags": [],
-     "history_from": "2025-12-10"
+     "history_from": "2025-12-10",
+     "vault": null
     },
     {
      "rank": 37,
@@ -2399,7 +2535,8 @@
      "t": -0.308,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-06-04"
+     "history_from": "2025-06-04",
+     "vault": null
     },
     {
      "rank": 38,
@@ -2416,7 +2553,8 @@
      "t": 1.636,
      "months_to_clear": 79.3,
      "flags": [],
-     "history_from": "2025-07-16"
+     "history_from": "2025-07-16",
+     "vault": null
     },
     {
      "rank": 39,
@@ -2433,7 +2571,8 @@
      "t": 1.201,
      "months_to_clear": 107.1,
      "flags": [],
-     "history_from": "2025-11-05"
+     "history_from": "2025-11-05",
+     "vault": null
     },
     {
      "rank": 40,
@@ -2450,7 +2589,8 @@
      "t": 0.274,
      "months_to_clear": 5844.5,
      "flags": [],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 41,
@@ -2467,7 +2607,8 @@
      "t": 0.495,
      "months_to_clear": 1522.2,
      "flags": [],
-     "history_from": "2025-06-11"
+     "history_from": "2025-06-11",
+     "vault": null
     },
     {
      "rank": 42,
@@ -2481,7 +2622,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-27"
+     "history_from": "2026-09-27",
+     "vault": null
     },
     {
      "rank": 43,
@@ -2498,7 +2640,8 @@
      "t": -0.246,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-03-19"
+     "history_from": "2025-03-19",
+     "vault": null
     },
     {
      "rank": 44,
@@ -2515,7 +2658,8 @@
      "t": 1.671,
      "months_to_clear": 34.2,
      "flags": [],
-     "history_from": "2026-06-03"
+     "history_from": "2026-06-03",
+     "vault": null
     },
     {
      "rank": 45,
@@ -2532,7 +2676,8 @@
      "t": 0.931,
      "months_to_clear": 122.7,
      "flags": [],
-     "history_from": "2026-05-27"
+     "history_from": "2026-05-27",
+     "vault": null
     },
     {
      "rank": 46,
@@ -2546,7 +2691,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-03-11"
+     "history_from": "2026-03-11",
+     "vault": null
     },
     {
      "rank": 47,
@@ -2563,7 +2709,8 @@
      "t": 1.72,
      "months_to_clear": 185.5,
      "flags": [],
-     "history_from": "2024-10-23"
+     "history_from": "2024-10-23",
+     "vault": null
     },
     {
      "rank": 48,
@@ -2580,7 +2727,8 @@
      "t": 2.241,
      "months_to_clear": 14.5,
      "flags": [],
-     "history_from": "2026-06-24"
+     "history_from": "2026-06-24",
+     "vault": null
     },
     {
      "rank": 49,
@@ -2594,7 +2742,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-15"
+     "history_from": "2026-09-15",
+     "vault": null
     },
     {
      "rank": 50,
@@ -2611,7 +2760,8 @@
      "t": -1.195,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-08-13"
+     "history_from": "2025-08-13",
+     "vault": null
     },
     {
      "rank": 51,
@@ -2628,7 +2778,8 @@
      "t": -0.936,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-05-28"
+     "history_from": "2025-05-28",
+     "vault": null
     },
     {
      "rank": 52,
@@ -2647,7 +2798,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2026-06-10"
+     "history_from": "2026-06-10",
+     "vault": null
     },
     {
      "rank": 53,
@@ -2666,7 +2818,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2026-04-15"
+     "history_from": "2026-04-15",
+     "vault": null
     },
     {
      "rank": 54,
@@ -2683,7 +2836,8 @@
      "t": 0.766,
      "months_to_clear": 323.9,
      "flags": [],
-     "history_from": "2025-05-28"
+     "history_from": "2025-05-28",
+     "vault": null
     },
     {
      "rank": 55,
@@ -2700,7 +2854,8 @@
      "t": 1.122,
      "months_to_clear": 273.1,
      "flags": [],
-     "history_from": "2025-04-23"
+     "history_from": "2025-04-23",
+     "vault": null
     },
     {
      "rank": 56,
@@ -2717,7 +2872,8 @@
      "t": 1.402,
      "months_to_clear": 261.3,
      "flags": [],
-     "history_from": "2024-12-18"
+     "history_from": "2024-12-18",
+     "vault": null
     },
     {
      "rank": 57,
@@ -2734,7 +2890,8 @@
      "t": 0.558,
      "months_to_clear": 2506.4,
      "flags": [],
-     "history_from": "2024-01-24"
+     "history_from": "2024-01-24",
+     "vault": null
     },
     {
      "rank": 58,
@@ -2751,7 +2908,8 @@
      "t": 0.193,
      "months_to_clear": 6657.7,
      "flags": [],
-     "history_from": "2025-12-03"
+     "history_from": "2025-12-03",
+     "vault": null
     },
     {
      "rank": 59,
@@ -2768,7 +2926,8 @@
      "t": 0.723,
      "months_to_clear": 586.2,
      "flags": [],
-     "history_from": "2025-06-04"
+     "history_from": "2025-06-04",
+     "vault": null
     },
     {
      "rank": 60,
@@ -2785,7 +2944,8 @@
      "t": -0.036,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-06-17"
+     "history_from": "2026-06-17",
+     "vault": null
     },
     {
      "rank": 61,
@@ -2802,7 +2962,8 @@
      "t": 1.705,
      "months_to_clear": 21.2,
      "flags": [],
-     "history_from": "2026-05-13"
+     "history_from": "2026-05-13",
+     "vault": null
     },
     {
      "rank": 62,
@@ -2819,7 +2980,8 @@
      "t": -1.239,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-05-07"
+     "history_from": "2025-05-07",
+     "vault": null
     },
     {
      "rank": 63,
@@ -2838,7 +3000,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2024-01-03"
+     "history_from": "2024-01-03",
+     "vault": null
     },
     {
      "rank": 64,
@@ -2855,7 +3018,8 @@
      "t": 1.618,
      "months_to_clear": 203.4,
      "flags": [],
-     "history_from": "2024-11-20"
+     "history_from": "2024-11-20",
+     "vault": null
     },
     {
      "rank": 65,
@@ -2872,7 +3036,8 @@
      "t": 0.85,
      "months_to_clear": 737.4,
      "flags": [],
-     "history_from": "2024-12-04"
+     "history_from": "2024-12-04",
+     "vault": null
     },
     {
      "rank": 66,
@@ -2891,7 +3056,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2025-08-13"
+     "history_from": "2025-08-13",
+     "vault": null
     },
     {
      "rank": 67,
@@ -2908,7 +3074,8 @@
      "t": 1.021,
      "months_to_clear": 48.2,
      "flags": [],
-     "history_from": "2026-08-05"
+     "history_from": "2026-08-05",
+     "vault": null
     },
     {
      "rank": 68,
@@ -2925,7 +3092,8 @@
      "t": 1.546,
      "months_to_clear": 54.3,
      "flags": [],
-     "history_from": "2026-04-22"
+     "history_from": "2026-04-22",
+     "vault": null
     },
     {
      "rank": 69,
@@ -2942,7 +3110,8 @@
      "t": 2.14,
      "months_to_clear": 79.1,
      "flags": [],
-     "history_from": "2025-04-09"
+     "history_from": "2025-04-09",
+     "vault": null
     },
     {
      "rank": 70,
@@ -2959,7 +3128,8 @@
      "t": 0.827,
      "months_to_clear": 742.1,
      "flags": [],
-     "history_from": "2024-09-11"
+     "history_from": "2024-09-11",
+     "vault": null
     },
     {
      "rank": 71,
@@ -2976,7 +3146,8 @@
      "t": 1.678,
      "months_to_clear": 106.6,
      "flags": [],
-     "history_from": "2023-11-15"
+     "history_from": "2023-11-15",
+     "vault": null
     },
     {
      "rank": 72,
@@ -2990,7 +3161,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-08-26"
+     "history_from": "2026-08-26",
+     "vault": null
     },
     {
      "rank": 73,
@@ -3007,7 +3179,8 @@
      "t": 0.585,
      "months_to_clear": 298.7,
      "flags": [],
-     "history_from": "2025-05-28"
+     "history_from": "2025-05-28",
+     "vault": null
     },
     {
      "rank": 74,
@@ -3024,7 +3197,8 @@
      "t": 1.556,
      "months_to_clear": 304.2,
      "flags": [],
-     "history_from": "2024-03-06"
+     "history_from": "2024-03-06",
+     "vault": null
     },
     {
      "rank": 75,
@@ -3041,7 +3215,8 @@
      "t": 1.617,
      "months_to_clear": 90.4,
      "flags": [],
-     "history_from": "2024-07-24"
+     "history_from": "2024-07-24",
+     "vault": null
     },
     {
      "rank": 76,
@@ -3058,7 +3233,8 @@
      "t": 1.097,
      "months_to_clear": 78.5,
      "flags": [],
-     "history_from": "2026-04-15"
+     "history_from": "2026-04-15",
+     "vault": null
     },
     {
      "rank": 77,
@@ -3075,7 +3251,8 @@
      "t": 0.123,
      "months_to_clear": 32598.3,
      "flags": [],
-     "history_from": "2024-12-18"
+     "history_from": "2024-12-18",
+     "vault": null
     },
     {
      "rank": 78,
@@ -3092,7 +3269,8 @@
      "t": -0.744,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2024-04-24"
+     "history_from": "2024-04-24",
+     "vault": null
     },
     {
      "rank": 79,
@@ -3109,7 +3287,8 @@
      "t": -0.557,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-10-22"
+     "history_from": "2025-10-22",
+     "vault": null
     },
     {
      "rank": 80,
@@ -3123,7 +3302,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-02"
+     "history_from": "2026-09-02",
+     "vault": null
     },
     {
      "rank": 81,
@@ -3140,7 +3320,8 @@
      "t": 0.298,
      "months_to_clear": 3674.0,
      "flags": [],
-     "history_from": "2025-08-27"
+     "history_from": "2025-08-27",
+     "vault": null
     },
     {
      "rank": 82,
@@ -3157,7 +3338,8 @@
      "t": 0.591,
      "months_to_clear": 976.9,
      "flags": [],
-     "history_from": "2025-04-30"
+     "history_from": "2025-04-30",
+     "vault": null
     },
     {
      "rank": 83,
@@ -3174,7 +3356,8 @@
      "t": 1.295,
      "months_to_clear": 323.9,
      "flags": [],
-     "history_from": "2024-09-11"
+     "history_from": "2024-09-11",
+     "vault": null
     },
     {
      "rank": 84,
@@ -3188,7 +3371,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-08"
+     "history_from": "2026-09-08",
+     "vault": null
     },
     {
      "rank": 85,
@@ -3202,7 +3386,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-08-19"
+     "history_from": "2026-08-19",
+     "vault": null
     },
     {
      "rank": 86,
@@ -3221,7 +3406,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2023-05-24"
+     "history_from": "2023-05-24",
+     "vault": null
     },
     {
      "rank": 87,
@@ -3238,7 +3424,8 @@
      "t": -0.477,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-05-27"
+     "history_from": "2026-05-27",
+     "vault": null
     },
     {
      "rank": 88,
@@ -3255,7 +3442,8 @@
      "t": 2.302,
      "months_to_clear": 102.8,
      "flags": [],
-     "history_from": "2024-01-10"
+     "history_from": "2024-01-10",
+     "vault": null
     },
     {
      "rank": 89,
@@ -3272,7 +3460,8 @@
      "t": 2.375,
      "months_to_clear": 50.9,
      "flags": [],
-     "history_from": "2025-09-24"
+     "history_from": "2025-09-24",
+     "vault": null
     },
     {
      "rank": 90,
@@ -3289,7 +3478,8 @@
      "t": -0.084,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-03-04"
+     "history_from": "2026-03-04",
+     "vault": null
     },
     {
      "rank": 91,
@@ -3306,7 +3496,8 @@
      "t": -1.556,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-08-27"
+     "history_from": "2025-08-27",
+     "vault": null
     },
     {
      "rank": 92,
@@ -3325,7 +3516,8 @@
      "flags": [
       "pnl_outside_record"
      ],
-     "history_from": "2026-05-20"
+     "history_from": "2026-05-20",
+     "vault": null
     },
     {
      "rank": 93,
@@ -3342,7 +3534,8 @@
      "t": 0.5,
      "months_to_clear": 918.5,
      "flags": [],
-     "history_from": "2025-08-27"
+     "history_from": "2025-08-27",
+     "vault": null
     },
     {
      "rank": 94,
@@ -3359,7 +3552,8 @@
      "t": -1.485,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-02-12"
+     "history_from": "2025-02-12",
+     "vault": null
     },
     {
      "rank": 95,
@@ -3376,7 +3570,8 @@
      "t": -1.708,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2025-12-10"
+     "history_from": "2025-12-10",
+     "vault": null
     },
     {
      "rank": 96,
@@ -3393,7 +3588,8 @@
      "t": 2.548,
      "months_to_clear": 9.8,
      "flags": [],
-     "history_from": "2026-07-01"
+     "history_from": "2026-07-01",
+     "vault": null
     },
     {
      "rank": 97,
@@ -3410,7 +3606,8 @@
      "t": 0.224,
      "months_to_clear": 7129.5,
      "flags": [],
-     "history_from": "2025-07-16"
+     "history_from": "2025-07-16",
+     "vault": null
     },
     {
      "rank": 98,
@@ -3424,7 +3621,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-17"
+     "history_from": "2026-09-17",
+     "vault": null
     },
     {
      "rank": 99,
@@ -3438,7 +3636,8 @@
      "t": null,
      "months_to_clear": null,
      "flags": [],
-     "history_from": "2026-09-16"
+     "history_from": "2026-09-16",
+     "vault": null
     },
     {
      "rank": 100,
@@ -3457,7 +3656,8 @@
      "flags": [
       "one_week_majority"
      ],
-     "history_from": "2026-08-19"
+     "history_from": "2026-08-19",
+     "vault": null
     }
    ]
   }

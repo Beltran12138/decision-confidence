@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css?v=4eeb2abd">
-<link rel="stylesheet" href="/assets/site.css?v=85c04248">
+<link rel="stylesheet" href="/assets/site.css?v=edce4ce4">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/method/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/method/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/method/">
@@ -41,6 +41,9 @@
 
 <h2 id="wallet">0 · Hyperliquid 錢包</h2>
 <p>錢包檢驗的算法寫在<a href="/zh-hant/">錢包頁面</a>底部「怎麼讀一個錢包」：週收益率來自盈虧（充值提現不算收益），t 按記錄的有效自由度做小樣本校正，門檻按挑選範圍用下面第 3 節的 Bonferroni 公式抬高。</p>
+<p><strong>出入金怎麼處理。</strong>每週收益率 = 這一週 Hyperliquid 為帳戶記錄的盈虧變化 ÷ 週初的帳戶價值。Hyperliquid 的盈虧記錄不含充值和提現，所以資金進出只改變帳戶價值，永遠不會被算成盈利或虧損；但它會改變之後幾週的分母，收益率總是相對於當週開始時帳戶裏的錢來算。週初帳戶不足 $1,000 的週不計入，因為本金太小，普通的金額波動會變成極端的收益率；大部分盈虧落在這些週裏時，頁面會標出來。</p>
+<p><strong>門檻的兩種算法。</strong>Bonferroni 門檻把榜上所有帳戶當作相互獨立；交易方式相近的帳戶其實是更少的獨立下注，門檻會因此降低（Hyperliquid 按我們的粗估約 2.6，是數量級，不是測量）。兩種我們都列出。</p>
+<p><strong>不是 Deflated Sharpe Ratio。</strong>Bailey 與 López de Prado 的 DSR 用各次嘗試之間夏普比率的離散程度來折算嘗試次數，並校正偏度和厚尾。我們做的更簡單：小樣本 t 加上 best-of-N 的 Bonferroni 門檻，只需要知道 N，在嘗試之間相關時偏保守。名字裏的 Deflator 指給證據打折，不表示實現了 DSR。</p>
 
 <h2 id="open-book">1 · 開卷月數</h2>
 <p>在模型官方公佈的訓練截止日把回測窗口切開。截止日當月及之前的月份，無法排除被模型見過：模型可能已經知道當時發生了什麼。截止日之後的月份才是乾淨的。</p>

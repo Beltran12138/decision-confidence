@@ -268,6 +268,25 @@ def build_home(rows, lb):
     hp, hc = hl["boards"]["pnl"], hl.get("cohort") or {}
     with open(os.path.join(DOCS, "data", "papertrade", "frozen-2026-10-16.json"), encoding="utf-8") as f:
         pt = json.load(f)
+    scored_rows = [r for r in hp["rows"] if r["t"] is not None]
+    best = max(scored_rows, key=lambda r: r["t"])
+    n_corr = sum(r["t"] >= 2.6 for r in scored_rows)
+    bname = best.get("vault") or best.get("display") or (best["address"][:6] + "…" + best["address"][-4:])
+    if best["t"] >= hp["t_bar_best_of_n"]:
+        bpill, bsay = ("tag-green", "Clears the board bar"), "Strong enough even after allowing for being the best of {:,}.".format(hp["ranked_from"])
+    elif best["t"] >= 2:
+        bpill, bsay = ("tag-amber", "Passes one test, not the board bar"), "Strong enough if you had picked it blind. Not once you remember it is the best of {:,}.".format(hp["ranked_from"])
+    else:
+        bpill, bsay = ("tag-red", "Cannot be told apart from luck"), "Even the strongest record on the board is within what luck produces."
+    if (best.get("vault") or "").startswith("Hyperliquidity Provider"):
+        bsay += " And it is not a trader: it is Hyperliquid’s own market-making and liquidation vault."
+    elif best.get("vault"):
+        bsay += " It is a vault, not a single trader."
+    example_html = (f'<a class="example-result" href="/wallet/?a={best["address"]}"><span class="eyebrow">Example · the strongest record on the all-time PnL board</span>'
+                    f'<span class="ex-head"><b>{html.escape(bname)}</b><span class="tag {bpill[0]}">{bpill[1]}</span></span>'
+                    f'<span class="ex-say">{bsay}</span>'
+                    f'<span class="ex-num mono">t = {best["t"]:.2f} · {best["weeks"]:.0f} weeks · bar {hp["t_bar_best_of_n"]:.2f} · rank #{best["rank"]} by PnL</span>'
+                    f'<span class="ex-more">See the full check →</span></a>')
     la, ai = lb["boards"]
     feed = [
         ("2026-10-14", "Hyperliquid leaderboard, rescored", f"Of the all-time PnL top 100, {hp['n_t_ge_bar']} of {hp['scored']} clear the bar for being picked from {hp['ranked_from']:,} accounts. 200 wallets frozen for a forward record.", "/wallet/", "Wallets"),
@@ -302,6 +321,7 @@ def build_home(rows, lb):
   <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
  </form>
  {ELSEWHERE_EN}
+ {example_html}
  <div class="instrument">
   <div class="instrument-head"><span class="t"><b style="color:var(--ink);font-weight:550">Hyperliquid, all-time PnL top 100</b> · each dot is one wallet’s t-statistic · {hl['fetched'][:10]}</span><a class="small" href="/wallet/">Rescored board →</a></div>
   <div class="instrument-body chart" style="border:0;border-radius:0" id="hero-chart"></div>
@@ -312,6 +332,7 @@ def build_home(rows, lb):
    <div><b>{hc.get('members', 0)}</b><span>wallets frozen {hc.get('frozen_at', '')[:10]}, scored from then on</span></div>
   </div>
  </div>
+ <p class="muted small" style="margin-top:12px;max-width:760px">The {hp['t_bar_best_of_n']:.2f} bar treats all {hp['ranked_from']:,} accounts as independent. Accounts that trade alike are fewer independent bets; our rough estimate puts the bar near 2.6, which {n_corr} of {hp['scored']} clear. Either way, a single test needs 2, and {hp['n_t_ge_2']} of {hp['scored']} pass that. <a href="/method/#wallets">How the bar is set</a>.</p>
 </div>
 
 {boards_html(hl)}
@@ -353,7 +374,7 @@ def build_home(rows, lb):
 """ + footer("""<script src="/assets/lb.js"></script>
 <script>document.querySelectorAll('.hero-tabs button').forEach(b=>b.addEventListener('click',()=>{const f=document.getElementById('hcheck'),i=f.querySelector('input');
  document.querySelectorAll('.hero-tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));f.action=b.dataset.act;i.placeholder=b.dataset.ph;i.setAttribute('aria-label',b.dataset.ph);i.focus();}));</script>
-<script>LB.load('/data/hl/latest.json').then(d=>{const p=d.boards.pnl,rows=p.rows.filter(r=>r.t!=null).map(r=>({t:r.t,rank:r.rank,name:r.address.slice(0,6)+'…'+r.address.slice(-4)}));
+<script>LB.load('/data/hl/latest.json').then(d=>{const p=d.boards.pnl,rows=p.rows.filter(r=>r.t!=null).map(r=>({t:r.t,rank:r.rank,name:r.vault?((r.vault.match(/\(([^)]+)\)/)||[0,r.vault])[1]+' vault'):r.address.slice(0,6)+'…'+r.address.slice(-4)}));
  const best=rows.reduce((a,r)=>r.t>a.t?r:a,rows[0]);
  document.getElementById('hero-chart').innerHTML=LB.strip({board:p.board,rows,entries:p.ranked_from,t_bar_best_of_n:p.t_bar_best_of_n,max_t_rank:best.rank},{h:170});});</script>
 """)
@@ -488,6 +509,12 @@ t      = Sharpe × √(years of data)</div>
 <p>“Nobody is significant” says little on its own, so each board also gets a date: how many months of clean, forward history the top entry would need to clear the best-of-N bar, if its true Sharpe were S.</p>
 <div class="eq">months to a winner = (bar(N) / S)² × 12</div>
 <p>We report it at S = 5 and S = 2, and at the closest entry’s observed Sharpe. These are conditional statements, not forecasts.</p>
+
+<h2 id="wallets">5 · Wallets: returns, deposits and the bar</h2>
+<p>A wallet’s weekly return is the change in the PnL Hyperliquid records for the account over the week, divided by the account value at the start of that week. Hyperliquid’s PnL history excludes deposits and withdrawals, so money moving in or out changes the account value but is never counted as a gain or a loss. It does change the denominator for the weeks after it: a return is always measured against the money that was in the account when the week began. Weeks that start with under $1,000 in the account are skipped, because a small base turns ordinary dollar swings into extreme returns; when most of a wallet’s PnL falls in skipped weeks, the page says so.</p>
+<p>t is computed from those weekly returns with a Student’s t correction for the record’s effective length, then put on the normal scale. A wallet found on a leaderboard of N accounts needs bar(N) from section 3. That bar treats the N accounts as independent; accounts that trade alike are fewer independent bets, which would lower it (about 2.6 for Hyperliquid by our rough estimate, an order of magnitude rather than a measurement). We show both.</p>
+<p><strong>Not the Deflated Sharpe Ratio.</strong> Bailey &amp; López de Prado’s DSR deflates a Sharpe ratio for the number of trials using the spread of Sharpe ratios across those trials, and adjusts for skew and fat tails. We do something simpler: a small-sample t and a Bonferroni bar for best-of-N, which needs only N and is conservative when the trials are correlated. The name is about deflating evidence, not a claim to implement DSR.</p>
+<p>What a wallet check counts: perps and the spot account, including HIP-4 outcome contracts; not HyperEVM. Vaults are scored on the vault’s own PnL, before the leader’s profit share, and labelled as vaults on the boards.</p>
 
 <h2 id="principles">Principles</h2>
 <ul>
@@ -652,7 +679,8 @@ def build_wallet():
         neg = " neg" if (r["t"] or 0) < 0 else ""
         dag = "<sup>†</sup>" if "pnl_outside_record" in r["flags"] else ""
         rows += (f'<tr><td class="r">{r["rank"]}</td><td><a class="mono" href="/wallet/?a={r["address"]}">{short(r["address"])}</a>'
-                 f'{" · " + html.escape(r["display"]) if r.get("display") else ""}</td><td class="r">{money(r["pnl_all_time"])}</td>'
+                 f'{" · " + html.escape(r["display"]) if r.get("display") else ""}'
+                 f'{" <span class=" + chr(34) + "tag tag-grey" + chr(34) + ">vault · " + html.escape(r["vault"]) + "</span>" if r.get("vault") else ""}</td><td class="r">{money(r["pnl_all_time"])}</td>'
                  f'<td class="r">{r["weeks"] if r["weeks"] else "—"}</td><td class="r">{t}{dag}</td>'
                  f'<td><span class="mbar"><span class="track"><span class="fill{neg}" style="width:{w:.1f}%"></span>'
                  f'<span class="t2" style="left:{2 / pnl["t_bar_best_of_n"] * 100:.1f}%"></span></span></span></td></tr>')

@@ -67,6 +67,21 @@ def fetch_portfolio(cache, addr, refresh):
         return dict(json.load(f))
 
 
+def fetch_vault(cache, addr, refresh):
+    """The vault's name if the address is a Hyperliquid vault, else None (vaultDetails answers null)."""
+    p = os.path.join(cache, "vault", addr + ".json")
+    if refresh or not os.path.exists(p):
+        body = json.dumps({"type": "vaultDetails", "vaultAddress": addr})
+        data = curl(["-X", "POST", INFO_URL, "-H", "Content-Type: application/json", "-d", body])
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        with open(p, "wb") as f:
+            f.write(data)
+        time.sleep(0.25)
+    with open(p, encoding="utf-8") as f:
+        d = json.load(f)
+    return d.get("name") if isinstance(d, dict) else None
+
+
 def count_vaults(cache, refresh):
     """How many vaults Hyperliquid lists, open and closed: the N for a vault picked off the vault page.
 
@@ -131,11 +146,17 @@ def main():
             except Exception as ex:  # one bad account should not sink the board
                 print("skip", addr, ex, file=sys.stderr)
                 rets, s, e, fl = [], None, None, []
+            try:
+                vault = fetch_vault(a.cache, addr, a.refresh)
+            except Exception as ex:
+                print("vault lookup", addr, ex, file=sys.stderr)
+                vault = None
             sc = score(rets)
             out.append({
                 "rank": rank,
                 "address": addr,
                 "display": r.get("displayName"),
+                "vault": vault,
                 "account_value": round(float(r["accountValue"]), 2),
                 "pnl_all_time": round(num(r, "allTime", "pnl"), 2),
                 "roi_30d": round(num(r, "month", "roi"), 4),

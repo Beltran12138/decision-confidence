@@ -216,3 +216,11 @@ h1 code,h2 code,h3 code,.row-title code{font-size:.78em;padding:2px 7px;vertical
 .callout.wnew:hover{border-color:var(--faint)}
 
 @media (max-width:640px){.data.boards .hm{display:none}.data.boards td,.data.boards th{white-space:normal;padding:10px}}
+/* ---------- home: worked example result ---------- */
+.example-result{display:block;max-width:640px;margin:22px 0 4px;padding:16px 18px;border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:6px;background:var(--surface);text-decoration:none;color:inherit}
+.example-result:hover{border-color:var(--ink-2)}
+.example-result .eyebrow{display:block}
+.example-result .ex-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:10px 0 6px;font:600 18px/1.3 var(--serif)}
+.example-result .ex-say{display:block;color:var(--ink-2);font-size:15px}
+.example-result .ex-num{display:block;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.example-result .ex-more{display:block;margin-top:8px;font-size:13.5px;color:var(--ink)}

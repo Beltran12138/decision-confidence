@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css?v=4eeb2abd">
-<link rel="stylesheet" href="/assets/site.css?v=85c04248">
+<link rel="stylesheet" href="/assets/site.css?v=edce4ce4">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/method/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/method/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/method/">
@@ -63,6 +63,12 @@ t      = Sharpe × √(years of data)</div>
 <p>“Nobody is significant” says little on its own, so each board also gets a date: how many months of clean, forward history the top entry would need to clear the best-of-N bar, if its true Sharpe were S.</p>
 <div class="eq">months to a winner = (bar(N) / S)² × 12</div>
 <p>We report it at S = 5 and S = 2, and at the closest entry’s observed Sharpe. These are conditional statements, not forecasts.</p>
+
+<h2 id="wallets">5 · Wallets: returns, deposits and the bar</h2>
+<p>A wallet’s weekly return is the change in the PnL Hyperliquid records for the account over the week, divided by the account value at the start of that week. Hyperliquid’s PnL history excludes deposits and withdrawals, so money moving in or out changes the account value but is never counted as a gain or a loss. It does change the denominator for the weeks after it: a return is always measured against the money that was in the account when the week began. Weeks that start with under $1,000 in the account are skipped, because a small base turns ordinary dollar swings into extreme returns; when most of a wallet’s PnL falls in skipped weeks, the page says so.</p>
+<p>t is computed from those weekly returns with a Student’s t correction for the record’s effective length, then put on the normal scale. A wallet found on a leaderboard of N accounts needs bar(N) from section 3. That bar treats the N accounts as independent; accounts that trade alike are fewer independent bets, which would lower it (about 2.6 for Hyperliquid by our rough estimate, an order of magnitude rather than a measurement). We show both.</p>
+<p><strong>Not the Deflated Sharpe Ratio.</strong> Bailey &amp; López de Prado’s DSR deflates a Sharpe ratio for the number of trials using the spread of Sharpe ratios across those trials, and adjusts for skew and fat tails. We do something simpler: a small-sample t and a Bonferroni bar for best-of-N, which needs only N and is conservative when the trials are correlated. The name is about deflating evidence, not a claim to implement DSR.</p>
+<p>What a wallet check counts: perps and the spot account, including HIP-4 outcome contracts; not HyperEVM. Vaults are scored on the vault’s own PnL, before the leader’s profit share, and labelled as vaults on the boards.</p>
 
 <h2 id="principles">Principles</h2>
 <ul>
