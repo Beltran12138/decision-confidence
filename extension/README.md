@@ -8,6 +8,8 @@ Shows whether a trader's record can be told apart from luck, on the pages where 
 
 A small panel shows the verdict, t, the bar for having been picked from the board, and how much more record it would need. The toolbar popup checks any address or ID you paste, and right-clicking a selected address or a link opens the full check.
 
+**Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/evidence-deflator/fbhanjlioldbpgmncefioidcpkdhjbhn)
+
 ## Privacy
 
 Records are read from each exchange's own public API. Nothing about the trader you look at is sent to evidencedeflator.com; the extension fetches only the daily board sizes (`/data/hl/latest.json`). No analytics, no account.
@@ -16,7 +18,7 @@ Records are read from each exchange's own public API. Nothing about the trader y
 
 The same estimator as the [wallet check](https://evidencedeflator.com/wallet/) (`hl.js` is copied in from `docs/assets/` by `tools/build_extension.py`). Binance and OKX publish a cumulative return series without documenting its base; it is compounded into weekly returns, as in [audit 007](https://evidencedeflator.com/audits/007-cex-copy-trading.html).
 
-## Build and install (until it is on the Chrome Web Store)
+## Build from source
 
 ```
 python tools/build_extension.py      # copies hl.js, draws the icons, writes dist/evidence-deflator-extension-<version>.zip

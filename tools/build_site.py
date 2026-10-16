@@ -18,9 +18,9 @@ DOCS = os.path.join(ROOT, "docs")
 SITE = "https://evidencedeflator.com"
 REPO = "https://github.com/Beltran12138/evidence-deflator"
 TG_BOT = "https://t.me/SkillOrLuckBot"
-EXT_URL = REPO + "/tree/main/extension"  # switch to the Chrome Web Store page once the listing is approved
+EXT_URL = "https://chromewebstore.google.com/detail/evidence-deflator/fbhanjlioldbpgmncefioidcpkdhjbhn"
 ELSEWHERE_EN = (f'<p class="muted small elsewhere">Also on <a href="{TG_BOT}" rel="noopener">Telegram, @SkillOrLuckBot</a> (send an address, get the verdict), '
-                f'and as a <a href="{EXT_URL}" rel="noopener">Chrome extension</a> that shows it on Hyperliquid, Binance and OKX copy-trading pages (in Chrome Web Store review; install from GitHub for now).</p>')
+                f'and as a <a href="{EXT_URL}" rel="noopener">Chrome extension</a> that shows it on Hyperliquid, Binance and OKX copy-trading pages.</p>')
 ISSUE_AUDIT = REPO + "/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A"
 VERSION = "0.2.0"
 # Cloudflare Web Analytics site token (public, cookie-less page counts). Empty = no beacon.
