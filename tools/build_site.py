@@ -223,6 +223,44 @@ def build_audits():
 
 # ---------------------------------------------------------------- home
 
+def boards_html(hl):
+    """One row per public board we have rescored: how many of its top clear the bar for being picked from it."""
+    def load(*parts):
+        try:
+            with open(os.path.join(DOCS, "data", *parts), encoding="utf-8") as f:
+                return json.load(f)
+        except OSError:
+            return None
+    hp, hr = hl["boards"]["pnl"], hl["boards"].get("roi30") or {}
+    bn, ok, pm = load("cex", "binance-2026-10-15.json"), load("cex", "okx-2026-10-15.json"), load("cex", "polymarket-2026-10-15.json")
+    pt = load("papertrade", "frozen-2026-10-16.json")
+    rows = [("Hyperliquid", "all-time PnL top 100", f"{hp['ranked_from']:,} accounts", hp["t_bar_best_of_n"], f"{hp['n_t_ge_bar']} / {hp['scored']}", f"{hp['n_t_ge_2']}", "/wallet/", "Check any address")]
+    if hr:
+        rows.append(("Hyperliquid", "30-day ROI top 100", f"{hr['ranked_from']:,} accounts", hr["t_bar_best_of_n"], f"{hr['n_t_ge_bar']} / {hr['scored']}", f"{hr['n_t_ge_2']}", "/wallet/", "Check any address"))
+    if bn:
+        rows.append(("Binance", "copy trading, 90-day PnL top 100", f"{bn['listed']:,} portfolios", bn["bar_best_of_n"], f"{bn['t_ge_bar']} / {bn['scored']}", f"{bn['t_ge_2']}", "/audits/007-cex-copy-trading.html", "Audit 007"))
+    if ok:
+        rows.append(("OKX", "copy trading, PnL top 100", f"{ok['listed']:,}+ traders", ok["bar_best_of_n"], f"{ok['daily365_t_ge_bar']} / {ok['scored']}", f"{ok['daily365_t_ge_2']}", "/audits/007-cex-copy-trading.html", "Audit 007"))
+    if pm:
+        rows.append(("Polymarket", "all-time profit top 50", f"{pm['n_floor']:,}+ wallets", pm["bar_best_of_n_floor"], f"{pm['z_cluster_ge_bar']} / {pm['complete_and_scored']}", f"{pm['z_cluster_ge_2']}", "/audits/008-polymarket-profit-board.html", "Audit 008"))
+    rows.append(("Alpha Arena", "season 1, 6 AI models", "6 models", 2.67, "0 / 6", "0", "/audits/006-alpha-arena-season-1.html", "Audit 006"))
+    cell = lambda v, d, u: f'<td><a href="{u}"><b>{v}</b></a><span class="muted small" style="display:block">{d}</span></td>'
+    body = "".join(f'<tr>{cell(v, d, u)}<td class="r hm">{n}</td><td class="r mono hm">{b:.2f}</td>'
+                   f'<td class="r mono"><b class="c-accent">{c}</b></td><td class="r mono">{s1}</td></tr>'
+                   for v, d, n, b, c, s1, u, lbl in rows)
+    if pt:
+        pt_n, pt_day = f"{pt['board_rows']:,}", pt["frozen_at"][:10]
+        body += (f'<tr>{cell("Papertrade", "PnL top 100, up to 1000x", "/audits/010-papertrade-leaderboard.html")}<td class="r hm">{pt_n} accounts</td>'
+                 f'<td class="r mono hm">—</td><td class="r small" colspan="2">no return series yet; frozen {pt_day}, readings 10-23 and 10-30</td></tr>')
+    return f"""
+<section id="boards"><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Every board we have rescored</div><h2 style="margin-top:12px">Ranked by profit. None of the top clears the bar for being picked from the board.</h2>
+ <p>Each row is a public leaderboard. "Clear the bar" counts records strong enough to stand out from everyone they were picked from; "pass one test" counts those that would pass if you had picked them blind (t ≥ 2).</p></div><a class="more" href="/audits/">All audits →</a></div>
+ <div class="table-wrap"><table class="data boards"><thead><tr><th>Board</th><th class="r hm">Picked from</th><th class="r hm">Bar</th><th class="r">Clear the bar</th><th class="r">Pass one test</th></tr></thead><tbody>{body}</tbody></table></div>
+ <p class="muted small" style="margin-top:10px">Hyperliquid rows are rebuilt daily; the others are as of the audit date. Binance and OKX traders can be checked one by one with the <a href="{EXT_URL}" rel="noopener">Chrome extension</a>; Hyperliquid wallets on this site or with <a href="{TG_BOT}" rel="noopener">@SkillOrLuckBot</a>.</p>
+</div></section>"""
+
+
 def build_home(rows, lb):
     with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
         hl = json.load(f)
@@ -271,6 +309,7 @@ def build_home(rows, lb):
  </div>
 </div>
 
+{boards_html(hl)}
 <section><div class="container">
  <div class="sec-head"><div><div class="eyebrow">For AI backtests · where the method started</div><h2 style="margin-top:12px">Three numbers, before any performance figure</h2>
  <p>Each is plain arithmetic on inputs a project can state in one line. None needs the strategy’s code. <a href="/check/">Check a backtest →</a></p></div><a class="more" href="/method/">Read the method →</a></div>
