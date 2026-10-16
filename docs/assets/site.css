@@ -224,3 +224,4 @@ h1 code,h2 code,h3 code,.row-title code{font-size:.78em;padding:2px 7px;vertical
 .example-result .ex-say{display:block;color:var(--ink-2);font-size:15px}
 .example-result .ex-num{display:block;margin-top:8px;font-size:12.5px;color:var(--muted)}
 .example-result .ex-more{display:block;margin-top:8px;font-size:13.5px;color:var(--ink)}
+.data.memo-table td,.data.memo-table th{white-space:normal}

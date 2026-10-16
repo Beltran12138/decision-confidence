@@ -112,7 +112,7 @@ def footer(scripts=""):
   <p style="margin-top:14px;max-width:340px">Whether a trading record can be told apart from luck, once you allow for how it was picked. Open source.</p></div>
  <div><h4>Product</h4><ul><li><a href="/wallet/">Hyperliquid check</a></li><li><a href="/polymarket/">Polymarket check</a></li><li><a href="{TG_BOT}">Telegram bot</a></li><li><a href="{EXT_URL}">Chrome extension</a></li><li><a href="/audits/">Audits</a></li><li><a href="/leaderboard/">AI trading leaderboard</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API and MCP</a></li></ul></div>
  <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/q/hyperliquid-trader-skill-or-luck/">Skill or luck?</a></li><li><a href="/q/how-many-months-of-backtest/">How many months?</a></li><li><a href="/q/why-leaderboard-winner-is-not-evidence/">Why #1 is not evidence</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
- <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></div>
+ <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="/memo/sample/">Sample memo</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></div>
 </div>
 <div class="foot-note"><span>Open source · MIT · v{VERSION}</span><span>“Cannot be ruled out as seen” is the strongest claim we make about a model’s training data.</span></div>
 </div></footer>
@@ -364,7 +364,7 @@ def build_home(rows, lb):
 <section><div class="container">
  <div class="sec-head"><div><div class="eyebrow">Who it is for</div><h2 style="margin-top:12px">One check, three places it belongs</h2></div></div>
  <div class="who">
-  <div><h3>Allocators and depositors</h3><p>Before money follows a trader, a vault or an AI trading project: a one-page report on how much of the record counts, what is underpowered and what is missing.</p><p class="act"><a href="{ISSUE_AUDIT}">Request an audit →</a></p></div>
+  <div><h3>Allocators and depositors</h3><p>Before money follows a trader, a vault or an AI trading project: a one-page report on how much of the record counts, what is underpowered and what is missing.</p><p class="act"><a href="/memo/sample/">See a sample memo →</a> · <a href="{ISSUE_AUDIT}">Request one</a></p></div>
   <div><h3>Agents and trading tools</h3><p>One call before an agent recommends, ranks or copies a trader, or reports a backtest. Free, no key, the same estimator as this site.</p><p class="act"><a href="/api/">API and MCP →</a></p></div>
   <div><h3>Platforms that compete on trust</h3><p>Show an evidence score next to PnL. A score nobody can buy, not even the trader being scored. The Chrome extension shows it on three venues today.</p><p class="act"><a href="{EXT_URL}">Chrome extension →</a></p></div>
  </div>
@@ -828,6 +828,76 @@ def build_polymarket():
     write("polymarket/index.html", page)
 
 
+def build_memo_sample():
+    """/memo/sample/: the one-page memo format, shown on one public record (numbers from tools/memo_sample.py)."""
+    src = "hlp-2026-10-16.json"
+    with open(os.path.join(DOCS, "data", "memo", src), encoding="utf-8") as f:
+        m = json.load(f)
+    with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
+        hl = json.load(f)
+    sc, v, b = m["score"], m["vault"] or {}, m["bars"]
+    kids = set(((v.get("relationship") or {}).get("data") or {}).get("childAddresses") or [])
+    on_board = [r for r in hl["boards"]["pnl"]["rows"] if r["address"] in kids]
+    kid_list = ", ".join(f'#{r["rank"]} {html.escape(r["vault"] or (r["address"][:6] + "…" + r["address"][-4:]))}' for r in on_board)
+    cohort = hl.get("cohort") or {}
+    a = m["address"]
+    yes, no = '<span class="c-pos">clears</span>', '<span class="c-accent">does not clear</span>'
+    mm = m["months_more_at_this_sharpe"]["board_independent"]
+    page = head("Sample evidence memo · Hyperliquidity Provider (HLP) · Evidence Deflator",
+                "What a one-page evidence memo looks like, on one public record: Hyperliquid's HLP vault, the strongest record on the all-time PnL board.",
+                "/memo/sample/") + header("") + f"""
+<main><div class="container doc" style="max-width:820px;padding-block:56px 72px">
+ <div class="eyebrow"><span class="dot"></span>Sample evidence memo · {m['fetched'][:10]}</div>
+ <h1 style="margin-top:14px">Hyperliquidity Provider (HLP)</h1>
+ <p class="muted small mono" style="margin-top:10px">vault <a href="/wallet/?a={a}">{a}</a> · data from api.hyperliquid.xyz, fetched {m['fetched'].replace('T', ' ').replace('+00:00', ' UTC')} · <a href="/data/memo/{src}">raw numbers</a></p>
+
+ <div class="example-result" style="max-width:none;margin-top:28px;cursor:default">
+  <span class="eyebrow">The question</span>
+  <span class="ex-say" style="margin-top:8px">A depositor is looking at HLP because it is the strongest record on Hyperliquid’s all-time PnL board. How much of that record counts as evidence?</span>
+  <span class="ex-head" style="margin-top:16px"><b>Short answer</b><span class="tag tag-amber">Passes one test, not the board bar</span></span>
+  <span class="ex-say">Strong for a record picked blind: t = {sc['t']:.2f} over {sc['weeks']:.0f} weeks. Not yet strong enough for the best of {m['board_n']:,} accounts (bar {b['board_independent']:.2f}); at its own Sharpe of {sc['sharpe']:.2f} it needs about {mm:.0f} more months. And what it shows is not a trader’s skill: it is the exchange’s own vault, which earns from market making, liquidations and platform fees.</span>
+ </div>
+
+ <h2 style="margin-top:44px">1 · What the record is</h2>
+ <ul>
+  <li>A Hyperliquid vault, described by Hyperliquid as: “{html.escape(v.get('description') or '')}” Deposits are {'open' if v.get('allow_deposits') else 'closed'}. The leader holds {100 * (v.get('leader_fraction') or 0):.2f}% and takes {100 * (v.get('leader_commission') or 0):.0f}% of depositors’ profits.</li>
+  <li>It is the parent of {len(kids)} child vaults. {len(on_board)} of them are also on the all-time PnL top 100 ({kid_list}), so that board shows one operation {len(on_board) + 1} times.</li>
+  <li>History {m['history_from']} to {m['history_to']}: {sc['intervals']} scored intervals covering {sc['weeks']:.1f} weeks. Weeks with no new sample in Hyperliquid’s history are merged into the next interval rather than counted as flat.</li>
+  <li>Coverage: HLP trades on HyperCore, so its whole PnL is in the record Hyperliquid keeps; the HyperEVM gap noted on the wallet page does not apply. Deposits and withdrawals change the account value, never the PnL.</li>
+ </ul>
+
+ <h2 style="margin-top:36px">2 · The numbers</h2>
+ <div class="table-wrap"><table class="data memo-table">
+  <thead><tr><th>Measure</th><th class="r">Value</th><th>Reading</th></tr></thead>
+  <tbody>
+   <tr><td>t (Student’s t, {sc['dof']:.0f} effective degrees of freedom)</td><td class="r mono">{sc['t']:.2f}</td><td>Annualised Sharpe {sc['sharpe']:.2f} × √{sc['weeks'] / 52:.1f} years, adjusted for record length</td></tr>
+   <tr><td>Bar for a record picked blind</td><td class="r mono">{b['single']:.2f}</td><td>{yes if m['clears']['single'] else no}</td></tr>
+   <tr><td>Bar for the best of {m['board_n']:,}, accounts treated as independent</td><td class="r mono">{b['board_independent']:.2f}</td><td>{yes if m['clears']['board_independent'] else no}; about {mm:.0f} more months at this Sharpe</td></tr>
+   <tr><td>Same bar, rough allowance for accounts that trade alike</td><td class="r mono">≈&nbsp;{b['board_correlated_rough']:.1f}</td><td>{yes if m['clears']['board_correlated_rough'] else no}; an order of magnitude, not a measurement</td></tr>
+  </tbody></table></div>
+
+ <h2 style="margin-top:36px">3 · What t cannot see</h2>
+ <ul>
+  <li><strong>Shape of the record.</strong> {100 * m['weeks_positive_share']:.0f}% of intervals were positive. The worst three were {', '.join(f'{100 * x:.1f}%' for x in m['worst_weeks'])}; the deepest drawdown, compounding the intervals, was {abs(100 * m['max_drawdown_compounded']):.1f}%. Skew is {m['skew']:+.1f}: the largest moves were gains. That is not the shape of a strategy that wins small and loses big, at least so far.</li>
+  <li><strong>The tail that has not happened.</strong> A vault that takes over liquidated positions is on the other side when prices gap. The worst case it is exposed to need not appear in {sc['weeks'] / 52:.1f} years of history, and t cannot price it.</li>
+  <li><strong>Where the returns come from.</strong> Fees and liquidation flow are income from the venue’s own activity. For a depositor the question is less whether someone is skilled than whether that income continues, and on what terms.</li>
+ </ul>
+
+ <h2 style="margin-top:36px">4 · What would change the verdict</h2>
+ <ul>
+  <li>More record: at a steady Sharpe of {sc['sharpe']:.2f}, about {mm:.0f} more months to clear the best-of-{m['board_n']:,} bar.</li>
+  <li>The forward record: HLP is one of the {cohort.get('members', 200)} wallets frozen on {cohort.get('frozen_at', '')[:10]}. Its score on the record after the freeze is published daily from {cohort.get('first_readings', '')}.</li>
+  <li>A drawdown well beyond the {abs(100 * m['max_drawdown_compounded']):.1f}% seen so far, which would show the tail described above.</li>
+ </ul>
+
+ <h2 style="margin-top:36px">5 · Method and reproducibility</h2>
+ <p>Same estimator as the <a href="/wallet/?a={a}">wallet check</a>; definitions in the <a href="/method/#wallets">method</a>. To recompute: <code>python tools/memo_sample.py {a} out.json --board-n {m['board_n']}</code> from <a href="{REPO}">the repository</a>.</p>
+ <p class="muted small" style="margin-top:28px;border-top:1px solid var(--rule);padding-top:16px">This page shows the format of a one-page evidence memo, on a public record. It is not investment advice. HLP was not consulted and paid nothing; we never take money from the party being scored.</p>
+</div></main>
+""" + footer()
+    write("memo/sample/index.html", page)
+
+
 def build_404():
     page = head("Not found · Evidence Deflator", "Page not found.", "/404.html") + header("") + """
 <main class="container page-head" style="min-height:50vh"><div class="eyebrow"><span class="dot"></span>404</div>
@@ -1079,6 +1149,7 @@ def main():
     build_api()
     build_wallet()
     build_polymarket()
+    build_memo_sample()
     build_404()
     build_questions()
     build_legal()
