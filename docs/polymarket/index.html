@@ -63,7 +63,7 @@
  <p><strong>One question per position.</strong> A share bought at price p pays $1 if it wins. With no skill, it wins with probability p, so the edge, outcome minus price paid, averages zero. Someone who keeps buying at prices that turn out too low has a positive edge, and z measures how far that is from chance.</p>
  <p><strong>Bets on one event are one bet.</strong> Ten positions on the same election share one outcome. z sums the edge within each event before comparing it with chance, so a wallet cannot look strong by splitting one view into many positions.</p>
  <p><strong>The losers Polymarket lists elsewhere.</strong> A losing share is worth nothing, so many are never redeemed. They stay among open positions, not closed ones. Counting only closed positions made 11 of the profit top 50 look like stars in <a href="/audits/008-polymarket-profit-board.html">audit 008</a>; this page counts both.</p>
- <p><strong>Two bars.</strong> z ≥ 2 is the usual bar for a wallet you came to with no prior selection. A wallet found on the profit board was picked from at least 10,050, so it needs z ≥ 4.59 (a floor: the board reports no total). The true number is far larger: a username search on the board returns a wallet ranked 450,853, which would put the bar at 5.33. Of the top 50 in audit 008, none cleared even the lower bar; the highest z was 2.40.</p>
+ <p><strong>Two bars.</strong> z ≥ 2 is the usual bar for a wallet you came to with no prior selection. A wallet found on the profit board was picked from at least 450,853 wallets, so it needs z ≥ 5.33. That is a floor: the board reports no total, and a username search on it returns a wallet ranked 450,853. Of the top 50 in audit 008, none came close; the highest z was 2.40.</p>
  <p><strong>What z cannot see.</strong> Position sizes (each position counts once; a few huge winning bets can make the money while the picks overall are ordinary), and whether the wallet traded on information others did not have.</p>
  <p class="muted small">Not investment advice. Public data from <code>data-api.polymarket.com</code>, fetched by your browser; the wallet is never sent to us, and each check adds one tally with no address. Method: <a href="/audits/008-polymarket-profit-board.html">audit 008</a>, <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/tools/audit_polymarket.py"><code>tools/audit_polymarket.py</code></a>.</p>
 </div></section>
@@ -80,7 +80,7 @@
 </div></footer>
 <script src="/assets/site.js"></script>
 <script src="/assets/site.js"></script>
-<script>window.PM = {"N": 10050, "bar": 4.59, "selfPath": "/polymarket/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=en"};</script>
-<script src="/assets/polymarket.js?v=5e135803"></script>
+<script>window.PM = {"N": 450853, "bar": 5.33, "selfPath": "/polymarket/", "countUrl": "https://api.evidencedeflator.com/api/count?k=pm&l=en"};</script>
+<script src="/assets/polymarket.js?v=62d4a134"></script>
 </body>
 </html>

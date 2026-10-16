@@ -77,7 +77,7 @@ const json = (body, status = 200) =>
 
 // One data point per completed check, for a daily count: which surface ran it and, for the web
 // page, its language. No address, no IP, nothing about the caller (see /privacy/).
-const KINDS = new Set(['web', 'api', 'mcp', 'tg']), LANGS = new Set(['en', 'zh-hans', 'zh-hant', '']);
+const KINDS = new Set(['web', 'pm', 'api', 'mcp', 'tg']), LANGS = new Set(['en', 'zh-hans', 'zh-hant', '']);
 function count(env, kind, lang = '') {
   if (!env.COUNTS || !KINDS.has(kind) || !LANGS.has(lang)) return;
   try { env.COUNTS.writeDataPoint({blobs: [kind, lang], doubles: [1], indexes: [kind]}); } catch {}
@@ -185,9 +185,10 @@ async function handle(request, env = {}) {
     }
   }
 
-  // The wallet pages check in the browser; after showing a verdict they report it here (kind and language only).
+  // The wallet pages (Hyperliquid and Polymarket) check in the browser; after showing a verdict they report it here (kind and language only).
   if (url.pathname === '/api/count' && request.method === 'POST') {
-    if (url.searchParams.get('k') === 'web') count(env, 'web', url.searchParams.get('l') || '');
+    const k = url.searchParams.get('k');  // 'web' = Hyperliquid wallet page, 'pm' = Polymarket wallet page
+    if (k === 'web' || k === 'pm') count(env, k, url.searchParams.get('l') || '');
     return new Response(null, {status: 204, headers: CORS});
   }
 

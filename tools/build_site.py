@@ -242,7 +242,8 @@ def boards_html(hl):
     if ok:
         rows.append(("OKX", "copy trading, PnL top 100", f"{ok['listed']:,}+ traders", ok["bar_best_of_n"], f"{ok['daily365_t_ge_bar']} / {ok['scored']}", f"{ok['daily365_t_ge_2']}", "/audits/007-cex-copy-trading.html", "Audit 007"))
     if pm:
-        rows.append(("Polymarket", "all-time profit top 50", f"{pm['n_floor']:,}+ wallets", pm["bar_best_of_n_floor"], f"{pm['z_cluster_ge_bar']} / {pm['complete_and_scored']}", f"{pm['z_cluster_ge_2']}", "/polymarket/", "Check any wallet"))
+        pn, pb = pm.get("n_floor_revised_2026_10_16", pm["n_floor"]), pm.get("bar_best_of_n_floor_revised", pm["bar_best_of_n_floor"])
+        rows.append(("Polymarket", "all-time profit top 50", f"{pn:,}+ wallets", pb, f"{pm['z_cluster_ge_bar']} / {pm['complete_and_scored']}", f"{pm['z_cluster_ge_2']}", "/polymarket/", "Check any wallet"))
     rows.append(("Alpha Arena", "season 1, 6 AI models", "6 models", 2.67, "0 / 6", "0", "/audits/006-alpha-arena-season-1.html", "Audit 006"))
     cell = lambda v, d, u: f'<td><a href="{u}"><b>{v}</b></a><span class="muted small" style="display:block">{d}</span></td>'
     body = "".join(f'<tr>{cell(v, d, u)}<td class="r hm">{n}</td><td class="r mono hm">{b:.2f}</td>'
@@ -738,14 +739,14 @@ def build_polymarket():
     """Polymarket wallet check: audit 008's per-position test, run in the browser (assets/polymarket.js)."""
     with open(os.path.join(DOCS, "data", "cex", "polymarket-2026-10-15.json"), encoding="utf-8") as f:
         pm = json.load(f)
-    n, bar_ = pm["n_floor"], pm["bar_best_of_n_floor"]
+    n, bar_ = pm.get("n_floor_revised_2026_10_16", pm["n_floor"]), pm.get("bar_best_of_n_floor_revised", pm["bar_best_of_n_floor"])
     rows = {r["name"]: r for r in pm["rows"]}
     examples = [("#1 by all-time profit", rows["Theo4"]["wallet"]),
                 ("Looks like a star on closed positions only", rows["DrPufferfish"]["wallet"]),
                 ("Highest z in the top 50", rows["asparagus2012"]["wallet"])]
     ex = "".join(f'<button class="linkbtn" data-ex="{a}">{html.escape(t)}</button>' for t, a in examples)
     data = json.dumps({"N": n, "bar": bar_, "selfPath": "/polymarket/",
-                       "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=en"})
+                       "countUrl": "https://api.evidencedeflator.com/api/count?k=pm&l=en"})
     page = head("Polymarket wallet check · Evidence Deflator",
                 "Paste a Polymarket wallet or username and see whether its record of picks can be told apart from luck, position by position, counting the losers Polymarket lists separately.",
                 "/polymarket/") + header("wallet") + f"""
@@ -785,7 +786,7 @@ def build_polymarket():
  <p><strong>One question per position.</strong> A share bought at price p pays $1 if it wins. With no skill, it wins with probability p, so the edge, outcome minus price paid, averages zero. Someone who keeps buying at prices that turn out too low has a positive edge, and z measures how far that is from chance.</p>
  <p><strong>Bets on one event are one bet.</strong> Ten positions on the same election share one outcome. z sums the edge within each event before comparing it with chance, so a wallet cannot look strong by splitting one view into many positions.</p>
  <p><strong>The losers Polymarket lists elsewhere.</strong> A losing share is worth nothing, so many are never redeemed. They stay among open positions, not closed ones. Counting only closed positions made 11 of the profit top 50 look like stars in <a href="/audits/008-polymarket-profit-board.html">audit 008</a>; this page counts both.</p>
- <p><strong>Two bars.</strong> z ≥ 2 is the usual bar for a wallet you came to with no prior selection. A wallet found on the profit board was picked from at least {n:,}, so it needs z ≥ {bar_:.2f} (a floor: the board reports no total). The true number is far larger: a username search on the board returns a wallet ranked 450,853, which would put the bar at 5.33. Of the top 50 in audit 008, none cleared even the lower bar; the highest z was 2.40.</p>
+ <p><strong>Two bars.</strong> z ≥ 2 is the usual bar for a wallet you came to with no prior selection. A wallet found on the profit board was picked from at least {n:,} wallets, so it needs z ≥ {bar_:.2f}. That is a floor: the board reports no total, and a username search on it returns a wallet ranked {n:,}. Of the top 50 in audit 008, none came close; the highest z was 2.40.</p>
  <p><strong>What z cannot see.</strong> Position sizes (each position counts once; a few huge winning bets can make the money while the picks overall are ordinary), and whether the wallet traded on information others did not have.</p>
  <p class="muted small">Not investment advice. Public data from <code>data-api.polymarket.com</code>, fetched by your browser; the wallet is never sent to us, and each check adds one tally with no address. Method: <a href="/audits/008-polymarket-profit-board.html">audit 008</a>, <a href="{REPO}/blob/main/tools/audit_polymarket.py"><code>tools/audit_polymarket.py</code></a>.</p>
 </div></section>

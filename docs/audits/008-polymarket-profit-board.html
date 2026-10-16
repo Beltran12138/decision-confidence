@@ -41,7 +41,7 @@
 <li>Under no skill, a share bought at price p pays 1 with probability p. So edge = outcome − p has mean 0 and variance p(1 − p).</li>
 <li>Positions on the same event (an election, a season) share an outcome, so they are one bet, not many. The headline statistic sums edge per event and uses the spread across events: z = Σ edge / √(Σ over events of (event's summed edge)²).</li>
 <li>Positions are equal-weighted. avgPrice is the average buy price, so a position partly sold before resolution is scored on what was bought.</li>
-<li>The board reaches about 10,050 wallets and reports no total, so the bar is computed for N = 10,050: <strong>z ≥ 4.59, a floor</strong> (the true N is larger and its bar higher).</li>
+<li>The board reaches about 10,050 wallets and reports no total, so the bar is computed for N = 10,050: <strong>z ≥ 4.59, a floor</strong> (the true N is larger and its bar higher). <em>Update 2026-10-16:</em> the board is far larger than that floor. Filtering it by username returns a wallet ranked 450,853, so N is at least 450,853 and the bar at least <strong>z ≥ 5.33</strong>. No finding changes: the highest z among the complete records is 2.40, below either bar.</li>
 <li>Data: <code>data-api.polymarket.com</code> (<code>v1/leaderboard</code>, <code>closed-positions</code>, <code>positions</code>), public, no key, fetched 2026-10-15. Script: <code>tools/audit_polymarket.py</code>.</li>
 </ul>
 <h2>Finding</h2>
@@ -86,6 +86,11 @@
 <h2>What it would take</h2>
 <p>At even odds, z = edge × √n / 0.5, so a real 5-point edge per bet needs about 2,100 independent events to reach z = 4.59. The complete record with the most events here (0x5966…E507: 168 events, 7.4 points of edge per position) reaches 2.2. The top of the profit board mostly has a handful of events.</p>
 <p>Recheck: quarterly. A per-event calibration test (Brier against the price paid) is the natural next step; Convexly runs that kind of analysis for Polymarket.</p>
+<h2>Update, 2026-10-16</h2>
+<ul>
+<li><strong>Board size.</strong> The leaderboard's username filter (<code>/v1/leaderboard?userName=…</code>) returned a wallet ranked 450,853, so the board ranks at least that many wallets, not the 10,050 that paging by offset reaches. The bar for the best of 450,853 is z ≥ 5.33. Every count above holds under either bar.</li>
+<li><strong>Check any wallet.</strong> The same test now runs in the browser at <a href="/polymarket/">/polymarket/</a>, on any wallet or username. For the wallets above it reproduces this audit's figures (for example 1.08 for DrPufferfish, 18.31 on closed positions only).</li>
+</ul>
 </article>
 <aside class="aside">
  <div class="box"><h4>Three inputs</h4><ul><li>The model’s knowledge cutoff</li><li>The test window</li><li>How many attempts the result was picked from</li></ul></div>
