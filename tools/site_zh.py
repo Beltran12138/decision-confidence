@@ -79,7 +79,7 @@ def footer(B, P, scripts=""):
 <div class="foot-grid">
  <div><a class="brand" href="{P}">{B.MARK}Evidence Deflator</a>
   <p style="margin-top:14px;max-width:340px">交易战绩是实力还是运气？开源的证据检验工具，看一份记录里有多少算数。</p></div>
- <div><h4>产品</h4><ul><li><a href="{P}">查钱包</a></li><li><a href="{P}api/">API</a></li><li><a href="{P}method/">方法</a></li><li><a href="/">英文版首页</a></li></ul></div>
+ <div><h4>产品</h4><ul><li><a href="{P}">查 Hyperliquid 钱包</a></li><li><a href="/polymarket/">查 Polymarket 钱包（英文）</a></li><li><a href="{B.TG_BOT}">Telegram 机器人</a></li><li><a href="{B.EXT_URL}">Chrome 插件</a></li><li><a href="/audits/">审计（英文）</a></li><li><a href="{P}api/">API 与 MCP</a></li><li><a href="{P}method/">方法</a></li><li><a href="/">英文版首页</a></li></ul></div>
  <div><h4>问题</h4><ul>{qs}</ul></div>
  <div><h4>项目</h4><ul><li><a href="{B.REPO}">GitHub</a></li><li><a href="/privacy/">隐私（英文）</a></li><li><a href="/terms/">条款（英文）</a></li></ul></div>
 </div>

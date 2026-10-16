@@ -40,8 +40,8 @@ FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
            "%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E"
            "%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E")
 
-NAV = [("wallet", "Check a wallet", "/wallet/"), ("leaderboard", "Leaderboard", "/leaderboard/"), ("audits", "Audits", "/audits/"),
-       ("check", "Check a backtest", "/check/"), ("method", "Method", "/method/"), ("api", "API", "/api/")]
+NAV = [("wallet", "Hyperliquid", "/wallet/"), ("polymarket", "Polymarket", "/polymarket/"), ("forward", "Forward record", "/#forward"),
+       ("audits", "Audits", "/audits/"), ("method", "Method", "/method/"), ("api", "API", "/api/")]
 
 COPY_ICON = '<span class="cp">copy</span><span class="ok">copied</span>'
 
@@ -109,8 +109,8 @@ def footer(scripts=""):
     return f"""<footer class="site-footer"><div class="container">
 <div class="foot-grid">
  <div><a class="brand" href="/">{MARK}Evidence Deflator</a>
-  <p style="margin-top:14px;max-width:340px">How much of an AI trading result actually counts. Open-source checks for backtests and public leaderboards.</p></div>
- <div><h4>Product</h4><ul><li><a href="/wallet/">Check a wallet</a></li><li><a href="/leaderboard/">Leaderboard</a></li><li><a href="/audits/">Audits</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API</a></li></ul></div>
+  <p style="margin-top:14px;max-width:340px">Whether a trading record can be told apart from luck, once you allow for how it was picked. Open source.</p></div>
+ <div><h4>Product</h4><ul><li><a href="/wallet/">Hyperliquid check</a></li><li><a href="/polymarket/">Polymarket check</a></li><li><a href="{TG_BOT}">Telegram bot</a></li><li><a href="{EXT_URL}">Chrome extension</a></li><li><a href="/audits/">Audits</a></li><li><a href="/leaderboard/">AI trading leaderboard</a></li><li><a href="/check/">Check a backtest</a></li><li><a href="/api/">API and MCP</a></li></ul></div>
  <div><h4>Method</h4><ul><li><a href="/method/">How it works</a></li><li><a href="/method/#principles">Principles</a></li><li><a href="/q/hyperliquid-trader-skill-or-luck/">Skill or luck?</a></li><li><a href="/q/how-many-months-of-backtest/">How many months?</a></li><li><a href="/q/why-leaderboard-winner-is-not-evidence/">Why #1 is not evidence</a></li><li><a href="/leaderboard/2026-10.json">Data (JSON)</a></li></ul></div>
  <div><h4>Project</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="https://pypi.org/project/evidence-deflator/">PyPI</a></li><li><a href="{ISSUE_AUDIT}">Request an audit</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></div>
 </div>
@@ -266,6 +266,8 @@ def build_home(rows, lb):
     with open(os.path.join(DOCS, "data", "hl", "latest.json"), encoding="utf-8") as f:
         hl = json.load(f)
     hp, hc = hl["boards"]["pnl"], hl.get("cohort") or {}
+    with open(os.path.join(DOCS, "data", "papertrade", "frozen-2026-10-16.json"), encoding="utf-8") as f:
+        pt = json.load(f)
     la, ai = lb["boards"]
     feed = [
         ("2026-10-14", "Hyperliquid leaderboard, rescored", f"Of the all-time PnL top 100, {hp['n_t_ge_bar']} of {hp['scored']} clear the bar for being picked from {hp['ranked_from']:,} accounts. 200 wallets frozen for a forward record.", "/wallet/", "Wallets"),
@@ -273,6 +275,7 @@ def build_home(rows, lb):
     ] + [(a["date"], f"Audit {a['num']} · {a['subject']}", a["finding"], f"/audits/{a['slug']}.html", "Audit") for a in reversed(rows)][:4] + [
         ("2026-10-05", "17 published LLM trading papers", "Of the 9 with a documented cutoff, none reaches 48 clean months.", "/audit.html", "Paper audit"),
     ]
+    feed.sort(key=lambda r: r[0], reverse=True)
     feed_html = "".join(f'<a class="row" href="{u}"><span class="row-date">{d}</span><span><span class="row-title">{ic(t)}</span><span class="row-sub" style="display:block">{ic(s)}</span></span><span class="row-tag">{k}</span></a>' for d, t, s, u, k in feed)
     py = ('<span class="k">from</span> evidence_deflator <span class="k">import</span> effective_window\n\n'
           'w = effective_window(cutoff=<span class="s">"2024-10"</span>, start=<span class="s">"2020-01"</span>,\n'
@@ -292,8 +295,9 @@ def build_home(rows, lb):
 <div class="container hero">
  <div class="eyebrow"><span class="dot"></span>Evidence for trading records</div>
  <h1 class="display">Is that trading record skill, or could it be luck?</h1>
- <p class="lede">Leaderboards rank by profit. Among {hp['ranked_from']:,} accounts, someone is always on a winning streak. Paste a Hyperliquid address and see how strong its record is once you allow for that, and how many more months it would need.</p>
- <form class="wcheck" action="/wallet/" method="get" autocomplete="off" style="margin-top:28px">
+ <p class="lede">Leaderboards rank by profit. Among {hp['ranked_from']:,} accounts, someone is always on a winning streak. Paste a Hyperliquid address or a Polymarket wallet and see how strong its record is once you allow for that.</p>
+ <div class="tabs hero-tabs" role="tablist" aria-label="Which venue" style="margin-top:26px;max-width:640px"><button type="button" role="tab" aria-selected="true" data-act="/wallet/" data-ph="0x… Hyperliquid address">Hyperliquid</button><button type="button" role="tab" aria-selected="false" data-act="/polymarket/" data-ph="0x… address or Polymarket username">Polymarket</button></div>
+ <form class="wcheck" id="hcheck" action="/wallet/" method="get" autocomplete="off" style="margin-top:14px">
   <input name="a" placeholder="0x… Hyperliquid address" spellcheck="false" aria-label="Hyperliquid address">
   <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
  </form>
@@ -311,6 +315,15 @@ def build_home(rows, lb):
 </div>
 
 {boards_html(hl)}
+<section id="forward"><div class="container">
+ <div class="sec-head"><div><div class="eyebrow">Forward record</div><h2 style="margin-top:12px">Every record found by looking back was picked. So we froze some, and score only what happens next.</h2>
+ <p>Each list is published with its hash when it is frozen, so it cannot be changed once results are known. Every reading is published, whatever it shows.</p></div></div>
+ <div class="who">
+  <div><h3>Hyperliquid · {hc.get('members', 0)} wallets</h3><p>Today’s two top-100 boards, frozen {hc.get('frozen_at', '').replace('T', ' ').replace('Z', ' UTC')}. Scored only on PnL after the freeze; a wallet needs 8 weeks of new record to get a t. First readings <b>{hc.get('first_readings', '')}</b>.</p><p class="act"><a href="/wallet/#forward">Scores so far →</a> · <a class="mono small" href="/data/hl/{hc.get('file', '')}">sha256 {hc.get('sha256', '')[:12]}…</a></p></div>
+  <div><h3>Papertrade · 3 groups of 100</h3><p>All-time top 100, 24-hour top 100 and a random control, frozen {pt['frozen_at'].replace('T', ' ').replace('Z', ' UTC')}. Readings <b>2026-10-23</b> and <b>2026-10-30</b>, against hypotheses registered before the first.</p><p class="act"><a href="/audits/010-papertrade-leaderboard.html">Audit 010 →</a> · <a class="mono small" href="{REPO}/blob/main/docs/data/papertrade/PREREG.md">pre-registration</a></p></div>
+  <div><h3>Why forward</h3><p>A formula can be copied. A list frozen on a stated date and read out later cannot be reproduced after the fact, by us or by anyone else.</p><p class="act"><a href="/method/">Method →</a></p></div>
+ </div>
+</div></section>
 <section><div class="container">
  <div class="sec-head"><div><div class="eyebrow">For AI backtests · where the method started</div><h2 style="margin-top:12px">Three numbers, before any performance figure</h2>
  <p>Each is plain arithmetic on inputs a project can state in one line. None needs the strategy’s code. <a href="/check/">Check a backtest →</a></p></div><a class="more" href="/method/">Read the method →</a></div>
@@ -319,12 +332,7 @@ def build_home(rows, lb):
   <div><span class="k">02 · CLEAN MONTHS NEEDED</span><h3>How long the result must run</h3><p>A Sharpe of 1 needs about 48 clean months to reach t = 2; a Sharpe of 2 needs 12. The quadratic is the whole story.</p></div>
   <div><span class="k">03 · BAR AFTER SELECTION</span><h3>How many tries it beat</h3><p>The best of N attempts must clear a higher bar. Best of 41: t ≥ 3.26. Best of 23,376: t ≥ 4.76.</p></div>
  </div>
- <div class="example">
-  <div><div class="eyebrow">Worked example</div><h3 style="margin:12px 0 8px">A 2020–2025 backtest, model cutoff 2024-10</h3><p class="muted small" style="margin:0">66 months in the window. 58 cannot be ruled out as seen. 8 are clean, against the 48 a Sharpe-1 claim needs. Verdict: underpowered — it rejects nothing, and it shows nothing.</p></div>
-  <div><div class="meter"><i class="ob" style="width:87.9%"></i><i class="cl" style="width:12.1%"></i></div>
-   <div class="legend"><span><i style="background:var(--accent)"></i>58 open-book</span><span><i style="background:var(--pos)"></i>8 clean</span><span class="mono">needs 48</span></div>
-   <div class="code-wrap" style="margin-top:16px"><pre class="code" style="font-size:12.5px">python tools/window.py --cutoff 2024-10 --start 2020-01 --end 2025-06</pre></div></div>
- </div>
+ <p class="muted small" style="margin-top:22px">Python, CLI and MCP: <code>pip install evidence-deflator</code> · <a href="/check/">Check a backtest in the browser →</a> · <a href="/api/">API reference →</a></p>
 </div></section>
 
 <section><div class="container">
@@ -335,21 +343,16 @@ def build_home(rows, lb):
 <section><div class="container">
  <div class="sec-head"><div><div class="eyebrow">Who it is for</div><h2 style="margin-top:12px">One check, three places it belongs</h2></div></div>
  <div class="who">
-  <div><h3>Copy-trading and vault platforms</h3><p>Show an evidence score next to PnL. A score nobody can buy tells followers which records are strong enough to commit to.</p><p class="act"><a href="/wallet/">See it on Hyperliquid →</a></p></div>
-  <div><h3>Allocators and reviewers</h3><p>Send a wallet, a deck, a backtest or a public claim. Get a one-page report: what is open-book, what is underpowered, what is missing.</p><p class="act"><a href="{ISSUE_AUDIT}">Request an audit →</a></p></div>
-  <div><h3>Agent frameworks</h3><p>One call between “backtest” and “deploy”: flag runs whose window sits before the model’s cutoff, and charge the result for every variant tried.</p><p class="act"><a href="/api/">Python, CLI and MCP →</a></p></div>
+  <div><h3>Allocators and depositors</h3><p>Before money follows a trader, a vault or an AI trading project: a one-page report on how much of the record counts, what is underpowered and what is missing.</p><p class="act"><a href="{ISSUE_AUDIT}">Request an audit →</a></p></div>
+  <div><h3>Agents and trading tools</h3><p>One call before an agent recommends, ranks or copies a trader, or reports a backtest. Free, no key, the same estimator as this site.</p><p class="act"><a href="/api/">API and MCP →</a></p></div>
+  <div><h3>Platforms that compete on trust</h3><p>Show an evidence score next to PnL. A score nobody can buy, not even the trader being scored. The Chrome extension shows it on three venues today.</p><p class="act"><a href="{EXT_URL}">Chrome extension →</a></p></div>
  </div>
 </div></section>
 
-<section><div class="container">
- <div class="sec-head"><div><div class="eyebrow">Use it</div><h2 style="margin-top:12px">Pure Python, no keys, no network</h2><p>The engine is the standard library. Fetching data is your job; the value is a repeatable, comparable answer.</p></div><a class="more" href="/api/">API reference →</a></div>
- <div class="code-wrap" data-tabs>
-  <div class="tabs" role="tablist"><button data-tab="py" aria-selected="true">Python</button><button data-tab="cli" aria-selected="false">CLI</button><button data-tab="mcp" aria-selected="false">MCP</button></div>
-  <pre class="code" data-pane="py">{py}</pre><pre class="code" data-pane="cli" hidden>{cli}</pre><pre class="code" data-pane="mcp" hidden>{mcp}</pre>
- </div>
-</div></section>
 </main>
 """ + footer("""<script src="/assets/lb.js"></script>
+<script>document.querySelectorAll('.hero-tabs button').forEach(b=>b.addEventListener('click',()=>{const f=document.getElementById('hcheck'),i=f.querySelector('input');
+ document.querySelectorAll('.hero-tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));f.action=b.dataset.act;i.placeholder=b.dataset.ph;i.setAttribute('aria-label',b.dataset.ph);i.focus();}));</script>
 <script>LB.load('/data/hl/latest.json').then(d=>{const p=d.boards.pnl,rows=p.rows.filter(r=>r.t!=null).map(r=>({t:r.t,rank:r.rank,name:r.address.slice(0,6)+'…'+r.address.slice(-4)}));
  const best=rows.reduce((a,r)=>r.t>a.t?r:a,rows[0]);
  document.getElementById('hero-chart').innerHTML=LB.strip({board:p.board,rows,entries:p.ranked_from,t_bar_best_of_n:p.t_bar_best_of_n,max_t_rank:best.rank},{h:170});});</script>
@@ -662,7 +665,7 @@ def build_wallet():
         else:
             reading = f'<div><b>{c["first_readings"]}</b><span>first readings: a wallet needs 8 weeks of record after the freeze before it gets a t</span></div>'
         cohort_html = f"""
-<section><div class="container">
+<section id="forward"><div class="container">
  <div class="sec-head"><div><div class="eyebrow">Forward record · frozen {c['frozen_at'][:10]}</div><h2 style="margin-top:12px">The same {c['members']} wallets, scored only on what they do from now on.</h2>
  <p>A record found by looking back is a record chosen after the fact. So on {c['frozen_at'][:10]} we froze today’s two top-100 lists and publish, every day, how each wallet does after that moment. Nothing before the freeze counts, and the list cannot be edited: its hash is below and its history is in git.</p></div></div>
  <div class="stats" style="margin:8px 0 18px">
@@ -751,7 +754,7 @@ def build_polymarket():
                        "countUrl": "https://api.evidencedeflator.com/api/count?k=pm&l=en"})
     page = head("Polymarket wallet check · Evidence Deflator",
                 "Paste a Polymarket wallet or username and see whether its record of picks can be told apart from luck, position by position, counting the losers Polymarket lists separately.",
-                "/polymarket/") + header("wallet") + f"""
+                "/polymarket/") + header("polymarket") + f"""
 <main>
 <div class="container page-head">
  <div class="eyebrow"><span class="dot"></span>Polymarket · wallet check · public data, computed in your browser</div>
