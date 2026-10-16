@@ -17,6 +17,10 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 DOCS = os.path.join(ROOT, "docs")
 SITE = "https://evidencedeflator.com"
 REPO = "https://github.com/Beltran12138/evidence-deflator"
+TG_BOT = "https://t.me/SkillOrLuckBot"
+EXT_URL = REPO + "/tree/main/extension"  # switch to the Chrome Web Store page once the listing is approved
+ELSEWHERE_EN = (f'<p class="muted small elsewhere">Also on <a href="{TG_BOT}" rel="noopener">Telegram, @SkillOrLuckBot</a> (send an address, get the verdict), '
+                f'and as a <a href="{EXT_URL}" rel="noopener">Chrome extension</a> that shows it on Hyperliquid, Binance and OKX copy-trading pages (in Chrome Web Store review; install from GitHub for now).</p>')
 ISSUE_AUDIT = REPO + "/issues/new?title=Audit%20request%3A%20&body=Link%20to%20the%20backtest%2C%20deck%20or%20claim%3A%0A%0AModel%20(if%20known)%3A%0ATest%20window%3A%0AHow%20many%20variants%20were%20tried%3A%0A"
 VERSION = "0.2.0"
 # Cloudflare Web Analytics site token (public, cookie-less page counts). Empty = no beacon.
@@ -253,6 +257,7 @@ def build_home(rows, lb):
   <input name="a" placeholder="0x… Hyperliquid address" spellcheck="false" aria-label="Hyperliquid address">
   <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
  </form>
+ {ELSEWHERE_EN}
  <div class="instrument">
   <div class="instrument-head"><span class="t"><b style="color:var(--ink);font-weight:550">Hyperliquid, all-time PnL top 100</b> · each dot is one wallet’s t-statistic · {hl['fetched'][:10]}</span><a class="small" href="/wallet/">Rescored board →</a></div>
   <div class="instrument-body chart" style="border:0;border-radius:0" id="hero-chart"></div>
@@ -642,6 +647,7 @@ def build_wallet():
   <button class="btn btn-primary" type="submit">Check <span class="arr">→</span></button>
  </form>
  <div class="wex muted small">Try: {ex}</div>
+ {ELSEWHERE_EN}
 </div>
 
 <div class="container" id="wout" hidden>

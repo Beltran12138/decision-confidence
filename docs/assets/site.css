@@ -205,6 +205,7 @@ h1 code,h2 code,h3 code,.row-title code{font-size:.78em;padding:2px 7px;vertical
 .wcheck{display:flex;gap:10px;margin-top:32px;max-width:720px;flex-wrap:wrap}
 .wcheck input{flex:1 1 320px;min-width:0;font:400 16px/1 var(--mono);padding:13px 14px;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface);color:var(--ink)}
 .wcheck input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.elsewhere{margin:12px 0 0}
 .wex{margin-top:12px;display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center}
 .wres{margin-top:8px}
 .wres #wid{overflow-wrap:anywhere}

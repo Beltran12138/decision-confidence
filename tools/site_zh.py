@@ -184,6 +184,7 @@ def wallet_page(B, hl, lang):
   <button class="btn btn-primary" type="submit">检验 <span class="arr">→</span></button>
  </form>
  <div class="wex muted small">试试：{ex}</div>
+ <p class="muted small elsewhere">也可以在 <a href="{B.TG_BOT}" rel="noopener">Telegram 上用 @SkillOrLuckBot</a>（发地址，回结论），或装 <a href="{B.EXT_URL}" rel="noopener">Chrome 插件</a>，在 Hyperliquid、Binance 和 OKX 跟单页面上直接显示结论（Chrome 应用商店审核中，暂时从 GitHub 安装）。</p>
 </div>
 
 <div class="container" id="wout" hidden>
