@@ -51,3 +51,13 @@ Found while running the first freeze attempt (discarded; no outcome exists yet, 
 - Paperdash's descending board stops after the accounts with positive PnL, and its ascending board (`dir=asc`) stops after the accounts with negative PnL. The script walks both and merges them. About 5,700 of the ~20,100 accounts it counts appear in neither; every listed account has non-zero PnL, so these are taken to be accounts that never closed a trade.
 - The 24-hour page reports 24-hour figures. For `top_24h` the outcome baseline is each wallet's all-time PnL taken from the all-time board at the freeze; the 24-hour figures are kept alongside.
 - The control is therefore drawn from winners and losers alike (all-time ranks 101 and below, volume at least $1M), which is what the rule above says.
+
+## 2026-10-16: secondary analysis, declared before any reading
+
+Added after the freeze and before either reading, once Papertrade's trades turned out to be readable from HyperEVM event logs (`tools/papertrade_chain.py`; decoding checked against the launch-day wallet `0x2025…840e`, whose summed PnL matches Paperdash's to the dollar). The primary test above is unchanged.
+
+- **Records.** For every frozen wallet, its positions from launch to the freeze (`chain-prefreeze-2026-10-16.json.gz`) and from the freeze to each reading.
+- **t on independent bets.** Positions opened in the same 5-minute window ride the same price move, so they are summed into one bet. t = mean / standard deviation × √(number of bets). Fewer than 10 bets: not scored. The 30-second and 60-minute windows are reported alongside, as a sensitivity check.
+- **S1.** Per group, how many wallets reach t ≥ 2 and t ≥ 4.66 (the bar for the best of 14,381) on their pre-freeze record.
+- **S2.** Among wallets scored before the freeze that trade after it: the share with positive PnL after the freeze, for pre-freeze t ≥ 2 against t < 2. Descriptive, no pass mark, reported whatever it shows.
+- **Board check.** Each wallet's PnL summed from the chain against Paperdash's figure at the freeze; the median absolute difference is reported and wallets more than 5% apart are listed.

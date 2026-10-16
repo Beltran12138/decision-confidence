@@ -20,9 +20,24 @@ Papertrade launched on 2026-10-10: synthetic BTC and ETH perpetuals on HyperEVM 
 - **The third-worst account is one of the most profitable.** `0x35b2…95a7` is ranked 14,379 of 14,381 with −$979,132 on $10.1 billion of volume. Losing trades mint PAPER, and staked PAPER earns a share of the pool. Paperdash records 252 million PAPER and $1,675,142 of USDC staking rewards for the same wallet. Lookonchain reported on 2026-10-12 that it was already ahead overall. Ranked by PnL, it is near last.
 - **Most accounts lose, and the winnings are concentrated.** 2,766 of 14,381 accounts are in profit (19%). Traders as a whole are down $54.4 million. The top 100 hold 76% of all profit made by winners; the #1 account alone holds 13.6%.
 - **The top of the 24-hour board is not the top of the all-time board.** 30 of the 24-hour top 100 are down since launch.
-- **What the bar would be.** An account picked from 14,381 needs t ≥ 4.66 before its record says anything (one result alone needs 2). At 1000x a 0.1% move is the whole margin, so six days of PnL is mostly chance. The board shows no return series, so t cannot be computed for any account on it today.
+- **What the bar would be.** An account picked from 14,381 needs t ≥ 4.66 before its record says anything (one result alone needs 2). At 1000x a 0.1% move is the whole margin, so six days of PnL is mostly chance. The board shows no return series; the chain does, and the next section scores the #1 account from it.
 
 A PnL board cannot tell skill, luck and exploitation of the mechanism apart. On this one the top account made its money by moving the price Papertrade copies, and one of the biggest winners shows up as a loser.
+
+## Counting trades or counting bets: the #1 account, scored from the chain
+
+Papertrade's Exchange contract logs every open, close and liquidation on HyperEVM. Decoded with `tools/papertrade_chain.py`, the #1 account's record matches what was published about it: 307 closed positions, 296 of them winners, a median hold of 98 seconds, and 30 shorts opened at $2,507.35 and 660x ($297.0 million notional) liquidated for a $450,000 loss. Its realised PnL sums to $1,278,867, the same as Paperdash shows.
+
+| Counted as | Bets | Won | t |
+|---|---|---|---|
+| Each position a bet | 337 | 296 of 307 closed, 30 liquidated | 8.35 |
+| Positions opened in the same 30 seconds as one bet | 58 | 52 | 2.29 |
+| … in the same 5 minutes | 21 | 18 | 1.77 |
+| … in the same hour | 5 | 4 | 0.99 |
+
+Counted position by position, the record looks overwhelming. But the positions were opened in bursts, each burst riding one push of the Hyperliquid price, so a burst is one bet. Counted that way, 18 of 21 bets won and t is 1.77: below even a single test, because the one burst that failed lost $450,000. However the bursts are drawn, from 30 seconds to an hour, t stays far from the 4.66 bar.
+
+Two lessons for any record built from many small trades: t computed per trade overstates the evidence when trades share one bet, and an edge that wins 97% of the time can still lose in one move what it made in the rest.
 
 ## Frozen for a forward check
 

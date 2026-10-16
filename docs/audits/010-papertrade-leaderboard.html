@@ -65,9 +65,49 @@
 <li><strong>The third-worst account is one of the most profitable.</strong> <code>0x35b2…95a7</code> is ranked 14,379 of 14,381 with −$979,132 on $10.1 billion of volume. Losing trades mint PAPER, and staked PAPER earns a share of the pool. Paperdash records 252 million PAPER and $1,675,142 of USDC staking rewards for the same wallet. Lookonchain reported on 2026-10-12 that it was already ahead overall. Ranked by PnL, it is near last.</li>
 <li><strong>Most accounts lose, and the winnings are concentrated.</strong> 2,766 of 14,381 accounts are in profit (19%). Traders as a whole are down $54.4 million. The top 100 hold 76% of all profit made by winners; the #1 account alone holds 13.6%.</li>
 <li><strong>The top of the 24-hour board is not the top of the all-time board.</strong> 30 of the 24-hour top 100 are down since launch.</li>
-<li><strong>What the bar would be.</strong> An account picked from 14,381 needs t ≥ 4.66 before its record says anything (one result alone needs 2). At 1000x a 0.1% move is the whole margin, so six days of PnL is mostly chance. The board shows no return series, so t cannot be computed for any account on it today.</li>
+<li><strong>What the bar would be.</strong> An account picked from 14,381 needs t ≥ 4.66 before its record says anything (one result alone needs 2). At 1000x a 0.1% move is the whole margin, so six days of PnL is mostly chance. The board shows no return series; the chain does, and the next section scores the #1 account from it.</li>
 </ul>
 <p>A PnL board cannot tell skill, luck and exploitation of the mechanism apart. On this one the top account made its money by moving the price Papertrade copies, and one of the biggest winners shows up as a loser.</p>
+<h2>Counting trades or counting bets: the #1 account, scored from the chain</h2>
+<p>Papertrade's Exchange contract logs every open, close and liquidation on HyperEVM. Decoded with <code>tools/papertrade_chain.py</code>, the #1 account's record matches what was published about it: 307 closed positions, 296 of them winners, a median hold of 98 seconds, and 30 shorts opened at $2,507.35 and 660x ($297.0 million notional) liquidated for a $450,000 loss. Its realised PnL sums to $1,278,697, against Paperdash's $1,278,867.</p>
+<table>
+<thead>
+<tr>
+<th>Counted as</th>
+<th>Bets</th>
+<th>Won</th>
+<th>t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Each position a bet</td>
+<td>337</td>
+<td>296 of 307 closed, 30 liquidated</td>
+<td>8.34</td>
+</tr>
+<tr>
+<td>Positions opened in the same 30 seconds as one bet</td>
+<td>58</td>
+<td>52</td>
+<td>2.29</td>
+</tr>
+<tr>
+<td>… in the same 5 minutes</td>
+<td>21</td>
+<td>18</td>
+<td>1.77</td>
+</tr>
+<tr>
+<td>… in the same hour</td>
+<td>5</td>
+<td>4</td>
+<td>0.99</td>
+</tr>
+</tbody>
+</table>
+<p>Counted position by position, the record looks overwhelming. But the positions were opened in bursts, each burst riding one push of the Hyperliquid price, so a burst is one bet. Counted that way, 18 of 21 bets won and t is 1.77: below even a single test, because the one burst that failed lost $450,000. However the bursts are drawn, from 30 seconds to an hour, t stays far from the 4.66 bar.</p>
+<p>Two lessons for any record built from many small trades: t computed per trade overstates the evidence when trades share one bet, and an edge that wins 97% of the time can still lose in one move what it made in the rest.</p>
 <h2>Frozen for a forward check</h2>
 <p>Three groups of 100, fixed by rule before any outcome: the 24-hour PnL top 100 (primary), the all-time PnL top 100, and a control of 100 drawn with a fixed seed from the rest of the board (volume at least $1M). The whole board and the groups are in <a href="https://github.com/Beltran12138/evidence-deflator/tree/main/docs/data/papertrade"><code>docs/data/papertrade/</code></a> (<code>frozen-2026-10-16.json</code>, SHA-256 of the file as written, LF line endings: <code>d2218edb6118d23e6dd043ee6fd86af45acc41eca71f8a223fe1e1694ead1722</code>). The rule and the readings were written down before the freeze: <a href="https://github.com/Beltran12138/evidence-deflator/blob/main/docs/data/papertrade/PREREG.md"><code>PREREG.md</code></a>.</p>
 <p>On <strong>2026-10-23</strong> (interim) and <strong>2026-10-30</strong> (primary) this page will report the PnL each group made after the freeze. If the 24-hour top beats the control by more than 15 percentage points in the share of wallets making money, and its median is positive, the board carries information and we will say so.</p>

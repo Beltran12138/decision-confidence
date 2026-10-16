@@ -6,13 +6,16 @@ The Exchange (proxy 0x6cd5…D0a2, implementation unverified) emits, per positio
   0x87902ed2… close  topics (positionId, trader)  data [exit price x100, gross PnL, PnL after the impact haircut,
                                                          0, fee]                       (signed, 1e18 USDC)
   0x0c859bc5… liquidation  topics (positionId, trader)  data [price, price, 0, margin, margin]
-Realised PnL of a position = (PnL after haircut - fee) on a close, or -margin on a liquidation.
+Realised PnL of a position = PnL after haircut, minus the fee on winning closes only (the last word of a losing
+close is not a USDC charge), or -margin on a liquidation.
 
 Calibrated on 0x2025…840e (2026-10-10/11), against figures published elsewhere: 307 closes with 296 winners,
 median hold 98 s, 30 liquidated shorts at 2507.35 and 660x with $297.0M notional and $450,000 lost;
-summed realised PnL $1,278,697 against Paperdash's $1,278,867.
+summed realised PnL against Paperdash's $1,278,867. Rechecked on 0xab47…c133 (925 positions, 144 liquidations):
+-$188,759 from the chain, -$188,759 on Paperdash.
 
-  python tools/papertrade_chain.py OUT.json 0xWALLET [0xWALLET ...] [--from-block N] [--to-block N]
+  python tools/papertrade_chain.py OUT.json 0xWALLET [0xWALLET ...] [--from-block N] [--to-block N | --to-time ISO]
+  python tools/papertrade_chain.py OUT.json --frozen docs/data/papertrade/frozen-2026-10-16.json --to-time 2026-10-16T03:01
 """
 import argparse, json, math, sys, time, urllib.error, urllib.request
 from collections import defaultdict
@@ -36,6 +39,17 @@ def rpc(url, method, params, tries=8):
         except (urllib.error.URLError, TimeoutError, ConnectionError):
             time.sleep(min(60, 5 * 2 ** i))
     raise RuntimeError(f"{method} failed after {tries} tries")
+
+
+def block_at(unix):
+    """First block at or after a unix time (binary search on the official RPC)."""
+    ts = lambda b: int(rpc(RPC, "eth_getBlockByNumber", [hex(b), False])["result"]["timestamp"], 16)
+    lo, hi = LAUNCH_BLOCK, int(rpc(RPC, "eth_blockNumber", [])["result"], 16)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if ts(mid) < unix: lo = mid + 1
+        else: hi = mid
+    return lo
 
 
 def logs(wallets, frm, to, span=50000):
@@ -73,7 +87,9 @@ def positions(log_list):
                "entry": o[3] / 100, "margin": o[4] / 1e18, "leverage": o[5], "opened": t0}
         if (w, pid) in cl:
             t1, c = cl[(w, pid)]
-            row.update(closed=t1, exit=c[0] / 100, pnl=(c[2] - c[4]) / 1e18, how="close")
+            fee = c[4] if c[2] > 0 else 0
+            row.update(closed=t1, exit=c[0] / 100, gross=c[1] / 1e18, after_haircut=c[2] / 1e18, last_word=c[4] / 1e18,
+                       pnl=(c[2] - fee) / 1e18, how="close")
         elif (w, pid) in lq:
             t1, c = lq[(w, pid)]
             row.update(closed=t1, exit=c[0] / 100, pnl=-o[4] / 1e18, how="liquidated")
@@ -97,18 +113,39 @@ def burst_t(rows, window=300):
 
 
 if __name__ == "__main__":
+    from datetime import datetime, timezone
     ap = argparse.ArgumentParser()
-    ap.add_argument("out"); ap.add_argument("wallets", nargs="+")
+    ap.add_argument("out"); ap.add_argument("wallets", nargs="*")
+    ap.add_argument("--frozen", help="take the wallets of every group in a frozen-*.json file")
     ap.add_argument("--from-block", type=int, default=LAUNCH_BLOCK); ap.add_argument("--to-block", type=int)
+    ap.add_argument("--to-time", help="ISO time (UTC); overrides --to-block")
     a = ap.parse_args()
-    to = a.to_block or int(rpc(RPC, "eth_blockNumber", [])["result"], 16)
+    wallets = list(a.wallets)
+    if a.frozen:
+        fz = json.load(open(a.frozen, encoding="utf-8"))
+        wallets += [m["address"] for g in fz["groups"].values() for m in g]
+    wallets = sorted({w.lower() for w in wallets})
+    if a.to_time:
+        to = block_at(int(datetime.fromisoformat(a.to_time).replace(tzinfo=timezone.utc).timestamp()))
+    else:
+        to = a.to_block or int(rpc(RPC, "eth_blockNumber", [])["result"], 16)
     rows = []
-    for i in range(0, len(a.wallets), 50):
-        rows += positions(logs(a.wallets[i:i + 50], a.from_block, to))
-    json.dump({"from_block": a.from_block, "to_block": to, "positions": rows}, open(a.out, "w"), indent=1)
+    for i in range(0, len(wallets), 50):
+        rows += positions(logs(wallets[i:i + 50], a.from_block, to))
+        print(f"  wallets {min(i + 50, len(wallets))}/{len(wallets)}", file=sys.stderr)
+    doc = {"from_block": a.from_block, "to_block": to, "wallets": wallets, "positions": rows}
+    if a.out.endswith(".gz"):
+        import gzip
+        with gzip.GzipFile(a.out, "wb", mtime=0) as g:
+            g.write(json.dumps(doc, separators=(",", ":")).encode())
+    else:
+        json.dump(doc, open(a.out, "w"), indent=1)
     by = defaultdict(list)
     for r in rows: by[r["wallet"]].append(r)
-    for w, rs in by.items():
-        done = [r for r in rs if r["how"] != "open"]
-        t, k = burst_t(rs)
-        print(w, len(done), "positions", f"pnl {sum(r['pnl'] for r in done):,.0f}", "t(5-min bets)", None if t is None else round(t, 2), "bets", k)
+    if len(wallets) <= 20:
+        for w, rs in by.items():
+            done = [r for r in rs if r["how"] != "open"]
+            t, k = burst_t(rs)
+            print(w, len(done), "positions", f"pnl {sum(r['pnl'] for r in done):,.0f}", "t(5-min bets)", None if t is None else round(t, 2), "bets", k)
+    else:
+        print(f"{len(rows)} positions for {len(by)} of {len(wallets)} wallets, blocks {a.from_block}-{to}")
