@@ -96,6 +96,7 @@
  <p><strong>短记录不会被高估。</strong>只有几周数据算出来的 t 尾部很厚：8 周记录、完全没有实力，t ≥ 2 出现的频率大约是门槛假设的两倍。所以 t 取自按记录有效自由度计算的 Student t 分布（靠少数几段长间隔撑起来的记录，自由度更低），再换回常用的尺度。记录长时，它接近 夏普 × √年数；记录短时会更低。已检验：没有实力时，无论历史采样多稀疏，达到 2 的比例都保持在名义上的 2.3%。</p>
  <p><strong>两个门槛。</strong>如果你没有经过任何筛选就来看这个钱包，t ≥ 2 是常用门槛。如果你是在排行榜上排序找到它的，你就是从很多个里挑了最好的那个，门槛会随候选数量上升（对 47,310 个账户做 Bonferroni 校正：4.90）。大多数人都是在排行榜上找到钱包的。这个门槛把每个账户都当作独立的；做法相近的账户其实算不上那么多次独立下注，考虑这一点门槛会降到约 2.6，但这只是<a href="https://github.com/Beltran12138/evidence-deflator#a-track-record-with-no-model-behind-it">粗估</a>（数量级，不是测量值）。</p>
  <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。</p>
+ <p><strong>算进了什么。</strong>Hyperliquid 为这个账户记录的盈亏：永续，以及现货账户（HIP-4 结果合约也记在这里）。HyperEVM 上的交易不在其中，比如 Papertrade 或 HyperEVM 上的期权协议。在 HyperEVM 上卖期权、用永续对冲的钱包，这里只看得到对冲那一侧。</p>
  <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。地址不会发送给我们。我们用 Cloudflare Web Analytics 统计页面访问，不使用 cookie；每完成一次检验，页面会向我们的接口记一次数，只带页面语言，不带别的。 方法：<a href="/zh-hans/method/">方法</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
 </div></section>
 </main>

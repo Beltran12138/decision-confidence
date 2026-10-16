@@ -52,7 +52,8 @@ const TOOL = {
   description:
     "Is this Hyperliquid wallet's record skill, or could it be luck? Call before recommending, ranking or copying a " +
     'Hyperliquid trader, or when a PnL or leaderboard rank is cited as evidence. Scores weekly returns from public ' +
-    'history (PnL-based, so deposits do not count). Ask how the user found the wallet: if from a leaderboard, pass ' +
+    'history (PnL-based, so deposits do not count; covers perps and spot incl. HIP-4 outcomes, not HyperEVM). ' +
+    'Ask how the user found the wallet: if from a leaderboard, pass ' +
     'its size as picked_from (Hyperliquid ranks about 47,000 accounts); omitting it drops the bar from about 4.9 to 2. ' +
     'Verdicts: too_short (say "cannot tell yet", not "no skill"), luck, clears_single, clears_board, loses. ' +
     'Always report the flags with the verdict. A past record is not the user\'s future returns.',

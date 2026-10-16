@@ -501,6 +501,7 @@ t      = Sharpe × √(years of data)</div>
  <li>It does not say any strategy or model is unskilled. It says the evidence cannot yet tell skill from luck.</li>
  <li>It does not detect leakage inside a model; it bounds where leakage cannot be excluded.</li>
  <li>It uses only what a project or board publishes.</li>
+ <li>The Hyperliquid wallet check counts what Hyperliquid records for the account: perps and spot, including HIP-4 outcome contracts. Activity on HyperEVM is not included.</li>
 </ul>
 
 <h2 id="reading">Further reading</h2>
@@ -728,6 +729,7 @@ def build_wallet():
  <p><strong>Short records are not over-read.</strong> A t computed from a handful of weeks has fat tails: with eight weeks and no skill at all, t ≥ 2 turns up about twice as often as the bar assumes. So t is taken from Student’s t with the record’s effective degrees of freedom (fewer when a few long gaps carry the record) and put back on the usual scale. For a long record it is close to Sharpe × √years; for a short one it is lower. Tested: with no skill, the share of records reaching 2 stays at the nominal 2.3% however sparsely the history was sampled.</p>
  <p><strong>Two bars.</strong> If you came to this wallet with no prior selection, t ≥ 2 is the usual bar. If you found it by sorting a leaderboard, you picked the best of many, and the bar rises with the number you picked from (Bonferroni on {pnl['ranked_from']:,} accounts: {pnl['t_bar_best_of_n']:.2f}). Most people find wallets on leaderboards. That bar counts every account as independent; accounts that trade alike are fewer independent bets, which would lower it to about 2.6 by our <a href="https://github.com/Beltran12138/evidence-deflator#a-track-record-with-no-model-behind-it">rough estimate</a> (an order of magnitude, not a measurement).</p>
  <p><strong>What t cannot see.</strong> Tail risk that has not happened yet. A strategy that sells insurance can show no losing week for a long time. Where the record has no losing week, or one week made most of the gains, the page says so.</p>
+ <p><strong>What it counts.</strong> The PnL Hyperliquid records for the account: perps and the spot account, which holds HIP-4 outcome contracts. Trading on HyperEVM, such as Papertrade or HyperEVM options protocols, is not in it. A wallet that sells options on HyperEVM and hedges with perps shows only the hedge.</p>
  <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser. {PRIVACY} Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
 </div></section>
 </main>
