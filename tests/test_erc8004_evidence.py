@@ -76,3 +76,22 @@ def test_evidence_commits_to_the_file_and_the_data():
     assert val["args"]["response"] == min(100, max(0, round(100 * ev["result"]["t"] / ev["result"]["bar"])))
     # the same inputs give the same bytes, so anyone can recompute the hash
     assert E.build("0x" + "ab" * 20, 42, 47310, raw, "2026-10-17T00:00:00+00:00", "https://example.org/e.json")[0] == blob
+
+
+def test_since_scores_only_the_record_after_that_day():
+    import random
+    import sys
+    sys.path.insert(0, os.path.join(ROOT, "src"))
+    import hl_wallet as H
+    rng = random.Random(9)
+    raw = _portfolio([rng.gauss(0.004, 0.03) for _ in range(30)] + [rng.gauss(0.02, 0.02) for _ in range(30)])
+    pf = dict(json.loads(raw))
+    t0 = 1_700_000_000_000 + 30 * 7 * 24 * 3600 * 1000
+    day = __import__("datetime").datetime.fromtimestamp(t0 / 1000, __import__("datetime").timezone.utc).strftime("%Y-%m-%d")
+    since_ms = int(__import__("datetime").datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=__import__("datetime").timezone.utc).timestamp() * 1000)
+    expect = H.score(H.weekly_returns(pf, since=since_ms)[0])
+    blob, fb, _ = E.build("0x" + "cd" * 20, 7, 1, raw, "2026-10-17T00:00:00+00:00", "", 8453, day)
+    ev = json.loads(blob)
+    assert ev["result"]["t"] == expect["t"] and ev["result"]["weeks"] == expect["weeks"]
+    assert ev["data"]["window"] == f"from {day}" and ev["subject"]["chainId"] == 8453
+    assert fb["args"]["tag2"] == "single"

@@ -1,0 +1,11 @@
+{
+ "function": "validationResponse(bytes32,uint8,string,bytes32,string)",
+ "args": {
+  "requestHash": null,
+  "response": 66,
+  "responseURI": "https://evidencedeflator.com/data/erc8004/degenai-eth-23121/evidence.json",
+  "responseHash": "0xa48cecdf913c82311ae31747c8ffc6134990b4db24a987537749724587e38ee0",
+  "tag": "deflatedT"
+ },
+ "note": "Only for a validationRequest naming this validator; requestHash comes from that request. 100 = clears the bar."
+}

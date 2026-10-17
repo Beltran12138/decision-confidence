@@ -2,7 +2,11 @@
 entry would carry if Evidence Deflator wrote it. Builds files and call data; signs and sends nothing.
 
 Usage:
-    python tools/erc8004_evidence.py ADDRESS --agent-id ID --picked-from N --out DIR [--feedback-uri URI]
+    python tools/erc8004_evidence.py ADDRESS --agent-id ID --chain-id C --picked-from N --out DIR
+        [--since YYYY-MM-DD] [--feedback-uri URI]
+
+--since scores only the record from that day on (for an agent, its registration date: trading
+before it need not have been the agent's).
 
 ERC-8004 (eips.ethereum.org/EIPS/eip-8004) gives agents an on-chain identity and two places for
 other parties to say something about them. Its reputation registry takes
@@ -16,7 +20,8 @@ could be luck; this fills the same slots with the evidence instead:
   tag2 = "bestOf<N>" for an agent picked from N, or "single"
   validation response = min(100, round(100 x t / bar)), the share of the bar the record reaches
 
-Out: DIR/evidence.json (the file to host at feedbackURI; its keccak256 is feedbackHash),
+Out: DIR/evidence.json (the file to host at feedbackURI; its keccak256 is feedbackHash), DIR/portfolio.json
+(the Hyperliquid response it was computed from, so anyone can recompute it),
 DIR/feedback.json (giveFeedback arguments and ABI-encoded call data), DIR/validation.json.
 The feedback must come from an address that does not own the agent (the spec forbids self-feedback).
 """
@@ -104,16 +109,35 @@ def portfolio_raw(address: str) -> bytes:
                            "-d", body], capture_output=True, env=env, check=True).stdout
 
 
-def build(address: str, agent_id: int, picked_from: int, raw: bytes, fetched: str, feedback_uri: str = ""):
+def build(address: str, agent_id: int, picked_from: int, raw: bytes, fetched: str, feedback_uri: str = "",
+          chain_id: int = 0, since: str = ""):
     pf = dict(json.loads(raw))
     res = H.check(address, picked_from=picked_from if picked_from > 1 else None, pf=pf)
+    if since:
+        # the same check, on the record from `since` on
+        since_ms = int(datetime.strptime(since, "%Y-%m-%d").replace(tzinfo=timezone.utc).timestamp() * 1000)
+        rets, _, _, counted = H.weekly_returns(pf, since=since_ms)
+        sc = H.score(rets)
+        v = H.verdict(sc, picked_from if picked_from > 1 else None)
+        months = H.months_to_clear(v["bar"], sc["sharpe"]) if sc.get("sharpe") else None
+        have = (sc["weeks"] or 0) / 4.345 if sc.get("t") is not None else 0
+        # pnl_outside_record compares PnL inside the window only; H.flags would count trading before `since`
+        ph = [(t, float(x)) for t, x in pf["allTime"]["pnlHistory"]]
+        before = [x for t, x in ph if t <= since_ms]
+        total = ph[-1][1] - (before[-1] if before else ph[0][1]) if ph else 0.0
+        fl = [f for f in H.flags(pf, rets, counted) if f != "pnl_outside_record"]
+        if total > 0 and (total - counted) / total > 0.5:
+            fl.append("pnl_outside_record")
+        res = {**res, **sc, "verdict": v["key"], "bar": v["bar"], "flags": fl, "drawdown": H.drawdown(rets),
+               "months_more_to_clear": None if months is None else round(max(months - have, 0), 1), "history_from": since}
     if res["t"] is None:
         raise SystemExit(f"{address}: record too short to score ({res['weeks']} intervals)")
     evidence = {
         "schema": "evidencedeflator.com/erc8004/v1",
-        "subject": {"agentId": agent_id, "hyperliquid_address": address},
+        "subject": {"chainId": chain_id, "agentId": agent_id, "hyperliquid_address": address},
         "data": {"source": H.INFO_URL, "request": {"type": "portfolio", "user": address}, "fetched": fetched,
-                 "response_keccak256": "0x" + keccak256(raw).hex(), "history_from": res["history_from"], "history_to": res["history_to"]},
+                 "response_keccak256": "0x" + keccak256(raw).hex(), "history_from": res["history_from"], "history_to": res["history_to"],
+                 "window": f"from {since}" if since else "all history"},
         "method": {"estimator": "hl_wallet.score (Student t on weekly PnL / start-of-week account value, back on the normal scale)",
                    "bar": "Bonferroni best-of-N, one-sided, alpha = 1 - Phi(2)", "docs": "https://evidencedeflator.com/method/#wallets"},
         "result": {k: res[k] for k in ("t", "sharpe", "weeks", "dof", "verdict", "bar", "picked_from", "months_more_to_clear", "flags", "drawdown")},
@@ -141,16 +165,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("address")
     ap.add_argument("--agent-id", type=int, required=True)
+    ap.add_argument("--chain-id", type=int, required=True, help="chain of the ERC-8004 registry the agentId belongs to")
+    ap.add_argument("--since", default="", help="score the record from this day (YYYY-MM-DD), e.g. the agent's registration")
     ap.add_argument("--picked-from", type=int, default=1, help="how many agents it was picked from (1 = not picked from a field)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--feedback-uri", default="")
     a = ap.parse_args()
     addr = a.address.lower()
     raw = portfolio_raw(addr)
-    blob, fb, val = build(addr, a.agent_id, a.picked_from, raw, datetime.now(timezone.utc).isoformat(timespec="seconds"), a.feedback_uri)
+    blob, fb, val = build(addr, a.agent_id, a.picked_from, raw, datetime.now(timezone.utc).isoformat(timespec="seconds"), a.feedback_uri,
+                          a.chain_id, a.since)
     os.makedirs(a.out, exist_ok=True)
     with open(os.path.join(a.out, "evidence.json"), "wb") as f:
         f.write(blob)
+    with open(os.path.join(a.out, "portfolio.json"), "wb") as f:  # the API response itself; its keccak256 is in evidence.json
+        f.write(raw)
     for name, obj in (("feedback.json", fb), ("validation.json", val)):
         with open(os.path.join(a.out, name), "w", encoding="utf-8", newline="\n") as f:
             json.dump(obj, f, indent=1)
