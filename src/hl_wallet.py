@@ -177,6 +177,52 @@ def score(rets):
             "t_student": round(t_student, 3), "dof": round(dof, 1), "t": round(t_to_z(t_student, dof), 3)}
 
 
+SIEGMUND = 0.5826  # -zeta(1/2) / sqrt(2 pi)
+
+
+def drawdown(rets):
+    """Where the record stands against its own peak, and how ordinary that is if its edge is real.
+
+    The path adds up the scored weekly returns: the same arithmetic returns t is built
+    from. Most accounts add and withdraw money, so compounding would describe a portfolio
+    nobody held (a volatile account with a positive mean compounds toward zero). `now` and
+    `deepest` are sums of weekly returns below the running peak, so they can exceed 1.
+    For a path drifting at m per week with variance s2 per week, the distance below the
+    running peak settles to an exponential
+    with rate 2m/s2 (reflected Brownian motion), so the share of time spent at least d
+    below the peak is exp(-2 m d / s2). Measured weekly, the walk overshoots the peak
+    between samples; Siegmund's correction (d + 0.5826 s) keeps the share within about 2%
+    of simulation up to Sharpe 3, where the plain formula is 1.6x too high
+    (tests/test_drawdown.py). m and s2 are measured on the same record, with the same
+    estimator as score(). Same as HL.drawdown in docs/assets/hl.js.
+
+    The edge is measured on the record itself, often one picked for being good, so it is
+    more likely overstated than understated; a smaller true edge makes drawdowns more
+    common, so share_if_real leans toward calling a drawdown unusual.
+    """
+    if len(rets) < MIN_WEEKS:
+        return None
+    w = peak = max_dd = since = tot_r = tot_w = 0.0
+    for r, dt in rets:
+        w += r
+        tot_r += r
+        tot_w += dt
+        if w >= peak:
+            peak, since = w, 0.0
+        else:
+            since += dt
+        max_dd = max(max_dd, peak - w)
+    mu = tot_r / tot_w
+    ss = sum((r - mu * dt) ** 2 for r, dt in rets)
+    s2 = sum(dt * dt for _, dt in rets)
+    eff = tot_w - s2 / tot_w
+    v = ss / eff if eff > 0 else 0.0
+    m, d = mu, peak - w
+    return {"now": round(d, 4), "weeks_below": round(since, 1), "deepest": round(max_dd, 4),
+            "share_if_real": (None if not (m > 0 and v > 0) else 1.0 if d == 0 else
+                              round(math.exp(-2 * m * (d + SIEGMUND * math.sqrt(v)) / v), 4))}
+
+
 def verdict(sc: Dict[str, Any], picked_from: Optional[int] = None) -> Dict[str, Any]:
     """Same keys as HL.verdict in docs/assets/hl.js."""
     b = bar(picked_from) if picked_from and picked_from > 1 else 2.0
@@ -222,6 +268,7 @@ def check(address: str, picked_from: Optional[int] = None, pf: Optional[Dict[str
         "picked_from": picked_from,
         "months_more_to_clear": (None if months is None else round(max(months - have, 0), 1)),
         "flags": flags(pf, rets, counted),
+        "drawdown": drawdown(rets),
         "history_from": day(start),
         "history_to": day(end),
     }

@@ -16,8 +16,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%2315171C'/%3E%3Crect x='3' y='4' width='18' height='2' fill='%23E66A4B'/%3E%3Crect x='4.5' y='13' width='3' height='7' fill='%23FAF9F6'/%3E%3Crect x='9.5' y='9.5' width='3' height='10.5' fill='%23FAF9F6'/%3E%3Crect x='14.5' y='15' width='3' height='5' fill='%23FAF9F6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="/assets/chrome.css?v=4eeb2abd">
-<link rel="stylesheet" href="/assets/site.css?v=86e9f2ee">
+<link rel="stylesheet" href="/assets/chrome.css?v=4f9c136c">
+<link rel="stylesheet" href="/assets/site.css?v=528e76b9">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/method/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/method/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/method/">
@@ -69,6 +69,7 @@ t      = Sharpe × √(years of data)</div>
 <p>t is computed from those weekly returns with a Student’s t correction for the record’s effective length, then put on the normal scale. A wallet found on a leaderboard of N accounts needs bar(N) from section 3. That bar treats the N accounts as independent; accounts that trade alike are fewer independent bets, which would lower it (about 2.6 for Hyperliquid by our rough estimate, an order of magnitude rather than a measurement). We show both.</p>
 <p><strong>Not the Deflated Sharpe Ratio.</strong> Bailey &amp; López de Prado’s DSR deflates a Sharpe ratio for the number of trials using the spread of Sharpe ratios across those trials, and adjusts for skew and fat tails. We do something simpler: a small-sample t and a Bonferroni bar for best-of-N, which needs only N and is conservative when the trials are correlated. The name is about deflating evidence, not a claim to implement DSR.</p>
 <p>What a wallet check counts: perps and the spot account, including HIP-4 outcome contracts; not HyperEVM. Vaults are scored on the vault’s own PnL, before the leader’s profit share, and labelled as vaults on the boards.</p>
+<p><strong>Drawdown reading.</strong> Next to t, the wallet page shows how far the record is below its own peak, as the sum of the weekly returns since the peak, and the share of time a record with the same measured weekly mean m and variance s² would spend at least that far down: exp(−2m(d + 0.5826 s)/s²) for a drawdown d. That is the stationary drawdown of a random walk with drift, with Siegmund’s correction for sampling once a week; without it the share is up to 1.6 times too high at a Sharpe of 3. The edge is measured on the same record, so the reading leans toward calling a drawdown unusual.</p>
 
 <h2 id="principles">Principles</h2>
 <ul>
@@ -86,6 +87,8 @@ t      = Sharpe × √(years of data)</div>
  <li>It does not detect leakage inside a model; it bounds where leakage cannot be excluded.</li>
  <li>It uses only what a project or board publishes.</li>
  <li>The Hyperliquid wallet check counts what Hyperliquid records for the account: perps and spot, including HIP-4 outcome contracts. Activity on HyperEVM is not included.</li>
+ <li>A wallet check measures the evidence in a record, not what copying it would return. A copier trades later and at another size; the shorter the holding period, the more the delay costs (one manager’s example: a strategy that loses 20% of its PnL when delayed by 15 minutes, <a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">source</a>).</li>
+ <li>The tail notes read the shape of past weeks. A strategy that sells tail risk and scales its positions to recent volatility can keep that shape ordinary until a large loss and, scaled down, around it.</li>
 </ul>
 
 <h2 id="reading">Further reading</h2>

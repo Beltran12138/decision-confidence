@@ -515,6 +515,7 @@ t      = Sharpe × √(years of data)</div>
 <p>t is computed from those weekly returns with a Student’s t correction for the record’s effective length, then put on the normal scale. A wallet found on a leaderboard of N accounts needs bar(N) from section 3. That bar treats the N accounts as independent; accounts that trade alike are fewer independent bets, which would lower it (about 2.6 for Hyperliquid by our rough estimate, an order of magnitude rather than a measurement). We show both.</p>
 <p><strong>Not the Deflated Sharpe Ratio.</strong> Bailey &amp; López de Prado’s DSR deflates a Sharpe ratio for the number of trials using the spread of Sharpe ratios across those trials, and adjusts for skew and fat tails. We do something simpler: a small-sample t and a Bonferroni bar for best-of-N, which needs only N and is conservative when the trials are correlated. The name is about deflating evidence, not a claim to implement DSR.</p>
 <p>What a wallet check counts: perps and the spot account, including HIP-4 outcome contracts; not HyperEVM. Vaults are scored on the vault’s own PnL, before the leader’s profit share, and labelled as vaults on the boards.</p>
+<p><strong>Drawdown reading.</strong> Next to t, the wallet page shows how far the record is below its own peak, as the sum of the weekly returns since the peak, and the share of time a record with the same measured weekly mean m and variance s² would spend at least that far down: exp(−2m(d + 0.5826 s)/s²) for a drawdown d. That is the stationary drawdown of a random walk with drift, with Siegmund’s correction for sampling once a week; without it the share is up to 1.6 times too high at a Sharpe of 3. The edge is measured on the same record, so the reading leans toward calling a drawdown unusual.</p>
 
 <h2 id="principles">Principles</h2>
 <ul>
@@ -532,6 +533,8 @@ t      = Sharpe × √(years of data)</div>
  <li>It does not detect leakage inside a model; it bounds where leakage cannot be excluded.</li>
  <li>It uses only what a project or board publishes.</li>
  <li>The Hyperliquid wallet check counts what Hyperliquid records for the account: perps and spot, including HIP-4 outcome contracts. Activity on HyperEVM is not included.</li>
+ <li>A wallet check measures the evidence in a record, not what copying it would return. A copier trades later and at another size; the shorter the holding period, the more the delay costs (one manager’s example: a strategy that loses 20% of its PnL when delayed by 15 minutes, <a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">source</a>).</li>
+ <li>The tail notes read the shape of past weeks. A strategy that sells tail risk and scales its positions to recent volatility can keep that shape ordinary until a large loss and, scaled down, around it.</li>
 </ul>
 
 <h2 id="reading">Further reading</h2>
@@ -635,6 +638,13 @@ WALLET_T_EN = {
               "one_week_majority": "One week produced more than half of all the gains. The record rests mostly on that week.",
               "pnl_outside_record": "Most of the all-time PnL was booked in periods that started with under $1,000 in the account, so it cannot be turned into a return. The verdict covers only the weeks that can be measured."},
     "wnote": "History from {start}. Read {now} UTC from api.hyperliquid.xyz.",
+    "dd": {"peak": "At its peak now. Deepest drawdown so far: weekly returns adding up to −{deep}%.",
+           "below": "Below its peak: since then, its weekly returns add up to −{now}%, over {wk} weeks. Deepest so far, measured the same way: −{deep}%.",
+           "share": " If the edge is what the record shows, a record like this spends {share}% of its time at least this far down: {read}",
+           "ordinary": "an ordinary drawdown for it.",
+           "unusual": "unusual, though not out of line.",
+           "rare": "rare. Either bad luck, or the edge is smaller than the record shows.",
+           "noEdge": " The record shows no positive edge, so no drawdown is ordinary for it."},
     "unitAcct": "accounts", "unitVault": "vaults",
     "vault": "This is a vault: {name}. The leader holds {lf}% of it and takes {c}% of depositors' profits; the score is on the vault's PnL before that cut.",
     "vaultBar": " Its bar assumes it was picked from the {NV} vaults Hyperliquid lists, open and closed.",
@@ -737,6 +747,9 @@ def build_wallet():
   </div>
  </div>
  <ul class="wflags" id="wflags"></ul>
+ <div class="wdd" id="wdd" hidden><p id="wddt"></p>
+  <p class="muted small">Holding it now? The edge is measured on this same record, usually one found for being good, so it is more likely too high than too low; with a smaller true edge, drawdowns are more common than this says. A reading, not a signal to hold or sell.</p></div>
+ <p class="muted small" style="margin-top:10px">t is about the record, not about what copying it would earn. A copier trades after the trader and at a different size; the shorter the holding period, the more of the edge that delay costs.</p>
  <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">Copy link to this result</span><span class="ok">Copied</span></button>
   <a class="btn btn-secondary" id="whl" href="#" rel="noopener">Open on Hyperliquid</a></div>
  <p class="muted small" id="wnote"></p>
@@ -759,7 +772,9 @@ def build_wallet():
  <p><strong>Weekly, because the history is.</strong> Hyperliquid keeps older history about a week apart and recent history minutes apart. Everything is put on one weekly grid; a week with no new data point is merged into the next one, not counted as a zero.</p>
  <p><strong>Short records are not over-read.</strong> A t computed from a handful of weeks has fat tails: with eight weeks and no skill at all, t ≥ 2 turns up about twice as often as the bar assumes. So t is taken from Student’s t with the record’s effective degrees of freedom (fewer when a few long gaps carry the record) and put back on the usual scale. For a long record it is close to Sharpe × √years; for a short one it is lower. Tested: with no skill, the share of records reaching 2 stays at the nominal 2.3% however sparsely the history was sampled.</p>
  <p><strong>Two bars.</strong> If you came to this wallet with no prior selection, t ≥ 2 is the usual bar. If you found it by sorting a leaderboard, you picked the best of many, and the bar rises with the number you picked from (Bonferroni on {pnl['ranked_from']:,} accounts: {pnl['t_bar_best_of_n']:.2f}). Most people find wallets on leaderboards. That bar counts every account as independent; accounts that trade alike are fewer independent bets, which would lower it to about 2.6 by our <a href="https://github.com/Beltran12138/evidence-deflator#a-track-record-with-no-model-behind-it">rough estimate</a> (an order of magnitude, not a measurement).</p>
- <p><strong>What t cannot see.</strong> Tail risk that has not happened yet. A strategy that sells insurance can show no losing week for a long time. Where the record has no losing week, or one week made most of the gains, the page says so.</p>
+ <p><strong>What t cannot see.</strong> Tail risk that has not happened yet. A strategy that sells insurance can show no losing week for a long time. Where the record has no losing week, or one week made most of the gains, the page says so. A seller that scales its positions to recent volatility can keep its weeks looking ordinary before a large loss and, scaled down, around it, so these notes can miss it.</p>
+ <p><strong>The drawdown reading.</strong> Most money arrives after a strong run and leaves in the drawdown that follows, which is often an ordinary one; the gap between a strategy’s return and its investors’ return is, in one manager’s words, “usually the biggest cost” (<a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">Patrick Welton on Top Traders Unplugged</a>). So the page says how far the record is below its own peak, in weekly returns added up since the peak (the same returns t uses; compounding would describe a portfolio nobody held, since accounts add and withdraw money), and how much of its time a record with the same measured edge and volatility spends at least that far down. Under 2% is rare enough to doubt the edge; 10% or more is ordinary. The share comes from the drawdown distribution of a random walk with that drift, corrected for weekly sampling, and is checked against simulation.</p>
+ <p><strong>Evidence is not what a copier gets.</strong> t measures the record the trader made. A copier enters after the trader, at another size and with other fees; the shorter the holding period, the more of the edge the delay costs, and a size that works for $50k may move the market at $5M. A record that clears the bar is evidence about the trader, not a forecast of your return.</p>
  <p><strong>What it counts.</strong> The PnL Hyperliquid records for the account: perps and the spot account, which holds HIP-4 outcome contracts. Trading on HyperEVM, such as Papertrade or HyperEVM options protocols, is not in it. A wallet that sells options on HyperEVM and hedges with perps shows only the hedge.</p>
  <p class="muted small">Not investment advice. Public data from <code>api.hyperliquid.xyz</code>, fetched by your browser. {PRIVACY} Method: <a href="/method/">Method</a>, Lo (2002), Bailey &amp; López de Prado (2014).</p>
 </div></section>

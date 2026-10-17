@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css?v=4f9c136c">
-<link rel="stylesheet" href="/assets/site.css?v=86e9f2ee">
+<link rel="stylesheet" href="/assets/site.css?v=528e76b9">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/wallet/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/">
@@ -61,6 +61,9 @@
   </div>
  </div>
  <ul class="wflags" id="wflags"></ul>
+ <div class="wdd" id="wdd" hidden><p id="wddt"></p>
+  <p class="muted small">正持有它？优势是在同一份记录上量出来的，而这份记录通常是因为表现好才被找到的，所以更可能偏高而不是偏低；真实优势更小的话，回撤会比这里说的更常见。这是一个读数，不是持有或卖出的信号。</p></div>
+ <p class="muted small" style="margin-top:10px">t 说的是这份记录本身，不是跟单能赚多少。跟单者总在交易者之后下单，规模也不同；持仓越短，这段延迟吃掉的优势越多。</p>
  <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">复制这个结果的链接</span><span class="ok">已复制</span></button>
   <a class="btn btn-secondary" id="whl" href="#" rel="noopener">在 Hyperliquid 上查看</a></div>
  <p class="muted small" id="wnote"></p>
@@ -95,7 +98,9 @@
  <p><strong>按周算，因为历史数据就是这样存的。</strong>Hyperliquid 较早的历史大约一周一个点，最近的几分钟一个点。所有数据放到同一个周网格上；没有新数据点的周并入下一周，不记为零。</p>
  <p><strong>短记录不会被高估。</strong>只有几周数据算出来的 t 尾部很厚：8 周记录、完全没有实力，t ≥ 2 出现的频率大约是门槛假设的两倍。所以 t 取自按记录有效自由度计算的 Student t 分布（靠少数几段长间隔撑起来的记录，自由度更低），再换回常用的尺度。记录长时，它接近 夏普 × √年数；记录短时会更低。已检验：没有实力时，无论历史采样多稀疏，达到 2 的比例都保持在名义上的 2.3%。</p>
  <p><strong>两个门槛。</strong>如果你没有经过任何筛选就来看这个钱包，t ≥ 2 是常用门槛。如果你是在排行榜上排序找到它的，你就是从很多个里挑了最好的那个，门槛会随候选数量上升（对 47,248 个账户做 Bonferroni 校正：4.90）。大多数人都是在排行榜上找到钱包的。这个门槛把每个账户都当作独立的；做法相近的账户其实算不上那么多次独立下注，考虑这一点门槛会降到约 2.6，但这只是<a href="https://github.com/Beltran12138/evidence-deflator#a-track-record-with-no-model-behind-it">粗估</a>（数量级，不是测量值）。</p>
- <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。</p>
+ <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。按近期波动率调整仓位的卖方，在大亏之前、以及缩小仓位后的大亏前后，每周看起来都可能很正常，这些提示可能抓不到它。</p>
+ <p><strong>回撤读数。</strong>大多数钱是在一段好表现之后进来的，又在随后的回撤里离开，而那次回撤往往很正常。一位基金经理说，策略收益和投资者实际收益之间的差距「通常是最大的成本」（<a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">Patrick Welton，Top Traders Unplugged</a>）。所以页面会显示记录现在比自己的峰值低多少（把峰值以来的周收益率直接相加，和 t 用的是同一组收益率；账户会充值和提现，复利算出来的是一个没人真正持有过的组合），以及优势和波动都与它相同的记录，有多少比例的时间至少处在这么深的回撤里。低于 2% 少见到足以怀疑优势；10% 以上算正常。这个比例来自带漂移随机游走的回撤分布，针对按周采样做了修正，并用模拟核对过。</p>
+ <p><strong>证据不等于跟单能拿到的结果。</strong>t 衡量的是交易者自己做出的记录。跟单者在交易者之后入场，规模和费用都不同；持仓越短，延迟吃掉的优势越多，$5 万能做的规模放到 $500 万可能会推动价格。过了门槛的记录是关于这个交易者的证据，不是对你收益的预测。</p>
  <p><strong>算进了什么。</strong>Hyperliquid 为这个账户记录的盈亏：永续，以及现货账户（HIP-4 结果合约也记在这里）。HyperEVM 上的交易不在其中，比如 Papertrade 或 HyperEVM 上的期权协议。在 HyperEVM 上卖期权、用永续对冲的钱包，这里只看得到对冲那一侧。</p>
  <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。地址不会发送给我们。我们用 Cloudflare Web Analytics 统计页面访问，不使用 cookie；每完成一次检验，页面会向我们的接口记一次数，只带页面语言，不带别的。 方法：<a href="/zh-hans/method/">方法</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
 </div></section>
@@ -111,8 +116,8 @@
 <div class="foot-note"><span>开源 · MIT · v0.2.0</span><span>统计估计，不构成投资建议。</span></div>
 </div></footer>
 <script src="/assets/site.js"></script>
-<script src="/assets/site.js"></script><script src="/assets/hl.js?v=103d4b71"></script>
-<script>window.WALLET = {"N": 47248, "NV": 9478, "T": {"say": {"loses": ["亏损，而且不是运气差", "tag-red", "t 不高于 −2：在能测量的那些周里，这个钱包亏得太稳定，运气解释不了。"], "luck": ["和运气分不开", "tag-red", "t 低于 2：这样的记录靠运气出现的频率太高，说明不了实力。"], "clears_single": ["过了单次检验，没过排行榜门槛", "tag-amber", "如果你是随手挑中这个钱包的，这个强度够了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["过了排行榜门槛", "tag-green", "即使考虑到它是从 {N} 个{U}里挑出来的，这份记录也够强。"], "too_short": ["记录太短，还说不了", "tag-grey", "账户里至少有 $1,000 的历史不足 8 周。"]}, "tag": {"loses": "亏损", "luck": "运气", "clears_single": "单次通过", "clears_board": "过门槛", "too_short": "太短"}, "meterAria": "t 与两个门槛", "meterT2": "t = 2 · 单次检验", "meterBest": "{N} 选 1 · {bar}", "notAddr": ["这不是 Hyperliquid 地址", "应为 0x 加 40 位十六进制字符。"], "reading": "正在读取公开记录…", "noReach": "连不上 Hyperliquid", "noHist": "这个地址没有历史记录", "months": {"noSharpe": "至少要有 8 周记录才能估计", "never": ["永远", "夏普为零或负数时，多长的记录都过不了门槛"], "done": "个月：记录已经过了排行榜门槛", "more": "如果夏普保持不变，过排行榜门槛还需要的记录", "yr": " 年", "mo": " 个月"}, "notes": {"no_losing_week": "记录里没有一个亏损周。这和做市、吃资金费率或卖尾部风险的策略一致；t 衡量的是稳定性，不是一笔还没发生的亏损有多大。", "one_week_majority": "单独一周贡献了一半以上的收益，这份记录主要靠那一周撑着。", "pnl_outside_record": "全期盈亏的大部分记在账户不足 $1,000 的时段，无法换算成收益率。结论只覆盖能测量的那些周。"}, "wnote": "历史起于 {start}。{now} UTC 读取自 api.hyperliquid.xyz。", "unitAcct": "账户", "unitVault": "金库（vault）", "vault": "这是一个金库（vault）：{name}。管理人自己持有 {lf}%，从存款人的盈利里抽 {c}%；分数按金库抽成前的盈亏计算。", "vaultBar": "门槛按「从 Hyperliquid 列出的 {NV} 个金库里挑出」计算，包括已关闭的。", "selfPath": "/zh-hans/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=zh-hans"}};</script>
-<script src="/assets/wallet.js?v=6f2392ea"></script>
+<script src="/assets/site.js"></script><script src="/assets/hl.js?v=222fe2a9"></script>
+<script>window.WALLET = {"N": 47248, "NV": 9478, "T": {"say": {"loses": ["亏损，而且不是运气差", "tag-red", "t 不高于 −2：在能测量的那些周里，这个钱包亏得太稳定，运气解释不了。"], "luck": ["和运气分不开", "tag-red", "t 低于 2：这样的记录靠运气出现的频率太高，说明不了实力。"], "clears_single": ["过了单次检验，没过排行榜门槛", "tag-amber", "如果你是随手挑中这个钱包的，这个强度够了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["过了排行榜门槛", "tag-green", "即使考虑到它是从 {N} 个{U}里挑出来的，这份记录也够强。"], "too_short": ["记录太短，还说不了", "tag-grey", "账户里至少有 $1,000 的历史不足 8 周。"]}, "tag": {"loses": "亏损", "luck": "运气", "clears_single": "单次通过", "clears_board": "过门槛", "too_short": "太短"}, "meterAria": "t 与两个门槛", "meterT2": "t = 2 · 单次检验", "meterBest": "{N} 选 1 · {bar}", "notAddr": ["这不是 Hyperliquid 地址", "应为 0x 加 40 位十六进制字符。"], "reading": "正在读取公开记录…", "noReach": "连不上 Hyperliquid", "noHist": "这个地址没有历史记录", "months": {"noSharpe": "至少要有 8 周记录才能估计", "never": ["永远", "夏普为零或负数时，多长的记录都过不了门槛"], "done": "个月：记录已经过了排行榜门槛", "more": "如果夏普保持不变，过排行榜门槛还需要的记录", "yr": " 年", "mo": " 个月"}, "notes": {"no_losing_week": "记录里没有一个亏损周。这和做市、吃资金费率或卖尾部风险的策略一致；t 衡量的是稳定性，不是一笔还没发生的亏损有多大。", "one_week_majority": "单独一周贡献了一半以上的收益，这份记录主要靠那一周撑着。", "pnl_outside_record": "全期盈亏的大部分记在账户不足 $1,000 的时段，无法换算成收益率。结论只覆盖能测量的那些周。"}, "wnote": "历史起于 {start}。{now} UTC 读取自 api.hyperliquid.xyz。", "dd": {"peak": "现在处在峰值。历史最深回撤：周收益率累计 −{deep}%。", "below": "低于峰值：峰值以来的周收益率加起来是 −{now}%，已持续 {wk} 周。按同样方法量，历史最深回撤：−{deep}%。", "share": "如果优势就是记录显示的这么大，这样的记录有 {share}% 的时间至少处在这么深的回撤里：{read}", "ordinary": "对它来说是正常回撤。", "unusual": "少见，但不算离谱。", "rare": "很少见。要么是运气差，要么优势比记录显示的小。", "noEdge": "记录没有显示正的优势，所以对它来说没有哪种回撤算正常。"}, "unitAcct": "账户", "unitVault": "金库（vault）", "vault": "这是一个金库（vault）：{name}。管理人自己持有 {lf}%，从存款人的盈利里抽 {c}%；分数按金库抽成前的盈亏计算。", "vaultBar": "门槛按「从 Hyperliquid 列出的 {NV} 个金库里挑出」计算，包括已关闭的。", "selfPath": "/zh-hans/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=zh-hans"}};</script>
+<script src="/assets/wallet.js?v=307f40cf"></script>
 </body>
 </html>

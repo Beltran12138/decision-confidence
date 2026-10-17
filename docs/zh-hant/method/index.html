@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css?v=4f9c136c">
-<link rel="stylesheet" href="/assets/site.css?v=86e9f2ee">
+<link rel="stylesheet" href="/assets/site.css?v=528e76b9">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/method/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/method/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/method/">
@@ -44,6 +44,7 @@
 <p><strong>出入金怎麼處理。</strong>每週收益率 = 這一週 Hyperliquid 為帳戶記錄的盈虧變化 ÷ 週初的帳戶價值。Hyperliquid 的盈虧記錄不含充值和提現，所以資金進出只改變帳戶價值，永遠不會被算成盈利或虧損；但它會改變之後幾週的分母，收益率總是相對於當週開始時帳戶裏的錢來算。週初帳戶不足 $1,000 的週不計入，因為本金太小，普通的金額波動會變成極端的收益率；大部分盈虧落在這些週裏時，頁面會標出來。</p>
 <p><strong>門檻的兩種算法。</strong>Bonferroni 門檻把榜上所有帳戶當作相互獨立；交易方式相近的帳戶其實是更少的獨立下注，門檻會因此降低（Hyperliquid 按我們的粗估約 2.6，是數量級，不是測量）。兩種我們都列出。</p>
 <p><strong>不是 Deflated Sharpe Ratio。</strong>Bailey 與 López de Prado 的 DSR 用各次嘗試之間夏普比率的離散程度來折算嘗試次數，並校正偏度和厚尾。我們做的更簡單：小樣本 t 加上 best-of-N 的 Bonferroni 門檻，只需要知道 N，在嘗試之間相關時偏保守。名字裏的 Deflator 指給證據打折，不表示實現了 DSR。</p>
+<p><strong>回撤讀數。</strong>錢包頁在 t 旁邊顯示記錄比自己的峯值低多少（峯值以來週收益率之和），以及週均值 m、週方差 s² 與它相同的記錄，有多少比例的時間至少處在這麼深的回撤裏：回撤為 d 時是 exp(−2m(d + 0.5826 s)/s²)。這是帶漂移隨機遊走的平穩回撤分佈，加上 Siegmund 針對每週採樣一次的修正；不修正的話，夏普為 3 時比例會高估到 1.6 倍。優勢是在同一份記錄上量的，所以這個讀數偏向把回撤判為少見。</p>
 
 <h2 id="open-book">1 · 開卷月數</h2>
 <p>在模型官方公佈的訓練截止日把回測窗口切開。截止日當月及之前的月份，無法排除被模型見過：模型可能已經知道當時發生了什麼。截止日之後的月份才是乾淨的。</p>
@@ -88,6 +89,8 @@ t    = 夏普 × √(數據年數)</div>
  <li>它不檢測模型內部的泄漏，只劃出無法排除泄漏的範圍。</li>
  <li>它只用項目或榜單自己公開的東西。</li>
  <li>Hyperliquid 錢包檢驗統計的是 Hyperliquid 為帳戶記錄的內容：永續和現貨，包括 HIP-4 結果合約。HyperEVM 上的活動不在其中。</li>
+ <li>錢包檢驗衡量的是記錄裏的證據，不是跟單能拿到的回報。跟單者下單更晚、規模不同；持倉越短，延遲的代價越大（一位基金經理舉的例子：延遲 15 分鐘就損失 20% 盈虧的策略，<a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">來源</a>）。</li>
+ <li>尾部提示看的是過去各週的形狀。賣尾部風險、又按近期波動率調整倉位的策略，可以在大虧之前、以及縮小倉位後的大虧前後，一直保持正常的形狀。</li>
 </ul>
 
 <h2 id="reading">延伸閱讀</h2>

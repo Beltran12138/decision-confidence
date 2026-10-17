@@ -111,6 +111,13 @@ WALLET_T = {
               "one_week_majority": "单独一周贡献了一半以上的收益，这份记录主要靠那一周撑着。",
               "pnl_outside_record": "全期盈亏的大部分记在账户不足 $1,000 的时段，无法换算成收益率。结论只覆盖能测量的那些周。"},
     "wnote": "历史起于 {start}。{now} UTC 读取自 api.hyperliquid.xyz。",
+    "dd": {"peak": "现在处在峰值。历史最深回撤：周收益率累计 −{deep}%。",
+           "below": "低于峰值：峰值以来的周收益率加起来是 −{now}%，已持续 {wk} 周。按同样方法量，历史最深回撤：−{deep}%。",
+           "share": "如果优势就是记录显示的这么大，这样的记录有 {share}% 的时间至少处在这么深的回撤里：{read}",
+           "ordinary": "对它来说是正常回撤。",
+           "unusual": "少见，但不算离谱。",
+           "rare": "很少见。要么是运气差，要么优势比记录显示的小。",
+           "noEdge": "记录没有显示正的优势，所以对它来说没有哪种回撤算正常。"},
     "unitAcct": "账户", "unitVault": "金库（vault）",
     "vault": "这是一个金库（vault）：{name}。管理人自己持有 {lf}%，从存款人的盈利里抽 {c}%；分数按金库抽成前的盈亏计算。",
     "vaultBar": "门槛按「从 Hyperliquid 列出的 {NV} 个金库里挑出」计算，包括已关闭的。",
@@ -202,6 +209,9 @@ def wallet_page(B, hl, lang):
   </div>
  </div>
  <ul class="wflags" id="wflags"></ul>
+ <div class="wdd" id="wdd" hidden><p id="wddt"></p>
+  <p class="muted small">正持有它？优势是在同一份记录上量出来的，而这份记录通常是因为表现好才被找到的，所以更可能偏高而不是偏低；真实优势更小的话，回撤会比这里说的更常见。这是一个读数，不是持有或卖出的信号。</p></div>
+ <p class="muted small" style="margin-top:10px">t 说的是这份记录本身，不是跟单能赚多少。跟单者总在交易者之后下单，规模也不同；持仓越短，这段延迟吃掉的优势越多。</p>
  <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">复制这个结果的链接</span><span class="ok">已复制</span></button>
   <a class="btn btn-secondary" id="whl" href="#" rel="noopener">在 Hyperliquid 上查看</a></div>
  <p class="muted small" id="wnote"></p>
@@ -224,7 +234,9 @@ def wallet_page(B, hl, lang):
  <p><strong>按周算，因为历史数据就是这样存的。</strong>Hyperliquid 较早的历史大约一周一个点，最近的几分钟一个点。所有数据放到同一个周网格上；没有新数据点的周并入下一周，不记为零。</p>
  <p><strong>短记录不会被高估。</strong>只有几周数据算出来的 t 尾部很厚：8 周记录、完全没有实力，t ≥ 2 出现的频率大约是门槛假设的两倍。所以 t 取自按记录有效自由度计算的 Student t 分布（靠少数几段长间隔撑起来的记录，自由度更低），再换回常用的尺度。记录长时，它接近 夏普 × √年数；记录短时会更低。已检验：没有实力时，无论历史采样多稀疏，达到 2 的比例都保持在名义上的 2.3%。</p>
  <p><strong>两个门槛。</strong>如果你没有经过任何筛选就来看这个钱包，t ≥ 2 是常用门槛。如果你是在排行榜上排序找到它的，你就是从很多个里挑了最好的那个，门槛会随候选数量上升（对 {N:,} 个账户做 Bonferroni 校正：{bar:.2f}）。大多数人都是在排行榜上找到钱包的。这个门槛把每个账户都当作独立的；做法相近的账户其实算不上那么多次独立下注，考虑这一点门槛会降到约 2.6，但这只是<a href="https://github.com/Beltran12138/evidence-deflator#a-track-record-with-no-model-behind-it">粗估</a>（数量级，不是测量值）。</p>
- <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。</p>
+ <p><strong>t 看不到什么。</strong>还没发生的尾部风险。卖保险式的策略可以很长时间没有一个亏损周。记录里没有亏损周、或者某一周贡献了大部分收益时，页面会标出来。按近期波动率调整仓位的卖方，在大亏之前、以及缩小仓位后的大亏前后，每周看起来都可能很正常，这些提示可能抓不到它。</p>
+ <p><strong>回撤读数。</strong>大多数钱是在一段好表现之后进来的，又在随后的回撤里离开，而那次回撤往往很正常。一位基金经理说，策略收益和投资者实际收益之间的差距「通常是最大的成本」（<a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">Patrick Welton，Top Traders Unplugged</a>）。所以页面会显示记录现在比自己的峰值低多少（把峰值以来的周收益率直接相加，和 t 用的是同一组收益率；账户会充值和提现，复利算出来的是一个没人真正持有过的组合），以及优势和波动都与它相同的记录，有多少比例的时间至少处在这么深的回撤里。低于 2% 少见到足以怀疑优势；10% 以上算正常。这个比例来自带漂移随机游走的回撤分布，针对按周采样做了修正，并用模拟核对过。</p>
+ <p><strong>证据不等于跟单能拿到的结果。</strong>t 衡量的是交易者自己做出的记录。跟单者在交易者之后入场，规模和费用都不同；持仓越短，延迟吃掉的优势越多，$5 万能做的规模放到 $500 万可能会推动价格。过了门槛的记录是关于这个交易者的证据，不是对你收益的预测。</p>
  <p><strong>算进了什么。</strong>Hyperliquid 为这个账户记录的盈亏：永续，以及现货账户（HIP-4 结果合约也记在这里）。HyperEVM 上的交易不在其中，比如 Papertrade 或 HyperEVM 上的期权协议。在 HyperEVM 上卖期权、用永续对冲的钱包，这里只看得到对冲那一侧。</p>
  <p class="muted small">不构成投资建议。公开数据来自 <code>api.hyperliquid.xyz</code>，由你的浏览器直接读取。{PRIVACY} 方法：<a href="{P}method/">方法</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
 </div></section>
@@ -323,6 +335,7 @@ def method_page(B, lang):
 <p><strong>出入金怎么处理。</strong>每周收益率 = 这一周 Hyperliquid 为账户记录的盈亏变化 ÷ 周初的账户价值。Hyperliquid 的盈亏记录不含充值和提现，所以资金进出只改变账户价值，永远不会被算成盈利或亏损；但它会改变之后几周的分母，收益率总是相对于当周开始时账户里的钱来算。周初账户不足 $1,000 的周不计入，因为本金太小，普通的金额波动会变成极端的收益率；大部分盈亏落在这些周里时，页面会标出来。</p>
 <p><strong>门槛的两种算法。</strong>Bonferroni 门槛把榜上所有账户当作相互独立；交易方式相近的账户其实是更少的独立下注，门槛会因此降低（Hyperliquid 按我们的粗估约 2.6，是数量级，不是测量）。两种我们都列出。</p>
 <p><strong>不是 Deflated Sharpe Ratio。</strong>Bailey 与 López de Prado 的 DSR 用各次尝试之间夏普比率的离散程度来折算尝试次数，并校正偏度和厚尾。我们做的更简单：小样本 t 加上 best-of-N 的 Bonferroni 门槛，只需要知道 N，在尝试之间相关时偏保守。名字里的 Deflator 指给证据打折，不表示实现了 DSR。</p>
+<p><strong>回撤读数。</strong>钱包页在 t 旁边显示记录比自己的峰值低多少（峰值以来周收益率之和），以及周均值 m、周方差 s² 与它相同的记录，有多少比例的时间至少处在这么深的回撤里：回撤为 d 时是 exp(−2m(d + 0.5826 s)/s²)。这是带漂移随机游走的平稳回撤分布，加上 Siegmund 针对每周采样一次的修正；不修正的话，夏普为 3 时比例会高估到 1.6 倍。优势是在同一份记录上量的，所以这个读数偏向把回撤判为少见。</p>
 
 <h2 id="open-book">1 · 开卷月数</h2>
 <p>在模型官方公布的训练截止日把回测窗口切开。截止日当月及之前的月份，无法排除被模型见过：模型可能已经知道当时发生了什么。截止日之后的月份才是干净的。</p>
@@ -367,6 +380,8 @@ t    = 夏普 × √(数据年数)</div>
  <li>它不检测模型内部的泄漏，只划出无法排除泄漏的范围。</li>
  <li>它只用项目或榜单自己公开的东西。</li>
  <li>Hyperliquid 钱包检验统计的是 Hyperliquid 为账户记录的内容：永续和现货，包括 HIP-4 结果合约。HyperEVM 上的活动不在其中。</li>
+ <li>钱包检验衡量的是记录里的证据，不是跟单能拿到的回报。跟单者下单更晚、规模不同；持仓越短，延迟的代价越大（一位基金经理举的例子：延迟 15 分钟就损失 20% 盈亏的策略，<a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">来源</a>）。</li>
+ <li>尾部提示看的是过去各周的形状。卖尾部风险、又按近期波动率调整仓位的策略，可以在大亏之前、以及缩小仓位后的大亏前后，一直保持正常的形状。</li>
 </ul>
 
 <h2 id="reading">延伸阅读</h2>

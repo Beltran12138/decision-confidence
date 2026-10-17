@@ -108,6 +108,35 @@ const HL = (() => {
             dof: Math.round(dof * 10) / 10, t: r3(tToZ(tStudent, dof))};
   }
 
+  // Where the record stands against its own peak, and how ordinary that is if its edge is real.
+  // The path adds up the scored weekly returns (the same arithmetic returns t is built from; most
+  // accounts add and withdraw money, so compounding would describe a portfolio nobody held). For a
+  // path drifting at m per week with variance s2 per week, the distance below the running peak
+  // settles to an exponential with rate 2m/s2, so
+  // the share of time spent at least d below the peak is exp(-2 m d / s2). Measured weekly, the
+  // walk overshoots the peak between samples; Siegmund's correction (d + 0.5826 s) keeps the share
+  // within about 2% of simulation up to Sharpe 3, where the plain formula is 1.6x too high.
+  // m and s2 are measured on the same record (same estimator as score). Same as drawdown() in
+  // src/hl_wallet.py.
+  const SIEGMUND = 0.5826;  // -zeta(1/2) / sqrt(2 pi)
+  function drawdown(rets) {
+    const n = rets.length;
+    if (n < MIN_WEEKS) return null;
+    let w = 0, peak = 0, maxDd = 0, since = 0, R = 0, W = 0;
+    for (const [r, dt] of rets) {
+      w += r; R += r; W += dt;
+      if (w >= peak) { peak = w; since = 0; } else since += dt;
+      maxDd = Math.max(maxDd, peak - w);
+    }
+    const mu = R / W;
+    let ss = 0, s2 = 0;
+    for (const [r, dt] of rets) { ss += (r - mu * dt) ** 2; s2 += dt * dt; }
+    const eff = W - s2 / W, v = eff > 0 ? ss / eff : 0, m = mu, d = peak - w;
+    const r4 = x => Math.round(x * 1e4) / 1e4;
+    return {now: r4(d), weeks_below: Math.round(since * 10) / 10, deepest: r4(maxDd),
+            share_if_real: !(m > 0 && v > 0) ? null : d === 0 ? 1 : r4(Math.exp(-2 * m * (d + SIEGMUND * Math.sqrt(v)) / v))};
+  }
+
   // Things t cannot see, reported next to it. Same rules as flags() in the Python builder.
   function flags(pf, rets, counted) {
     const out = [];
@@ -148,6 +177,6 @@ const HL = (() => {
     } catch (e) { return null; }
   }
 
-  return {WEEK_MS, MIN_WEEKS, bar, monthsToClear, weeklyReturns, score, flags, verdict, fetchPortfolio, fetchVault, cdf, inv, tToZ};
+  return {WEEK_MS, MIN_WEEKS, bar, monthsToClear, weeklyReturns, score, drawdown, flags, verdict, fetchPortfolio, fetchVault, cdf, inv, tToZ};
 })();
 if (typeof module !== 'undefined') module.exports = HL;

@@ -55,6 +55,15 @@
   else if (need <= have) { $('wm').textContent = '0'; $('wml').textContent = M.done; }
   else { const m = need - have; $('wm').textContent = m >= 1188 ? '> 99' + M.yr : m >= 24 ? (m / 12).toFixed(1) + M.yr : Math.round(m) + M.mo; $('wml').textContent = M.more; }
   $('wflags').innerHTML = fl.map(k => `<li>${T.notes[k]}</li>`).join('');
+  // where the record stands against its own peak, and how ordinary that is for its measured edge
+  const dd = HL.drawdown(rets), D = T.dd, pc = x => (100 * x).toFixed(1);
+  $('wdd').hidden = !dd;
+  if (dd) {
+   let s = dd.now === 0 ? fill(D.peak, {deep: pc(dd.deepest)}) : fill(D.below, {now: pc(dd.now), wk: dd.weeks_below, deep: pc(dd.deepest)});
+   if (dd.now > 0) s += dd.share_if_real == null ? D.noEdge : fill(D.share, {share: dd.share_if_real < 0.01 ? '<1' : Math.round(100 * dd.share_if_real),
+     read: dd.share_if_real >= 0.10 ? D.ordinary : dd.share_if_real >= 0.02 ? D.unusual : D.rare});
+   $('wddt').textContent = s;
+  }
   $('wcopy').dataset.copy = location.origin + T.selfPath + '?a=' + a;
   $('wnote').textContent = start ? fill(T.wnote, {start: new Date(start).toISOString().slice(0, 10), now: new Date().toISOString().slice(0, 16).replace('T', ' ')}) : '';
   return true;

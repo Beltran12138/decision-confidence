@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="/assets/chrome.css?v=4f9c136c">
-<link rel="stylesheet" href="/assets/site.css?v=86e9f2ee">
+<link rel="stylesheet" href="/assets/site.css?v=528e76b9">
 <link rel="alternate" hreflang="en" href="https://evidencedeflator.com/wallet/">
 <link rel="alternate" hreflang="zh-Hans" href="https://evidencedeflator.com/zh-hans/">
 <link rel="alternate" hreflang="zh-Hant" href="https://evidencedeflator.com/zh-hant/">
@@ -61,6 +61,9 @@
   </div>
  </div>
  <ul class="wflags" id="wflags"></ul>
+ <div class="wdd" id="wdd" hidden><p id="wddt"></p>
+  <p class="muted small">正持有它？優勢是在同一份記錄上量出來的，而這份記錄通常是因為表現好才被找到的，所以更可能偏高而不是偏低；真實優勢更小的話，回撤會比這裏說的更常見。這是一個讀數，不是持有或賣出的信號。</p></div>
+ <p class="muted small" style="margin-top:10px">t 說的是這份記錄本身，不是跟單能賺多少。跟單者總在交易者之後下單，規模也不同；持倉越短，這段延遲吃掉的優勢越多。</p>
  <div class="btns" style="margin:18px 0 8px"><button class="btn btn-secondary copy" id="wcopy" data-copy=""><span class="cp">複製這個結果的連結</span><span class="ok">已複製</span></button>
   <a class="btn btn-secondary" id="whl" href="#" rel="noopener">在 Hyperliquid 上查看</a></div>
  <p class="muted small" id="wnote"></p>
@@ -95,7 +98,9 @@
  <p><strong>按週算，因為歷史數據就是這樣存的。</strong>Hyperliquid 較早的歷史大約一週一個點，最近的幾分鐘一個點。所有數據放到同一個週網格上；沒有新數據點的週併入下一週，不記為零。</p>
  <p><strong>短記錄不會被高估。</strong>只有幾週數據算出來的 t 尾部很厚：8 週記錄、完全沒有實力，t ≥ 2 出現的頻率大約是門檻假設的兩倍。所以 t 取自按記錄有效自由度計算的 Student t 分佈（靠少數幾段長間隔撐起來的記錄，自由度更低），再換回常用的尺度。記錄長時，它接近 夏普 × √年數；記錄短時會更低。已檢驗：沒有實力時，無論歷史採樣多稀疏，達到 2 的比例都保持在名義上的 2.3%。</p>
  <p><strong>兩個門檻。</strong>如果你沒有經過任何篩選就來看這個錢包，t ≥ 2 是常用門檻。如果你是在排行榜上排序找到它的，你就是從很多個裏挑了最好的那個，門檻會隨候選數量上升（對 47,248 個帳戶做 Bonferroni 校正：4.90）。大多數人都是在排行榜上找到錢包的。這個門檻把每個帳戶都當作獨立的；做法相近的帳戶其實算不上那麼多次獨立下注，考慮這一點門檻會降到約 2.6，但這只是<a href="https://github.com/Beltran12138/evidence-deflator#a-track-record-with-no-model-behind-it">粗估</a>（數量級，不是測量值）。</p>
- <p><strong>t 看不到什麼。</strong>還沒發生的尾部風險。賣保險式的策略可以很長時間沒有一個虧損週。記錄裏沒有虧損週、或者某一週貢獻了大部分收益時，頁面會標出來。</p>
+ <p><strong>t 看不到什麼。</strong>還沒發生的尾部風險。賣保險式的策略可以很長時間沒有一個虧損週。記錄裏沒有虧損週、或者某一週貢獻了大部分收益時，頁面會標出來。按近期波動率調整倉位的賣方，在大虧之前、以及縮小倉位後的大虧前後，每週看起來都可能很正常，這些提示可能抓不到它。</p>
+ <p><strong>回撤讀數。</strong>大多數錢是在一段好表現之後進來的，又在隨後的回撤裏離開，而那次回撤往往很正常。一位基金經理說，策略收益和投資者實際收益之間的差距「通常是最大的成本」（<a href="https://www.toptradersunplugged.com/podcast/why-investors-keep-getting-trend-following-wrong-ft-patrick-welton/" rel="noopener">Patrick Welton，Top Traders Unplugged</a>）。所以頁面會顯示記錄現在比自己的峯值低多少（把峯值以來的週收益率直接相加，和 t 用的是同一組收益率；帳戶會充值和提現，複利算出來的是一個沒人真正持有過的組合），以及優勢和波動都與它相同的記錄，有多少比例的時間至少處在這麼深的回撤裏。低於 2% 少見到足以懷疑優勢；10% 以上算正常。這個比例來自帶漂移隨機遊走的回撤分佈，針對按週採樣做了修正，並用模擬核對過。</p>
+ <p><strong>證據不等於跟單能拿到的結果。</strong>t 衡量的是交易者自己做出的記錄。跟單者在交易者之後入場，規模和費用都不同；持倉越短，延遲吃掉的優勢越多，$5 萬能做的規模放到 $500 萬可能會推動價格。過了門檻的記錄是關於這個交易者的證據，不是對你收益的預測。</p>
  <p><strong>算進了什麼。</strong>Hyperliquid 為這個帳戶記錄的盈虧：永續，以及現貨帳戶（HIP-4 結果合約也記在這裏）。HyperEVM 上的交易不在其中，比如 Papertrade 或 HyperEVM 上的期權協議。在 HyperEVM 上賣期權、用永續對沖的錢包，這裏只看得到對沖那一側。</p>
  <p class="muted small">不構成投資建議。公開數據來自 <code>api.hyperliquid.xyz</code>，由你的瀏覽器直接讀取。地址不會發送給我們。我們用 Cloudflare Web Analytics 統計頁面訪問，不使用 cookie；每完成一次檢驗，頁面會向我們的接口記一次數，只帶頁面語言，不帶別的。 方法：<a href="/zh-hant/method/">方法</a>、Lo (2002)、Bailey &amp; López de Prado (2014)。</p>
 </div></section>
@@ -111,8 +116,8 @@
 <div class="foot-note"><span>開源 · MIT · v0.2.0</span><span>統計估計，不構成投資建議。</span></div>
 </div></footer>
 <script src="/assets/site.js"></script>
-<script src="/assets/site.js"></script><script src="/assets/hl.js?v=103d4b71"></script>
-<script>window.WALLET = {"N": 47248, "NV": 9478, "T": {"say": {"loses": ["虧損，而且不是運氣差", "tag-red", "t 不高於 −2：在能測量的那些週裏，這個錢包虧得太穩定，運氣解釋不了。"], "luck": ["和運氣分不開", "tag-red", "t 低於 2：這樣的記錄靠運氣出現的頻率太高，說明不了實力。"], "clears_single": ["過了單次檢驗，沒過排行榜門檻", "tag-amber", "如果你是隨手挑中這個錢包的，這個強度夠了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["過了排行榜門檻", "tag-green", "即使考慮到它是從 {N} 個{U}裏挑出來的，這份記錄也夠強。"], "too_short": ["記錄太短，還說不了", "tag-grey", "帳戶裏至少有 $1,000 的歷史不足 8 週。"]}, "tag": {"loses": "虧損", "luck": "運氣", "clears_single": "單次通過", "clears_board": "過門檻", "too_short": "太短"}, "meterAria": "t 與兩個門檻", "meterT2": "t = 2 · 單次檢驗", "meterBest": "{N} 選 1 · {bar}", "notAddr": ["這不是 Hyperliquid 地址", "應為 0x 加 40 位十六進制字符。"], "reading": "正在讀取公開記錄…", "noReach": "連不上 Hyperliquid", "noHist": "這個地址沒有歷史記錄", "months": {"noSharpe": "至少要有 8 週記錄才能估計", "never": ["永遠", "夏普為零或負數時，多長的記錄都過不了門檻"], "done": "個月：記錄已經過了排行榜門檻", "more": "如果夏普保持不變，過排行榜門檻還需要的記錄", "yr": " 年", "mo": " 個月"}, "notes": {"no_losing_week": "記錄裏沒有一個虧損週。這和做市、吃資金費率或賣尾部風險的策略一致；t 衡量的是穩定性，不是一筆還沒發生的虧損有多大。", "one_week_majority": "單獨一週貢獻了一半以上的收益，這份記錄主要靠那一週撐著。", "pnl_outside_record": "全期盈虧的大部分記在帳戶不足 $1,000 的時段，無法換算成收益率。結論只覆蓋能測量的那些週。"}, "wnote": "歷史起於 {start}。{now} UTC 讀取自 api.hyperliquid.xyz。", "unitAcct": "帳戶", "unitVault": "金庫（vault）", "vault": "這是一個金庫（vault）：{name}。管理人自己持有 {lf}%，從存款人的盈利裏抽 {c}%；分數按金庫抽成前的盈虧計算。", "vaultBar": "門檻按「從 Hyperliquid 列出的 {NV} 個金庫裏挑出」計算，包括已關閉的。", "selfPath": "/zh-hant/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=zh-hant"}};</script>
-<script src="/assets/wallet.js?v=6f2392ea"></script>
+<script src="/assets/site.js"></script><script src="/assets/hl.js?v=222fe2a9"></script>
+<script>window.WALLET = {"N": 47248, "NV": 9478, "T": {"say": {"loses": ["虧損，而且不是運氣差", "tag-red", "t 不高於 −2：在能測量的那些週裏，這個錢包虧得太穩定，運氣解釋不了。"], "luck": ["和運氣分不開", "tag-red", "t 低於 2：這樣的記錄靠運氣出現的頻率太高，說明不了實力。"], "clears_single": ["過了單次檢驗，沒過排行榜門檻", "tag-amber", "如果你是隨手挑中這個錢包的，這個強度夠了。如果你是在排行榜上找到它的，需要 t ≥ {BAR}。"], "clears_board": ["過了排行榜門檻", "tag-green", "即使考慮到它是從 {N} 個{U}裏挑出來的，這份記錄也夠強。"], "too_short": ["記錄太短，還說不了", "tag-grey", "帳戶裏至少有 $1,000 的歷史不足 8 週。"]}, "tag": {"loses": "虧損", "luck": "運氣", "clears_single": "單次通過", "clears_board": "過門檻", "too_short": "太短"}, "meterAria": "t 與兩個門檻", "meterT2": "t = 2 · 單次檢驗", "meterBest": "{N} 選 1 · {bar}", "notAddr": ["這不是 Hyperliquid 地址", "應為 0x 加 40 位十六進制字符。"], "reading": "正在讀取公開記錄…", "noReach": "連不上 Hyperliquid", "noHist": "這個地址沒有歷史記錄", "months": {"noSharpe": "至少要有 8 週記錄才能估計", "never": ["永遠", "夏普為零或負數時，多長的記錄都過不了門檻"], "done": "個月：記錄已經過了排行榜門檻", "more": "如果夏普保持不變，過排行榜門檻還需要的記錄", "yr": " 年", "mo": " 個月"}, "notes": {"no_losing_week": "記錄裏沒有一個虧損週。這和做市、吃資金費率或賣尾部風險的策略一致；t 衡量的是穩定性，不是一筆還沒發生的虧損有多大。", "one_week_majority": "單獨一週貢獻了一半以上的收益，這份記錄主要靠那一週撐著。", "pnl_outside_record": "全期盈虧的大部分記在帳戶不足 $1,000 的時段，無法換算成收益率。結論只覆蓋能測量的那些週。"}, "wnote": "歷史起於 {start}。{now} UTC 讀取自 api.hyperliquid.xyz。", "dd": {"peak": "現在處在峯值。歷史最深回撤：週收益率累計 −{deep}%。", "below": "低於峯值：峯值以來的週收益率加起來是 −{now}%，已持續 {wk} 週。按同樣方法量，歷史最深回撤：−{deep}%。", "share": "如果優勢就是記錄顯示的這麼大，這樣的記錄有 {share}% 的時間至少處在這麼深的回撤裏：{read}", "ordinary": "對它來說是正常回撤。", "unusual": "少見，但不算離譜。", "rare": "很少見。要麼是運氣差，要麼優勢比記錄顯示的小。", "noEdge": "記錄沒有顯示正的優勢，所以對它來說沒有哪種回撤算正常。"}, "unitAcct": "帳戶", "unitVault": "金庫（vault）", "vault": "這是一個金庫（vault）：{name}。管理人自己持有 {lf}%，從存款人的盈利裏抽 {c}%；分數按金庫抽成前的盈虧計算。", "vaultBar": "門檻按「從 Hyperliquid 列出的 {NV} 個金庫裏挑出」計算，包括已關閉的。", "selfPath": "/zh-hant/", "countUrl": "https://api.evidencedeflator.com/api/count?k=web&l=zh-hant"}};</script>
+<script src="/assets/wallet.js?v=307f40cf"></script>
 </body>
 </html>
